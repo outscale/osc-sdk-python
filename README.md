@@ -53,3 +53,8 @@ In the file, you can set a default profile, naming `default`. It will be used if
             "region": "<REGION>"
         }
     }
+
+### In the code
+
+    from osc_python_sdk import Gateway
+    gw = Gateway(**{'access_key': 'your-ak', 'secret_key': 'your-sk', 'region': 'us-west-1'})
