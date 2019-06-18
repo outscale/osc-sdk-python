@@ -18,7 +18,7 @@ Based on oapi-cli this program helps you making Outscale Gateway call.
 
 
 # Installation
-    pip install https://github.com/outscale/osc_python_sdk/releases/download/0.9.8/osc_python_sdk-0.9.8-py3-none-any.whl
+    pip install https://github.com/outscale/osc_python_sdk/releases/download/0.9.10/osc_python_sdk-0.9.10-py3-none-any.whl
 
 ## Credentials
 
