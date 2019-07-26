@@ -63,7 +63,7 @@ class OutscaleGateway:
 
     def _load_gateway_structure(self):
         dir_path = os.path.join(os.path.dirname(__file__))
-        yaml_file = os.path.abspath('{}/outscale.yaml'.format(dir_path))
+        yaml_file = os.path.abspath('{}/api/outscale.yaml'.format(dir_path))
         self.gateway_structure = self._convert(yaml_file)
 
     def _check_parameters_type(self, action_structure, input_structure):
