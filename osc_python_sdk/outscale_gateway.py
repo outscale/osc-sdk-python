@@ -96,7 +96,16 @@ class OutscaleGateway:
         self._check_parameters_required(self.gateway_structure[action_name], params)
         self._check_parameters_type(self.gateway_structure[action_name], params)
 
-    def _Action(self, **kwargs):
+    @staticmethod
+    def _remove_none_parameters(**params):
+        """
+        Remove parameters having None as value
+        to perform CreateVolumes(Iops=None, Size=10)
+        """
+        return {key: value for key, value in params.items() if value is not None}
+
+    def _action(self, **kwargs):
+        kwargs = self._remove_none_parameters(**kwargs)
         self._check(self.action_name, **kwargs)
         for i in range(0, self.retry):
             result = self.call.api(self.action_name, **kwargs)
@@ -108,7 +117,7 @@ class OutscaleGateway:
 
     def __getattr__(self, attr):
         self.action_name = attr
-        return self._Action
+        return self._action
 
     def raw(self, action_name, **kwargs):
         return self.call.api(action_name, **kwargs)
