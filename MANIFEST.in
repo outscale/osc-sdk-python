@@ -1,1 +1,1 @@
-include osc_python_sdk/oapi.yaml
+include osc_python_sdk/api/outscale.yaml

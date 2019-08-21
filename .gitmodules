@@ -1,0 +1,3 @@
+[submodule "osc_python_sdk/api"]
+	path = osc_python_sdk/api
+	url = git@github.com:outscale/api.git
