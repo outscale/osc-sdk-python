@@ -107,9 +107,9 @@ class OutscaleGateway:
     def _action(self, **kwargs):
         kwargs = self._remove_none_parameters(**kwargs)
         self._check(self.action_name, **kwargs)
-        for i in range(0, self.retry):
+        for _ in range(0, self.retry):
             result = self.call.api(self.action_name, **kwargs)
-            if 'Error' not in result:
+            if 'Errors' not in result:
                 break
             time.sleep(1)
         self.action_name = None
