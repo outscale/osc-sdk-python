@@ -1,6 +1,6 @@
 import sys
 sys.path.append("..") 
-from osc_python_sdk import Gateway
+from osc_sdk_python import Gateway
 gw = Gateway()
 vms = gw.ReadVms()
 assert(isinstance(vms, dict))
