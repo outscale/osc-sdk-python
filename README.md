@@ -6,10 +6,10 @@ You will need to have an Outscale account, please visit [Outscale website](https
 
 # Installation
 
-You can install the pre-built python package through this command: 
+You can install the pre-built python package through this command:
 
 ```bash
-$ pip install https://github.com/outscale/osc_python_sdk/releases/download/0.9.11/osc_python_sdk-0.9.11-py3-none-any.whl
+$ pip install https://github.com/outscale/osc-sdk-python/releases/download/0.9.13/osc_sdk_python-0.9.13-py3-none-any.whl
 ```
 
 # Building
@@ -21,7 +21,7 @@ $ python3 -m pip install --user --upgrade setuptools wheel
 $ python3 setup.py sdist bdist_wheel
 ```
 
-You can then install it with `pip install dist/osc_python_sdk-0.9.10-py3-none-any.whl`
+You can then install it with `pip install dist/osc_sdk_python-0.9.13-py3-none-any.whl`
 
 # Configuration & Credentials
 
@@ -66,7 +66,7 @@ $ cat ~/.oapi_credentials
 
 A simple example which prints all your Virtual Machine and Volume ids.
 ```python
-from osc_python_sdk import Gateway
+from osc_sdk_python import Gateway
 
 if __name__ == '__main__':
     gw = Gateway()
@@ -82,7 +82,7 @@ if __name__ == '__main__':
 
 Usage example, check [Outscale API documentation](https://docs-beta.outscale.com/) for more details.
 ```python
-from osc_python_sdk import Gateway
+from osc_sdk_python import Gateway
 
 if __name__ == '__main__':
     gw = Gateway(**{'profile': 'profile_1'})

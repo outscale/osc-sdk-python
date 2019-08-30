@@ -1,6 +1,6 @@
 ## How to submit a contribution
 
-Thank you for considering contributing to osc_python_sdk.
+Thank you for considering contributing to osc_sdk_python.
 
 Potential contributions include:
 
