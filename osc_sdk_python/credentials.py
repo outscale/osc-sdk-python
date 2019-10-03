@@ -5,12 +5,12 @@ import os
 class Credentials:
     def __init__(self, profile=None, access_key=None, secret_key=None, region=None):
         if not self.load_credentials_from_env():
-            if profile is not None:
-                self.load_credentials_from_file(profile)
-            elif access_key is not None and secret_key is not None and region is not None:
+            if access_key is not None and secret_key is not None and region is not None:
                 self.access_key = access_key
                 self.secret_key = secret_key
                 self.region = region
+            elif profile is not None:
+                self.load_credentials_from_file(profile)
 
     def load_credentials_from_env(self):
         self.access_key = os.environ.get('OSC_ACCESS_KEY')
