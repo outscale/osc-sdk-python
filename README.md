@@ -9,7 +9,7 @@ You will need to have an Outscale account, please visit [Outscale website](https
 You can install the pre-built python package through this command:
 
 ```bash
-$ pip install https://github.com/outscale/osc-sdk-python/releases/download/0.9.14/osc_sdk_python-0.9.14-py3-none-any.whl
+$ pip install https://github.com/outscale/osc-sdk-python/releases/download/0.9.15/osc_sdk_python-0.9.15-py3-none-any.whl
 ```
 
 # Building
@@ -21,7 +21,7 @@ $ python3 -m pip install --user --upgrade setuptools wheel
 $ python3 setup.py sdist bdist_wheel
 ```
 
-You can then install it with `pip install dist/osc_sdk_python-0.9.14-py3-none-any.whl`
+You can then install it with `pip install dist/osc_sdk_python-0.9.15-py3-none-any.whl`
 
 # Configuration & Credentials
 
