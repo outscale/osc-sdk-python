@@ -1,5 +1,5 @@
 import sys
-sys.path.append("..") 
+sys.path.append("..")
 from osc_sdk_python import Gateway
 gw = Gateway()
 vms = gw.ReadVms()
