@@ -57,7 +57,14 @@ function run_tests() {
     exit $result
 }
 
+function submodule_init() {
+    pushd "$root"
+    git submodule update --init .
+    popd
+}
+
 function main {
+    submodule_init
     check_credentials
     prepapre_venv
     run_tests
