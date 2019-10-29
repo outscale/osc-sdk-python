@@ -1,0 +1,1220 @@
+4000:
+  Description: ''
+  Name: access-keys-not-found
+  Type: InvalidParameterValue
+4001:
+  Description: ''
+  Name: architecture-mismatch
+  Type: InvalidParameterValue
+4002:
+  Description: ''
+  Name: bucket-not-found
+  Type: InvalidParameterValue
+4003:
+  Description: ''
+  Name: device-name-not-associated
+  Type: InvalidParameterValue
+4004:
+  Description: ''
+  Name: empty-target
+  Type: InvalidParameterValue
+4005:
+  Description: ''
+  Name: enable-access-log-not-found
+  Type: InvalidParameterValue
+4006:
+  Description: ''
+  Name: gateway-does-not-exist
+  Type: InvalidParameterValue
+4007:
+  Description: ''
+  Name: instance-invalid-tenancy
+  Type: InvalidParameterValue
+4008:
+  Description: ''
+  Name: invalid-affinity-target
+  Type: InvalidParameterValue
+4009:
+  Description: ''
+  Name: invalid-asn
+  Type: InvalidParameterValue
+4010:
+  Description: ''
+  Name: invalid-asn-range
+  Type: InvalidParameterValue
+4011:
+  Description: ''
+  Name: invalid-bdm
+  Type: InvalidParameterValue
+4012:
+  Description: ''
+  Name: invalid-billing-value
+  Type: InvalidParameterValue
+4013:
+  Description: ''
+  Name: invalid-block
+  Type: InvalidParameterValue
+4014:
+  Description: ''
+  Name: invalid-block-size
+  Type: InvalidParameterValue
+4015:
+  Description: ''
+  Name: invalid-cidr-size
+  Type: InvalidParameterValue
+4016:
+  Description: ''
+  Name: invalid-class-name
+  Type: InvalidParameterValue
+4017:
+  Description: ''
+  Name: invalid-configuration
+  Type: InvalidParameterValue
+4018:
+  Description: ''
+  Name: invalid-count
+  Type: InvalidParameterValue
+4019:
+  Description: ''
+  Name: invalid-device-name
+  Type: InvalidParameterValue
+4020:
+  Description: ''
+  Name: invalid-email-address
+  Type: InvalidParameterValue
+4021:
+  Description: ''
+  Name: invalid-end-port
+  Type: InvalidParameterValue
+4022:
+  Description: ''
+  Name: invalid-field-value
+  Type: InvalidParameterValue
+4023:
+  Description: ''
+  Name: invalid-filter
+  Type: InvalidParameterValue
+4024:
+  Description: ''
+  Name: invalid-host-pattern
+  Type: InvalidParameterValue
+4025:
+  Description: ''
+  Name: invalid-id
+  Type: InvalidParameterValue
+4026:
+  Description: ''
+  Name: invalid-image-name
+  Type: InvalidParameterValue
+4027:
+  Description: ''
+  Name: invalid-import-path
+  Type: InvalidParameterValue
+4028:
+  Description: ''
+  Name: invalid-instance-port
+  Type: InvalidParameterValue
+4029:
+  Description: ''
+  Name: invalid-iops
+  Type: InvalidParameterValue
+4030:
+  Description: ''
+  Name: invalid-ip-address
+  Type: InvalidParameterValue
+4031:
+  Description: ''
+  Name: invalid-isolation-mode
+  Type: InvalidParameterValue
+4032:
+  Description: ''
+  Name: invalid-key
+  Type: InvalidParameterValue
+4033:
+  Description: ''
+  Name: invalid-key-size
+  Type: InvalidParameterValue
+4034:
+  Description: ''
+  Name: invalid-keypair-index
+  Type: InvalidParameterValue
+4035:
+  Description: ''
+  Name: invalid-keypair-name
+  Type: InvalidParameterValue
+4036:
+  Description: ''
+  Name: invalid-lb-name
+  Type: InvalidParameterValue
+4037:
+  Description: ''
+  Name: invalid-lb-port
+  Type: InvalidParameterValue
+4038:
+  Description: ''
+  Name: invalid-lifecycle
+  Type: InvalidParameterValue
+4039:
+  Description: ''
+  Name: invalid-lifecycle-role
+  Type: InvalidParameterValue
+4040:
+  Description: ''
+  Name: invalid-manifest
+  Type: InvalidParameterValue
+4041:
+  Description: ''
+  Name: invalid-manifest-format
+  Type: InvalidParameterValue
+4042:
+  Description: ''
+  Name: invalid-method-name
+  Type: InvalidParameterValue
+4043:
+  Description: ''
+  Name: invalid-name
+  Type: InvalidParameterValue
+4044:
+  Description: ''
+  Name: invalid-notification
+  Type: InvalidParameterValue
+4045:
+  Description: ''
+  Name: invalid-parameter
+  Type: InvalidParameterValue
+4046:
+  Description: ''
+  Name: invalid-parameter-set
+  Type: InvalidParameterValue
+4047:
+  Description: ''
+  Name: invalid-parameter-value
+  Type: InvalidParameterValue
+4048:
+  Description: ''
+  Name: invalid-password
+  Type: InvalidParameterValue
+4049:
+  Description: ''
+  Name: invalid-path-pattern
+  Type: InvalidParameterValue
+4050:
+  Description: ''
+  Name: invalid-permission-format
+  Type: InvalidParameterValue
+4051:
+  Description: ''
+  Name: invalid-port-specification
+  Type: InvalidParameterValue
+4052:
+  Description: ''
+  Name: invalid-profile
+  Type: InvalidParameterValue
+4053:
+  Description: ''
+  Name: invalid-protocol
+  Type: InvalidParameterValue
+4054:
+  Description: ''
+  Name: invalid-protocol-layer
+  Type: InvalidParameterValue
+4055:
+  Description: ''
+  Name: invalid-quorum
+  Type: InvalidParameterValue
+4056:
+  Description: ''
+  Name: invalid-range
+  Type: InvalidParameterValue
+4057:
+  Description: ''
+  Name: invalid-root-mapping
+  Type: InvalidParameterValue
+4058:
+  Description: ''
+  Name: invalid-rule-action
+  Type: InvalidParameterValue
+4059:
+  Description: ''
+  Name: invalid-rule-name
+  Type: InvalidParameterValue
+4060:
+  Description: ''
+  Name: invalid-scheme
+  Type: InvalidParameterValue
+4061:
+  Description: ''
+  Name: invalid-snapshot-id
+  Type: InvalidParameterValue
+4062:
+  Description: ''
+  Name: invalid-source
+  Type: InvalidParameterValue
+4063:
+  Description: ''
+  Name: invalid-start-ip
+  Type: InvalidParameterValue
+4064:
+  Description: ''
+  Name: invalid-start-port
+  Type: InvalidParameterValue
+4065:
+  Description: ''
+  Name: invalid-sticky-policy-cookie_name
+  Type: InvalidParameterValue
+4066:
+  Description: ''
+  Name: invalid-sticky-policy-expiration
+  Type: InvalidParameterValue
+4067:
+  Description: ''
+  Name: invalid-sticky-policy-name
+  Type: InvalidParameterValue
+4068:
+  Description: ''
+  Name: invalid-stop-ip
+  Type: InvalidParameterValue
+4069:
+  Description: ''
+  Name: invalid-tag-key
+  Type: InvalidParameterValue
+4070:
+  Description: ''
+  Name: invalid-tag-value
+  Type: InvalidParameterValue
+4071:
+  Description: ''
+  Name: invalid-tag-value-length
+  Type: InvalidParameterValue
+4072:
+  Description: ''
+  Name: invalid-target
+  Type: InvalidParameterValue
+4073:
+  Description: ''
+  Name: invalid-type
+  Type: InvalidParameterValue
+4074:
+  Description: ''
+  Name: invalid-url
+  Type: InvalidParameterValue
+4075:
+  Description: ''
+  Name: invalid-url-format
+  Type: InvalidParameterValue
+4076:
+  Description: ''
+  Name: invalid-virtual-name
+  Type: InvalidParameterValue
+4077:
+  Description: ''
+  Name: invalid-volume-device-name-association
+  Type: InvalidParameterValue
+4078:
+  Description: ''
+  Name: invalid-volume-size
+  Type: InvalidParameterValue
+4079:
+  Description: ''
+  Name: invalid-vpn-propagation
+  Type: InvalidParameterValue
+4080:
+  Description: ''
+  Name: invalid-vpn-type
+  Type: InvalidParameterValue
+4081:
+  Description: ''
+  Name: invalid-zone
+  Type: InvalidParameterValue
+4082:
+  Description: ''
+  Name: invalid-zone-owner
+  Type: InvalidParameterValue
+4083:
+  Description: ''
+  Name: InvalidKeyPair
+  Type: InvalidParameterValue
+4084:
+  Description: ''
+  Name: load-balancer-attribute-not-found
+  Type: InvalidParameterValue
+4085:
+  Description: ''
+  Name: multiple-sticky-policies-forbidden
+  Type: InvalidParameterValue
+4086:
+  Description: ''
+  Name: network-mismatch
+  Type: InvalidParameterValue
+4087:
+  Description: ''
+  Name: not-windows-instance
+  Type: InvalidParameterValue
+4088:
+  Description: ''
+  Name: osu-connection-error
+  Type: InvalidParameterValue
+4089:
+  Description: ''
+  Name: overlapping-timespan
+  Type: InvalidParameterValue
+4091:
+  Description: ''
+  Name: token-mismatch
+  Type: InvalidParameterValue
+4093:
+  Description: ''
+  Name: undefined-forwarding
+  Type: InvalidParameterValue
+4094:
+  Description: ''
+  Name: unknown-export-version
+  Type: InvalidParameterValue
+4095:
+  Description: ''
+  Name: validation-error
+  Type: InvalidParameterValue
+4097:
+  Description: ''
+  Name: wrong-certificate-orn
+  Type: InvalidParameterValue
+4099:
+  Description: ''
+  Name: wrong-emit-interval
+  Type: InvalidParameterValue
+4100:
+  Description: ''
+  Name: wrong-event-type
+  Type: InvalidParameterValue
+4101:
+  Description: ''
+  Name: wrong-prefix
+  Type: InvalidParameterValue
+4102:
+  Description: ''
+  Name: wrong-protocol-for-ssl
+  Type: InvalidParameterValue
+4103:
+  Description: ''
+  Name: wrong-resource-type
+  Type: InvalidParameterValue
+4104:
+  Description: ''
+  Name: invalid-id-prefix
+  Type: InvalidParameterValue
+4105:
+  Description: ''
+  Name: malformed-id
+  Type: InvalidParameterValue
+4106:
+  Description: ''
+  Name: invalid-parameter-value-length
+  Type: InvalidParameterValue
+4108:
+  Description: ''
+  Name: invalid-parameter-type
+  Type: InvalidParameterValue
+4109:
+  Description: ''
+  Name: invalid-interval-type
+  Type: InvalidParameterValue
+4111:
+  Description: ''
+  Name: invalid-parameters-value
+  Type: InvalidParameterValue
+5000:
+  Description: ''
+  Name: device-not-in-cluster
+  Type: InvalidResource
+5001:
+  Description: ''
+  Name: gateway-does-not-exist
+  Type: InvalidResource
+5002:
+  Description: ''
+  Name: ghostly-vm
+  Type: InvalidResource
+5003:
+  Description: ''
+  Name: invalid-instance
+  Type: InvalidResource
+5004:
+  Description: ''
+  Name: invalid-vpc
+  Type: InvalidResource
+5005:
+  Description: ''
+  Name: no-az-for-user
+  Type: InvalidResource
+5006:
+  Description: ''
+  Name: no-pz-available
+  Type: InvalidResource
+5007:
+  Description: ''
+  Name: no-such-attachment
+  Type: InvalidResource
+5008:
+  Description: ''
+  Name: no-such-authorization
+  Type: InvalidResource
+5009:
+  Description: ''
+  Name: no-such-az
+  Type: InvalidResource
+5010:
+  Description: ''
+  Name: no-such-azmapping
+  Type: InvalidResource
+5011:
+  Description: ''
+  Name: no-such-call
+  Type: InvalidResource
+5012:
+  Description: ''
+  Name: no-such-certificate
+  Type: InvalidResource
+5013:
+  Description: ''
+  Name: no-such-cluster
+  Type: InvalidResource
+5014:
+  Description: ''
+  Name: no-such-configuration
+  Type: InvalidResource
+5015:
+  Description: ''
+  Name: no-such-customer-gateway
+  Type: InvalidResource
+5016:
+  Description: ''
+  Name: no-such-data-file
+  Type: InvalidResource
+5017:
+  Description: ''
+  Name: no-such-device
+  Type: InvalidResource
+5018:
+  Description: ''
+  Name: no-such-dhcpoptions
+  Type: InvalidResource
+5019:
+  Description: ''
+  Name: no-such-gateway
+  Type: InvalidResource
+5020:
+  Description: ''
+  Name: no-such-group
+  Type: InvalidResource
+5021:
+  Description: ''
+  Name: no-such-group-in-public-cloud
+  Type: InvalidResource
+5022:
+  Description: ''
+  Name: no-such-group-in-vpc
+  Type: InvalidResource
+5023:
+  Description: ''
+  Name: no-such-image
+  Type: InvalidResource
+5024:
+  Description: ''
+  Name: no-such-instance-type
+  Type: InvalidResource
+5025:
+  Description: ''
+  Name: no-such-ip
+  Type: InvalidResource
+5026:
+  Description: ''
+  Name: no-such-ip-association
+  Type: InvalidResource
+5027:
+  Description: ''
+  Name: no-such-key
+  Type: InvalidResource
+5028:
+  Description: ''
+  Name: no-such-listener
+  Type: InvalidResource
+5029:
+  Description: ''
+  Name: no-such-listener-rule
+  Type: InvalidResource
+5030:
+  Description: ''
+  Name: no-such-load-balancer
+  Type: InvalidResource
+5031:
+  Description: ''
+  Name: no-such-manifest
+  Type: InvalidResource
+5032:
+  Description: ''
+  Name: no-such-nat-gateway
+  Type: InvalidResource
+5033:
+  Description: ''
+  Name: no-such-network
+  Type: InvalidResource
+5034:
+  Description: ''
+  Name: no-such-network-endpoint
+  Type: InvalidResource
+5035:
+  Description: ''
+  Name: no-such-networklink
+  Type: InvalidResource
+5036:
+  Description: ''
+  Name: no-such-nic
+  Type: InvalidResource
+5037:
+  Description: ''
+  Name: no-such-object
+  Type: InvalidResource
+5038:
+  Description: ''
+  Name: no-such-operation
+  Type: InvalidResource
+5039:
+  Description: ''
+  Name: no-such-pending-call
+  Type: InvalidResource
+5040:
+  Description: ''
+  Name: no-such-prefix-list
+  Type: InvalidResource
+5041:
+  Description: ''
+  Name: no-such-pz
+  Type: InvalidResource
+5042:
+  Description: ''
+  Name: no-such-quota
+  Type: InvalidResource
+5043:
+  Description: ''
+  Name: no-such-region
+  Type: InvalidResource
+5044:
+  Description: ''
+  Name: no-such-resource
+  Type: InvalidResource
+5045:
+  Description: ''
+  Name: no-such-route
+  Type: InvalidResource
+5046:
+  Description: ''
+  Name: no-such-route-table
+  Type: InvalidResource
+5047:
+  Description: ''
+  Name: no-such-rtb-assoc
+  Type: InvalidResource
+5048:
+  Description: ''
+  Name: no-such-server
+  Type: InvalidResource
+5049:
+  Description: ''
+  Name: no-such-server-group
+  Type: InvalidResource
+5050:
+  Description: ''
+  Name: no-such-servergroup
+  Type: InvalidResource
+5051:
+  Description: ''
+  Name: no-such-shard
+  Type: InvalidResource
+5052:
+  Description: ''
+  Name: no-such-site
+  Type: InvalidResource
+5053:
+  Description: ''
+  Name: no-such-slot
+  Type: InvalidResource
+5054:
+  Description: ''
+  Name: no-such-snapshot
+  Type: InvalidResource
+5055:
+  Description: ''
+  Name: no-such-static-route
+  Type: InvalidResource
+5056:
+  Description: ''
+  Name: no-such-sticky-policy
+  Type: InvalidResource
+5057:
+  Description: ''
+  Name: no-such-subnet
+  Type: InvalidResource
+5058:
+  Description: ''
+  Name: no-such-task
+  Type: InvalidResource
+5059:
+  Description: ''
+  Name: no-such-type
+  Type: InvalidResource
+5060:
+  Description: ''
+  Name: no-such-user-group
+  Type: InvalidResource
+5061:
+  Description: ''
+  Name: no-such-vlan-pool
+  Type: InvalidResource
+5062:
+  Description: ''
+  Name: no-such-vlan-range
+  Type: InvalidResource
+5063:
+  Description: ''
+  Name: no-such-vm
+  Type: InvalidResource
+5064:
+  Description: ''
+  Name: no-such-volume
+  Type: InvalidResource
+5065:
+  Description: ''
+  Name: no-such-vpc
+  Type: InvalidResource
+5066:
+  Description: ''
+  Name: no-such-vpn-attachment
+  Type: InvalidResource
+5067:
+  Description: ''
+  Name: no-such-vpn-connection
+  Type: InvalidResource
+5068:
+  Description: ''
+  Name: no-such-vpn-gateway
+  Type: InvalidResource
+5069:
+  Description: ''
+  Name: zero-candidate
+  Type: InvalidResource
+5070:
+  Description: ''
+  Name: wrong-ssl-certificate
+  Type: InvalidResource
+5071:
+  Description: ''
+  Name: no-such-keypair
+  Type: InvalidResource
+5072:
+  Description: ''
+  Name: no-such-connection
+  Type: InvalidResource
+5073:
+  Description: ''
+  Name: no-such-interface
+  Type: InvalidResource
+5074:
+  Description: ''
+  Name: no-such-gpu-reservation
+  Type: InvalidResource
+5075:
+  Description: ''
+  Name: no-such-user
+  Type: InvalidResource
+6000:
+  Description: ''
+  Name: invalid-cg-state
+  Type: InvalidState
+6001:
+  Description: ''
+  Name: invalid-image-state
+  Type: InvalidState
+6002:
+  Description: ''
+  Name: invalid-router-state
+  Type: InvalidState
+6003:
+  Description: ''
+  Name: invalid-state
+  Type: InvalidState
+6004:
+  Description: ''
+  Name: invalid-state-transition (can be match with invalid-state ?)
+  Type: InvalidState
+6005:
+  Description: ''
+  Name: invalid-subnet-state
+  Type: InvalidState
+6006:
+  Description: ''
+  Name: invalid-vm-state
+  Type: InvalidState
+6007:
+  Description: ''
+  Name: invalid-volume-state
+  Type: InvalidState
+6008:
+  Description: ''
+  Name: invalid-vpg-state
+  Type: InvalidState
+6009:
+  Description: ''
+  Name: invalid-vpn-connection-state
+  Type: InvalidState
+9000:
+  Description: ''
+  Name: 'already-exist '
+  Type: ResourceConflict
+9001:
+  Description: ''
+  Name: ambiguous-ip
+  Type: ResourceConflict
+9002:
+  Description: ''
+  Name: busy
+  Type: ResourceConflict
+9003:
+  Description: ''
+  Name: device-conflict
+  Type: ResourceConflict
+9004:
+  Description: ''
+  Name: device-in-use
+  Type: ResourceConflict
+9005:
+  Description: ''
+  Name: duplicate-cidr
+  Type: ResourceConflict
+9006:
+  Description: ''
+  Name: duplicate-connection
+  Type: ResourceConflict
+9007:
+  Description: ''
+  Name: duplicate-email-address
+  Type: ResourceConflict
+9008:
+  Description: ''
+  Name: duplicate-group
+  Type: ResourceConflict
+9009:
+  Description: ''
+  Name: duplicate-id
+  Type: ResourceConflict
+9010:
+  Description: ''
+  Name: duplicate-interface
+  Type: ResourceConflict
+9011:
+  Description: ''
+  Name: duplicate-key
+  Type: ResourceConflict
+9012:
+  Description: ''
+  Name: duplicate-listener
+  Type: ResourceConflict
+9013:
+  Description: ''
+  Name: duplicate-loadbalancer-name
+  Type: ResourceConflict
+9014:
+  Description: ''
+  Name: duplicate-mount-point
+  Type: ResourceConflict
+9015:
+  Description: ''
+  Name: duplicate-name
+  Type: ResourceConflict
+9016:
+  Description: ''
+  Name: duplicate-port
+  Type: ResourceConflict
+9017:
+  Description: ''
+  Name: duplicate-prefix-list
+  Type: ResourceConflict
+9018:
+  Description: ''
+  Name: duplicate-product
+  Type: ResourceConflict
+9019:
+  Description: ''
+  Name: duplicate-router
+  Type: ResourceConflict
+9020:
+  Description: ''
+  Name: duplicate-shard
+  Type: ResourceConflict
+9021:
+  Description: ''
+  Name: duplicate-sticky-policy-name
+  Type: ResourceConflict
+9022:
+  Description: ''
+  Name: duplicate-username
+  Type: ResourceConflict
+9023:
+  Description: ''
+  Name: duplicate-vlan
+  Type: ResourceConflict
+9024:
+  Description: ''
+  Name: gateway-is-already-attached
+  Type: ResourceConflict
+9025:
+  Description: ''
+  Name: gateway-is-already-attached
+  Type: ResourceConflict
+9026:
+  Description: ''
+  Name: gateway-is-not-attached
+  Type: ResourceConflict
+9027:
+  Description: ''
+  Name: gateway-not-attached
+  Type: ResourceConflict
+9028:
+  Description: ''
+  Name: group-already-exists
+  Type: ResourceConflict
+9030:
+  Description: ''
+  Name: invalid-vpn-connection
+  Type: ResourceConflict
+9031:
+  Description: ''
+  Name: locked-address
+  Type: ResourceConflict
+9033:
+  Description: ''
+  Name: not-migrating
+  Type: ResourceConflict
+9034:
+  Description: ''
+  Name: multiple-app-sticky-policies-forbidden
+  Type: ResourceConflict
+9035:
+  Description: ''
+  Name: multiple-lb-sticky-policies-forbidden
+  Type: ResourceConflict
+9036:
+  Description: ''
+  Name: multiple-sticky-policies-forbidden
+  Type: ResourceConflict
+9037:
+  Description: ''
+  Name: nat-gateway-already-exists
+  Type: ResourceConflict
+9038:
+  Description: ''
+  Name: network-endpoint-already-exists
+  Type: ResourceConflict
+9039:
+  Description: ''
+  Name: never-started
+  Type: ResourceConflict
+9041:
+  Description: ''
+  Name: no-generated-password
+  Type: ResourceConflict
+9042:
+  Description: ''
+  Name: no-keypair-associated
+  Type: ResourceConflict
+9043:
+  Description: ''
+  Name: no-vpn-network
+  Type: ResourceConflict
+9044:
+  Description: ''
+  Name: not-in-vpc-block
+  Type: ResourceConflict
+9045:
+  Description: ''
+  Name: not-public-subnet
+  Type: ResourceConflict
+9046:
+  Description: ''
+  Name: password-already-set
+  Type: ResourceConflict
+9047:
+  Description: ''
+  Name: priority-already-in-use
+  Type: ResourceConflict
+9048:
+  Description: ''
+  Name: pz-already-mapped
+  Type: ResourceConflict
+9049:
+  Description: ''
+  Name: pz-not-enabled
+  Type: ResourceConflict
+9050:
+  Description: ''
+  Name: reserved-block
+  Type: ResourceConflict
+9051:
+  Description: ''
+  Name: reserved-group
+  Type: ResourceConflict
+9052:
+  Description: ''
+  Name: route-already-exists
+  Type: ResourceConflict
+9053:
+  Description: ''
+  Name: route-does-not-exist
+  Type: ResourceConflict
+9054:
+  Description: ''
+  Name: rule-name-already-in-use
+  Type: ResourceConflict
+9055:
+  Description: ''
+  Name: sticky-policy-enabled-with-listeners
+  Type: ResourceConflict
+9056:
+  Description: ''
+  Name: sticky-policy-only-with-http-https
+  Type: ResourceConflict
+9057:
+  Description: ''
+  Name: subnet-already-in-use
+  Type: ResourceConflict
+9058:
+  Description: ''
+  Name: subnet-conflict
+  Type: ResourceConflict
+9059:
+  Description: ''
+  Name: subnet-is-associated
+  Type: ResourceConflict
+9060:
+  Description: ''
+  Name: 'tag-already-exist '
+  Type: ResourceConflict
+9061:
+  Description: ''
+  Name: vm-already-streaming
+  Type: ResourceConflict
+9062:
+  Description: ''
+  Name: vm-not-in-vpc
+  Type: ResourceConflict
+9063:
+  Description: ''
+  Name: volume-not-in-use
+  Type: ResourceConflict
+9064:
+  Description: ''
+  Name: volume-not-streamable
+  Type: ResourceConflict
+9065:
+  Description: ''
+  Name: vpc-already-attached
+  Type: ResourceConflict
+9066:
+  Description: ''
+  Name: vpc-is-associated
+  Type: ResourceConflict
+9067:
+  Description: ''
+  Name: vpc-peering-connection-already-exists
+  Type: ResourceConflict
+9068:
+  Description: ''
+  Name: vpn-connection-is-not-static
+  Type: ResourceConflict
+9069:
+  Description: ''
+  Name: vpnc-conflict
+  Type: ResourceConflict
+9070:
+  Description: ''
+  Name: zone-already-exist
+  Type: ResourceConflict
+9071:
+  Description: ''
+  Name: zone-mismatch
+  Type: ResourceConflict
+9072:
+  Description: ''
+  Name: vm-specs-mismatch
+  Type: ResourceConflict
+10003:
+  Description: ''
+  Name: migration-ports-exhausted
+  Type: TooManyResources (QuotaExceded)
+10004:
+  Description: ''
+  Name: resolution-has-too-many-sgs
+  Type: TooManyResources (QuotaExceded)
+10005:
+  Description: ''
+  Name: too-many-accesskeys
+  Type: TooManyResources (QuotaExceded)
+10006:
+  Description: ''
+  Name: too-many-accounts-created
+  Type: TooManyResources (QuotaExceded)
+10007:
+  Description: ''
+  Name: too-many-certificate
+  Type: TooManyResources (QuotaExceded)
+10008:
+  Description: ''
+  Name: too-many-concurrent-snapshots
+  Type: TooManyResources (QuotaExceded)
+10009:
+  Description: ''
+  Name: too-many-cookie-param-set
+  Type: TooManyResources (QuotaExceded)
+10010:
+  Description: ''
+  Name: too-many-instances
+  Type: TooManyResources (QuotaExceded)
+10011:
+  Description: ''
+  Name: too-many-ips
+  Type: TooManyResources (QuotaExceded)
+10012:
+  Description: ''
+  Name: too-many-listener-rules
+  Type: TooManyResources (QuotaExceded)
+10013:
+  Description: ''
+  Name: too-many-listeners
+  Type: TooManyResources (QuotaExceded)
+10014:
+  Description: ''
+  Name: too-many-load-balancers
+  Type: TooManyResources (QuotaExceded)
+10015:
+  Description: ''
+  Name: too-many-network-interfaces
+  Type: TooManyResources (QuotaExceded)
+10016:
+  Description: ''
+  Name: too-many-pz
+  Type: TooManyResources (QuotaExceded)
+10017:
+  Description: ''
+  Name: too-many-sg-rules
+  Type: TooManyResources (QuotaExceded)
+10018:
+  Description: ''
+  Name: too-many-volumes
+  Type: TooManyResources (QuotaExceded)
+10019:
+  Description: ''
+  Name: too-much-pz
+  Type: TooManyResources (QuotaExceded)
+10020:
+  Description: ''
+  Name: vpn-gateway-attachment-limit-reached
+  Type: TooManyResources (QuotaExceded)
+10021:
+  Description: ''
+  Name: too-many-private-ips
+  Type: TooManyResources (QuotaExceded)
+10022:
+  Description: ''
+  Name: too-many-vpcs
+  Type: TooManyResources (QuotaExceded)
+10023:
+  Description: ''
+  Name: too-many-igws
+  Type: TooManyResources (QuotaExceded)
+10024:
+  Description: ''
+  Name: too-much-volume-size
+  Type: TooManyResources (QuotaExceded)
+10025:
+  Description: ''
+  Name: too-many-iops
+  Type: TooManyResources (QuotaExceded)
+10026:
+  Description: ''
+  Name: too-many-snapshots
+  Type: TooManyResources (QuotaExceded)
+10027:
+  Description: ''
+  Name: too-many-cgws
+  Type: TooManyResources (QuotaExceded)
+10028:
+  Description: ''
+  Name: too-many-connections
+  Type: TooManyResources (QuotaExceded)
+10029:
+  Description: ''
+  Name: too-many-cores
+  Type: TooManyResources (QuotaExceded)
+10030:
+  Description: ''
+  Name: too-many-gpu
+  Type: TooManyResources (QuotaExceded)
+10031:
+  Description: ''
+  Name: too-many-interfaces
+  Type: TooManyResources (QuotaExceded)
+10032:
+  Description: ''
+  Name: too-many-nat-gateways
+  Type: TooManyResources (QuotaExceded)
+10033:
+  Description: ''
+  Name: too-many-network-endpoints
+  Type: TooManyResources (QuotaExceded)
+10034:
+  Description: ''
+  Name: too-many-networklink-requests
+  Type: TooManyResources (QuotaExceded)
+10035:
+  Description: ''
+  Name: too-many-networklinks
+  Type: TooManyResources (QuotaExceded)
+10036:
+  Description: ''
+  Name: too-many-nic-sgs
+  Type: TooManyResources (QuotaExceded)
+10037:
+  Description: ''
+  Name: too-many-rtbs
+  Type: TooManyResources (QuotaExceded)
+10038:
+  Description: ''
+  Name: too-many-sgs
+  Type: TooManyResources (QuotaExceded)
+10040:
+  Description: ''
+  Name: too-many-static-routes
+  Type: TooManyResources (QuotaExceded)
+10041:
+  Description: ''
+  Name: too-many-tags
+  Type: TooManyResources (QuotaExceded)
+10042:
+  Description: ''
+  Name: too-much-memory
+  Type: TooManyResources (QuotaExceded)
+10043:
+  Description: ''
+  Name: too-many-bgp-routes
+  Type: TooManyResources (QuotaExceded)
+10044:
+  Description: ''
+  Name: too-many-bypass-group
+  Type: TooManyResources (QuotaExceded)
+10045:
+  Description: ''
+  Name: too-much-bypass-group-size
+  Type: TooManyResources (QuotaExceded)
+10046:
+  Description: ''
+  Name: too-many-gpu-reservations
+  Type: TooManyResources (QuotaExceded)

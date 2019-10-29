@@ -1,7 +1,7 @@
 import os
 import time
 from .call import Call
-from ruamel.yaml import YAML
+import ruamel.yaml
 
 type_mapping = {'boolean': 'bool',
                 'string': 'str',
@@ -29,6 +29,7 @@ class OutscaleGateway:
 
     def __init__(self, retry=True, **kwargs):
         self._load_gateway_structure()
+        self._load_errors()
         self.call = Call(**kwargs)
         if retry is True:
             self.retry = 5
@@ -39,7 +40,7 @@ class OutscaleGateway:
         structure = {}
         try:
             with open(input_file, 'r') as fi:
-                yaml = YAML(typ='safe')
+                yaml = ruamel.yaml.YAML(typ='safe')
                 content = yaml.load(fi.read())
         except Exception as err:
             print('Problem reading {}:{}'.format(input_file, str(err)))
@@ -65,6 +66,12 @@ class OutscaleGateway:
         dir_path = os.path.join(os.path.dirname(__file__))
         yaml_file = os.path.abspath('{}/osc-api/outscale.yaml'.format(dir_path))
         self.gateway_structure = self._convert(yaml_file)
+
+    def _load_errors(self):
+        dir_path = os.path.join(os.path.dirname(__file__))
+        yaml_file = os.path.abspath('{}/resources/gateway_errors.yaml'.format(dir_path))
+        with open(yaml_file, 'r') as yam:
+            self.gateway_errors = ruamel.yaml.load(yam.read(), Loader=ruamel.yaml.Loader)
 
     def _check_parameters_type(self, action_structure, input_structure):
         for i_param, i_value in input_structure.items():
@@ -112,6 +119,10 @@ class OutscaleGateway:
             if 'Errors' not in result:
                 break
             time.sleep(1)
+        if 'Errors' in result:
+            for error in result['Errors']:
+                if int(error['Code']) in self.gateway_errors:
+                    error['Details'] = self.gateway_errors[int(error['Code'])]['Name']
         self.action_name = None
         return result
 
