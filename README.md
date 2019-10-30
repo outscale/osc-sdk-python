@@ -95,3 +95,22 @@ if __name__ == '__main__':
     result = gw.raw('ReadVms')
     result = gw.raw('CreateVms', ImageId='ami-xx', BlockDeviceMappings=[{'/dev/sda1': {'Size': 10}}], SecurityGroupIds=['sg-aaa', 'sg-bbb'], Wrong='wrong')
 ```
+
+
+# Know Issues
+
+## UTF-8
+Some people my encounter some issue with utf-8 which looks like this
+```bash
+Problem reading (…)osc_sdk_python/osc-api/outscale.yaml:'ascii' codec can't decode byte 0xe2 in position 14856: ordinal not in range(128)
+```
+
+To avoid this issue, configure you locals as follow:
+```bash
+LC_ALL=en_US.UTF-8
+```
+
+if you don't want your locals to be set system wide you can proceed as follow:
+```bash
+LC_ALL=en_US.UTF-8 pip install osc-sdk-python
+```
