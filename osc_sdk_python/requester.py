@@ -12,8 +12,10 @@ class Requester:
         self.endpoint = endpoint
 
     def send(self, uri, payload):
-        r = requests.post(self.endpoint, data=payload,
+        response = requests.post(self.endpoint, data=payload,
                           headers=self.auth.forge_headers_signed(uri, payload),
                           verify=False)
-        return r.json()
+        if response.status_code != 200:
+             raise requests.HTTPError('url:{}. {}: {}'.format(response.url, response.status_code, response.text))
+        return response.json()
 
