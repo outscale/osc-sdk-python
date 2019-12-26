@@ -4,6 +4,8 @@ This python SDK helps you to perform actions on Outscale API.
 
 You will need to have an Outscale account, please visit [Outscale website](https://outscale.com/).
 
+API Documentation https://docs-beta.outscale.com/?python#3ds-outscale-api
+
 # Installation
 
 You can install the pre-built python package through this command:
