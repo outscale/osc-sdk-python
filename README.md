@@ -25,7 +25,7 @@ You can then install it with `pip install dist/osc_sdk_python-0.9.15-py3-none-an
 
 # Configuration & Credentials
 
-When you use the cli you can choose a profile. Profiles are can be setted with environment variables or in a file.
+When you use the cli you can choose a profile. Profiles can be set with environment variables or in a file.
 It checks environment variables before loading the file.
 
 In the file, you can set a default profile, naming `default`. It will be used if you don't precise profile in command line.
