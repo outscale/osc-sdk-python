@@ -24,16 +24,19 @@ class Credentials:
                 try:
                     credentials = json.load(f)
                     if not profile in credentials:
-                        raise AttributeError('Profil "{}" not found in "~/.oapi_credentials".'.format(profile))
+                        self.access_key = ''
+                        self.secret_key = ''
+                        self.region = 'eu-west-2'
+                    else:
+                        self.access_key = credentials.get(profile).get('access_key', '')
+                        self.secret_key = credentials.get(profile).get('secret_key', '')
+                        self.region = credentials.get(profile).get('region', 'us-west-1')
                 except ValueError:
                     print ('Decoding json of "~/.oapi_credentials" has failed.')
                     raise
                 except AttributeError as e:
                     print ('{}'.format(e))
                     raise
-                self.access_key = credentials.get(profile).get('access_key', '')
-                self.secret_key = credentials.get(profile).get('secret_key', '')
-                self.region = credentials.get(profile).get('region', 'us-west-1')
         except IOError:
             print ('"~/.oapi_credentials" not found.')
             raise
