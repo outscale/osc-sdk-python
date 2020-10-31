@@ -20,7 +20,7 @@ class Credentials:
 
     def load_credentials_from_file(self, profile):
         try:
-            with open(os.path.join(os.path.expanduser('~'),'.oapi_credentials')) as f:
+            with open(os.path.join(os.path.expanduser('~'),'.osc_sdk/config.json')) as f:
                 try:
                     credentials = json.load(f)
                     if not profile in credentials:
@@ -30,15 +30,15 @@ class Credentials:
                     else:
                         self.access_key = credentials.get(profile).get('access_key', '')
                         self.secret_key = credentials.get(profile).get('secret_key', '')
-                        self.region = credentials.get(profile).get('region', 'us-west-1')
+                        self.region = credentials.get(profile).get('region_name', 'us-west-1')
                 except ValueError:
-                    print ('Decoding json of "~/.oapi_credentials" has failed.')
+                    print ('Decoding json of "~/.osc_sdk/config.json" has failed.')
                     raise
                 except AttributeError as e:
                     print ('{}'.format(e))
                     raise
         except IOError:
-            print ('"~/.oapi_credentials" not found.')
+            print ('"~/.osc_sdk/config.json" not found.')
             raise
 
     def get_region(self):
