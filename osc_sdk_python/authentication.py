@@ -2,13 +2,16 @@ import datetime
 import hashlib
 import hmac
 
+VERSION = "0.9.16-git"
+DEFAULT_USER_AGENT = "osc-sdk-python/" + VERSION
 
 class Authentication:
     def __init__(self, credentials, host,
                  method='POST', service='api',
                  content_type='application/json; charset=utf-8',
                  algorithm='OSC4-HMAC-SHA256',
-                 signed_headers = 'content-type;host;x-osc-date'):
+                 signed_headers = 'content-type;host;x-osc-date',
+                 user_agent = DEFAULT_USER_AGENT):
         self.access_key = credentials.get_ak()
         self.secret_key = credentials.get_sk()
         self.host = host
@@ -18,6 +21,7 @@ class Authentication:
         self.service = service
         self.algorithm = algorithm
         self.signed_headers = signed_headers
+        self.user_agent = user_agent
 
     def forge_headers_signed(self, uri, request_data):
         date_iso, date = self.build_dates()
@@ -32,7 +36,7 @@ class Authentication:
             'Content-Type': self.content_type,
             'X-Osc-Date': date_iso,
             'Authorization': authorisation,
-            'User-Agent': 'oAPI CLI v0.1 - 2018-09-28',
+            'User-Agent': self.user_agent,
         }
 
     def build_dates(self):

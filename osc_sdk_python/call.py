@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 from .authentication import Authentication
+from .authentication import DEFAULT_USER_AGENT
 from .credentials import Credentials
 from .requester import Requester
 import json
@@ -14,6 +15,7 @@ class Call(object):
         self.version = kwargs.pop('version', 'latest')
         self.host = kwargs.pop('host', None)
         self.ssl = kwargs.pop('_ssl', True)
+        self.user_agent = kwargs.pop("user_agent", DEFAULT_USER_AGENT)
 
     def api(self, action, **data):
         try:
@@ -24,7 +26,7 @@ class Call(object):
             protocol = 'https' if self.ssl else 'http'
             endpoint = '{protocol}://{host}{uri}'.format(**locals())
 
-            requester = Requester(Authentication(credentials, host), endpoint)
+            requester = Requester(Authentication(credentials, host, user_agent=self.user_agent), endpoint)
             return requester.send(uri, json.dumps(data))
         except Exception as err:
             raise err
