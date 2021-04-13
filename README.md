@@ -44,7 +44,7 @@ $ export OSC_REGION=<REGION> (default: us-west-1)
 ## Credentials files
 
 ```json
-$ cat ~/.oapi_credentials
+$ cat ~/.osc/config.json
 {
     "default": {
         "access_key": "<ACCESS_KEY>",
@@ -63,6 +63,10 @@ $ cat ~/.oapi_credentials
     }
 }
 ```
+
+Notes:
+* if  ~/.osc/config.json is not found, ~/.oapi_credentials will be used
+* Environment variables have priority over Credentials files.
 
 # Example
 
