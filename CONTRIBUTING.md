@@ -25,7 +25,12 @@ Each PR should, as much as possible, address just one issue and be self-containe
 Smaller the set of changes in the pull request is, the quicker it can be reviewed and 
 merged - if you have ten small, unrelated changes, then go ahead and submit ten PRs.
 
+Make sure to run tests/run.sh before each PR.
+
 ## RELEASE TODO
+- make sure you have update osc_api submodule
+  - ``` cd osc_sdk_python/osc-api/ ; git fetch; git checkout origin/master; cd ..; git add osc-api/ ```
+- run the tests with ``` ./tests/run.sh ```
 - update VERSION in authentication.py
 - Push a tag and a branch of current release
 - update number in version in setup.py
