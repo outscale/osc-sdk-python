@@ -103,7 +103,7 @@ if __name__ == '__main__':
 ```
 
 
-# Know Issues
+# Known Issues
 
 ## UTF-8
 Some people my encounter some issue with utf-8 which looks like this
