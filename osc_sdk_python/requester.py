@@ -1,11 +1,5 @@
 import requests
 
-# TO REMOVE FOR PRODUCTION ///
-from requests.packages.urllib3.exceptions import InsecureRequestWarning
-requests.packages.urllib3.disable_warnings(InsecureRequestWarning)
-# TO REMOVE FOR PRODUCTION ///
-
-
 class Requester:
     def __init__(self, auth, endpoint):
         self.auth = auth
@@ -13,7 +7,7 @@ class Requester:
 
     def send(self, uri, payload):
         response = requests.post(self.endpoint, data=payload,
-                          headers=self.auth.forge_headers_signed(uri, payload),
-                          verify=False)
+                                 headers=self.auth.forge_headers_signed(uri, payload),
+                                 verify=True)
         response.raise_for_status()
         return response.json()

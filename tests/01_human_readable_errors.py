@@ -1,6 +1,5 @@
 import sys
 import requests
-
 sys.path.append("..")
 from osc_sdk_python import Gateway
 
@@ -14,4 +13,3 @@ except requests.exceptions.HTTPError as e:
         assert len(error.get('Details')) > 0
 except:
     assert False, "Unexpected error occured"
-

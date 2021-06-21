@@ -24,7 +24,7 @@ class Call(object):
                     else 'api.{}.outscale.{}'.format(credentials.get_region(), credentials.get_url_extension()))
             uri = '/api/{}/{}'.format(self.version, action)
             protocol = 'https' if self.ssl else 'http'
-            endpoint = '{protocol}://{host}{uri}'.format(**locals())
+            endpoint = '{}://{}{}'.format(protocol, host, uri)
 
             requester = Requester(Authentication(credentials, host, user_agent=self.user_agent), endpoint)
             return requester.send(uri, json.dumps(data))
