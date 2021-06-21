@@ -32,7 +32,7 @@ class Credentials:
                 self.secret_key = credentials.get(profile).get('secret_key', '')
                 self.region = credentials.get(profile).get('region', 'us-west-1')
         except ValueError:
-            print ('Decoding json of "~/.oapi_credentials" has failed.')
+            print ('Decoding json of "{}" has failed.'.format(f))
             raise
         except AttributeError as e:
             print ('{}'.format(e))
