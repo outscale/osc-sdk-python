@@ -1,0 +1,31 @@
+name: Code check
+
+on:
+  pull_request:
+    branches:
+      - master
+
+jobs:
+  code-check:
+    runs-on: ubuntu-20.04
+    steps:
+    - uses: actions/checkout@v2
+    - name: Import Outscale API description
+      run: make init
+    - name: Set up Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: '3.x'
+    - name: Install Python dependencies
+      run: make .venv/ok
+    - name: Analysing the code with pylint
+      run: make test-pylint
+    - name: Security check - Bandit
+      run: make test-bandit
+    - name: Build python package
+      run: make build
+    - name: Run integration tests
+      env:
+        OSC_ACCESS_KEY: ${{ secrets.OSC_ACCESS_KEY }}
+        OSC_SECRET_KEY: ${{ secrets.OSC_SECRET_KEY }}
+      run: make test-int
