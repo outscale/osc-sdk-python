@@ -38,7 +38,7 @@ In the file, you can set a default profile, naming `default`. It will be used if
 $ export OSC_ACCESS_KEY=<ACCESS_KEY>
 $ export OSC_SECRET_KEY=<SECRET_KEY>
 $ # optional
-$ export OSC_REGION=<REGION> (default: us-west-1)
+$ export OSC_REGION=<REGION> (default: eu-west-2)
 ```
 
 ## Credentials files

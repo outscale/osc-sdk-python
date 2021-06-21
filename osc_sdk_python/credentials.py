@@ -3,6 +3,7 @@ import os
 
 ORIGINAL_PATH = os.path.join(os.path.expanduser('~'),'.oapi_credentials')
 STD_PATH = os.path.join(os.path.expanduser('~'),'.osc/config.json')
+DEFAULT_REGION="eu-west-2"
 
 class Credentials:
     def __init__(self, profile=None, access_key=None, secret_key=None, region=None):
@@ -17,7 +18,7 @@ class Credentials:
     def load_credentials_from_env(self):
         self.access_key = os.environ.get('OSC_ACCESS_KEY')
         self.secret_key = os.environ.get('OSC_SECRET_KEY')
-        self.region = os.getenv('OSC_REGION', 'us-west-1')
+        self.region = os.getenv('OSC_REGION', DEFAULT_REGION)
         return self.access_key and self.secret_key
 
     def load_credentials_from_file_(self, profile, f):
@@ -26,11 +27,11 @@ class Credentials:
             if not profile in credentials:
                 self.access_key = ''
                 self.secret_key = ''
-                self.region = 'eu-west-2'
+                self.region = DEFAULT_REGION
             else:
                 self.access_key = credentials.get(profile).get('access_key', '')
                 self.secret_key = credentials.get(profile).get('secret_key', '')
-                self.region = credentials.get(profile).get('region', 'us-west-1')
+                self.region = credentials.get(profile).get('region', DEFAULT_REGION)
         except ValueError:
             print ('Decoding json of "{}" has failed.'.format(f))
             raise
