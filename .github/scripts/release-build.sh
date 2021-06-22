@@ -31,7 +31,7 @@ cd "$root"
 
 # Setup new SDK version
 for f in README.md setup.py osc_sdk_python/authentication.py; do 
-    sed -i 's/$local_sdk_version_major\.$local_sdk_version_minor\.local_sdk_version_patch/$local_sdk_version_major\.$new_sdk_version_minor\.0/' $f
+    sed -i "s/$local_sdk_version_major\.$local_sdk_version_minor\.$local_sdk_version_patch/$local_sdk_version_major\.$new_sdk_version_minor\.0/g" "$root/$f"
     git add "$root/$f"
 done
 
