@@ -12,7 +12,7 @@ help:
 	@echo "- clean: clean temp files, venv, etc"
 
 .PHONY: test
-test: clean init test-pylint test-bandit test-int build
+test: clean test-pylint test-bandit test-int build
 	@echo "All tests: OK"
 
 .PHONY: test-pylint
@@ -24,11 +24,11 @@ test-bandit: .venv/ok
 	@./tests/test_bandit.sh
 
 .PHONY: test-int
-test-int: .venv/ok
+test-int: .venv/ok init
 	./tests/test_int.sh
 
 .PHONY: build
-build: .venv/ok
+build: .venv/ok init
 	@./tests/build.sh
 
 .PHONY: osc-api-update
