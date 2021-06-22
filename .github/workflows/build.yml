@@ -1,0 +1,30 @@
+name: osc-sdk-python release build
+on:
+  workflow_dispatch:
+    inputs:
+      api_version:
+        description: 'Outscale API version'
+        required: true
+
+jobs:
+  auto-build:
+    environment: auto-build
+    runs-on: ubuntu-20.04
+    steps:
+    - uses: actions/checkout@v2
+    - name: Set up Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: '3.x'
+    - name: Initialize submodules
+      run: make init
+    - name: Build release
+      run: .github/scripts/release-build.sh ${{ github.event.inputs.api_version }}
+    - name: push release branch
+      run: .github/scripts/release-push.sh
+      env:
+        SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+    - name: create pull request
+      run: .github/scripts/release-pr.sh ${{ github.event.inputs.api_version }}
+      env:
+        GH_TOKEN: ${{ secrets.GH_TOKEN }}
