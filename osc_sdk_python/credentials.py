@@ -14,6 +14,13 @@ class Credentials:
                 self.region = region
             elif profile is not None:
                 self.load_credentials_from_file(profile)
+        self.check_options()
+
+    def check_options(self):
+        if self.access_key is None or len(self.access_key) == 0:
+            raise Exception("Invalid Outscale access key")
+        if self.secret_key is None or len(self.secret_key) == 0:
+            raise Exception("Invalid Outscale secret key")
 
     def load_credentials_from_env(self):
         self.access_key = os.environ.get('OSC_ACCESS_KEY')
