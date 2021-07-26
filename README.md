@@ -11,7 +11,7 @@ API Documentation https://docs-beta.outscale.com/?python#3ds-outscale-api
 You can install the pre-built python package through this command:
 
 ```bash
-$ pip install https://github.com/outscale/osc-sdk-python/releases/download/0.11.1/osc_sdk_python-0.11.1-py3-none-any.whl
+$ pip install https://github.com/outscale/osc-sdk-python/releases/download/0.12.0/osc_sdk_python-0.12.0-py3-none-any.whl
 ```
 
 # Building
