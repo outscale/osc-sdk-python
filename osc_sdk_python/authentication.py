@@ -2,7 +2,7 @@ import datetime
 import hashlib
 import hmac
 
-VERSION = "0.12.0"
+VERSION = "0.12.1"
 DEFAULT_USER_AGENT = "osc-sdk-python/" + VERSION
 
 class Authentication:
