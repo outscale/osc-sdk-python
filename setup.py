@@ -21,6 +21,6 @@ setuptools.setup(
     ],
     install_requires=[
         'requests>=2.20.0',
-        'ruamel.yaml==0.16.5'
+        'ruamel.yaml==0.17.10'
     ]
 )
