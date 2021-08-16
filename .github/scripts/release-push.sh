@@ -2,7 +2,7 @@
 set -e
 
 root=$(cd "$(dirname $0)/../.." && pwd)
-new_sdk_version=$(cat $root/sdk_version)
+new_sdk_version=$(cat $root/osc_sdk_python/VERSION)
 branch_name="autobuild-$new_sdk_version"
 
 if [ -z "$SSH_PRIVATE_KEY" ]; then
