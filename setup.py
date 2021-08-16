@@ -2,8 +2,10 @@
 import setuptools
 import os
 
-with open("README.md", "r") as fh:
-    long_description = fh.read()
+def get_long_description():
+    root_path = os.path.dirname(os.path.abspath(__file__))
+    with open(os.path.join(root_path, 'README.md'), 'r') as fd:
+        return fd.read()
 
 def get_version():
     root_path = os.path.dirname(os.path.abspath(__file__))
@@ -16,7 +18,7 @@ setuptools.setup(
     author="Outscal SAS",
     author_email="opensource@outscale.com",
     description="Outscale Gateway python SDK",
-    long_description=long_description,
+    long_description=get_long_description(),
     long_description_content_type="text/markdown",
     include_package_data=True,
     url="https://github.com/outscale/osc_sdk_python",
