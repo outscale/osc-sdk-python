@@ -8,7 +8,6 @@ cd $PROJECT_ROOT
 echo -n "$(basename $0): "
 
 . .venv/bin/activate > /dev/null
-pip install setuptools wheel twine > /dev/null
-python setup.py sdist bdist_wheel > /dev/null
-
+python3 -m pip install --upgrade pip build
+python3 -m build
 echo "OK"

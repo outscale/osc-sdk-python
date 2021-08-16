@@ -19,8 +19,8 @@ $ pip install https://github.com/outscale/osc-sdk-python/releases/download/0.12.
 To build the package yourself:
 ```bash
 $ git submodule update --init
-$ python3 -m pip install --user --upgrade setuptools wheel
-$ python3 setup.py sdist bdist_wheel
+$ python3 -m pip install --upgrade pip build
+$ python3 -m build
 ```
 
 You can then install it with `pip install dist/osc_sdk_python-0.9.15-py3-none-any.whl`
