@@ -10,7 +10,7 @@ fi
 root=$(cd "$(dirname $0)/../.." && pwd)
 
 # build new version number
-local_sdk_version=$(cat osc_sdk_python/VERSION)
+local_sdk_version=$(cat $root/osc_sdk_python/VERSION)
 local_sdk_version_major=$(echo $local_sdk_version | cut -d '.' -f 1)
 local_sdk_version_minor=$(echo $local_sdk_version | cut -d '.' -f 2)
 local_sdk_version_patch=$(echo $local_sdk_version | cut -d '.' -f 3)
@@ -28,9 +28,9 @@ git add osc-api
 cd "$root"
 
 # Setup new SDK version
-for f in $root/README.md $root/osc_sdk_python/VERSION; do
-    sed -i "s/$local_sdk_version_major\.$local_sdk_version_minor\.$local_sdk_version_patch/$local_sdk_version_major\.$new_sdk_version_minor\.0/g" "$root/$f"
-    git add "$root/$f"
+for f in "$root/README.md" "$root/osc_sdk_python/VERSION"; do
+    sed -i "s/$local_sdk_version_major\.$local_sdk_version_minor\.$local_sdk_version_patch/$local_sdk_version_major\.$new_sdk_version_minor\.0/g" "$f"
+    git add "$f"
 done
 
 # Setup git && commit
