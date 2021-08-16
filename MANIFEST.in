@@ -1,2 +1,3 @@
 include osc_sdk_python/osc-api/outscale.yaml
 include osc_sdk_python/resources/gateway_errors.yaml
+include osc_sdk_python/VERSION

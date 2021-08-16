@@ -33,8 +33,8 @@ Make sure to run tests/run.sh before each PR.
 - Have `OSC_ACCESS_KEY` and `OSC_SECRET_KEY` environment variables set for `eu-west-2` region
 - Run all tests with `make test`
 - Update version in:
-  - [osc_sdk_python/authentication.py](osc_sdk_python/authentication.py)
-  - [setup.py](setup.py)
+  - [osc_sdk_python/VERSION](osc_sdk_python/VERSION)
+  - [README.md](README.md)
 - Push PR, validate changes and merge into `master` branch
 - Push corresponding tag
 - Tag and push branch

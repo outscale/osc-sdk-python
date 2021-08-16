@@ -1,11 +1,18 @@
 # -*- coding: utf-8 -*-
 import setuptools
+import os
+
 with open("README.md", "r") as fh:
     long_description = fh.read()
 
+def get_version():
+    root_path = os.path.dirname(os.path.abspath(__file__))
+    with open(os.path.join(root_path, 'osc_sdk_python', 'VERSION'), 'r') as fd:
+        return fd.read().strip()
+
 setuptools.setup(
     name='osc_sdk_python',
-    version='0.12.1',
+    version=get_version(),
     author="Outscal SAS",
     author_email="opensource@outscale.com",
     description="Outscale Gateway python SDK",

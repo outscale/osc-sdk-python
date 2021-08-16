@@ -2,8 +2,8 @@ import datetime
 import hashlib
 import hmac
 
-VERSION = "0.12.1"
-DEFAULT_USER_AGENT = "osc-sdk-python/" + VERSION
+from osc_sdk_python import __version__
+DEFAULT_USER_AGENT = "osc-sdk-python/" + __version__
 
 class Authentication:
     def __init__(self, credentials, host,

@@ -14,12 +14,7 @@ fi
 
 root=$(cd "$(dirname $0)/../.." && pwd)
 
-if [ ! -e "$root/sdk_version" ]; then
-    echo "$root/sdk_version not found, abort."
-    exit 1
-fi
-
-new_sdk_version=$(cat $root/sdk_version)
+new_sdk_version=$(cat $root/osc_sdk_python/VERSION)
 major=$(echo $new_sdk_version | cut -d '.' -f 1)
 branch_name="autobuild-$new_sdk_version"
 
