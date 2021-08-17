@@ -31,6 +31,10 @@ test-int: .venv/ok init
 build: .venv/ok init
 	@./tests/build.sh
 
+.PHONY: upload-package
+upload-package: build
+	@./tests/upload_package.sh
+
 .PHONY: osc-api-update
 osc-api-update:
 	cd osc_sdk_python/osc-api/; git fetch; git checkout origin/master; cd ..; git add osc-api
