@@ -17,13 +17,15 @@ $ pip install osc-sdk-python
 # Building
 
 To build the package yourself:
+
 ```bash
-$ git submodule update --init
-$ python3 -m pip install --user --upgrade setuptools wheel
-$ python3 setup.py sdist bdist_wheel
+$ make package
 ```
 
-You can then install it with `pip install dist/osc_sdk_python-0.12.2-py3-none-any.whl`
+You can then install it with:
+```bash
+$ pip install dist/osc_sdk_python-0.12.2-py3-none-any.whl
+```
 
 # Configuration & Credentials
 
