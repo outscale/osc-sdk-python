@@ -17,23 +17,23 @@ test: clean test-pylint test-bandit test-int package
 
 .PHONY: test-pylint
 test-pylint: .venv/ok
-	@./tests/test_pylint.sh
+	@./scripts/test_pylint.sh
 
 .PHONY: test-bandit
 test-bandit: .venv/ok
-	@./tests/test_bandit.sh
+	@./scripts/test_bandit.sh
 
 .PHONY: test-int
 test-int: .venv/ok init
-	./tests/test_int.sh
+	./scripts/test_int.sh
 
 .PHONY: package
 package: .venv/ok init
-	@./tests/package.sh
+	@./scripts/package.sh
 
 .PHONY: upload-package
 upload-package: package
-	@./tests/upload_package.sh
+	@./scripts/upload_package.sh
 
 .PHONY: osc-api-update
 osc-api-update:
@@ -47,7 +47,7 @@ osc_sdk_python/osc-api/outscale.yaml:
 	git submodule update --init .
 
 .venv/ok:
-	@./tests/setup_venv.sh
+	@./scripts/setup_venv.sh
 
 .PHONY: clean
 clean:
