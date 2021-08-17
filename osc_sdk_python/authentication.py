@@ -3,6 +3,7 @@ import hashlib
 import hmac
 
 from osc_sdk_python import __version__
+VERSION = __version__
 DEFAULT_USER_AGENT = "osc-sdk-python/" + __version__
 
 class Authentication:
