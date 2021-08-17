@@ -40,4 +40,4 @@ Make sure to run tests/run.sh before each PR.
 - Tag and push branch
 - Create release
 - Add `dist/osc_sdk_python-x.x.x-py3-none-any.whl` and `osc_sdk_python-x.x.x.tar.gz` files to release.
-- Setup PIP_TOKEN and run `make upload-package`
+- Github action should have pushed packages on pip. If not: setup PIP_TOKEN and run `make upload-package`

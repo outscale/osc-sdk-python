@@ -1,0 +1,21 @@
+name: osc-sdk-python pip publishing
+on:
+  release:
+    types: [released]
+
+jobs:
+  publish:
+    environment: publish
+    runs-on: ubuntu-20.04
+    steps:
+    - uses: actions/checkout@v2
+    - name: Set up Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: '3.x'
+    - name: Initialize submodules
+      run: make init
+    - name: Build & Push packages
+      run: make upload-package
+      env:
+        PIP_TOKEN: ${{ secrets.PIP_TOKEN }}
