@@ -71,7 +71,8 @@ class OutscaleGateway:
         dir_path = os.path.join(os.path.dirname(__file__))
         yaml_file = os.path.abspath('{}/resources/gateway_errors.yaml'.format(dir_path))
         with open(yaml_file, 'r') as yam:
-            self.gateway_errors = ruamel.yaml.load(yam.read(), Loader=ruamel.yaml.Loader)
+            yaml=ruamel.yaml.YAML(typ='safe')
+            self.gateway_errors = yaml.load(yam.read())
 
     def _check_parameters_type(self, action_structure, input_structure):
         for i_param, i_value in input_structure.items():
