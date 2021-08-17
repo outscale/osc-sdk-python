@@ -52,4 +52,4 @@ osc_sdk_python/osc-api/outscale.yaml:
 .PHONY: clean
 clean:
 	@echo cleaning...
-	rm -rf .venv osc_sdk.egg-info dist
+	rm -rf .venv osc_sdk_python.egg-info dist
