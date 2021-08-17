@@ -1,10 +1,8 @@
 # Outscale Python SDK
 
-This python SDK helps you to perform actions on Outscale API.
+This python SDK helps you to perform actions on [Outscale API](https://docs-beta.outscale.com/?python#3ds-outscale-api).
 
 You will need to have an Outscale account, please visit [Outscale website](https://outscale.com/).
-
-API Documentation https://docs-beta.outscale.com/?python#3ds-outscale-api
 
 # Installation
 
