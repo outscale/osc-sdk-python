@@ -3,7 +3,7 @@ all: help
 .PHONY: help
 help:
 	@echo "Available targets:"
-	@echo "- build: build python package"
+	@echo "- package: build python package"
 	@echo "- test: run all tests"
 	@echo "- test-pylint: check code with pylint"
 	@echo "- test-bandit: security check with bandit"
@@ -12,7 +12,7 @@ help:
 	@echo "- clean: clean temp files, venv, etc"
 
 .PHONY: test
-test: clean test-pylint test-bandit test-int build
+test: clean test-pylint test-bandit test-int package
 	@echo "All tests: OK"
 
 .PHONY: test-pylint
@@ -27,12 +27,12 @@ test-bandit: .venv/ok
 test-int: .venv/ok init
 	./tests/test_int.sh
 
-.PHONY: build
-build: .venv/ok init
-	@./tests/build.sh
+.PHONY: package
+package: .venv/ok init
+	@./tests/package.sh
 
 .PHONY: upload-package
-upload-package: build
+upload-package: package
 	@./tests/upload_package.sh
 
 .PHONY: osc-api-update
