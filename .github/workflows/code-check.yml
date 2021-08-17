@@ -23,7 +23,7 @@ jobs:
     - name: Security check - Bandit
       run: make test-bandit
     - name: Build python package
-      run: make build
+      run: make package
     - name: Run integration tests
       env:
         OSC_ACCESS_KEY: ${{ secrets.OSC_ACCESS_KEY }}
