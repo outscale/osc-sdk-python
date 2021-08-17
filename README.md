@@ -23,7 +23,7 @@ $ python3 -m pip install --user --upgrade setuptools wheel
 $ python3 setup.py sdist bdist_wheel
 ```
 
-You can then install it with `pip install dist/osc_sdk_python-0.9.15-py3-none-any.whl`
+You can then install it with `pip install dist/osc_sdk_python-0.12.2-py3-none-any.whl`
 
 # Configuration & Credentials
 
