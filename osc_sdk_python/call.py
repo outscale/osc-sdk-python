@@ -6,7 +6,7 @@ from .requester import Requester
 import json
 
 class Call(object):
-    def __init__(self, **kwargs):
+    def __init__(self, logger=None, **kwargs):
         self.credentials = {'access_key': kwargs.pop('access_key', None),
                             'secret_key': kwargs.pop('secret_key', None),
                             'region': kwargs.pop('region', None),
@@ -15,6 +15,7 @@ class Call(object):
         self.host = kwargs.pop('host', None)
         self.ssl = kwargs.pop('_ssl', True)
         self.user_agent = kwargs.pop("user_agent", DEFAULT_USER_AGENT)
+        self.logger = logger
 
     def api(self, action, **data):
         try:
@@ -26,6 +27,8 @@ class Call(object):
             endpoint = '{}://{}{}'.format(protocol, host, uri)
 
             requester = Requester(Authentication(credentials, host, user_agent=self.user_agent), endpoint)
+            if self.logger != None:
+                self.logger.do_log("uri: " + uri + "\npayload:\n" + json.dumps(data, indent=2))
             return requester.send(uri, json.dumps(data))
         except Exception as err:
             raise err

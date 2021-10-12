@@ -9,3 +9,11 @@ __author__ = "Outscale SAS"
 __version__ = get_version()
 
 from .outscale_gateway import OutscaleGateway as Gateway
+from .outscale_gateway import LOG_NONE
+from .outscale_gateway import LOG_STDERR
+from .outscale_gateway import LOG_STDIO
+from .outscale_gateway import LOG_MEMORY
+
+# what to Log
+from .outscale_gateway import LOG_ALL
+from .outscale_gateway import LOG_KEEP_ONLY_LAST_REQ

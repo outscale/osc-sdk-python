@@ -1,5 +1,6 @@
 import os
 import time
+import sys
 from .call import Call
 import ruamel.yaml
 
@@ -8,6 +9,15 @@ type_mapping = {'boolean': 'bool',
                 'integer': 'int',
                 'array': 'list'}
 
+# Logs Output Options
+LOG_NONE = 0
+LOG_STDERR = 1
+LOG_STDIO = 2
+LOG_MEMORY = 4
+
+# what to Log
+LOG_ALL = 0
+LOG_KEEP_ONLY_LAST_REQ = 1
 
 class ActionNotExists(NotImplementedError):
     pass
@@ -24,13 +34,39 @@ class ParameterIsRequired(NotImplementedError):
 class ParameterHasWrongType(NotImplementedError):
     pass
 
+class Logger:
+    string = ""
+    type = LOG_NONE
+    what = LOG_ALL
+    def config(self, type=None, what=None):
+        if type != None:
+            self.type=type
+        if what != None:
+            self.what=what
+    def str(self):
+        if self.type == LOG_MEMORY:
+            return self.string
+        return None
+    def do_log(self, s):
+        if self.type & LOG_MEMORY:
+            if self.what == LOG_KEEP_ONLY_LAST_REQ:
+                self.string = s
+            else:
+                self.string = self.string + "\n" + s
+
+        if self.type & LOG_STDIO:
+            print(s)
+        if self.type & LOG_STDERR:
+            print(s, file=sys.stderr)
+
 
 class OutscaleGateway:
 
     def __init__(self, retry=True, **kwargs):
         self._load_gateway_structure()
         self._load_errors()
-        self.call = Call(**kwargs)
+        self.log = Logger()
+        self.call = Call(logger=self.log, **kwargs)
         if retry is True:
             self.retry = 5
         else:
