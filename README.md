@@ -102,6 +102,22 @@ if __name__ == '__main__':
     result = gw.raw('CreateVms', ImageId='ami-xx', BlockDeviceMappings=[{'/dev/sda1': {'Size': 10}}], SecurityGroupIds=['sg-aaa', 'sg-bbb'], Wrong='wrong')
 ```
 
+Another example with logs
+```python
+from osc_sdk_python import *
+
+if __name__ == '__main__':
+    gw = Gateway(**{'profile': 'profile_1'})
+
+    # what can contain LOG_KEEP_ONLY_LAST_REQ or LOG_ALL
+    # here we pront log in memory, in standard output and in satndard error
+    gw.log.config(type=LOG_MEMORY | LOG_STDIO | LOG_STDERR, what=LOG_KEEP_ONLY_LAST_REQ)
+    # Or raw calls:
+    result = gw.raw('ReadVms')
+
+    last_request = gw.log.str()
+    print(last_request)
+```
 
 # Known Issues
 
