@@ -134,7 +134,7 @@ class OutscaleGateway:
                                                                                    ', '.join(structure_parameters)))
 
     def _check(self, action_name, **params):
-        if action_name not in self.gateway_structure.keys():
+        if action_name not in self.gateway_structure:
             raise ActionNotExists('Action {} does not exists'.format(self.action_name))
         self._check_parameters_valid(action_name, params)
         self._check_parameters_required(self.gateway_structure[action_name], params)
