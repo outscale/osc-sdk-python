@@ -10,19 +10,24 @@ class Credentials:
     def __init__(self, region, profile, access_key, secret_key):
         if region == None:
             region = DEFAULT_REGION
-        if profile == None:
+        if profile == None: # Env have higher priority if not specify
             profile = DEFAULT_PROFILE
+            # Overide with old configuration if available
+            self.load_credentials_from_file(profile, ORIGINAL_PATH)
+            # Overide with standard configuration if available
+            self.load_credentials_from_file(profile, STD_PATH)
+            # Overide with environmental configuration if available
+            self.load_credentials_from_env()
+        else:
+            # Overide with environmental configuration if available
+            self.load_credentials_from_env()
+            # Overide with old configuration if available
+            self.load_credentials_from_file(profile, ORIGINAL_PATH)
+            # Overide with standard configuration if available
+            self.load_credentials_from_file(profile, STD_PATH)
         # Set defaults
         self.region = region
         self.profile = profile
-        self.access_key = access_key
-        self.secret_key = secret_key
-        # Overide with old configuration if available
-        self.load_credentials_from_file(profile, ORIGINAL_PATH)
-        # Overide with standard configuration if available
-        self.load_credentials_from_file(profile, STD_PATH)
-        # Overide with environmental configuration if available
-        self.load_credentials_from_env()
         # Overide with app parameters if provided
         if access_key != None:
             self.access_key = access_key
