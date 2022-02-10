@@ -80,6 +80,7 @@ class OutscaleGateway:
                 content = yaml.load(fi.read())
         except Exception as err:
             print('Problem reading {}:{}'.format(input_file, str(err)))
+        self.api_version = content['info']['version']
         for action, params in content['components']['schemas'].items():
             if action.endswith('Request'):
                 action_name = action.split('Request')[0]
