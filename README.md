@@ -34,7 +34,7 @@ In the file, you can set a default profile, naming `default`. It will be used if
 
 ## Environment variables
 
-```
+```bash
 $ export OSC_ACCESS_KEY=<ACCESS_KEY>
 $ export OSC_SECRET_KEY=<SECRET_KEY>
 $ # optional
