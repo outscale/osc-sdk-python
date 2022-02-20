@@ -8,33 +8,33 @@ DEFAULT_PROFILE="default"
 
 class Credentials:
     def __init__(self, region, profile, access_key, secret_key):
-        if region == None:
-            region = DEFAULT_REGION
-        if profile == None: # Env have higher priority if not specify
+        self.region = None
+
+        if profile != None:
+            # Overide with environmental configuration if available
+            self.load_credentials_from_env()
+        # Overide with old configuration if available
+        self.load_credentials_from_file(profile, ORIGINAL_PATH)
+        # Overide with standard configuration if available
+        self.load_credentials_from_file(profile, STD_PATH)
+        # Overide with environmental configuration if available
+        if profile is None:
             profile = DEFAULT_PROFILE
-            # Overide with old configuration if available
-            self.load_credentials_from_file(profile, ORIGINAL_PATH)
-            # Overide with standard configuration if available
-            self.load_credentials_from_file(profile, STD_PATH)
-            # Overide with environmental configuration if available
             self.load_credentials_from_env()
-        else:
-            # Overide with environmental configuration if available
-            self.load_credentials_from_env()
-            # Overide with old configuration if available
-            self.load_credentials_from_file(profile, ORIGINAL_PATH)
-            # Overide with standard configuration if available
-            self.load_credentials_from_file(profile, STD_PATH)
+
         # Set defaults
-        self.region = region
+        if region != None:
+            self.region = region
+
+        if self.region is None:
+            self.region = DEFAULT_REGION
+
         self.profile = profile
         # Overide with app parameters if provided
         if access_key != None:
             self.access_key = access_key
         if secret_key != None:
             self.secret_key = secret_key
-        if region != None:
-            self.region = DEFAULT_REGION
 
         self.check_options()
 
