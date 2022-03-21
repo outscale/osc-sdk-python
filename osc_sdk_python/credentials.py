@@ -10,6 +10,8 @@ class Credentials:
     def __init__(self, region, profile, access_key, secret_key):
         self.region = None
 
+        if profile is None:
+            profile = os.environ.get('OSC_PROFILE')
         if profile != None:
             # Overide with environmental configuration if available
             self.load_credentials_from_env()
