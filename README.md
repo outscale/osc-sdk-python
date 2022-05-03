@@ -1,3 +1,5 @@
+TEST
+
 # Outscale Python SDK
 
 This python SDK helps you to perform actions on [Outscale API](https://docs-beta.outscale.com/?python#3ds-outscale-api).
