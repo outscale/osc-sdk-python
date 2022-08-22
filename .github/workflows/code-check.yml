@@ -32,6 +32,8 @@ jobs:
       env:
         OSC_ACCESS_KEY: ${{ secrets.OSC_ACCESS_KEY }}
         OSC_SECRET_KEY: ${{ secrets.OSC_SECRET_KEY }}
+        OSC_TEST_LOGIN: ${{ secrets.OSC_TEST_LOGIN }}
+        OSC_TEST_PASSWORD: ${{ secrets.OSC_TEST_PASSWORD }}
       run: make test-int
   dependabot-auto-merge:
     needs: [code-check]

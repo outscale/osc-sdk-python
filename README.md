@@ -68,6 +68,17 @@ Notes:
 * if  ~/.osc/config.json is not found, ~/.oapi_credentials will be used
 * Environment variables have priority over Credentials files.
 
+## Basic Authentication
+
+You can also use osc-sdk-python with basic authentication mechanism using your account's email and password. Note that some calls may be blocked with this method.
+More details in [authentication documentation](https://docs.outscale.com/api#authentication).
+
+Example:
+```python
+gw = Gateway(email="your@email.com", password="youAccountPassword")
+keys = gw.ReadAccessKeys()
+```
+
 # Example
 
 A simple example which prints all your Virtual Machine and Volume ids.

@@ -1,6 +1,7 @@
 import datetime
 import hashlib
 import hmac
+import base64
 
 from osc_sdk_python import __version__
 VERSION = __version__
@@ -15,6 +16,8 @@ class Authentication:
                  user_agent = DEFAULT_USER_AGENT):
         self.access_key = credentials.access_key
         self.secret_key = credentials.secret_key
+        self.email = credentials.email
+        self.password = credentials.password
         self.host = host
         self.region = credentials.region
         self.content_type = content_type
@@ -114,3 +117,18 @@ class Authentication:
         return self.algorithm + ' ' + 'Credential=' + self.access_key + '/' + credential_scope + ', ' \
             + 'SignedHeaders=' + self.signed_headers + ', ' \
             + 'Signature=' + signature
+
+    def is_basic_auth_configured(self):
+        return self.email is not None and self.password is not None
+
+    def get_basic_auth_header(self):
+        if not self.is_basic_auth_configured():
+            raise Exception("email or password not set")
+        creds = self.email + ":" + self.password
+        b64_creds = str(base64.b64encode(creds.encode("utf-8")), "utf-8")
+        date_iso, _ = self.build_dates()
+        return {
+            'Content-Type': self.content_type,
+            'X-Osc-Date': date_iso,
+            'Authorization': "Basic " + b64_creds
+        }
