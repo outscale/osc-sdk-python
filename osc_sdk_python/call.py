@@ -10,7 +10,9 @@ class Call(object):
         self.credentials = {'access_key': kwargs.pop('access_key', None),
                             'secret_key': kwargs.pop('secret_key', None),
                             'region': kwargs.pop('region', None),
-                            'profile': kwargs.pop('profile', None)}
+                            'profile': kwargs.pop('profile', None),
+                            'email': kwargs.pop('email', None),
+                            'password': kwargs.pop('password', None)}
         self.version = kwargs.pop('version', 'latest')
         self.host = kwargs.pop('host', None)
         self.ssl = kwargs.pop('_ssl', True)

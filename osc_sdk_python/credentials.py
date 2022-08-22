@@ -7,7 +7,7 @@ DEFAULT_REGION="eu-west-2"
 DEFAULT_PROFILE="default"
 
 class Credentials:
-    def __init__(self, region, profile, access_key, secret_key):
+    def __init__(self, region, profile, access_key, secret_key, email, password):
         self.region = None
 
         if profile is None:
@@ -37,6 +37,8 @@ class Credentials:
             self.access_key = access_key
         if secret_key != None:
             self.secret_key = secret_key
+        self.email = email
+        self.password = password
 
         self.check_options()
 
@@ -77,6 +79,10 @@ class Credentials:
             raise Exception("Invalid Outscale secret key")
         if self.region == None or len(self.region) == 0:
             raise Exception("Invalid Outscale region")
+        if self.email is None and self.password is not None:
+            raise Exception("Missing email option with password option")
+        if self.email is not None and self.password is None:
+            raise Exception("Missing password option with email option")
 
     def get_url_extension(self):
         return 'hk' if 'cn' in self.region else 'com'
