@@ -13,10 +13,10 @@ class Authentication:
                  algorithm='OSC4-HMAC-SHA256',
                  signed_headers = 'content-type;host;x-osc-date',
                  user_agent = DEFAULT_USER_AGENT):
-        self.access_key = credentials.get_ak()
-        self.secret_key = credentials.get_sk()
+        self.access_key = credentials.access_key
+        self.secret_key = credentials.secret_key
         self.host = host
-        self.region = credentials.get_region()
+        self.region = credentials.region
         self.content_type = content_type
         self.method = method
         self.service = service
