@@ -78,17 +78,5 @@ class Credentials:
         if self.region == None or len(self.region) == 0:
             raise Exception("Invalid Outscale region")
 
-    def get_region(self):
-        return self.region
-
-    def get_ak(self):
-        return self.access_key
-
-    def get_sk(self):
-        return self.secret_key
-
-    def get_profile(self):
-        return self.profile
-
     def get_url_extension(self):
         return 'hk' if 'cn' in self.region else 'com'

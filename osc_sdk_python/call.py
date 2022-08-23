@@ -21,7 +21,7 @@ class Call(object):
         try:
             credentials = Credentials(**self.credentials)
             host = (self.host if self.host
-                    else 'api.{}.outscale.{}'.format(credentials.get_region(), credentials.get_url_extension()))
+                    else 'api.{}.outscale.{}'.format(credentials.region, credentials.get_url_extension()))
             uri = '/api/{}/{}'.format(self.version, action)
             protocol = 'https' if self.ssl else 'http'
             endpoint = '{}://{}{}'.format(protocol, host, uri)
