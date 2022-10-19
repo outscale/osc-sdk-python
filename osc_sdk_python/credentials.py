@@ -9,10 +9,14 @@ DEFAULT_PROFILE="default"
 class Credentials:
     def __init__(self, region, profile, access_key, secret_key, email, password):
         self.region = None
+        self.access_key = access_key
+        self.secret_key = secret_key
+        self.email = email
+        self.password = password
 
         if profile is None:
             profile = os.environ.get('OSC_PROFILE')
-        if profile != None:
+        else:
             # Overide with environmental configuration if available
             self.load_credentials_from_env()
         # Overide with old configuration if available
@@ -25,7 +29,7 @@ class Credentials:
             self.load_credentials_from_env()
 
         # Set defaults
-        if region != None:
+        if region is not None:
             self.region = region
 
         if self.region is None:
@@ -33,12 +37,10 @@ class Credentials:
 
         self.profile = profile
         # Overide with app parameters if provided
-        if access_key != None:
+        if access_key is not None:
             self.access_key = access_key
-        if secret_key != None:
+        if secret_key is not None:
             self.secret_key = secret_key
-        self.email = email
-        self.password = password
 
         self.check_options()
 
@@ -47,42 +49,44 @@ class Credentials:
             with open(file_path) as f:
                 config = json.load(f)
                 profile = config.get(profile)
-                if profile == None:
+                if profile is None:
                     return
                 ak = profile.get("access_key")
-                if ak != None:
+                if ak is not None:
                     self.access_key = ak
                 sk = profile.get("secret_key")
-                if sk != None:
+                if sk is not None:
                     self.secret_key = sk
                 region = profile.get("region")
-                if region != None:
+                if region is not None:
                     self.region = region
         except IOError:
             pass
 
     def load_credentials_from_env(self):
         ak = os.environ.get('OSC_ACCESS_KEY')
-        if ak != None:
+        if ak is not None:
             self.access_key = ak
         sk = os.environ.get('OSC_SECRET_KEY')
-        if sk != None:
+        if sk is not None:
             self.secret_key = sk
         region = os.environ.get('OSC_REGION')
-        if region != None:
+        if region is not None:
             self.region = region
 
     def check_options(self):
-        if self.access_key == None or len(self.access_key) == 0:
-            raise Exception("Invalid Outscale access key")
-        if self.secret_key == None or len(self.secret_key) == 0:
-            raise Exception("Invalid Outscale secret key")
-        if self.region == None or len(self.region) == 0:
+        if self.access_key is not None or self.secret_key is not None:
+            if self.access_key is None or len(self.access_key) == 0:
+                raise Exception("Invalid Outscale access key")
+            if self.secret_key is None or len(self.secret_key) == 0:
+                raise Exception("Invalid Outscale secret key")
+        elif self.email is not None or self.password is not None:
+            if self.email is None or len(self.email) == 0:
+                raise Exception("Invalid email option")
+            if self.password is None and self.password == 0:
+                raise Exception("Invalid password option")
+        if self.region is None or len(self.region) == 0:
             raise Exception("Invalid Outscale region")
-        if self.email is None and self.password is not None:
-            raise Exception("Missing email option with password option")
-        if self.email is not None and self.password is None:
-            raise Exception("Missing password option with email option")
 
     def get_url_extension(self):
         return 'hk' if 'cn' in self.region else 'com'
