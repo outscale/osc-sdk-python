@@ -29,15 +29,12 @@ Make sure to run tests/run.sh before each PR.
 
 ## How to release
 
-- Make sure you have update osc_api submodule by running `make osc-api-update`
-- Have `OSC_ACCESS_KEY` and `OSC_SECRET_KEY` environment variables set for `eu-west-2` region
-- Run all tests with `make test`
 - Update version in:
   - [osc_sdk_python/VERSION](osc_sdk_python/VERSION)
   - [README.md](README.md)
-- Push PR, validate changes and merge into `master` branch
-- Push corresponding tag
-- Tag and push branch
-- Create release
-- Add `dist/osc_sdk_python-x.x.x-py3-none-any.whl` and `osc_sdk_python-x.x.x.tar.gz` files to release.
-- Github action should have pushed packages on pip. If not: setup PIP_TOKEN and run `make upload-package`
+- Commit, PR, merge
+- Create release in Github
+- Github action should have generated artifacts. If not:
+  - `make package`
+  - Add `dist/osc_sdk_python-x.x.x-py3-none-any.whl` and `osc_sdk_python-x.x.x.tar.gz` files to release.
+  - Setup PIP_TOKEN and run `make upload-package`
