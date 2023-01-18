@@ -1,3 +1,5 @@
+[![Project Graduated](https://docs.outscale.com/fr/userguide/_images/Project-Graduated-green.svg)](https://docs.outscale.com/fr/userguide/Projets-open-source.html)
+
 # Outscale Python SDK
 
 This python SDK helps you to perform actions on [Outscale API](https://docs-beta.outscale.com/?python#3ds-outscale-api).
