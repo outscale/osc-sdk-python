@@ -7,17 +7,28 @@ import json
 
 class Call(object):
     def __init__(self, logger=None, **kwargs):
-        self.credentials = {'access_key': kwargs.pop('access_key', None),
-                            'secret_key': kwargs.pop('secret_key', None),
-                            'region': kwargs.pop('region', None),
-                            'profile': kwargs.pop('profile', None),
-                            'email': kwargs.pop('email', None),
-                            'password': kwargs.pop('password', None)}
         self.version = kwargs.pop('version', 'latest')
         self.host = kwargs.pop('host', None)
         self.ssl = kwargs.pop('_ssl', True)
         self.user_agent = kwargs.pop("user_agent", DEFAULT_USER_AGENT)
         self.logger = logger
+        self.update_credentials(access_key=kwargs.pop('access_key', None),
+                                secret_key=kwargs.pop('secret_key', None),
+                                region=kwargs.pop('region', None),
+                                profile=kwargs.pop('profile', None),
+                                email=kwargs.pop('email', None),
+                                password=kwargs.pop('password', None))
+
+    def update_credentials(self, region=None, profile=None, access_key=None,
+                           secret_key=None, email=None, password=None):
+        self.credentials = {
+            'access_key': access_key,
+            'secret_key': secret_key,
+            'region': region,
+            'profile': profile,
+            'email': email,
+            'password': password
+        }
 
     def api(self, action, **data):
         try:
