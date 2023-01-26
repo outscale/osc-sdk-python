@@ -72,6 +72,11 @@ class OutscaleGateway:
         else:
             self.retry = 1
 
+    def update_credentials(self, region=None, profile=None, access_key=None,
+                           secret_key=None, email=None, password=None):
+        self.call.update_credentials(region=region, profile=profile, access_key=access_key,
+                                     secret_key=secret_key, email=email, password=password)
+
     def _convert(self, input_file):
         structure = {}
         try:
