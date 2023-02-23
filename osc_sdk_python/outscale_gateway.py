@@ -1,6 +1,6 @@
 import os
-import time
 import sys
+import threading
 from .call import Call
 import ruamel.yaml
 
@@ -39,9 +39,9 @@ class Logger:
     type = LOG_NONE
     what = LOG_ALL
     def config(self, type=None, what=None):
-        if type != None:
+        if type is not None:
             self.type=type
-        if what != None:
+        if what is not None:
             self.what=what
     def str(self):
         if self.type == LOG_MEMORY:
@@ -66,11 +66,10 @@ class OutscaleGateway:
         self._load_gateway_structure()
         self._load_errors()
         self.log = Logger()
+        self.local = threading.local()
+        if retry:
+            kwargs['max_retries'] = 5
         self.call = Call(logger=self.log, **kwargs)
-        if retry is True:
-            self.retry = 5
-        else:
-            self.retry = 1
 
     def update_credentials(self, region=None, profile=None, access_key=None,
                            secret_key=None, email=None, password=None):
@@ -131,7 +130,7 @@ class OutscaleGateway:
                                                                                 action_structure[i_param]['type']))
 
     def _check_parameters_required(self, action_structure, input_structure):
-        action_mandatory_params = [param for param in action_structure if action_structure[param]['required'] == True]
+        action_mandatory_params = [param for param in action_structure if action_structure[param]['required']]
         difference = set(action_mandatory_params).difference(set(input_structure.keys()))
         if difference:
             raise ParameterIsRequired('Missing {}. Required parameters are {}'.format(', '.join(list(difference))
@@ -147,7 +146,7 @@ class OutscaleGateway:
 
     def _check(self, action_name, **params):
         if action_name not in self.gateway_structure:
-            raise ActionNotExists('Action {} does not exists'.format(self.action_name))
+            raise ActionNotExists('Action {} does not exists'.format(action_name))
         self._check_parameters_valid(action_name, params)
         self._check_parameters_required(self.gateway_structure[action_name], params)
         self._check_parameters_type(self.gateway_structure[action_name], params)
@@ -162,21 +161,13 @@ class OutscaleGateway:
 
     def _action(self, **kwargs):
         kwargs = self._remove_none_parameters(**kwargs)
-        self._check(self.action_name, **kwargs)
-        for _ in range(0, self.retry):
-            result = self.call.api(self.action_name, **kwargs)
-            if 'Errors' not in result:
-                break
-            time.sleep(1)
-        if 'Errors' in result:
-            for error in result['Errors']:
-                if int(error['Code']) in self.gateway_errors:
-                    error['Details'] = self.gateway_errors[int(error['Code'])]['Name']
-        self.action_name = None
+        self._check(self.local.action_name, **kwargs)
+        result = self.call.api(self.local.action_name,**kwargs)
+        self.local.action_name = None
         return result
 
     def __getattr__(self, attr):
-        self.action_name = attr
+        self.local.action_name = attr
         return self._action
 
     def raw(self, action_name, **kwargs):

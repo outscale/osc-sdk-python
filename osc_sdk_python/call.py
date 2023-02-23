@@ -10,7 +10,8 @@ class Call(object):
         self.version = kwargs.pop('version', 'latest')
         self.host = kwargs.pop('host', None)
         self.ssl = kwargs.pop('_ssl', True)
-        self.user_agent = kwargs.pop("user_agent", DEFAULT_USER_AGENT)
+        self.user_agent = kwargs.pop('user_agent', DEFAULT_USER_AGENT)
+        self.max_retries = kwargs.pop('max_retries', 0)
         self.logger = logger
         self.update_credentials(access_key=kwargs.pop('access_key', None),
                                 secret_key=kwargs.pop('secret_key', None),
@@ -39,7 +40,7 @@ class Call(object):
             protocol = 'https' if self.ssl else 'http'
             endpoint = '{}://{}{}'.format(protocol, host, uri)
 
-            requester = Requester(Authentication(credentials, host, user_agent=self.user_agent), endpoint)
+            requester = Requester(Authentication(credentials, host, user_agent=self.user_agent), endpoint, self.max_retries)
             if self.logger != None:
                 self.logger.do_log("uri: " + uri + "\npayload:\n" + json.dumps(data, indent=2))
             return requester.send(uri, json.dumps(data))
