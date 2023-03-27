@@ -66,7 +66,6 @@ class OutscaleGateway:
         self._load_gateway_structure()
         self._load_errors()
         self.log = Logger()
-        self.local = threading.local()
         if retry:
             kwargs['max_retries'] = 5
         self.call = Call(logger=self.log, **kwargs)
@@ -161,13 +160,13 @@ class OutscaleGateway:
 
     def _action(self, **kwargs):
         kwargs = self._remove_none_parameters(**kwargs)
-        self._check(self.local.action_name, **kwargs)
-        result = self.call.api(self.local.action_name,**kwargs)
-        self.local.action_name = None
+        self._check(self.action_name, **kwargs)
+        result = self.call.api(self.action_name,**kwargs)
+        self.action_name = None
         return result
 
     def __getattr__(self, attr):
-        self.local.action_name = attr
+        self.action_name = attr
         return self._action
 
     def raw(self, action_name, **kwargs):
