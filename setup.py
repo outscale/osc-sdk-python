@@ -4,7 +4,7 @@ import os
 
 def get_long_description():
     root_path = os.path.dirname(os.path.abspath(__file__))
-    with open(os.path.join(root_path, 'README.md'), 'r') as fd:
+    with open(os.path.join(root_path, 'README.md'), 'r', encoding="utf-8") as fd:
         return fd.read()
 
 def get_version():
