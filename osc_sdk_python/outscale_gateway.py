@@ -158,16 +158,16 @@ class OutscaleGateway:
         """
         return {key: value for key, value in params.items() if value is not None}
 
-    def _action(self, **kwargs):
-        kwargs = self._remove_none_parameters(**kwargs)
-        self._check(self.action_name, **kwargs)
-        result = self.call.api(self.action_name,**kwargs)
-        self.action_name = None
-        return result
+    def _get_action(self, action_name):
+        def action(**kwargs):
+            kwargs = self._remove_none_parameters(**kwargs)
+            self._check(action_name, **kwargs)
+            result = self.call.api(action_name,**kwargs)
+            return result
+        return action
 
     def __getattr__(self, attr):
-        self.action_name = attr
-        return self._action
+        return self._get_action(attr)
 
     def raw(self, action_name, **kwargs):
         return self.call.api(action_name, **kwargs)
