@@ -2,6 +2,7 @@ import os
 import sys
 import threading
 from .call import Call
+from .credentials import Credentials
 import ruamel.yaml
 
 type_mapping = {'boolean': 'bool',
@@ -80,6 +81,21 @@ class OutscaleGateway:
         """
         self.call.update_credentials(region=region, profile=profile, access_key=access_key,
                                      secret_key=secret_key, email=email, password=password)
+
+    def access_key(self):
+        return Credentials(**self.call.credentials).access_key
+
+    def secret_key(self):
+        return Credentials(**self.call.credentials).secret_key
+
+    def region(self):
+        return Credentials(**self.call.credentials).region
+
+    def email(self):
+        return Credentials(**self.call.credentials).email
+
+    def password(self):
+        return Credentials(**self.call.credentials).password
 
     def _convert(self, input_file):
         structure = {}
