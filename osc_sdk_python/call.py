@@ -3,7 +3,9 @@ from .authentication import Authentication
 from .authentication import DEFAULT_USER_AGENT
 from .credentials import Credentials
 from .requester import Requester
+
 import json
+import os
 
 class Call(object):
     def __init__(self, logger=None, **kwargs):
@@ -38,7 +40,12 @@ class Call(object):
                     else 'api.{}.outscale.{}'.format(credentials.region, credentials.get_url_extension()))
             uri = '/api/{}/{}'.format(self.version, action)
             protocol = 'https' if self.ssl else 'http'
-            endpoint = '{}://{}{}'.format(protocol, host, uri)
+
+            endpoint = os.environ.get('OSC_ENDPOINT_API')
+            if endpoint is None:
+                endpoint = '{}://{}{}'.format(protocol, host, uri)
+            else:
+                endpoint = '{}{}'.format(endpoint, uri)
 
             requester = Requester(Authentication(credentials, host, user_agent=self.user_agent), endpoint, self.max_retries)
             if self.logger != None:
