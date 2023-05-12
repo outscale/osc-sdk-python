@@ -1,0 +1,48 @@
+name: Code check On outscale
+
+on:
+  pull_request:
+    branches:
+      - master
+
+permissions:
+  pull-requests: write
+  contents: write
+
+jobs:
+  code-check:
+    runs-on: ubuntu-20.04
+    steps:
+    - uses: actions/checkout@v2
+    - name: Import Outscale API description
+      run: make init
+    - name: Set up Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: '3.x'
+    - name: Install Python dependencies
+      run: make .venv/ok
+    - name: Build python package
+      run: make package
+    - name: Run integration tests
+      env:
+        OSC_ACCESS_KEY: ${{ secrets.OSC_ACCESS_KEY }}
+        OSC_SECRET_KEY: ${{ secrets.OSC_SECRET_KEY }}
+        OSC_TEST_LOGIN: ${{ secrets.OSC_TEST_LOGIN }}
+        OSC_TEST_PASSWORD: ${{ secrets.OSC_TEST_PASSWORD }}
+      run: make test-int
+  dependabot-auto-merge:
+    needs: [code-check]
+    runs-on: ubuntu-latest
+    if: ${{ github.actor == 'dependabot[bot]' }}
+    steps:
+      - name: Dependabot metadata
+        id: metadata
+        uses: dependabot/fetch-metadata@v1.1.1
+        with:
+          github-token: "${{ secrets.GITHUB_TOKEN }}"
+      - name: Auto-merge
+        run: gh pr merge --auto --rebase "$PR_URL"
+        env:
+          PR_URL: ${{github.event.pull_request.html_url}}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
