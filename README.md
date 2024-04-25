@@ -2,7 +2,7 @@
 
 # Outscale Python SDK
 
-This python SDK helps you to perform actions on [Outscale API](https://docs-beta.outscale.com/?python#3ds-outscale-api).
+This python SDK helps you to perform actions on [Outscale API](https://docs.outscale.com/api.html?python#3ds-outscale-api).
 
 You will need to have an Outscale account, please visit [Outscale website](https://outscale.com/).
 
@@ -99,7 +99,7 @@ if __name__ == '__main__':
         print(volume["VolumeId"])
 ```
 
-Usage example, check [Outscale API documentation](https://docs-beta.outscale.com/) for more details.
+Usage example, check [Outscale API documentation](https://docs.outscale.com/en/userguide/Home.html) for more details.
 ```python
 from osc_sdk_python import Gateway
 
