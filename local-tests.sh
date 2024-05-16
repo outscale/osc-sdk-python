@@ -5,19 +5,23 @@ export OSC_ACCESS_KEY=11112211111110000000
 export OSC_ENDPOINT_API=http://127.0.0.1:3000
 
 
-if [ ! -d "osc-ricochet-2" ]; then
-    git clone https://github.com/outscale-mgo/osc-ricochet-2
+if [ "$#" -eq 0 ]; then
+
+    if [ ! -d "osc-ricochet-2" ]; then
+	git clone https://github.com/outscale/osc-ricochet-2
+    fi
+
+    cd osc-ricochet-2
+    pkill ricochet
+
+    cargo build
+    cargo run -- ./ricochet.json > /dev/null  &
+
+    sleep 5
+
+    cd ..
+
 fi
-
-cd osc-ricochet-2
-pkill ricochet
-
-cargo build
-cargo run -- ./ricochet.json > /dev/null  &
-
-sleep 5
-
-cd ..
 
 set -e
 
