@@ -20,17 +20,22 @@ class Call(object):
                                 region=kwargs.pop('region', None),
                                 profile=kwargs.pop('profile', None),
                                 email=kwargs.pop('email', None),
-                                password=kwargs.pop('password', None))
+                                password=kwargs.pop('password', None),
+                                proxy=kwargs.pop('proxy', None),
+                                x509_client_cert=kwargs.pop('x509_client_cert', None))
 
     def update_credentials(self, region=None, profile=None, access_key=None,
-                           secret_key=None, email=None, password=None):
+                           secret_key=None, email=None, password=None, proxy=None,
+                           x509_client_cert=None):
         self.credentials = {
             'access_key': access_key,
             'secret_key': secret_key,
             'region': region,
             'profile': profile,
             'email': email,
-            'password': password
+            'password': password,
+            'x509_client_cert': x509_client_cert,
+            'proxy': proxy
         }
 
     def api(self, action, **data):

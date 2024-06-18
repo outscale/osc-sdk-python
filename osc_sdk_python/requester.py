@@ -21,10 +21,24 @@ class Requester:
         else:
             headers = self.auth.forge_headers_signed(uri, payload)
 
+        if self.auth.x509_client_cert is not None:
+            cert_file=self.auth.x509_client_cert
+        else:
+            cert_file=None
+        if self.auth.proxy:
+            if self.auth.proxy.startswith("https"):
+                proxy= { "https": self.auth.proxy }
+            else:
+                proxy= { "http": self.auth.proxy }
+        else:
+            proxy=None
+
+        print(proxy, cert_file)
         with Session() as session:
             session.mount("https://", self.adapter)
             session.mount("http://", self.adapter)
-            response = session.post(self.endpoint, data=payload, headers=headers, verify=True,)
+            response = session.post(self.endpoint, data=payload, headers=headers, verify=True,
+                                    proxies=proxy, cert=cert_file)
             self.raise_for_status(response)
             return response.json()
 

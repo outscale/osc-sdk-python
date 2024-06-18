@@ -7,12 +7,15 @@ DEFAULT_REGION="eu-west-2"
 DEFAULT_PROFILE="default"
 
 class Credentials:
-    def __init__(self, region, profile, access_key, secret_key, email, password):
+    def __init__(self, region, profile, access_key, secret_key, email, password,
+                 x509_client_cert=None, proxy=None):
         self.region = None
         self.access_key = access_key
         self.secret_key = secret_key
         self.email = email
         self.password = password
+        self.x509_client_cert=x509_client_cert
+        self.proxy=proxy
 
         if profile is None:
             profile = os.environ.get('OSC_PROFILE')

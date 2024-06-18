@@ -26,6 +26,8 @@ class Authentication:
         self.algorithm = algorithm
         self.signed_headers = signed_headers
         self.user_agent = user_agent
+        self.proxy = credentials.proxy
+        self.x509_client_cert = credentials.x509_client_cert
 
     def forge_headers_signed(self, uri, request_data):
         date_iso, date = self.build_dates()
