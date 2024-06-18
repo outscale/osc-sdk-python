@@ -72,7 +72,8 @@ class OutscaleGateway:
         self.call = Call(logger=self.log, **kwargs)
 
     def update_credentials(self, region=None, profile=None, access_key=None,
-                           secret_key=None, email=None, password=None):
+                           secret_key=None, email=None, password=None,
+                           x509_client_cert=None, proxy=None):
         """
         destroy and create a new credential map use for each call.
         so you can change your ak/sk, region without having to recreate the whole Gateway
@@ -80,7 +81,8 @@ class OutscaleGateway:
         example: just updating the password, without renter the login will fail
         """
         self.call.update_credentials(region=region, profile=profile, access_key=access_key,
-                                     secret_key=secret_key, email=email, password=password)
+                                     secret_key=secret_key, email=email, password=password,
+                                     x509_client_cert=x509_client_cert, proxy=x509_client_cert)
 
     def access_key(self):
         return Credentials(**self.call.credentials).access_key
