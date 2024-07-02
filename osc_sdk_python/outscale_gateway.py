@@ -4,6 +4,7 @@ import threading
 from .call import Call
 from .credentials import Credentials
 import ruamel.yaml
+from osc_sdk_python import __version__
 
 type_mapping = {'boolean': 'bool',
                 'string': 'str',
@@ -158,12 +159,14 @@ class OutscaleGateway:
         input_parameters = set(params)
         different_parameters = list(input_parameters.difference(set(structure_parameters)))
         if different_parameters:
-            raise ParameterNotValid("""{}. Available parameters are: {}.""".format(', '.join(different_parameters),
-                                                                                   ', '.join(structure_parameters)))
+            raise ParameterNotValid("""{}. Available parameters on sdk: {} api: {} are: {}.""".format(
+                ', '.join(different_parameters),
+                __version__, self.api_version,
+                ', '.join(structure_parameters)))
 
     def _check(self, action_name, **params):
         if action_name not in self.gateway_structure:
-            raise ActionNotExists('Action {} does not exists'.format(action_name))
+            raise ActionNotExists('Action {} does not exists for python sdk: {} with api: {}'.format(action_name, __version__, self.api_version))
         self._check_parameters_valid(action_name, params)
         self._check_parameters_required(self.gateway_structure[action_name], params)
         self._check_parameters_type(self.gateway_structure[action_name], params)
