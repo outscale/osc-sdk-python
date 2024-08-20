@@ -33,7 +33,6 @@ class Requester:
         else:
             proxy=None
 
-        print(proxy, cert_file)
         with Session() as session:
             session.mount("https://", self.adapter)
             session.mount("http://", self.adapter)
