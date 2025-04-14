@@ -24,7 +24,7 @@ $ make package
 
 You can then install it with:
 ```bash
-$ pip install dist/osc_sdk_python-0.32.0-py3-none-any.whl
+$ pip install dist/osc_sdk_python-0.33.0-py3-none-any.whl
 ```
 
 # Configuration & Credentials
