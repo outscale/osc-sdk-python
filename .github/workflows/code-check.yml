@@ -7,13 +7,13 @@ on:
 
 jobs:
   code-check:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v4
     - name: Import Outscale API description
       run: make init
-    - name: Set up Python
-      uses: actions/setup-python@v2
+    - name: Install Python
+      uses: actions/setup-python@v5
       with:
         python-version: '3.x'
     - name: Install Python dependencies
