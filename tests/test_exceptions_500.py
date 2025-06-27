@@ -7,7 +7,7 @@ import os
 import time
 sys.path.append("..")
 from osc_sdk_python import Gateway
-from requests import RetryError
+from requests.exceptions import RetryError
 
 class Send500(http.server.BaseHTTPRequestHandler):
     def do_POST(self):

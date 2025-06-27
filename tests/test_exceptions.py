@@ -2,7 +2,7 @@ import unittest
 import sys
 sys.path.append("..")
 from osc_sdk_python import Gateway
-from requests import RetryError
+from requests.exceptions import RetryError
 
 class TestExcept(unittest.TestCase):
 
