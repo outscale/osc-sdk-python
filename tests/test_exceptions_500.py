@@ -7,7 +7,7 @@ import os
 import time
 sys.path.append("..")
 from osc_sdk_python import Gateway
-from requests import HTTPError
+from requests import MaxRetryError
 
 class Send500(http.server.BaseHTTPRequestHandler):
     def do_POST(self):
@@ -48,7 +48,7 @@ class TestServerError(unittest.TestCase):
         os.environ['OSC_ENDPOINT_API'] = "http://127.0.0.1:8000"
         gw = Gateway()
         # a is not a valide argument
-        with self.assertRaises(HTTPError):
+        with self.assertRaises(MaxRetryError):
             gw.ReadVms()
 
 if __name__ == '__main__':
