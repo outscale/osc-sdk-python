@@ -4,12 +4,15 @@ from requests.adapters import HTTPAdapter
 from requests.exceptions import JSONDecodeError
 from urllib3.util.retry import Retry
 
+HTTP_CODE_RETRY = (400, 429, 500, 503)
+METHODS_RETRY = ('POST', 'GET')
+
 class Requester:
-    def __init__(self, auth, endpoint, max_retries=0, backoff_factor=0.5, status_forcelist=[400, 500]):
+    def __init__(self, auth, endpoint, max_retries=0, backoff_factor=0.5, status_forcelist=HTTP_CODE_RETRY, allowed_methods=METHODS_RETRY):
         self.auth = auth
         self.endpoint = endpoint
         if max_retries > 0:
-            retry = Retry(total=max_retries, backoff_factor=backoff_factor, status_forcelist=status_forcelist)
+            retry = Retry(total=max_retries, backoff_factor=backoff_factor, status_forcelist=status_forcelist, allowed_methods=allowed_methods)
             self.adapter = HTTPAdapter(max_retries=retry)
         else:
             self.adapter = HTTPAdapter()
