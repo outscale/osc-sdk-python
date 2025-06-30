@@ -15,9 +15,6 @@ class Call(object):
         self.ssl = kwargs.pop("_ssl", True)
         self.user_agent = kwargs.pop("user_agent", DEFAULT_USER_AGENT)
         self.logger = logger
-        self.max_retries = kwargs.pop("max_retries", None)
-        self.retry_backoff_factor = kwargs.pop("retry_backoff_factor", None)
-        self.retry_backoff_jitter = kwargs.pop("retry_backoff_jitter", None)
         self.update_credentials(
             access_key=kwargs.pop("access_key", None),
             secret_key=kwargs.pop("secret_key", None),
@@ -27,6 +24,9 @@ class Call(object):
             password=kwargs.pop("password", None),
             proxy=kwargs.pop("proxy", None),
             x509_client_cert=kwargs.pop("x509_client_cert", None),
+            max_retries=kwargs.pop("max_retries", None),
+            retry_backoff_factor=kwargs.pop("retry_backoff_factor", None),
+            retry_backoff_jitter=kwargs.pop("retry_backoff_jitter", None)
         )
 
     def update_credentials(
@@ -39,6 +39,9 @@ class Call(object):
         password=None,
         proxy=None,
         x509_client_cert=None,
+        max_retries=None,
+        retry_backoff_factor=None,
+        retry_backoff_jitter=None,
     ):
         self.credentials = {
             "access_key": access_key,
@@ -48,7 +51,9 @@ class Call(object):
             "email": email,
             "password": password,
             "x509_client_cert": x509_client_cert,
-            "proxy": proxy,
+            "max_retries": max_retries,
+            "retry_backoff_factor": retry_backoff_factor,
+            "retry_backoff_jitter": retry_backoff_jitter,
         }
 
     def api(self, action, **data):
