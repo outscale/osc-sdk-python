@@ -14,8 +14,8 @@ class Requester:
         auth,
         endpoint,
         max_retries=0,
-        backoff_factor=2,
-        backoff_jitter=2,
+        backoff_factor=1,
+        backoff_jitter=3,
         status_forcelist=HTTP_CODE_RETRY,
         allowed_methods=METHODS_RETRY,
     ):
