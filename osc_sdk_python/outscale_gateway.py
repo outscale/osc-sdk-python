@@ -64,12 +64,10 @@ class Logger:
 
 class OutscaleGateway:
 
-    def __init__(self, retry=True, **kwargs):
+    def __init__(self, **kwargs):
         self._load_gateway_structure()
         self._load_errors()
         self.log = Logger()
-        if retry:
-            kwargs['max_retries'] = 5
         self.call = Call(logger=self.log, **kwargs)
 
     def update_credentials(self, region=None, profile=None, access_key=None,

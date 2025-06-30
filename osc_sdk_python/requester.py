@@ -14,24 +14,22 @@ class Requester:
         auth,
         endpoint,
         max_retries=0,
-        backoff_factor=1,
-        backoff_jitter=3,
+        backoff_factor=0,
+        backoff_jitter=0,
         status_forcelist=HTTP_CODE_RETRY,
         allowed_methods=METHODS_RETRY,
     ):
         self.auth = auth
         self.endpoint = endpoint
-        if max_retries > 0:
-            retry = Retry(
+        self.adapter = HTTPAdapter(
+            max_retries=Retry(
                 total=max_retries,
                 backoff_factor=backoff_factor,
                 backoff_jitter=backoff_jitter,
                 status_forcelist=status_forcelist,
                 allowed_methods=allowed_methods,
             )
-            self.adapter = HTTPAdapter(max_retries=retry)
-        else:
-            self.adapter = HTTPAdapter()
+        )
 
     def send(self, uri, payload):
         headers = None
