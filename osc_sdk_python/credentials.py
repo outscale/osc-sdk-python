@@ -5,7 +5,7 @@ ORIGINAL_PATH = os.path.join(os.path.expanduser("~"), ".oapi_credentials")
 STD_PATH = os.path.join(os.path.expanduser("~"), ".osc/config.json")
 DEFAULT_REGION = "eu-west-2"
 DEFAULT_PROFILE = "default"
-MAX_RETRIES = 5
+MAX_RETRIES = 3
 RETRY_BACKOFF_FACTOR = 1
 RETRY_BACKOFF_JITTER = 3
 
