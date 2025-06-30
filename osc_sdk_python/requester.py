@@ -8,7 +8,7 @@ HTTP_CODE_RETRY = (400, 429, 500, 503)
 METHODS_RETRY = ('POST', 'GET')
 
 class Requester:
-    def __init__(self, auth, endpoint, max_retries=0, backoff_factor=0.5, status_forcelist=HTTP_CODE_RETRY, allowed_methods=METHODS_RETRY):
+    def __init__(self, auth, endpoint, max_retries=0, backoff_factor=2, status_forcelist=HTTP_CODE_RETRY, allowed_methods=METHODS_RETRY):
         self.auth = auth
         self.endpoint = endpoint
         if max_retries > 0:
