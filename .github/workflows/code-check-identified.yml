@@ -23,12 +23,10 @@ jobs:
       uses: actions/checkout@v5
     - name: ⬇️ Import Outscale API description
       run: make init
-    - name: ⬇️ Install Python
-      uses: actions/setup-python@v6
-      with:
-        python-version: '3.x'
-    - name: ⬇️ Install Python dependencies
-      run: make .venv/ok
+    - name: Install uv
+      uses: astral-sh/setup-uv@v6
+    - name: Set up Python
+      run: uv python install
     - name: ⬇️ Build python package
       run: make package
     - name: 🧪 Run integration tests
