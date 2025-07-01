@@ -53,7 +53,7 @@ class Call(object):
                 endpoint = '{}{}'.format(endpoint, uri)
 
             requester = Requester(Authentication(credentials, host, user_agent=self.user_agent), endpoint, self.max_retries)
-            if self.logger != None:
+            if self.logger is not None:
                 self.logger.do_log("uri: " + uri + "\npayload:\n" + json.dumps(data, indent=2))
             return requester.send(uri, json.dumps(data))
         except Exception as err:

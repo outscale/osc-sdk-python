@@ -20,13 +20,13 @@ class Credentials:
         if profile is None:
             profile = os.environ.get('OSC_PROFILE')
         else:
-            # Overide with environmental configuration if available
+            # Override with environmental configuration if available
             self.load_credentials_from_env()
-        # Overide with old configuration if available
+        # Override with old configuration if available
         self.load_credentials_from_file(profile, ORIGINAL_PATH)
-        # Overide with standard configuration if available
+        # Override with standard configuration if available
         self.load_credentials_from_file(profile, STD_PATH)
-        # Overide with environmental configuration if available
+        # Override with environmental configuration if available
         if profile is None:
             profile = DEFAULT_PROFILE
             self.load_credentials_from_env()
@@ -39,7 +39,7 @@ class Credentials:
             self.region = DEFAULT_REGION
 
         self.profile = profile
-        # Overide with app parameters if provided
+        # Override with app parameters if provided
         if access_key is not None:
             self.access_key = access_key
         if secret_key is not None:

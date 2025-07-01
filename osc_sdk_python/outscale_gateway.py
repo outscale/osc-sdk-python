@@ -1,10 +1,9 @@
 import os
 import sys
-import threading
 from .call import Call
 from .credentials import Credentials
 import ruamel.yaml
-from osc_sdk_python import __version__
+from . import __version__
 
 type_mapping = {'boolean': 'bool',
                 'string': 'str',

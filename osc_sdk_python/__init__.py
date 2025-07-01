@@ -1,5 +1,6 @@
 import os
 
+
 def get_version():
     osc_sdk_python_path = os.path.dirname(os.path.abspath(__file__))
     with open(os.path.join(osc_sdk_python_path, 'VERSION'), 'r') as fd:
@@ -7,6 +8,7 @@ def get_version():
 
 __author__ = "Outscale SAS"
 __version__ = get_version()
+__all__ = [ 'Gateway', 'LOG_NONE', 'LOG_STDERR', 'LOG_STDIO', 'LOG_MEMORY', 'LOG_ALL', 'LOG_KEEP_ONLY_LAST_REQ' ]
 
 from .outscale_gateway import OutscaleGateway as Gateway
 from .outscale_gateway import LOG_NONE
