@@ -3,9 +3,9 @@ import hashlib
 import hmac
 import base64
 
-from osc_sdk_python import __version__
-VERSION = __version__
-DEFAULT_USER_AGENT = "osc-sdk-python/" + __version__
+from .version import get_version
+VERSION = get_version()
+DEFAULT_USER_AGENT = "osc-sdk-python/" + VERSION
 
 class Authentication:
     def __init__(self, credentials, host,
@@ -48,7 +48,7 @@ class Authentication:
     def build_dates(self):
         '''Return YYYYMMDDTHHmmssZ, YYYYMMDD
         '''
-        t = datetime.datetime.utcnow()
+        t = datetime.datetime.now(datetime.timezone.utc)
         return t.strftime('%Y%m%dT%H%M%SZ'), t.strftime('%Y%m%d')
 
     def sign(self, key, msg):

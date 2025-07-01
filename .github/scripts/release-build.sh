@@ -33,6 +33,8 @@ for f in "$root/README.md" "$root/osc_sdk_python/VERSION"; do
     git add "$f"
 done
 
+uv version $(cat VERSION)
+
 # Setup git && commit
 git config user.name "Outscale Bot"
 git config user.email "opensource+bot@outscale.com"
