@@ -4,7 +4,7 @@ from .call import Call
 from .credentials import Credentials
 from .limiter import RateLimiter
 import ruamel.yaml
-from osc_sdk_python import __version__
+from .version import get_version
 
 type_mapping = {"boolean": "bool", "string": "str", "integer": "int", "array": "list"}
 
@@ -187,7 +187,7 @@ class OutscaleGateway:
             raise ParameterNotValid(
                 """{}. Available parameters on sdk: {} api: {} are: {}.""".format(
                     ", ".join(different_parameters),
-                    __version__,
+                    get_version(),
                     self.api_version,
                     ", ".join(structure_parameters),
                 )
@@ -197,7 +197,7 @@ class OutscaleGateway:
         if action_name not in self.gateway_structure:
             raise ActionNotExists(
                 "Action {} does not exists for python sdk: {} with api: {}".format(
-                    action_name, __version__, self.api_version
+                    action_name, get_version(), self.api_version
                 )
             )
         self._check_parameters_valid(action_name, params)

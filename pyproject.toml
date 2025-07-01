@@ -1,0 +1,33 @@
+[project]
+name = "osc_sdk_python"
+version = "0.37.0"
+description = "Outscale Gateway python SDK"
+authors = [
+  { name = "Outscal SAS", email = "opensource@outscale.com" }
+]
+readme = "README.md"
+requires-python = ">=3.9"
+license = { text = "BSD" }
+keywords = []
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: BSD License",
+    "Operating System :: OS Independent"
+]
+dependencies = [
+    "requests>=2.32.5",
+    "ruamel.yaml==0.18.16"
+]
+
+[dependency-groups]
+dev = [
+    "pytest>=7.2.0",
+    "tox-uv>=1.11.3",
+]
+
+[project.urls]
+Homepage = "https://github.com/outscale/osc-sdk-python"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"

@@ -25,4 +25,4 @@ fi
 
 set -e
 
-make test-int
+uvx tox
