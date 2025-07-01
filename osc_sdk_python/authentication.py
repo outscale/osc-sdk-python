@@ -3,9 +3,9 @@ import hashlib
 import hmac
 import base64
 
-from osc_sdk_python import __version__
-VERSION = __version__
-DEFAULT_USER_AGENT = "osc-sdk-python/" + __version__
+from .version import get_version
+VERSION = get_version()
+DEFAULT_USER_AGENT = "osc-sdk-python/" + VERSION
 
 class Authentication:
     def __init__(self, credentials, host,
