@@ -1,7 +1,7 @@
 import unittest
 import sys
 sys.path.append("..")
-from osc_sdk_python import *
+from osc_sdk_python import Gateway, LOG_MEMORY, LOG_KEEP_ONLY_LAST_REQ
 
 class TestLog(unittest.TestCase):
 
