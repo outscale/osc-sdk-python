@@ -4,15 +4,32 @@ from requests.adapters import HTTPAdapter
 from requests.exceptions import JSONDecodeError
 from urllib3.util.retry import Retry
 
+HTTP_CODE_RETRY = (400, 429, 500, 503)
+METHODS_RETRY = ("POST", "GET")
+
+
 class Requester:
-    def __init__(self, auth, endpoint, max_retries=0, backoff_factor=0.5, status_forcelist=[400, 500]):
+    def __init__(
+        self,
+        auth,
+        endpoint,
+        max_retries=0,
+        backoff_factor=0,
+        backoff_jitter=0,
+        status_forcelist=HTTP_CODE_RETRY,
+        allowed_methods=METHODS_RETRY,
+    ):
         self.auth = auth
         self.endpoint = endpoint
-        if max_retries > 0:
-            retry = Retry(total=max_retries, backoff_factor=backoff_factor, status_forcelist=status_forcelist)
-            self.adapter = HTTPAdapter(max_retries=retry)
-        else:
-            self.adapter = HTTPAdapter()
+        self.adapter = HTTPAdapter(
+            max_retries=Retry(
+                total=max_retries,
+                backoff_factor=backoff_factor,
+                backoff_jitter=backoff_jitter,
+                status_forcelist=status_forcelist,
+                allowed_methods=allowed_methods,
+            )
+        )
 
     def send(self, uri, payload):
         headers = None
@@ -22,22 +39,28 @@ class Requester:
             headers = self.auth.forge_headers_signed(uri, payload)
 
         if self.auth.x509_client_cert is not None:
-            cert_file=self.auth.x509_client_cert
+            cert_file = self.auth.x509_client_cert
         else:
-            cert_file=None
+            cert_file = None
         if self.auth.proxy:
             if self.auth.proxy.startswith("https"):
-                proxy= { "https": self.auth.proxy }
+                proxy = {"https": self.auth.proxy}
             else:
-                proxy= { "http": self.auth.proxy }
+                proxy = {"http": self.auth.proxy}
         else:
-            proxy=None
+            proxy = None
 
         with Session() as session:
             session.mount("https://", self.adapter)
             session.mount("http://", self.adapter)
-            response = session.post(self.endpoint, data=payload, headers=headers, verify=True,
-                                    proxies=proxy, cert=cert_file)
+            response = session.post(
+                self.endpoint,
+                data=payload,
+                headers=headers,
+                verify=True,
+                proxies=proxy,
+                cert=cert_file,
+            )
             self.raise_for_status(response)
             return response.json()
 
@@ -82,9 +105,7 @@ class Requester:
                         f"url = {response.url}"
                     )
                 else:
-                    http_error_msg = (
-                        f"{response.status_code} Client Error: {reason} for url: {response.url}"
-                    )
+                    http_error_msg = f"{response.status_code} Client Error: {reason} for url: {response.url}"
 
             elif 500 <= response.status_code < 600:
                 if error_code and request_id:
@@ -98,9 +119,7 @@ class Requester:
                         f"url = {response.url}"
                     )
                 else:
-                    http_error_msg = (
-                        f"{response.status_code} Server Error: {reason} for url: {response.url}"
-                    )
+                    http_error_msg = f"{response.status_code} Server Error: {reason} for url: {response.url}"
 
             if http_error_msg:
                 raise HTTPError(http_error_msg, response=response)
