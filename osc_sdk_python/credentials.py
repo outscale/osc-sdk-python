@@ -119,6 +119,15 @@ class Credentials:
         region = os.environ.get("OSC_REGION")
         if region is not None:
             self.region = region
+        max_retries = os.environ.get("OSC_MAX_RETRIES")
+        if max_retries is not None:
+            self.max_retires = int(max_retries)
+        retry_backoff_factor = os.environ.get("OSC_RETRY_BACKOFF_FACTOR")
+        if retry_backoff_factor is not None:
+            self.retry_backoff_factor = float(retry_backoff_factor)
+        retry_backoff_jitter = os.environ.get("OSC_RETRY_BACKOFF_JITTER")
+        if retry_backoff_jitter is not None:
+            self.retry_backoff_factor = float(retry_backoff_jitter)
 
     def check_options(self):
         if self.access_key is not None or self.secret_key is not None:
