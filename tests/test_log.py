@@ -10,14 +10,14 @@ class TestLog(unittest.TestCase):
         gw.log.config(type=LOG_MEMORY, what=LOG_KEEP_ONLY_LAST_REQ)
         gw.ReadVms()
         self.assertEqual(gw.log.str(),
-                         """uri: /api/latest/ReadVms
+                         """uri: /api/v1/ReadVms
 payload:
 {}"""
                          )
 
         gw.ReadVms(Filters={'TagKeys': ['test']})
         self.assertEqual(gw.log.str(),
-                         """uri: /api/latest/ReadVms
+                         """uri: /api/v1/ReadVms
 payload:
 {
   "Filters": {
