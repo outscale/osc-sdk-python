@@ -69,7 +69,7 @@ class OutscaleGateway:
         self._load_gateway_structure()
         self._load_errors()
         self.log = Logger()
-        self.call = Call(logger=self.log, **kwargs)
+        self.call = Call(logger=self.log, version=self.endpoint_api_version, **kwargs)
 
     def update_credentials(self, **kwargs):
         """
@@ -104,6 +104,7 @@ class OutscaleGateway:
         except Exception as err:
             print("Problem reading {}:{}".format(input_file, str(err)))
         self.api_version = content["info"]["version"]
+        self.endpoint_api_version = content["servers"][0]["url"].split("/")[-1]
         for action, params in content["components"]["schemas"].items():
             if action.endswith("Request"):
                 action_name = action.split("Request")[0]
