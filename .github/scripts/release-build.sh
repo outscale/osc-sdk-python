@@ -36,8 +36,8 @@ done
 # Setup git && commit
 git config user.name "Outscale Bot"
 git config user.email "opensource+bot@outscale.com"
-commit_msg="osc-sdk-python v$new_sdk_version
+commit_msg="🔖 release: osc-sdk-python v$new_sdk_version
 
- - SDK update for Outscale API v$osc_api_version
+ - SDK update for Outscale API $osc_api_version
 "
 git commit -sm "$commit_msg"
