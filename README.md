@@ -37,10 +37,15 @@ In the file, you can set a default profile, naming `default`. It will be used if
 ## Environment variables
 
 ```bash
+$ export OSC_PROFILE=<PROFILE> (default: "default")
+$ # or
 $ export OSC_ACCESS_KEY=<ACCESS_KEY>
 $ export OSC_SECRET_KEY=<SECRET_KEY>
 $ # optional
 $ export OSC_REGION=<REGION> (default: eu-west-2)
+$ export OSC_MAX_RETRIES=<INT> (default: 3)
+$ export OSC_RETRY_BACKOFF_FACTOR=<FLOAT> (default: 1.0)
+$ export OSC_RETRY_BACKOFF_JITTER=<FLOAT> (default: 3.0)
 ```
 
 ## Credentials files
@@ -81,9 +86,25 @@ gw = Gateway(email="your@email.com", password="youAccountPassword")
 keys = gw.ReadAccessKeys()
 ```
 
+## Retry Options
+
+The following options can be provided when initializing the Gateway to customize the retry behavior of the SDK.
+
+These options are:
+ - max_retries (integer, default 3)
+ - retry_backoff_factor (float, default 1.0)
+ - retry_backoff_jitter (float, default 3.0) 
+
+Those options correspond to their counterparts in [urllib3](https://urllib3.readthedocs.io/en/stable/reference/urllib3.util.html#urllib3.util.Retry)
+
+Example:
+```python
+gw = Gateway(max_retries=5, retry_backoff_factor=0.5, retry_backoff_jitter=1.0)
+````
+
 # Example
 
-A simple example which prints all your Virtual Machine and Volume ids.
+A simple example that prints all your Virtual Machine and Volume IDs.
 ```python
 from osc_sdk_python import Gateway
 
