@@ -3,13 +3,13 @@ name: Code check Local
 on:
   pull_request:
     branches:
-      - master
+      - main
 
 jobs:
   code-check:
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v5
     - name: Import Outscale API description
       run: make init
     - name: Install Python
