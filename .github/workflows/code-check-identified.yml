@@ -3,7 +3,7 @@ name: Code check On outscale
 on:
   pull_request:
     branches:
-      - master
+      - main
 
 permissions:
   pull-requests: write
@@ -20,7 +20,7 @@ jobs:
         secret_key: ${{ secrets.OSC_SECRET_KEY }}
         region: ${{ secrets.OSC_REGION }}
     - name: ⬇️ Checkout repository
-      uses: actions/checkout@v4
+      uses: actions/checkout@v5
     - name: ⬇️ Import Outscale API description
       run: make init
     - name: ⬇️ Install Python
