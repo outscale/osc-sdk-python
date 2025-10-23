@@ -26,7 +26,8 @@ class Call(object):
             x509_client_cert=kwargs.pop("x509_client_cert", None),
             max_retries=kwargs.pop("max_retries", None),
             retry_backoff_factor=kwargs.pop("retry_backoff_factor", None),
-            retry_backoff_jitter=kwargs.pop("retry_backoff_jitter", None)
+            retry_backoff_jitter=kwargs.pop("retry_backoff_jitter", None),
+            retry_backoff_max=kwargs.pop("retry_backoff_max", None)
         )
 
     def update_credentials(
@@ -42,6 +43,7 @@ class Call(object):
         max_retries=None,
         retry_backoff_factor=None,
         retry_backoff_jitter=None,
+        retry_backoff_max=None,
     ):
         self.credentials = {
             "access_key": access_key,
@@ -54,6 +56,7 @@ class Call(object):
             "max_retries": max_retries,
             "retry_backoff_factor": retry_backoff_factor,
             "retry_backoff_jitter": retry_backoff_jitter,
+            "retry_backoff_max": retry_backoff_max,
         }
 
     def api(self, action, **data):
@@ -81,6 +84,7 @@ class Call(object):
                 credentials.max_retries,
                 credentials.retry_backoff_factor,
                 credentials.retry_backoff_jitter,
+                credentials.retry_backoff_max,
             )
             if self.logger != None:
                 self.logger.do_log(

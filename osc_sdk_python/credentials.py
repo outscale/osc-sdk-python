@@ -8,6 +8,7 @@ DEFAULT_PROFILE = "default"
 MAX_RETRIES = 3
 RETRY_BACKOFF_FACTOR = 1
 RETRY_BACKOFF_JITTER = 3
+RETRY_BACKOFF_MAX = 30
 
 
 class Credentials:
@@ -24,6 +25,7 @@ class Credentials:
         max_retries=None,
         retry_backoff_factor=None,
         retry_backoff_jitter=None,
+        retry_backoff_max=None,
     ):
         self.region = None
         self.access_key = access_key
@@ -35,6 +37,7 @@ class Credentials:
         self.max_retries = max_retries
         self.retry_backoff_factor = retry_backoff_factor
         self.retry_backoff_jitter = retry_backoff_jitter
+        self.retry_backoff_max = retry_backoff_max
 
         if profile is None:
             profile = os.environ.get("OSC_PROFILE")
@@ -70,6 +73,8 @@ class Credentials:
             self.retry_backoff_factor = RETRY_BACKOFF_FACTOR
         if self.retry_backoff_jitter is None:
             self.retry_backoff_jitter = RETRY_BACKOFF_JITTER
+        if self.retry_backoff_max is None:
+            self.retry_backoff_max = RETRY_BACKOFF_MAX
 
         self.check_options()
 
@@ -106,6 +111,10 @@ class Credentials:
                 if retry_backoff_jitter is not None:
                     self.retry_backoff_jitter = retry_backoff_jitter
 
+                retry_backoff_max = profile.get("retry_backoff_max")
+                if retry_backoff_max is not None:
+                    self.retry_backoff_max = retry_backoff_max
+
         except IOError:
             pass
 
@@ -128,6 +137,9 @@ class Credentials:
         retry_backoff_jitter = os.environ.get("OSC_RETRY_BACKOFF_JITTER")
         if retry_backoff_jitter is not None:
             self.retry_backoff_factor = float(retry_backoff_jitter)
+        retry_backoff_max = os.environ.get("OSC_RETRY_BACKOFF_MAX")
+        if retry_backoff_max is not None:
+            self.retry_backoff_factor = float(retry_backoff_max)
 
     def check_options(self):
         if self.access_key is not None or self.secret_key is not None:
