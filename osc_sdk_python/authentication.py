@@ -48,7 +48,7 @@ class Authentication:
     def build_dates(self):
         '''Return YYYYMMDDTHHmmssZ, YYYYMMDD
         '''
-        t = datetime.datetime.utcnow()
+        t = datetime.datetime.now(datetime.timezone.utc)
         return t.strftime('%Y%m%dT%H%M%SZ'), t.strftime('%Y%m%d')
 
     def sign(self, key, msg):

@@ -46,6 +46,7 @@ $ export OSC_REGION=<REGION> (default: eu-west-2)
 $ export OSC_MAX_RETRIES=<INT> (default: 3)
 $ export OSC_RETRY_BACKOFF_FACTOR=<FLOAT> (default: 1.0)
 $ export OSC_RETRY_BACKOFF_JITTER=<FLOAT> (default: 3.0)
+$ export OSC_RETRY_BACKOFF_MAX=<FLOAT> (default: 30)
 ```
 
 ## Credentials files
@@ -94,12 +95,13 @@ These options are:
  - max_retries (integer, default 3)
  - retry_backoff_factor (float, default 1.0)
  - retry_backoff_jitter (float, default 3.0) 
+ - retry_backoff_max (float, default 30) 
 
 Those options correspond to their counterparts in [urllib3](https://urllib3.readthedocs.io/en/stable/reference/urllib3.util.html#urllib3.util.Retry)
 
 Example:
 ```python
-gw = Gateway(max_retries=5, retry_backoff_factor=0.5, retry_backoff_jitter=1.0)
+gw = Gateway(max_retries=5, retry_backoff_factor=0.5, retry_backoff_jitter=1.0, retry_backoff_max=120)
 ````
 
 # Example

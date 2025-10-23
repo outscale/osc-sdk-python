@@ -1,6 +1,5 @@
 import os
 import sys
-import threading
 from .call import Call
 from .credentials import Credentials
 import ruamel.yaml

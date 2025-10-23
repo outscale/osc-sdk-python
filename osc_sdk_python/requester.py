@@ -1,5 +1,4 @@
 from requests import Session, HTTPError
-from requests import Session
 from requests.adapters import HTTPAdapter
 from requests.exceptions import JSONDecodeError
 from urllib3.util.retry import Retry
@@ -16,6 +15,7 @@ class Requester:
         max_retries=0,
         backoff_factor=0,
         backoff_jitter=0,
+        backoff_max=120,
         status_forcelist=HTTP_CODE_RETRY,
         allowed_methods=METHODS_RETRY,
     ):
@@ -26,6 +26,7 @@ class Requester:
                 total=max_retries,
                 backoff_factor=backoff_factor,
                 backoff_jitter=backoff_jitter,
+                backoff_max=backoff_max,
                 status_forcelist=status_forcelist,
                 allowed_methods=allowed_methods,
             )
