@@ -104,6 +104,19 @@ Example:
 gw = Gateway(max_retries=5, retry_backoff_factor=0.5, retry_backoff_jitter=1.0, retry_backoff_max=120)
 ````
 
+## Rate Limit Options
+
+The following options can be provided when initializing the Gateway to customize the rate-limit behavior of the SDK.
+
+These options are:
+ - limiter_max_requests (integer, default 5)
+ - limiter_window (integer, default 1)
+
+Example:
+```python
+gw = Gateway(limiter_max_requests=20, limiter_window=5)
+````
+
 # Example
 
 A simple example that prints all your Virtual Machine and Volume IDs.
