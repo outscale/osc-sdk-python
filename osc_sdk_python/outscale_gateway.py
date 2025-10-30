@@ -2,6 +2,7 @@ import os
 import sys
 from .call import Call
 from .credentials import Credentials
+from .limiter import RateLimiter
 import ruamel.yaml
 from osc_sdk_python import __version__
 
@@ -16,6 +17,10 @@ LOG_MEMORY = 4
 # what to Log
 LOG_ALL = 0
 LOG_KEEP_ONLY_LAST_REQ = 1
+
+# Default
+DEFAULT_LIMITER_WINDOW = 1  # 1 second
+DEFAULT_LIMITER_MAX_REQUESTS = 5  # 5 requests / sec
 
 
 class ActionNotExists(NotImplementedError):
@@ -68,7 +73,13 @@ class OutscaleGateway:
         self._load_gateway_structure()
         self._load_errors()
         self.log = Logger()
-        self.call = Call(logger=self.log, version=self.endpoint_api_version, **kwargs)
+        self.limiter = RateLimiter(DEFAULT_LIMITER_WINDOW, DEFAULT_LIMITER_MAX_REQUESTS)
+        self.call = Call(
+            logger=self.log,
+            version=self.endpoint_api_version,
+            limiter=self.limiter,
+            **kwargs,
+        )
 
     def update_credentials(self, **kwargs):
         """
