@@ -86,7 +86,7 @@ class Call(object):
                 credentials.retry_backoff_jitter,
                 credentials.retry_backoff_max,
             )
-            if self.logger != None:
+            if self.logger is not None:
                 self.logger.do_log(
                     "uri: " + uri + "\npayload:\n" + json.dumps(data, indent=2)
                 )
