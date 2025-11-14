@@ -30,6 +30,7 @@ setuptools.setup(
     ],
     install_requires=[
         'requests>=2.20.0',
-        'ruamel.yaml==0.18.16'
+        'ruamel.yaml==0.18.16',
+        'urllib3>=2.0.0'
     ]
 )
