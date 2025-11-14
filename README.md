@@ -1,187 +1,236 @@
-[![Project Graduated](https://docs.outscale.com/fr/userguide/_images/Project-Graduated-green.svg)](https://docs.outscale.com/en/userguide/Open-Source-Projects.html)
+[![Project Graduated](https://docs.outscale.com/fr/userguide/_images/Project-Graduated-green.svg)](https://docs.outscale.com/en/userguide/Open-Source-Projects.html) [![](https://dcbadge.limes.pink/api/server/HUVtY5gT6s?style=flat&theme=default-inverted)](https://discord.gg/HUVtY5gT6s)
 
 # Outscale Python SDK
 
-This python SDK helps you to perform actions on [Outscale API](https://docs.outscale.com/api.html?python#3ds-outscale-api).
+<p align="center">
+  <img alt="Outscale Python SDK" src="https://img.icons8.com/?size=100&id=2866&format=png&color=000000" width="100px">
+</p>
 
-You will need to have an Outscale account, please visit [Outscale website](https://outscale.com/).
+---
 
-# Installation
+## 🌐 Links
 
-You can install the pre-built python package through this command:
+- Documentation: <https://docs.outscale.com/api.html?python#3ds-outscale-api>
+- Project repository: <https://github.com/outscale/osc-sdk-python>
+- Outscale website: <https://outscale.com/>
+- Join our community on [Discord](https://discord.gg/HUVtY5gT6s)
+
+---
+
+## 📄 Table of Contents
+
+- [Overview](#-overview)
+- [Requirements](#-requirements)
+- [Installation](#-installation)
+- [Configuration](#-configuration)
+- [Usage](#-usage)
+- [Examples](#-examples)
+- [Known Issues & Troubleshooting](#-known-issues--troubleshooting)
+- [License](#-license)
+- [Contributing](#-contributing)
+
+---
+
+## 🧭 Overview
+
+**Outscale Python SDK** (`osc-sdk-python`) is the official Python SDK to interact with the [OUTSCALE API](https://docs.outscale.com/api.html?python#3ds-outscale-api).
+
+It allows you to:
+
+- Configure multiple profiles through environment variables or credential files.
+- Customize retry and rate-limit behavior.
+- Enable detailed logging of requests and responses.
+
+You will need an Outscale account and API credentials. If you do not have one yet, please visit the [Outscale website](https://outscale.com/).
+
+---
+
+## ✅ Requirements
+
+- Python 3.x
+- `pip` (Python package manager)
+- Access to the OUTSCALE API (valid access key / secret key or basic auth)
+- Network access to the Outscale API endpoints
+
+---
+
+## ⚙ Installation
+
+### Option 1: Install from PyPI
+
+Install the pre-built Python package:
 
 ```bash
-$ pip install osc-sdk-python
-```
+pip install osc-sdk-python
+````
 
-# Building
+### Option 2: Install from source
 
-To build the package yourself:
-
-```bash
-$ make package
-```
-
-You can then install it with:
-```bash
-$ pip install dist/osc_sdk_python-0.38.0-py3-none-any.whl
-```
-
-# Configuration & Credentials
-
-When you use the cli you can choose a profile. Profiles can be set with environment variables or in a file.
-It checks environment variables before loading the file.
-
-In the file, you can set a default profile, naming `default`. It will be used if you don't precise profile in command line.
-
-## Environment variables
+Clone the repository and build the package:
 
 ```bash
-$ export OSC_PROFILE=<PROFILE> (default: "default")
-$ # or
-$ export OSC_ACCESS_KEY=<ACCESS_KEY>
-$ export OSC_SECRET_KEY=<SECRET_KEY>
-$ # optional
-$ export OSC_REGION=<REGION> (default: eu-west-2)
-$ export OSC_MAX_RETRIES=<INT> (default: 3)
-$ export OSC_RETRY_BACKOFF_FACTOR=<FLOAT> (default: 1.0)
-$ export OSC_RETRY_BACKOFF_JITTER=<FLOAT> (default: 3.0)
-$ export OSC_RETRY_BACKOFF_MAX=<FLOAT> (default: 30)
+git clone https://github.com/outscale/osc-sdk-python.git
+cd osc-sdk-python
+make package
 ```
 
-## Credentials files
+Then install the built wheel:
+
+```bash
+pip install dist/osc_sdk_python-0.38.0-py3-none-any.whl
+```
+
+---
+
+## 🛠 Configuration
+
+When you use the SDK, you can choose a **profile**. Profiles can be defined via **environment variables** or in a **credentials file**.
+Environment variables take precedence over files.
+
+In the credentials file, you can set a default profile named `default`. It will be used if you do not explicitly specify a profile.
+
+### Environment variables
+
+The SDK understands the following environment variables:
+
+```bash
+export OSC_PROFILE=<PROFILE>            # default: "default"
+
+# or explicit credentials:
+export OSC_ACCESS_KEY=<ACCESS_KEY>
+export OSC_SECRET_KEY=<SECRET_KEY>
+
+# optional:
+export OSC_REGION=<REGION>              # default: eu-west-2
+export OSC_MAX_RETRIES=<INT>            # default: 3
+export OSC_RETRY_BACKOFF_FACTOR=<FLOAT> # default: 1.0
+export OSC_RETRY_BACKOFF_JITTER=<FLOAT> # default: 3.0
+export OSC_RETRY_BACKOFF_MAX=<FLOAT>    # default: 30
+```
+
+### Credentials files
+
+By default, the SDK looks for a JSON configuration file at `~/.osc/config.json`.
+
+Example:
 
 ```json
-$ cat ~/.osc/config.json
 {
-    "default": {
-        "access_key": "<ACCESS_KEY>",
-        "secret_key": "<SECRET_KEY>",
-        "region": "<REGION>"
-    },
-    "profile_1": {
-        "access_key": "<ACCESS_KEY>",
-        "secret_key": "<SECRET_KEY>",
-        "region": "<REGION>"
-    },
-    "profile_2": {
-        "access_key": "<ACCESS_KEY>",
-        "secret_key": "<SECRET_KEY>",
-        "region": "<REGION>"
-    }
+  "default": {
+    "access_key": "<ACCESS_KEY>",
+    "secret_key": "<SECRET_KEY>",
+    "region": "<REGION>"
+  },
+  "profile_1": {
+    "access_key": "<ACCESS_KEY>",
+    "secret_key": "<SECRET_KEY>",
+    "region": "<REGION>"
+  },
+  "profile_2": {
+    "access_key": "<ACCESS_KEY>",
+    "secret_key": "<SECRET_KEY>",
+    "region": "<REGION>"
+  }
 }
 ```
 
 Notes:
-* if  ~/.osc/config.json is not found, ~/.oapi_credentials will be used
-* Environment variables have priority over Credentials files.
 
-## Basic Authentication
+* If `~/.osc/config.json` is not found, `~/.oapi_credentials` will be used as a fallback.
+* Environment variables have priority over credentials files.
 
-You can also use osc-sdk-python with basic authentication mechanism using your account's email and password. Note that some calls may be blocked with this method.
-More details in [authentication documentation](https://docs.outscale.com/api#authentication).
+### Basic Authentication
+
+You can also use `osc-sdk-python` with **basic authentication** using your account email and password.
+Note that some API calls may be blocked with this method. See the [authentication documentation](https://docs.outscale.com/api#authentication) for more details.
 
 Example:
+
 ```python
-gw = Gateway(email="your@email.com", password="youAccountPassword")
+from osc_sdk_python import Gateway
+
+gw = Gateway(email="your@email.com", password="yourAccountPassword")
 keys = gw.ReadAccessKeys()
 ```
 
-## Retry Options
+### Retry Options
 
-The following options can be provided when initializing the Gateway to customize the retry behavior of the SDK.
+The following options can be provided when initializing the `Gateway` to customize the retry behavior of the SDK:
 
-These options are:
- - max_retries (integer, default 3)
- - retry_backoff_factor (float, default 1.0)
- - retry_backoff_jitter (float, default 3.0) 
- - retry_backoff_max (float, default 30) 
+* `max_retries` (integer, default `3`)
+* `retry_backoff_factor` (float, default `1.0`)
+* `retry_backoff_jitter` (float, default `3.0`)
+* `retry_backoff_max` (float, default `30`)
 
-Those options correspond to their counterparts in [urllib3](https://urllib3.readthedocs.io/en/stable/reference/urllib3.util.html#urllib3.util.Retry)
-
-Example:
-```python
-gw = Gateway(max_retries=5, retry_backoff_factor=0.5, retry_backoff_jitter=1.0, retry_backoff_max=120)
-````
-
-## Rate Limit Options
-
-The following options can be provided when initializing the Gateway to customize the rate-limit behavior of the SDK.
-
-These options are:
- - limiter_max_requests (integer, default 5)
- - limiter_window (integer, default 1)
+These correspond to their counterparts in [`urllib3.util.Retry`](https://urllib3.readthedocs.io/en/stable/reference/urllib3.util.html#urllib3.util.Retry).
 
 Example:
-```python
-gw = Gateway(limiter_max_requests=20, limiter_window=5)
-````
 
-# Example
-
-A simple example that prints all your Virtual Machine and Volume IDs.
 ```python
 from osc_sdk_python import Gateway
 
-if __name__ == '__main__':
-    gw = Gateway()
-
-    print("your virtual machines:")
-    for vm in gw.ReadVms()["Vms"]:
-        print(vm["VmId"])
-
-    print("\nyour volumes:")
-    for volume in gw.ReadVolumes()["Volumes"]:
-        print(volume["VolumeId"])
+gw = Gateway(
+    max_retries=5,
+    retry_backoff_factor=0.5,
+    retry_backoff_jitter=1.0,
+    retry_backoff_max=120,
+)
 ```
 
-Usage example, check [Outscale API documentation](https://docs.outscale.com/en/userguide/Home.html) for more details.
+### Rate Limit Options
+
+You can also configure rate limiting when initializing the `Gateway`:
+
+* `limiter_max_requests` (integer, default `5`)
+* `limiter_window` (integer, default `1`)
+
+Example:
+
 ```python
 from osc_sdk_python import Gateway
 
-if __name__ == '__main__':
-    gw = Gateway(**{'profile': 'profile_1'})
-
-    # Calls with api Action as method
-    result = gw.ReadSecurityGroups(Filters={'SecurityGroupNames': ['default']})
-    result = gw.CreateVms(ImageId='ami-3e158364', VmType='tinav4.c2r4')
-
-    # Or raw calls:
-    result = gw.raw('ReadVms')
-    result = gw.raw('CreateVms', ImageId='ami-xx', BlockDeviceMappings=[{'/dev/sda1': {'Size': 10}}], SecurityGroupIds=['sg-aaa', 'sg-bbb'], Wrong='wrong')
+gw = Gateway(
+    limiter_max_requests=20,
+    limiter_window=5,
+)
 ```
 
-Another example with logs
-```python
-from osc_sdk_python import *
+More usage patterns and logging examples are documented in:
 
-if __name__ == '__main__':
-    gw = Gateway(**{'profile': 'profile_1'})
+* [docs/examples.md](docs/examples.md)
 
-    # what can contain LOG_KEEP_ONLY_LAST_REQ or LOG_ALL
-    # here we pront log in memory, in standard output and in satndard error
-    gw.log.config(type=LOG_MEMORY | LOG_STDIO | LOG_STDERR, what=LOG_KEEP_ONLY_LAST_REQ)
-    # Or raw calls:
-    result = gw.raw('ReadVms')
+---
 
-    last_request = gw.log.str()
-    print(last_request)
-```
+## 🧪 Examples
 
-# Known Issues
+Some example topics covered in `docs/examples.md`:
 
-## UTF-8
-Some people my encounter some issue with utf-8 which looks like this
-```bash
-Problem reading (…)osc_sdk_python/osc-api/outscale.yaml:'ascii' codec can't decode byte 0xe2 in position 14856: ordinal not in range(128)
-```
+* Listing VMs and volumes
+* Using profiles and regions
+* Raw calls with `gw.raw("ActionName", **params)`
+* Enabling and reading logs
 
-To avoid this issue, configure you locals as follow:
-```bash
-LC_ALL=en_US.UTF-8
-```
+---
 
-if you don't want your locals to be set system wide you can proceed as follow:
-```bash
-LC_ALL=en_US.UTF-8 pip install osc-sdk-python
-```
+## 🧩 Known Issues & Troubleshooting
+
+Common issues (such as UTF-8 / locale errors when reading the API spec) and their workarounds are documented in:
+
+* [docs/troubleshooting.md](docs/troubleshooting.md)
+
+---
+
+## 📜 License
+
+**Outscale Python SDK** is released under the BSD-3-Clause.
+
+© 2025 OUTSCALE SAS
+
+See [LICENSE](./LICENSE) for full details.
+---
+
+## 🤝 Contributing
+
+We welcome contributions!
+
+Please read our [Contributing Guidelines](CONTRIBUTING.md) and [Code of Conduct](CODE_OF_CONDUCT.md) before submitting a pull request.
