@@ -227,6 +227,7 @@ Common issues (such as UTF-8 / locale errors when reading the API spec) and thei
 © 2025 OUTSCALE SAS
 
 See [LICENSE](./LICENSE) for full details.
+
 ---
 
 ## 🤝 Contributing
