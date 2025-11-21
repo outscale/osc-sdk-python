@@ -9,7 +9,7 @@ jobs:
   code-check:
     runs-on: ubuntu-24.04
     steps:
-    - uses: actions/checkout@v5
+    - uses: actions/checkout@v6
     - name: Import Outscale API description
       run: make init
     - name: Install Python
