@@ -3,20 +3,18 @@ name: Code check Local
 on:
   pull_request:
     branches:
-      - main
+    - main
+
+permissions:
+  contents: read
 
 jobs:
   code-check:
     runs-on: ubuntu-24.04
     steps:
-    - uses: actions/checkout@v5
-    - name: Import Outscale API description
-      run: make init
-    - name: Install uv
-      uses: astral-sh/setup-uv@v6
-    - name: Set up Python
-      run: uv python install
-    - name: Analysing the code
-      run: make test-lint
+    - name: ⬇️ Checkout repository
+      uses: actions/checkout@v5
+    - name: Setup toolchain
+      uses: ./.github/actions/setup-test
     - name: Run integration tests
       run: ./local-tests.sh

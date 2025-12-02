@@ -13,13 +13,8 @@ jobs:
     runs-on: ubuntu-24.04
     environment: publish
     steps:
-    - uses: actions/checkout@v5
-    - name: Install uv
-      uses: astral-sh/setup-uv@v6
-    - name: Set up Python
-      run: uv python install
-    - name: Check Code
-      run: make test
+    - name: Setup toolchain
+      uses: ./.github/actions/setup-test
     - name: Build & Push packages
       run: make upload-package
       env:
