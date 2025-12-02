@@ -1,0 +1,17 @@
+name: Setup code checks
+description: "Setup toolchain and run smoke test"
+runs:
+  using: composite
+  steps:
+    - name: ⬇️ Import Outscale API description
+      run: make init
+      shell: bash
+    - name: ⬇️ Install uv
+      uses: astral-sh/setup-uv@v6
+    - name: ⬇️  Setup Python
+      run: uv python install
+      shell: bash
+    - name: ⬇️ Build python package
+      run: make package
+      shell: bash
+
