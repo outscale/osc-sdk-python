@@ -20,7 +20,7 @@ jobs:
         secret_key: ${{ secrets.OSC_SECRET_KEY }}
         region: ${{ secrets.OSC_REGION }}
     - name: ⬇️ Checkout repository
-      uses: actions/checkout@v5
+      uses: actions/checkout@v6
     - name: Setup toolchain
       uses: ./.github/actions/setup-test
     - name: 🧪 Run integration tests
