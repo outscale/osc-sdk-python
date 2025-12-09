@@ -4,11 +4,12 @@ import hmac
 import base64
 
 from .version import get_version
-VERSION = get_version()
+from .credentials import Profile
+VERSION: str = get_version()
 DEFAULT_USER_AGENT = "osc-sdk-python/" + VERSION
 
 class Authentication:
-    def __init__(self, credentials, host,
+    def __init__(self, credentials: Profile, host: str,
                  method='POST', service='api',
                  content_type='application/json; charset=utf-8',
                  algorithm='OSC4-HMAC-SHA256',
@@ -16,7 +17,7 @@ class Authentication:
                  user_agent = DEFAULT_USER_AGENT):
         self.access_key = credentials.access_key
         self.secret_key = credentials.secret_key
-        self.email = credentials.email
+        self.login = credentials.login
         self.password = credentials.password
         self.host = host
         self.region = credentials.region
@@ -26,7 +27,6 @@ class Authentication:
         self.algorithm = algorithm
         self.signed_headers = signed_headers
         self.user_agent = user_agent
-        self.proxy = credentials.proxy
         self.x509_client_cert = credentials.x509_client_cert
 
     def forge_headers_signed(self, uri, request_data):
@@ -121,12 +121,12 @@ class Authentication:
             + 'Signature=' + signature
 
     def is_basic_auth_configured(self):
-        return self.email is not None and self.password is not None
+        return self.login is not None and self.password is not None
 
     def get_basic_auth_header(self):
         if not self.is_basic_auth_configured():
             raise Exception("email or password not set")
-        creds = self.email + ":" + self.password
+        creds = self.login + ":" + self.password
         b64_creds = str(base64.b64encode(creds.encode("utf-8")), "utf-8")
         date_iso, _ = self.build_dates()
         return {

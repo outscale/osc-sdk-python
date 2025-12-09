@@ -1,10 +1,10 @@
 import os
 import sys
 from .call import Call
-from .credentials import Credentials
 from .limiter import RateLimiter
 import ruamel.yaml
 from .version import get_version
+import warnings
 
 type_mapping = {"boolean": "bool", "string": "str", "integer": "int", "array": "list"}
 
@@ -68,9 +68,9 @@ class Logger:
             print(s, file=sys.stderr)
 
 
-class OutscaleGateway:
-    def __init__(self, **kwargs):
-        self._load_gateway_structure()
+class BaseAPI:
+    def __init__(self, spec, **kwargs):
+        self._load_gateway_structure(spec)
         self._load_errors()
         self.log = Logger()
         self.limiter = RateLimiter(DEFAULT_LIMITER_WINDOW, DEFAULT_LIMITER_MAX_REQUESTS)
@@ -82,28 +82,44 @@ class OutscaleGateway:
         )
 
     def update_credentials(self, **kwargs):
+        warnings.warn(
+            "update_credentials in deprecated. Use update_profile instead.",
+            DeprecationWarning,
+            stacklevel=2,
+        )
+        self.update_profile(**kwargs)
+
+    def update_profile(self, **kwargs):
         """
         destroy and create a new credential map use for each call.
         so you can change your ak/sk, region without having to recreate the whole Gateway
         as the object is recreate, you can't expect to keep parameter from the old configuration
         example: just updating the password, without renter the login will fail
         """
-        self.call.update_credentials(**kwargs)
+        self.call.update_profile(**kwargs)
 
     def access_key(self):
-        return Credentials(**self.call.credentials).access_key
+        return self.call.profile.access_key
 
     def secret_key(self):
-        return Credentials(**self.call.credentials).secret_key
+        return self.call.profile.secret_key
 
     def region(self):
-        return Credentials(**self.call.credentials).region
+        return self.call.profile.region
 
     def email(self):
-        return Credentials(**self.call.credentials).email
+        warnings.warn(
+            "email in deprecated. Use login instead.",
+            DeprecationWarning,
+            stacklevel=2,
+        )
+        return self.login()
+    
+    def login(self):
+        return self.call.profile.login
 
     def password(self):
-        return Credentials(**self.call.credentials).password
+        return self.call.profile.password
 
     def _convert(self, input_file):
         structure = {}
@@ -136,10 +152,8 @@ class OutscaleGateway:
                         structure[action_name][required]["required"] = True
         return structure
 
-    def _load_gateway_structure(self):
-        dir_path = os.path.join(os.path.dirname(__file__))
-        yaml_file = os.path.abspath("{}/osc-api/outscale.yaml".format(dir_path))
-        self.gateway_structure = self._convert(yaml_file)
+    def _load_gateway_structure(self, spec):
+        self.gateway_structure = self._convert(spec)
 
     def _load_errors(self):
         dir_path = os.path.join(os.path.dirname(__file__))
@@ -224,8 +238,24 @@ class OutscaleGateway:
     def __getattr__(self, attr):
         return self._get_action(attr)
 
+    def __dir__(self):
+        return self.gateway_structure.keys()
+
     def raw(self, action_name, **kwargs):
         return self.call.api(action_name, **kwargs)
+
+    def __enter__(self):
+        return self
+
+    def __exit__(self, type, value, traceback):
+        self.call.close()
+
+
+class OutscaleGateway(BaseAPI):
+    def __init__(self, **kwargs):
+        super().__init__(
+            os.path.join(os.path.dirname(__file__), "resources/outscale.yaml"), **kwargs
+        )
 
 
 def test():

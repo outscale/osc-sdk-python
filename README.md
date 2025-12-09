@@ -149,8 +149,8 @@ Example:
 ```python
 from osc_sdk_python import Gateway
 
-gw = Gateway(email="your@email.com", password="yourAccountPassword")
-keys = gw.ReadAccessKeys()
+with Gateway(email="your@email.com", password="yourAccountPassword") as gw:
+    keys = gw.ReadAccessKeys()
 ```
 
 ### Retry Options

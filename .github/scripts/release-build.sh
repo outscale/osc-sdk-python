@@ -21,11 +21,8 @@ branch_name="autobuild-$new_sdk_version"
 git branch -m $branch_name
 
 # Update osc-api version
-cd "$root/osc_sdk_python/osc-api"
-git reset --hard $osc_api_version
-cd ..
-git add osc-api
-cd "$root"
+curl --retry 10 -o "${root}/osc_sdk_python/resources/outscale.yaml" "https://raw.githubusercontent.com/outscale/osc-api/refs/tags/${osc_api_version}/outscale.yaml"
+git add "${root}/osc_sdk_python/resources/outscale.yaml"
 
 # Setup new SDK version
 for f in "$root/README.md" "$root/osc_sdk_python/VERSION"; do

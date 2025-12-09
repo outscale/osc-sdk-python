@@ -1,3 +1,0 @@
-[submodule "osc_sdk_python/osc-api"]
-	path = osc_sdk_python/osc-api
-	url = https://github.com/outscale/osc-api-deploy.git
