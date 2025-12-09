@@ -4,6 +4,7 @@ from .outscale_gateway import LOG_STDERR
 from .outscale_gateway import LOG_STDIO
 from .outscale_gateway import LOG_MEMORY
 from .version import get_version
+from .problem import Problem, ProblemDecoder
 
 # what to Log
 from .outscale_gateway import LOG_ALL
@@ -21,4 +22,6 @@ __all__ = [
     "LOG_MEMORY",
     "LOG_ALL",
     "LOG_KEEP_ONLY_LAST_REQ",
+    "Problem",
+    "ProblemDecoder"
 ]

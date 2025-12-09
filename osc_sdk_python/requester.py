@@ -1,36 +1,18 @@
-from requests import Session, HTTPError
-from requests.adapters import HTTPAdapter
+from requests import HTTPError
 from requests.exceptions import JSONDecodeError
-from urllib3.util.retry import Retry
-
-HTTP_CODE_RETRY = (400, 429, 500, 503)
-METHODS_RETRY = ("POST", "GET")
+from .problem import ProblemDecoder, LegacyProblemDecoder, LegacyProblem, Problem
 
 
 class Requester:
     def __init__(
         self,
+        session,
         auth,
         endpoint,
-        max_retries=0,
-        backoff_factor=0,
-        backoff_jitter=0,
-        backoff_max=120,
-        status_forcelist=HTTP_CODE_RETRY,
-        allowed_methods=METHODS_RETRY,
     ):
+        self.session = session
         self.auth = auth
         self.endpoint = endpoint
-        self.adapter = HTTPAdapter(
-            max_retries=Retry(
-                total=max_retries,
-                backoff_factor=backoff_factor,
-                backoff_jitter=backoff_jitter,
-                backoff_max=backoff_max,
-                status_forcelist=status_forcelist,
-                allowed_methods=allowed_methods,
-            )
-        )
 
     def send(self, uri, payload):
         headers = None
@@ -43,82 +25,43 @@ class Requester:
             cert_file = self.auth.x509_client_cert
         else:
             cert_file = None
-        if self.auth.proxy:
-            if self.auth.proxy.startswith("https"):
-                proxy = {"https": self.auth.proxy}
-            else:
-                proxy = {"http": self.auth.proxy}
-        else:
-            proxy = None
 
-        with Session() as session:
-            session.mount("https://", self.adapter)
-            session.mount("http://", self.adapter)
-            response = session.post(
-                self.endpoint,
-                data=payload,
-                headers=headers,
-                verify=True,
-                proxies=proxy,
-                cert=cert_file,
-            )
-            self.raise_for_status(response)
-            return response.json()
+        response = self.session.post(
+            self.endpoint,
+            data=payload,
+            headers=headers,
+            verify=True,
+            cert=cert_file,
+        )
+        self.raise_for_status(response)
+        return response.json()
 
     def raise_for_status(self, response):
         http_error_msg = ""
-        error_code = None
-        request_id = None
+        problem = None
         reason = self.get_default_reason(response)
-        code_type = None
 
         try:
-            error = response.json()
+            ct = response.headers.get("content-type") or ""
+            if "application/json" in ct:
+                problem = response.json(cls=LegacyProblemDecoder)
+                problem.status = problem.status or str(response.status_code)
+                problem.url = response.url
+            elif "application/problem+json" in ct:
+                problem = response.json(cls=ProblemDecoder)
+                problem.status = problem.status or str(response.status_code)
         except JSONDecodeError:
             pass
         else:
-            if "__type" in error:
-                error_code = error.get("__type")
-                reason = error.get("message")
-                request_id = response.headers.get("x-amz-requestid")
-            else:
-                request_id = (error.get("ResponseContext") or {}).get("RequestId")
-                errors = error.get("Errors")
-                if errors:
-                    error = errors[0]
-                    error_code = error.get("Code")
-                    reason = error.get("Type")
-                    if error.get("Details"):
-                        code_type = reason
-                        reason = error.get("Details")
-                    else:
-                        code_type = None
-
             if 400 <= response.status_code < 500:
-                if error_code and request_id:
-                    http_error_msg = (
-                        f"Client Error --> status = {response.status_code}, "
-                        f"code = {error_code}, "
-                        f'{"code_type = " if code_type is not None else ""}'
-                        f'{code_type + ", " if code_type is not None else ""}'
-                        f"Reason = {reason}, "
-                        f"request_id = {request_id}, "
-                        f"url = {response.url}"
-                    )
+                if isinstance(problem, LegacyProblem) or isinstance(problem, Problem):
+                    http_error_msg = f"Client Error --> {problem.msg()}"
                 else:
                     http_error_msg = f"{response.status_code} Client Error: {reason} for url: {response.url}"
 
             elif 500 <= response.status_code < 600:
-                if error_code and request_id:
-                    http_error_msg = (
-                        f"Server Error --> status = {response.status_code}, "
-                        f"code = {error_code}, "
-                        f'{"code_type = " if code_type is not None else ""}'
-                        f'{code_type + ", " if code_type is not None else ""}'
-                        f"Reason = {reason}, "
-                        f"request_id = {request_id}, "
-                        f"url = {response.url}"
-                    )
+                if isinstance(problem, LegacyProblem) or isinstance(problem, Problem):
+                    http_error_msg = f"Server Error --> {problem.msg()}"
                 else:
                     http_error_msg = f"{response.status_code} Server Error: {reason} for url: {response.url}"
 
