@@ -12,6 +12,7 @@ jobs:
   code-check:
     runs-on: ubuntu-24.04
     environment: eu-west-2
+    if: "! contains(github.event.pull_request.labels.*.name, 'dependencies')"
     steps:
     - name: 🧹 Frieza
       uses: outscale/frieza-github-actions/frieza-clean@master
