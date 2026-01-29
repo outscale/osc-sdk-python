@@ -1,4 +1,5 @@
 name: osc-sdk-python release build
+
 on:
   workflow_dispatch:
     inputs:
@@ -6,25 +7,39 @@ on:
         description: 'Outscale API version'
         required: true
 
+permissions:
+  contents: write
+  pull-requests: write
+  id-token: write
+
 jobs:
   auto-build:
     environment: auto-build
     runs-on: ubuntu-24.04
     steps:
     - uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6
+    - uses: chainguard-dev/actions/setup-gitsign@main
     - name: Install uv
       uses: astral-sh/setup-uv@61cb8a9741eeb8a550a1b8544337180c0fc8476b # v7
     - name: Set up Python
       run: uv python install
-    - name: Initialize submodules
-      run: make init
     - name: Build release
       run: .github/scripts/release-build.sh ${{ github.event.inputs.api_version }}
-    - name: push release branch
-      run: .github/scripts/release-push.sh
+    - name: Get SDK version
+      id: get-sdk-version
+      run: |
+        echo "sdk_version=$(cat osc_sdk_python/VERSION)" >> "$GITHUB_OUTPUT"
+    - name: Create Pull Request
+      uses: peter-evans/create-pull-request@v8.1.0
+      with:
+        committer: "Outscale Bot <opensource+bot@outscale.com>"
+        author: "Outscale Bot <opensource+bot@outscale.com>"
+        commit-message: "🔖 release: osc-sdk-python v${{ env.sdk_version }}"
+        body: |
+          Automatic build of SDK v${{ env.sdk_version }} version based on Outscale API ${{ env.api_version }}.
+        title: "SDK v${{ env.sdk_version }}"
+        token: "${{ env.token }}"
       env:
-        SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
-    - name: create pull request
-      run: .github/scripts/release-pr.sh ${{ github.event.inputs.api_version }}
-      env:
-        GH_TOKEN: ${{ secrets.GH_TOKEN }}
+        sdk_version: ${{ steps.get-sdk-version.outputs.sdk_version }}
+        api_version: ${{ github.event.inputs.api_version }}
+        token: ${{ secrets.GH_TOKEN || secrets.GITHUB_TOKEN }}
