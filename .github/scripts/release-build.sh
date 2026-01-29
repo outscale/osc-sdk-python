@@ -17,9 +17,6 @@ local_sdk_version_patch=$(echo $local_sdk_version | cut -d '.' -f 3)
 new_sdk_version_minor=$(( local_sdk_version_minor + 1 ))
 new_sdk_version="$local_sdk_version_major.$new_sdk_version_minor.0"
 
-branch_name="autobuild-$new_sdk_version"
-git branch -m $branch_name
-
 # Update osc-api version
 curl --retry 10 -o "${root}/osc_sdk_python/resources/outscale.yaml" "https://raw.githubusercontent.com/outscale/osc-api/refs/tags/${osc_api_version}/outscale.yaml"
 git add "${root}/osc_sdk_python/resources/outscale.yaml"
@@ -30,13 +27,4 @@ for f in "$root/README.md" "$root/osc_sdk_python/VERSION"; do
     git add "$f"
 done
 
-uv version $(cat VERSION)
-
-# Setup git && commit
-git config user.name "Outscale Bot"
-git config user.email "opensource+bot@outscale.com"
-commit_msg="🔖 release: osc-sdk-python v$new_sdk_version
-
- - SDK update for Outscale API $osc_api_version
-"
-git commit -sm "$commit_msg"
+uv version $(cat osc_sdk_python/VERSION)
