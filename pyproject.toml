@@ -6,7 +6,7 @@ authors = [
   { name = "Outscal SAS", email = "opensource@outscale.com" }
 ]
 readme = "README.md"
-requires-python = ">=3.9"
+requires-python = ">=3.10"
 license = { text = "BSD" }
 keywords = []
 classifiers = [
@@ -22,13 +22,13 @@ classifiers = [
 dependencies = [
     "requests>=2.20.0",
     "ruamel.yaml==0.19.1",
-    "urllib3>=2.0.0",
+    "urllib3>=2.6.3",
 ]
 
 [dependency-groups]
 dev = [
     "pytest>=7.2.0",
-    "tox-uv>=1.11.3",
+    "tox-uv>=1.29.0",
     "ruff>=0.14.7",
 ]
 
