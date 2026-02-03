@@ -3,13 +3,14 @@ import time
 
 
 class RateLimiter:
-    def __init__(self, window: int, max_requests: int):
-        self.window = window
-        self.max_requests = max_requests
+    def __init__(self, window: timedelta, max_requests: int, datetime_cls=datetime):
+        self.datetime_cls = datetime_cls
+        self.window: timedelta = window
+        self.max_requests: int = max_requests
         self.requests = []
 
     def acquire(self):
-        now = datetime.now(timezone.utc)
+        now = self.datetime_cls.now(timezone.utc)
 
         self.clean_old_requests(now)
 
@@ -18,13 +19,11 @@ class RateLimiter:
             wait_time = self.window - (now - oldest)
             time.sleep(wait_time.total_seconds())
 
-            now = datetime.now(timezone.utc)
+            now = self.datetime_cls.now(timezone.utc)
             self.clean_old_requests(now)
 
         self.requests.append(now)
 
     def clean_old_requests(self, now):
-        while len(self.requests) > 0 and self.requests[0] <= now - timedelta(
-            seconds=self.window
-        ):
+        while len(self.requests) > 0 and self.requests[0] <= now - self.window:
             self.requests.pop(0)

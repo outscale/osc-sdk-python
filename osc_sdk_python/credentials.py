@@ -8,8 +8,6 @@ DEFAULT_REGION = "eu-west-2"
 DEFAULT_PROFILE = "default"
 
 
-
-
 class Endpoint:
     def __init__(self, **kwargs):
         self.api: str = kwargs.pop("api", None)
@@ -102,7 +100,8 @@ class Profile:
             "x509_client_cert_b64": os.environ.get("OSC_X509_CLIENT_CERT_B64"),
             "x509_client_key": os.environ.get("OSC_X509_CLIENT_KEY"),
             "x509_client_key_b64": os.environ.get("OSC_X509_CLIENT_KEY_B64"),
-            "tls_skip_verify": os.environ.get("OSC_TLS_SKIP_VERIFY", "False").lower() in ("true"),
+            "tls_skip_verify": os.environ.get("OSC_TLS_SKIP_VERIFY", "False").lower()
+            in ("true"),
             "login": os.environ.get("OSC_LOGIN"),
             "password": os.environ.get("OSC_PASSWORD"),
             "protocol": os.environ.get("OSC_PROTOCOL"),
@@ -176,10 +175,12 @@ class Profile:
 
         return merged_profile
 
+
 class Credentials(Profile):
     def __init__(self, **kwargs):
-        warnings.warn("Credentials class is deprecated. Use Profile class instead.",
+        warnings.warn(
+            "Credentials class is deprecated. Use Profile class instead.",
             DeprecationWarning,
-            stacklevel=2
+            stacklevel=2,
         )
-        super().__init__(**kwargs) 
+        super().__init__(**kwargs)

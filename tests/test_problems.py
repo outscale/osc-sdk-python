@@ -44,5 +44,5 @@ def test_deserialize_problem2():
                """,
         cls=ProblemDecoder,
     )
-    assert isinstance(obj,Problem)
+    assert isinstance(obj, Problem)
     assert obj.type == "https://example.net/validation-error"

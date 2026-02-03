@@ -5,16 +5,23 @@ import base64
 
 from .version import get_version
 from .credentials import Profile
+
 VERSION: str = get_version()
 DEFAULT_USER_AGENT = "osc-sdk-python/" + VERSION
 
+
 class Authentication:
-    def __init__(self, credentials: Profile, host: str,
-                 method='POST', service='api',
-                 content_type='application/json; charset=utf-8',
-                 algorithm='OSC4-HMAC-SHA256',
-                 signed_headers = 'content-type;host;x-osc-date',
-                 user_agent = DEFAULT_USER_AGENT):
+    def __init__(
+        self,
+        credentials: Profile,
+        host: str,
+        method="POST",
+        service="api",
+        content_type="application/json; charset=utf-8",
+        algorithm="OSC4-HMAC-SHA256",
+        signed_headers="content-type;host;x-osc-date",
+        user_agent=DEFAULT_USER_AGENT,
+    ):
         self.access_key = credentials.access_key
         self.secret_key = credentials.secret_key
         self.login = credentials.login
@@ -31,34 +38,37 @@ class Authentication:
 
     def forge_headers_signed(self, uri, request_data):
         date_iso, date = self.build_dates()
-        credential_scope = '{}/{}/{}/osc4_request'.format(date, self.region, self.service)
+        credential_scope = "{}/{}/{}/osc4_request".format(
+            date, self.region, self.service
+        )
 
         canonical_request = self.build_canonical_request(date_iso, uri, request_data)
-        str_to_sign = self.create_string_to_sign(date_iso, credential_scope, canonical_request)
+        str_to_sign = self.create_string_to_sign(
+            date_iso, credential_scope, canonical_request
+        )
         signature = self.compute_signature(date, str_to_sign)
         authorisation = self.build_authorization_header(credential_scope, signature)
 
         return {
-            'Content-Type': self.content_type,
-            'X-Osc-Date': date_iso,
-            'Authorization': authorisation,
-            'User-Agent': self.user_agent,
+            "Content-Type": self.content_type,
+            "X-Osc-Date": date_iso,
+            "Authorization": authorisation,
+            "User-Agent": self.user_agent,
         }
 
     def build_dates(self):
-        '''Return YYYYMMDDTHHmmssZ, YYYYMMDD
-        '''
+        """Return YYYYMMDDTHHmmssZ, YYYYMMDD"""
         t = datetime.datetime.now(datetime.timezone.utc)
-        return t.strftime('%Y%m%dT%H%M%SZ'), t.strftime('%Y%m%d')
+        return t.strftime("%Y%m%dT%H%M%SZ"), t.strftime("%Y%m%d")
 
     def sign(self, key, msg):
         return hmac.new(key, msg.encode("utf-8"), hashlib.sha256).digest()
 
     def get_signature_key(self, key, date_stamp_value):
-        k_date = self.sign(('OSC4' + key).encode('utf-8'), date_stamp_value)
+        k_date = self.sign(("OSC4" + key).encode("utf-8"), date_stamp_value)
         k_region = self.sign(k_date, self.region)
         k_service = self.sign(k_region, self.service)
-        k_signing = self.sign(k_service, 'osc4_request')
+        k_signing = self.sign(k_service, "osc4_request")
         return k_signing
 
     def build_canonical_request(self, date_iso, canonical_uri, request_data):
@@ -81,27 +91,46 @@ class Authentication:
         # Step 6: Create payload hash. In this example, the payload (body of
         #         the request) contains the request parameters.
         # Step 7: Combine elements to create canonical request
-        canonical_querystring = ''
-        canonical_headers = 'content-type:' + self.content_type + '\n' \
-                            + 'host:' + self.host + '\n' \
-                            + 'x-osc-date:' + date_iso + '\n'
-        payload_hash = hashlib.sha256(request_data.encode('utf-8')).hexdigest()
-        return self.method + '\n' \
-                    + canonical_uri + '\n' \
-                    + canonical_querystring + '\n' \
-                    + canonical_headers + '\n' \
-                    + self.signed_headers + '\n' \
-                    + payload_hash
+        canonical_querystring = ""
+        canonical_headers = (
+            "content-type:"
+            + self.content_type
+            + "\n"
+            + "host:"
+            + self.host
+            + "\n"
+            + "x-osc-date:"
+            + date_iso
+            + "\n"
+        )
+        payload_hash = hashlib.sha256(request_data.encode("utf-8")).hexdigest()
+        return (
+            self.method
+            + "\n"
+            + canonical_uri
+            + "\n"
+            + canonical_querystring
+            + "\n"
+            + canonical_headers
+            + "\n"
+            + self.signed_headers
+            + "\n"
+            + payload_hash
+        )
 
     def create_string_to_sign(self, date_iso, credential_scope, canonical_request):
         # ************* TASK 2: CREATE THE STRING TO SIGN*************
         # Match the algorithm to the hashing algorithm you use, either SHA-1 or
         # SHA-256 (recommended)
-        return self.algorithm + '\n' \
-                        + date_iso + '\n' \
-                        + credential_scope + '\n' \
-                        + hashlib.sha256(canonical_request.encode('utf-8')).hexdigest()
-
+        return (
+            self.algorithm
+            + "\n"
+            + date_iso
+            + "\n"
+            + credential_scope
+            + "\n"
+            + hashlib.sha256(canonical_request.encode("utf-8")).hexdigest()
+        )
 
     def compute_signature(self, date, string_to_sign):
         # ************* TASK 3: CALCULATE THE SIGNATURE *************
@@ -109,16 +138,27 @@ class Authentication:
         signing_key = self.get_signature_key(self.secret_key, date)
 
         # Sign the string_to_sign using the signing_key
-        return hmac.new(signing_key, string_to_sign.encode('utf-8'),
-                        hashlib.sha256).hexdigest()
-
+        return hmac.new(
+            signing_key, string_to_sign.encode("utf-8"), hashlib.sha256
+        ).hexdigest()
 
     def build_authorization_header(self, credential_scope, signature):
         # ************* TASK 4: ADD SIGNING INFORMATION TO THE REQUEST *************
         # Put the signature information in a header named Authorization.
-        return self.algorithm + ' ' + 'Credential=' + self.access_key + '/' + credential_scope + ', ' \
-            + 'SignedHeaders=' + self.signed_headers + ', ' \
-            + 'Signature=' + signature
+        return (
+            self.algorithm
+            + " "
+            + "Credential="
+            + self.access_key
+            + "/"
+            + credential_scope
+            + ", "
+            + "SignedHeaders="
+            + self.signed_headers
+            + ", "
+            + "Signature="
+            + signature
+        )
 
     def is_basic_auth_configured(self):
         return self.login is not None and self.password is not None
@@ -130,7 +170,7 @@ class Authentication:
         b64_creds = str(base64.b64encode(creds.encode("utf-8")), "utf-8")
         date_iso, _ = self.build_dates()
         return {
-            'Content-Type': self.content_type,
-            'X-Osc-Date': date_iso,
-            'Authorization': "Basic " + b64_creds
+            "Content-Type": self.content_type,
+            "X-Osc-Date": date_iso,
+            "Authorization": "Basic " + b64_creds,
         }
