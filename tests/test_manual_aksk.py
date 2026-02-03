@@ -1,9 +1,11 @@
 import unittest
 import sys
 import os
+
 sys.path.append("..")
 from osc_sdk_python import Gateway
 import copy
+
 
 class EnvironManager:
     def __enter__(self):
@@ -11,6 +13,7 @@ class EnvironManager:
 
     def __exit__(self, *args):
         os.environ = self.env
+
 
 class TestLoginManualAkSk(unittest.TestCase):
     def test_manual_ak_sk(self):
@@ -24,5 +27,6 @@ class TestLoginManualAkSk(unittest.TestCase):
             self.assertIsInstance(volumes, dict)
             self.assertIsInstance(volumes.get("Volumes"), list)
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     unittest.main()

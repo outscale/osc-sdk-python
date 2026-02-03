@@ -1,7 +1,9 @@
 import unittest
 import sys
+
 sys.path.append("..")
 from osc_sdk_python import Gateway, LOG_MEMORY, LOG_KEEP_ONLY_LAST_REQ
+
 
 class TestLog(unittest.TestCase):
 
@@ -9,15 +11,17 @@ class TestLog(unittest.TestCase):
         gw = Gateway()
         gw.log.config(type=LOG_MEMORY, what=LOG_KEEP_ONLY_LAST_REQ)
         gw.ReadVms()
-        self.assertEqual(gw.log.str(),
-                         """uri: /api/v1/ReadVms
+        self.assertEqual(
+            gw.log.str(),
+            """uri: /api/v1/ReadVms
 payload:
-{}"""
-                         )
+{}""",
+        )
 
-        gw.ReadVms(Filters={'TagKeys': ['test']})
-        self.assertEqual(gw.log.str(),
-                         """uri: /api/v1/ReadVms
+        gw.ReadVms(Filters={"TagKeys": ["test"]})
+        self.assertEqual(
+            gw.log.str(),
+            """uri: /api/v1/ReadVms
 payload:
 {
   "Filters": {
@@ -25,8 +29,9 @@ payload:
       "test"
     ]
   }
-}"""
-                         )
+}""",
+        )
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     unittest.main()

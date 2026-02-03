@@ -1,5 +1,6 @@
 import json
 
+
 class ProblemDecoder(json.JSONDecoder):
     def decode(self, s):
         data = super().decode(s)

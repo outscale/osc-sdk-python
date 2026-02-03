@@ -5,6 +5,7 @@ from .limiter import RateLimiter
 import ruamel.yaml
 from .version import get_version
 import warnings
+from datetime import timedelta
 
 type_mapping = {"boolean": "bool", "string": "str", "integer": "int", "array": "list"}
 
@@ -19,7 +20,7 @@ LOG_ALL = 0
 LOG_KEEP_ONLY_LAST_REQ = 1
 
 # Default
-DEFAULT_LIMITER_WINDOW = 1  # 1 second
+DEFAULT_LIMITER_WINDOW = timedelta(seconds=1)  # 1 second
 DEFAULT_LIMITER_MAX_REQUESTS = 5  # 5 requests / sec
 
 
@@ -114,7 +115,7 @@ class BaseAPI:
             stacklevel=2,
         )
         return self.login()
-    
+
     def login(self):
         return self.call.profile.login
 

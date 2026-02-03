@@ -1,7 +1,9 @@
 import unittest
 import sys
+
 sys.path.append("..")
 from osc_sdk_python import Gateway
+
 
 class TestVolume(unittest.TestCase):
 
@@ -11,5 +13,6 @@ class TestVolume(unittest.TestCase):
         self.assertEqual(type(volumes), dict)
         self.assertEqual(type(volumes.get("Volumes")), list)
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     unittest.main()

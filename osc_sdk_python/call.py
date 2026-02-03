@@ -6,14 +6,17 @@ from requests import Session
 from requests.adapters import HTTPAdapter
 from urllib3.util.retry import Retry
 from urllib3.util import parse_url
+from datetime import timedelta
+from .limiter import RateLimiter
 
 import json
 import warnings
 
-MAX_RETRIES = "3"
+MAX_RETRIES = 3
 RETRY_BACKOFF_FACTOR = "1"
 RETRY_BACKOFF_JITTER = "3"
 RETRY_BACKOFF_MAX = "30"
+
 
 class Call(object):
     def __init__(self, logger=None, limiter=None, **kwargs):
@@ -22,13 +25,16 @@ class Call(object):
         self.ssl = kwargs.pop("_ssl", True)
         self.user_agent = kwargs.pop("user_agent", DEFAULT_USER_AGENT)
         self.logger = logger
-        self.limiter = limiter
+        self.limiter: RateLimiter | None = limiter
+        self.adapter = None
+        self.session = Session()
+
         kwargs = self.update_limiter(**kwargs)
         kwargs = self.update_adapter(**kwargs)
         self.update_profile(**kwargs)
-        self.session = Session()
-        self.session.mount("https://", self.adapter)
-        self.session.mount("http://", self.adapter)
+        if self.adapter:
+            self.session.mount("https://", self.adapter)
+            self.session.mount("http://", self.adapter)
 
     def update_credentials(self, **kwargs):
         warnings.warn(
@@ -39,16 +45,29 @@ class Call(object):
         return self.update_profile(**kwargs)
 
     def update_adapter(self, **kwargs):
-        self.adapter = HTTPAdapter(
-            max_retries=Retry(
-                total=int(kwargs.pop("max_retries", MAX_RETRIES)),
-                backoff_factor=float(kwargs.pop("retry_backoff_factor", RETRY_BACKOFF_FACTOR)),
-                backoff_jitter=float(kwargs.pop("retry_backoff_jitter", RETRY_BACKOFF_JITTER)),
-                backoff_max=float(kwargs.pop("retry_backoff_max", RETRY_BACKOFF_MAX)),
-                status_forcelist=(400, 429, 500, 503),
-                allowed_methods=("POST", "GET"),
+        max_retries: int | str | None = kwargs.pop("max_retries", None)
+        if max_retries is not None:
+            max_retries = int(max_retries)
+        else:
+            max_retries = MAX_RETRIES
+
+        if max_retries > 0:
+            self.adapter = HTTPAdapter(
+                max_retries=Retry(
+                    total=max_retries,
+                    backoff_factor=float(
+                        kwargs.pop("retry_backoff_factor", RETRY_BACKOFF_FACTOR)
+                    ),
+                    backoff_jitter=float(
+                        kwargs.pop("retry_backoff_jitter", RETRY_BACKOFF_JITTER)
+                    ),
+                    backoff_max=float(
+                        kwargs.pop("retry_backoff_max", RETRY_BACKOFF_MAX)
+                    ),
+                    status_forcelist=(400, 429, 500, 503),
+                    allowed_methods=("POST", "GET"),
+                )
             )
-        )
         return kwargs
 
     def update_profile(self, **kwargs):
@@ -58,16 +77,13 @@ class Call(object):
         self.profile.merge(Profile(**kwargs))
         return kwargs
 
-    def update_limiter(
-        self,
-        **kwargs
-    ):
+    def update_limiter(self, **kwargs):
         limiter_window = kwargs.pop("limiter_window", None)
-        if limiter_window is not None:
-            self.limiter.window = limiter_window
+        if limiter_window is not None and self.limiter is not None:
+            self.limiter.window = timedelta(seconds=int(limiter_window))
 
         limiter_max_requests = kwargs.pop("limiter_max_requests", None)
-        if limiter_max_requests is not None:
+        if limiter_max_requests is not None and self.limiter is not None:
             self.limiter.max_requests = limiter_max_requests
 
         return kwargs
