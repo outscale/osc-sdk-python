@@ -3,15 +3,14 @@ import sys
 
 sys.path.append("..")
 from osc_sdk_python import Gateway
-from requests.exceptions import RetryError
+from requests.exceptions import HTTPError
 
 
 class TestExcept(unittest.TestCase):
-
     def test_listing(self):
         gw = Gateway()
         # a is not a valide argument
-        with self.assertRaises(RetryError):
+        with self.assertRaises(HTTPError):
             gw.ReadVms(Filters="a")
 
 

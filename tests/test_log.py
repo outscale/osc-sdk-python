@@ -6,7 +6,6 @@ from osc_sdk_python import Gateway, LOG_MEMORY, LOG_KEEP_ONLY_LAST_REQ
 
 
 class TestLog(unittest.TestCase):
-
     def test_listing(self):
         gw = Gateway()
         gw.log.config(type=LOG_MEMORY, what=LOG_KEEP_ONLY_LAST_REQ)

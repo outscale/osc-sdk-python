@@ -6,7 +6,6 @@ from osc_sdk_python import Gateway
 
 
 class TestVolume(unittest.TestCase):
-
     def test_listing(self):
         gw = Gateway()
         volumes = gw.ReadVolumes()

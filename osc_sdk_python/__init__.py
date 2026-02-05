@@ -6,6 +6,7 @@ from .outscale_gateway import LOG_MEMORY
 from .version import get_version
 from .problem import Problem, ProblemDecoder
 from .limiter import RateLimiter
+from .retry import Retry
 
 # what to Log
 from .outscale_gateway import LOG_ALL
@@ -26,4 +27,5 @@ __all__ = [
     "Problem",
     "ProblemDecoder",
     "RateLimiter",
+    "Retry",
 ]
