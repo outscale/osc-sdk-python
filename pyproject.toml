@@ -1,6 +1,6 @@
 [project]
 name = "osc_sdk_python"
-version = "0.39.0"
+version = "0.39.2"
 description = "Outscale Gateway python SDK"
 authors = [
   { name = "Outscal SAS", email = "opensource@outscale.com" }
