@@ -18,5 +18,3 @@ jobs:
       uses: ./.github/actions/setup-test
     - name: Build & Push packages
       run: make upload-package
-      env:
-        UV_PUBLISH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
