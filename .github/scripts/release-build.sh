@@ -1,6 +1,6 @@
 #!/bin/env bash
 set -e
-osc_api_version=$1
+osc_api_version=${1#v}
 
 if [ -z "$osc_api_version" ]; then
     echo "run $0 with version tag as argument, abort."
