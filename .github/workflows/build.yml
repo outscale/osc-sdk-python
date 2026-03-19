@@ -39,6 +39,7 @@ jobs:
           Automatic build of SDK v${{ env.sdk_version }} version based on Outscale API ${{ env.api_version }}.
         title: "SDK v${{ env.sdk_version }}"
         token: "${{ env.token }}"
+        labels: "kind/feature"
       env:
         sdk_version: ${{ steps.get-sdk-version.outputs.sdk_version }}
         api_version: ${{ github.event.inputs.api_version }}
