@@ -1,7 +1,6 @@
 import base64
 import random
 import string
-import time
 
 def get_random_string(length=10):
     alphabet = string.ascii_lowercase + string.digits
@@ -14,24 +13,6 @@ def get_tagged_name(prefix="osc-sdk-python-test", length=10):
 
 def log_test_step(message):
     print("[tests] {}".format(message), flush=True)
-
-
-def get_resource_until_ready(
-    fetch, ready, timeout=300, interval=10, failure=None, describe=None
-):
-    deadline = time.time() + timeout
-    last_value = None
-    while time.time() < deadline:
-        last_value = fetch()
-        if describe is not None:
-            log_test_step(describe(last_value))
-        if ready(last_value):
-            return last_value
-        if failure is not None and failure(last_value):
-            raise AssertionError("Resource entered an unexpected state: {}".format(last_value))
-        time.sleep(interval)
-    raise AssertionError("Timed out waiting for resource state: {}".format(last_value))
-
 
 def get_first_item(items, message):
     if not items:
