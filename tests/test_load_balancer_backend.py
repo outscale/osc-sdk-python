@@ -32,7 +32,7 @@ class TestLoadBalancerBackend(unittest.TestCase):
                 MaxVmsCount=1,
                 Placement={"SubregionName": subregion_name, "Tenancy": "default"},
                 UserData=get_linux_http_user_data(),
-                VmType="tinav4.c1r1p2",
+                VmType="tinav6.c1r1p2",
             )
             vms = vm_response.get("Vms")
             self.assertIsInstance(vms, list)
@@ -49,7 +49,7 @@ class TestLoadBalancerBackend(unittest.TestCase):
                 log_test_step("VM {} state={}".format(vm_id, vm.get("State")))
                 if vm.get("State") == "running":
                     break
-                if vm.get("State") in ("terminated", "shutting-down"):
+                if vm.get("State") in ("stopped", "terminated", "shutting-down"):
                     self.fail("VM {} entered unexpected state {}".format(vm_id, vm.get("State")))
                 time.sleep(10)
 
