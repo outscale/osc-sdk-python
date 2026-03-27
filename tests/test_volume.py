@@ -5,10 +5,10 @@ import time
 sys.path.append("..")
 from osc_sdk_python import Gateway
 from tests.integration_utils import (
-    create_name_tag,
-    first_subregion_name,
-    log_step,
-    read_single,
+    build_name_tag_request,
+    get_first_subregion_name,
+    log_test_step,
+    read_single_resource,
 )
 
 
@@ -21,25 +21,25 @@ class TestVolume(unittest.TestCase):
 
     def test_volume_lifecycle(self):
         gw = Gateway()
-        subregion_name = first_subregion_name(gw)
-        log_step("Using subregion {}".format(subregion_name))
+        subregion_name = get_first_subregion_name(gw)
+        log_test_step("Using subregion {}".format(subregion_name))
         volume_id = None
         try:
-            log_step("Creating volume")
+            log_test_step("Creating volume")
             response = gw.CreateVolume(Size=10, SubregionName=subregion_name)
             volume = response.get("Volume")
             self.assertIsInstance(volume, dict)
             volume_id = volume.get("VolumeId")
             self.assertTrue(volume_id)
-            log_step("Created volume {}".format(volume_id))
+            log_test_step("Created volume {}".format(volume_id))
 
-            gw.CreateTags(**create_name_tag(volume_id))
-            log_step("Tagged volume {}".format(volume_id))
+            gw.CreateTags(**build_name_tag_request(volume_id))
+            log_test_step("Tagged volume {}".format(volume_id))
 
             volume = None
             for _ in range(30):
-                volume = read_single(gw, "ReadVolumes", "Volumes", "VolumeIds", volume_id)
-                log_step("Volume {} state={}".format(volume_id, volume.get("State")))
+                volume = read_single_resource(gw, "ReadVolumes", "Volumes", "VolumeIds", volume_id)
+                log_test_step("Volume {} state={}".format(volume_id, volume.get("State")))
                 if volume.get("State") == "available":
                     break
                 if volume.get("State") == "error":
@@ -52,8 +52,10 @@ class TestVolume(unittest.TestCase):
 
             self.assertIsNotNone(volume)
 
-            # volume = wait_until(
-            #     fetch=lambda: read_single(gw, "ReadVolumes", "Volumes", "VolumeIds", volume_id),
+            # volume = get_resource_until_ready(
+            #     fetch=lambda: read_single_resource(
+            #         gw, "ReadVolumes", "Volumes", "VolumeIds", volume_id
+            #     ),
             #     ready=lambda item: item.get("State") == "available",
             #     timeout=300,
             #     interval=10,
@@ -68,11 +70,11 @@ class TestVolume(unittest.TestCase):
                 any(tag.get("Key") == "Name" for tag in volume.get("Tags", [])),
                 "expected a Name tag on the volume",
             )
-            log_step("Volume {} is available".format(volume_id))
+            log_test_step("Volume {} is available".format(volume_id))
         finally:
             if volume_id:
                 time.sleep(1)
-                log_step("Deleting volume {}".format(volume_id))
+                log_test_step("Deleting volume {}".format(volume_id))
                 gw.DeleteVolume(VolumeId=volume_id)
 
 

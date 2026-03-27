@@ -3,26 +3,28 @@ import random
 import string
 import time
 
-def random_string(length=10):
+def get_random_string(length=10):
     alphabet = string.ascii_lowercase + string.digits
     return "".join(random.choice(alphabet) for _ in range(length))
 
 
-def tagged_name(prefix="osc-sdk-python-test", length=10):
-    return "{}-{}".format(prefix, random_string(length))
+def get_tagged_name(prefix="osc-sdk-python-test", length=10):
+    return "{}-{}".format(prefix, get_random_string(length))
 
 
-def log_step(message):
+def log_test_step(message):
     print("[tests] {}".format(message), flush=True)
 
 
-def wait_until(fetch, ready, timeout=300, interval=10, failure=None, describe=None):
+def get_resource_until_ready(
+    fetch, ready, timeout=300, interval=10, failure=None, describe=None
+):
     deadline = time.time() + timeout
     last_value = None
     while time.time() < deadline:
         last_value = fetch()
         if describe is not None:
-            log_step(describe(last_value))
+            log_test_step(describe(last_value))
         if ready(last_value):
             return last_value
         if failure is not None and failure(last_value):
@@ -31,22 +33,22 @@ def wait_until(fetch, ready, timeout=300, interval=10, failure=None, describe=No
     raise AssertionError("Timed out waiting for resource state: {}".format(last_value))
 
 
-def first(items, message):
+def get_first_item(items, message):
     if not items:
         raise AssertionError(message)
     return items[0]
 
 
-def first_subregion_name(gw):
+def get_first_subregion_name(gw):
     subregions = gw.ReadSubregions()
-    subregion = first(subregions.get("Subregions"), "No subregions returned")
+    subregion = get_first_item(subregions.get("Subregions"), "No subregions returned")
     name = subregion.get("SubregionName")
     if not name:
         raise AssertionError("SubregionName is missing")
     return name
 
 
-def latest_public_ubuntu_image_id(gw):
+def get_latest_public_ubuntu_image_id(gw):
     images = gw.ReadImages(
         Filters={
             "AccountAliases": ["Outscale"],
@@ -56,7 +58,7 @@ def latest_public_ubuntu_image_id(gw):
         },
         ResultsPerPage=10,
     ).get("Images", [])
-    image = first(
+    image = get_first_item(
         sorted(images, key=lambda item: item.get("CreationDate", ""), reverse=True),
         "No public Ubuntu image returned",
     )
@@ -66,7 +68,7 @@ def latest_public_ubuntu_image_id(gw):
     return image_id
 
 
-def read_single(gw, action, key, resource_id_key, resource_id):
+def read_single_resource(gw, action, key, resource_id_key, resource_id):
     response = getattr(gw, action)(
         Filters={
             resource_id_key: [resource_id],
@@ -80,14 +82,14 @@ def read_single(gw, action, key, resource_id_key, resource_id):
     return items[0]
 
 
-def create_name_tag(resource_id):
+def build_name_tag_request(resource_id):
     return {
         "ResourceIds": [resource_id],
-        "Tags": [{"Key": "Name", "Value": tagged_name("osc-sdk-python-tag")}],
+        "Tags": [{"Key": "Name", "Value": get_tagged_name("osc-sdk-python-tag")}],
     }
 
 
-def linux_http_user_data():
+def get_linux_http_user_data():
     script = """#!/bin/sh
 set -eu
 mkdir -p /tmp/python-sdk-lb
