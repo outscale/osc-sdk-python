@@ -21,6 +21,7 @@ class Call(object):
         self.limiter: RateLimiter | None = limiter
         self.retry_kwargs = {}
         self.session = Session()
+        self.session.trust_env = False
 
         kwargs = self.update_limiter(**kwargs)
         kwargs = self.update_retry(**kwargs)
