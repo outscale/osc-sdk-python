@@ -136,7 +136,6 @@ Example:
 
 Notes:
 
-* If `~/.osc/config.json` is not found, `~/.oapi_credentials` will be used as a fallback.
 * Environment variables have priority over credentials files.
 
 ### Basic Authentication
