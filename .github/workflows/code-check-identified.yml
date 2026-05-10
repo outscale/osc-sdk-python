@@ -7,27 +7,40 @@ on:
 
 permissions:
   contents: read
+  id-token: write
 
 jobs:
   code-check:
-    runs-on: ubuntu-24.04
+    runs-on: [self-hosted, vault]
     environment: eu-west-2
     if: "! contains(github.event.pull_request.labels.*.name, 'dependencies')"
     steps:
-    - name: 🧹 Frieza
-      uses: outscale/frieza-github-actions/frieza-clean@master
-      with:
-        access_key: ${{ secrets.OSC_ACCESS_KEY }}
-        secret_key: ${{ secrets.OSC_SECRET_KEY }}
-        region: ${{ secrets.OSC_REGION }}
-    - name: ⬇️ Checkout repository
-      uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
-    - name: Setup toolchain
-      uses: ./.github/actions/setup-test
-    - name: 🧪 Run integration tests
-      env:
-        OSC_ACCESS_KEY: ${{ secrets.OSC_ACCESS_KEY }}
-        OSC_SECRET_KEY: ${{ secrets.OSC_SECRET_KEY }}
-        OSC_TEST_LOGIN: ${{ secrets.OSC_TEST_LOGIN }}
-        OSC_TEST_PASSWORD: ${{ secrets.OSC_TEST_PASSWORD }}
-      run: make test-int
+      - name: Import Secrets
+        id: import-secrets
+        uses: hashicorp/vault-action@v2
+        with:
+          url: http://127.0.0.1:8200/
+          method: jwt
+          path: github-action
+          role: gha-osc-sdk-python
+          secrets: |
+            eu-west-2/creds/sdk access_key | OSC_ACCESS_KEY ;
+            eu-west-2/creds/sdk secret_key | OSC_SECRET_KEY
+
+      - name: 🧹 Frieza
+        uses: outscale/frieza-github-actions/frieza-clean@master
+        with:
+          access_key: ${{ steps.import-secrets.outputs.OSC_ACCESS_KEY }}
+          secret_key: ${{ steps.import-secrets.outputs.OSC_SECRET_KEY }}
+          region: ${{ secrets.OSC_REGION }}
+      - name: ⬇️ Checkout repository
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
+      - name: Setup toolchain
+        uses: ./.github/actions/setup-test
+      - name: 🧪 Run integration tests
+        env:
+          OSC_ACCESS_KEY: ${{ steps.import-secrets.outputs.OSC_ACCESS_KEY }}
+          OSC_SECRET_KEY: ${{ steps.import-secrets.outputs.OSC_SECRET_KEY }}
+          OSC_TEST_LOGIN: ${{ secrets.OSC_TEST_LOGIN }}
+          OSC_TEST_PASSWORD: ${{ secrets.OSC_TEST_PASSWORD }}
+        run: make test-int
