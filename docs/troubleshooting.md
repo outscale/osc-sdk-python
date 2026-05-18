@@ -5,7 +5,7 @@
 Some users may encounter UTF-8 issues that look like this:
 
 ```bash
-Problem reading (…)osc_sdk_python/osc-api/outscale.yaml:'ascii' codec can't decode byte 0xe2 in position 14856: ordinal not in range(128)
+Problem reading (…)osc_sdk_python/resources/osc/api.yaml:'ascii' codec can't decode byte 0xe2 in position 14856: ordinal not in range(128)
 ```
 
 To avoid this issue, configure your locale as follows:

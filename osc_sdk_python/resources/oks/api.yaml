@@ -1,0 +1,4303 @@
+openapi: 3.0.3
+info:
+  title: OKS API
+  description: API for creating your clusters on Kubernetes. Each cluster is 
+    linked to a project. in a project you can have several clusters
+  version: '1.0'
+paths:
+  /projects:
+    post:
+      tags:
+      - Projects
+      summary: Create Project
+      description: Creates a new project with the provided details. The request 
+        must include the project data in the request body. Returns the details 
+        of the created project.
+      operationId: CreateProject
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProjectInput'
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProjectResponse'
+        '503':
+          description: ResourceIsNotReady
+          content:
+            application/json:
+              example:
+                Errors:
+                - Type: ResourceIsNotReady
+                  Details: The service has been under global maintenance for 15 
+                    mins. Please, try again later
+                  Code: '503'
+                ResponseContext:
+                  RequestId: 45a64090-2e5b-428f-bfea-83a5f783f9e6
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '423':
+          description: LockedResource
+          content:
+            application/json:
+              example:
+                Errors:
+                - Type: LockedResource
+                  Details: The project has been under maintenance for 15 mins. 
+                    Please, try again later
+                  Code: '423'
+                ResponseContext:
+                  RequestId: 45a64090-2e5b-428f-bfea-83a5f783f9e6
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '409':
+          description: ResourceConflict
+          content:
+            application/json:
+              example:
+                Errors:
+                - Type: ResourceConflict
+                  Details: Project with this name already exists.
+                  Code: '409'
+                ResponseContext:
+                  RequestId: 45a64090-2e5b-428f-bfea-83a5f783f9e6
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: InternalError
+          content:
+            application/json:
+              example:
+                Errors:
+                - Type: InternalError
+                  Details: Failed to create project
+                  Code: '500'
+                ResponseContext:
+                  RequestId: 45a64090-2e5b-428f-bfea-83a5f783f9e6
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: ForbiddenError
+          content:
+            application/json:
+              example:
+                Errors:
+                - Type: ForbiddenError
+                  Details: You cannot have more than 2 projects.
+                  Code: '403'
+                ResponseContext:
+                  RequestId: 45a64090-2e5b-428f-bfea-83a5f783f9e6
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '422':
+          description: ValidationError
+          content:
+            application/json:
+              example:
+                Errors:
+                - Type: ValidationError
+                  Details: "Invalid CIDR: '10.50.15.24/32' must have a prefix length
+                    between /16 and /23."
+                  Code: '422'
+                - Type: ValidationError
+                  Details:
+                  - loc:
+                    - string
+                    - 0
+                    msg: string
+                    type: string
+                  Code: '422'
+                ResponseContext:
+                  RequestId: 45a64090-2e5b-428f-bfea-83a5f783f9e6
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+    get:
+      tags:
+      - Projects
+      summary: Get Projects
+      description: Retrieves a list of all projects with optional filters for 
+        name, status, CIDR, and deletion status. Returns a list of matching 
+        projects based on the specified filters.
+      operationId: ListProjects
+      parameters:
+      - name: name
+        in: query
+        required: false
+        schema:
+          type: string
+          nullable: true
+      - name: status
+        in: query
+        required: false
+        schema:
+          type: string
+          nullable: true
+      - name: cidr
+        in: query
+        required: false
+        schema:
+          type: string
+          nullable: true
+      - name: deleted
+        in: query
+        required: false
+        schema:
+          type: boolean
+          nullable: true
+      - name: cursor
+        in: query
+        required: false
+        schema:
+          type: string
+          nullable: true
+      - name: page
+        in: query
+        required: false
+        schema:
+          type: integer
+          nullable: true
+      - name: limit
+        in: query
+        required: false
+        schema:
+          type: integer
+          maximum: 100
+          exclusiveMinimum: false
+          nullable: true
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProjectResponseList'
+        '500':
+          description: InternalError
+          content:
+            application/json:
+              example:
+                Errors:
+                - Type: InternalError
+                  Details: Internal server error
+                  Code: '500'
+                ResponseContext:
+                  RequestId: 45a64090-2e5b-428f-bfea-83a5f783f9e6
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '422':
+          description: ValidationError
+          content:
+            application/json:
+              example:
+                Errors:
+                - Type: ValidationError
+                  Details:
+                  - loc:
+                    - string
+                    - 0
+                    msg: string
+                    type: string
+                  Code: '422'
+                ResponseContext:
+                  RequestId: 45a64090-2e5b-428f-bfea-83a5f783f9e6
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  /projects/{project_id}:
+    get:
+      tags:
+      - Projects
+      summary: Get Project
+      description: Retrieves detailed information about a specific project by 
+        its ID. Returns the details of the project if found.
+      operationId: GetProject
+      parameters:
+      - name: project_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Project Id
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProjectResponse'
+        '400':
+          description: InvalidResource
+          content:
+            application/json:
+              example:
+                Errors:
+                - Type: InvalidResource
+                  Details: Invalid project data format
+                  Code: '400'
+                ResponseContext:
+                  RequestId: 45a64090-2e5b-428f-bfea-83a5f783f9e6
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: NotFoundError
+          content:
+            application/json:
+              example:
+                Errors:
+                - Type: NotFoundError
+                  Details: Project $uuid not found.
+                  Code: '404'
+                ResponseContext:
+                  RequestId: 45a64090-2e5b-428f-bfea-83a5f783f9e6
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: InternalError
+          content:
+            application/json:
+              example:
+                Errors:
+                - Type: InternalError
+                  Details: Internal server error
+                  Code: '500'
+                ResponseContext:
+                  RequestId: 45a64090-2e5b-428f-bfea-83a5f783f9e6
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '422':
+          description: ValidationError
+          content:
+            application/json:
+              example:
+                Errors:
+                - Type: ValidationError
+                  Details:
+                  - loc:
+                    - string
+                    - 0
+                    msg: string
+                    type: string
+                  Code: '422'
+                ResponseContext:
+                  RequestId: 45a64090-2e5b-428f-bfea-83a5f783f9e6
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+    patch:
+      tags:
+      - Projects
+      summary: Update Project
+      description: Updates the details of an existing project by its ID. The 
+        request must include the updated project data in the request body. 
+        Returns the updated project information.
+      operationId: UpdateProject
+      parameters:
+      - name: project_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Project Id
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProjectUpdate'
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProjectResponse'
+        '503':
+          description: ResourceIsNotReady
+          content:
+            application/json:
+              example:
+                Errors:
+                - Type: ResourceIsNotReady
+                  Details: The service has been under global maintenance for 15 
+                    mins. Please, try again later
+                  Code: '503'
+                - Type: ResourceIsNotReady
+                  Details: 'Project not ready: pending'
+                  Code: '503'
+                ResponseContext:
+                  RequestId: 45a64090-2e5b-428f-bfea-83a5f783f9e6
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '423':
+          description: LockedResource
+          content:
+            application/json:
+              example:
+                Errors:
+                - Type: LockedResource
+                  Details: The project has been under maintenance for 15 mins. 
+                    Please, try again later
+                  Code: '423'
+                ResponseContext:
+                  RequestId: 45a64090-2e5b-428f-bfea-83a5f783f9e6
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: NotFoundError
+          content:
+            application/json:
+              example:
+                Errors:
+                - Type: NotFoundError
+                  Details: Project $uuid not found.
+                  Code: '404'
+                ResponseContext:
+                  RequestId: 45a64090-2e5b-428f-bfea-83a5f783f9e6
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '409':
+          description: ResourceConflict
+          content:
+            application/json:
+              example:
+                Errors:
+                - Type: ResourceConflict
+                  Details: The requested action cannot be performed because the 
+                    project has been deleted.
+                  Code: '409'
+                ResponseContext:
+                  RequestId: 45a64090-2e5b-428f-bfea-83a5f783f9e6
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: InternalError
+          content:
+            application/json:
+              example:
+                Errors:
+                - Type: InternalError
+                  Details: Failed to update project
+                  Code: '500'
+                ResponseContext:
+                  RequestId: 45a64090-2e5b-428f-bfea-83a5f783f9e6
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '422':
+          description: ValidationError
+          content:
+            application/json:
+              example:
+                Errors:
+                - Type: ValidationError
+                  Details:
+                  - loc:
+                    - string
+                    - 0
+                    msg: string
+                    type: string
+                  Code: '422'
+                ResponseContext:
+                  RequestId: 45a64090-2e5b-428f-bfea-83a5f783f9e6
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+    delete:
+      tags:
+      - Projects
+      summary: Delete Project
+      description: Deletes a specific project by its ID. Returns a confirmation 
+        of the project deletion.
+      operationId: DeleteProject
+      parameters:
+      - name: project_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Project Id
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DetailResponse'
+        '503':
+          description: ResourceIsNotReady
+          content:
+            application/json:
+              example:
+                Errors:
+                - Type: ResourceIsNotReady
+                  Details: The service has been under global maintenance for 15 
+                    mins. Please, try again later
+                  Code: '503'
+                - Type: ResourceIsNotReady
+                  Details: 'Project not ready: pending'
+                  Code: '503'
+                ResponseContext:
+                  RequestId: 45a64090-2e5b-428f-bfea-83a5f783f9e6
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '423':
+          description: LockedResource
+          content:
+            application/json:
+              example:
+                Errors:
+                - Type: LockedResource
+                  Details: The project has been under maintenance for 15 mins. 
+                    Please, try again later
+                  Code: '423'
+                ResponseContext:
+                  RequestId: 45a64090-2e5b-428f-bfea-83a5f783f9e6
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: NotFoundError
+          content:
+            application/json:
+              example:
+                Errors:
+                - Type: NotFoundError
+                  Details: Project $uuid not found.
+                  Code: '404'
+                ResponseContext:
+                  RequestId: 45a64090-2e5b-428f-bfea-83a5f783f9e6
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '409':
+          description: ResourceConflict
+          content:
+            application/json:
+              example:
+                Errors:
+                - Type: ResourceConflict
+                  Details: The requested action cannot be performed because the 
+                    project has been deleted.
+                  Code: '409'
+                ResponseContext:
+                  RequestId: 45a64090-2e5b-428f-bfea-83a5f783f9e6
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: ForbiddenError
+          content:
+            application/json:
+              example:
+                Errors:
+                - Type: ForbiddenError
+                  Details: Project $uuid can't be deleted because 
+                    disable_api_termination is enabled
+                  Code: '403'
+                - Type: ForbiddenError
+                  Details: 'The requested action cannot be performed because the project
+                    has 1 active cluster(s): test'
+                  Code: '403'
+                ResponseContext:
+                  RequestId: 45a64090-2e5b-428f-bfea-83a5f783f9e6
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '422':
+          description: ValidationError
+          content:
+            application/json:
+              example:
+                Errors:
+                - Type: ValidationError
+                  Details:
+                  - loc:
+                    - string
+                    - 0
+                    msg: string
+                    type: string
+                  Code: '422'
+                ResponseContext:
+                  RequestId: 45a64090-2e5b-428f-bfea-83a5f783f9e6
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  /projects/{project_id}/quotas:
+    get:
+      tags:
+      - Projects
+      summary: Get Project Quotas
+      description: Retrieves the quota details for a specific project by its ID.
+        Returns the quota information associated with the specified project.
+      operationId: GetProjectQuotas
+      parameters:
+      - name: project_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Project Id
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/projects__project_schema__QuotasResponse'
+        '404':
+          description: NotFoundError
+          content:
+            application/json:
+              example:
+                Errors:
+                - Type: NotFoundError
+                  Details: Project $uuid not found.
+                  Code: '404'
+                ResponseContext:
+                  RequestId: 45a64090-2e5b-428f-bfea-83a5f783f9e6
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '408':
+          description: TimeoutError
+          content:
+            application/json:
+              example:
+                Errors:
+                - Type: TimeoutError
+                  Details: Request Timeout. The server timed out waiting for the
+                    request.
+                  Code: '408'
+                ResponseContext:
+                  RequestId: 45a64090-2e5b-428f-bfea-83a5f783f9e6
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: InternalError
+          content:
+            application/json:
+              example:
+                Errors:
+                - Type: InternalError
+                  Details: Error processing project data
+                  Code: '500'
+                ResponseContext:
+                  RequestId: 45a64090-2e5b-428f-bfea-83a5f783f9e6
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '422':
+          description: ValidationError
+          content:
+            application/json:
+              example:
+                Errors:
+                - Type: ValidationError
+                  Details:
+                  - loc:
+                    - string
+                    - 0
+                    msg: string
+                    type: string
+                  Code: '422'
+                ResponseContext:
+                  RequestId: 45a64090-2e5b-428f-bfea-83a5f783f9e6
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  /projects/{project_id}/snapshots:
+    get:
+      tags:
+      - Projects
+      summary: Get Project Snapshots
+      description: Retrieves the snapshot details for a specific project by its 
+        ID. Returns the snapshot information associated with the specified 
+        project.
+      operationId: GetProjectSnapshots
+      parameters:
+      - name: project_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Project Id
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SnapshotsResponse'
+        '404':
+          description: NotFoundError
+          content:
+            application/json:
+              example:
+                Errors:
+                - Type: NotFoundError
+                  Details: Project $uuid not found.
+                  Code: '404'
+                ResponseContext:
+                  RequestId: 45a64090-2e5b-428f-bfea-83a5f783f9e6
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '408':
+          description: TimeoutError
+          content:
+            application/json:
+              example:
+                Errors:
+                - Type: TimeoutError
+                  Details: Request Timeout. The server timed out waiting for the
+                    request.
+                  Code: '408'
+                ResponseContext:
+                  RequestId: 45a64090-2e5b-428f-bfea-83a5f783f9e6
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: InternalError
+          content:
+            application/json:
+              example:
+                Errors:
+                - Type: InternalError
+                  Details: Error processing project data
+                  Code: '500'
+                ResponseContext:
+                  RequestId: 45a64090-2e5b-428f-bfea-83a5f783f9e6
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '422':
+          description: ValidationError
+          content:
+            application/json:
+              example:
+                Errors:
+                - Type: ValidationError
+                  Details:
+                  - loc:
+                    - string
+                    - 0
+                    msg: string
+                    type: string
+                  Code: '422'
+                ResponseContext:
+                  RequestId: 45a64090-2e5b-428f-bfea-83a5f783f9e6
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  /projects/{project_id}/public_ips:
+    get:
+      tags:
+      - Projects
+      summary: Get Project Public Ips
+      description: Retrieves the Public IP details for a specific project by its
+        ID. Returns the public IP information associated with the specified 
+        project.
+      operationId: GetProjectPublicIps
+      parameters:
+      - name: project_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Project Id
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PublicIpsResponse'
+        '404':
+          description: NotFoundError
+          content:
+            application/json:
+              example:
+                Errors:
+                - Type: NotFoundError
+                  Details: Project $uuid not found.
+                  Code: '404'
+                ResponseContext:
+                  RequestId: 45a64090-2e5b-428f-bfea-83a5f783f9e6
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '408':
+          description: TimeoutError
+          content:
+            application/json:
+              example:
+                Errors:
+                - Type: TimeoutError
+                  Details: Request Timeout. The server timed out waiting for the
+                    request.
+                  Code: '408'
+                ResponseContext:
+                  RequestId: 45a64090-2e5b-428f-bfea-83a5f783f9e6
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: InternalError
+          content:
+            application/json:
+              example:
+                Errors:
+                - Type: InternalError
+                  Details: Error processing project data
+                  Code: '500'
+                ResponseContext:
+                  RequestId: 45a64090-2e5b-428f-bfea-83a5f783f9e6
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '422':
+          description: ValidationError
+          content:
+            application/json:
+              example:
+                Errors:
+                - Type: ValidationError
+                  Details:
+                  - loc:
+                    - string
+                    - 0
+                    msg: string
+                    type: string
+                  Code: '422'
+                ResponseContext:
+                  RequestId: 45a64090-2e5b-428f-bfea-83a5f783f9e6
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  /projects/{project_id}/nets:
+    get:
+      tags:
+      - Projects
+      summary: Get Project Ntets
+      description: Retrieves the Nets details for a specific project by its ID. 
+        Returns the Nets information associated with the specified project.
+      operationId: GetProjectNets
+      parameters:
+      - name: project_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Project Id
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NetsResponse'
+        '404':
+          description: NotFoundError
+          content:
+            application/json:
+              example:
+                Errors:
+                - Type: NotFoundError
+                  Details: Project $uuid not found.
+                  Code: '404'
+                ResponseContext:
+                  RequestId: 45a64090-2e5b-428f-bfea-83a5f783f9e6
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '408':
+          description: TimeoutError
+          content:
+            application/json:
+              example:
+                Errors:
+                - Type: TimeoutError
+                  Details: Request Timeout. The server timed out waiting for the
+                    request.
+                  Code: '408'
+                ResponseContext:
+                  RequestId: 45a64090-2e5b-428f-bfea-83a5f783f9e6
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: InternalError
+          content:
+            application/json:
+              example:
+                Errors:
+                - Type: InternalError
+                  Details: Error processing project data
+                  Code: '500'
+                ResponseContext:
+                  RequestId: 45a64090-2e5b-428f-bfea-83a5f783f9e6
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '422':
+          description: ValidationError
+          content:
+            application/json:
+              example:
+                Errors:
+                - Type: ValidationError
+                  Details:
+                  - loc:
+                    - string
+                    - 0
+                    msg: string
+                    type: string
+                  Code: '422'
+                ResponseContext:
+                  RequestId: 45a64090-2e5b-428f-bfea-83a5f783f9e6
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  /clusters:
+    post:
+      tags:
+      - Clusters
+      summary: Create Cluster
+      description: Creates a new cluster with the provided configuration. The 
+        request must include the cluster details in the request body. all 
+        clusters are associated to a project
+      operationId: CreateCluster
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ClusterInput'
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ClusterResponse'
+        '503':
+          description: ResourceIsNotReady
+          content:
+            application/json:
+              example:
+                Errors:
+                - Type: ResourceIsNotReady
+                  Details: The service has been under global maintenance for 15 
+                    mins. Please, try again later
+                  Code: '503'
+                - Type: ResourceIsNotReady
+                  Details: 'Project not ready: pending'
+                  Code: '503'
+                ResponseContext:
+                  RequestId: 45a64090-2e5b-428f-bfea-83a5f783f9e6
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '423':
+          description: LockedResource
+          content:
+            application/json:
+              example:
+                Errors:
+                - Type: LockedResource
+                  Details: The project has been under maintenance for 15 mins. 
+                    Please, try again later
+                  Code: '423'
+                ResponseContext:
+                  RequestId: 45a64090-2e5b-428f-bfea-83a5f783f9e6
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: NotFoundError
+          content:
+            application/json:
+              example:
+                Errors:
+                - Type: NotFoundError
+                  Details: Project $uuid not found.
+                  Code: '404'
+                ResponseContext:
+                  RequestId: 45a64090-2e5b-428f-bfea-83a5f783f9e6
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '409':
+          description: ResourceConflict
+          content:
+            application/json:
+              example:
+                Errors:
+                - Type: ResourceConflict
+                  Details: The name 'default' cannot be used because it is a 
+                    reserved keyword.
+                  Code: '409'
+                - Type: ResourceConflict
+                  Details: Cluster with this name already exists.
+                  Code: '409'
+                - Type: ResourceConflict
+                  Details: The requested action cannot be performed because the 
+                    project has been deleted.
+                  Code: '409'
+                - Type: ResourceConflict
+                  Details: "Network overlap detected between source1 (net1) and source2
+                    (net2). \nPlease use non-overlapping network ranges."
+                  Code: '409'
+                ResponseContext:
+                  RequestId: 45a64090-2e5b-428f-bfea-83a5f783f9e6
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: ForbiddenError
+          content:
+            application/json:
+              example:
+                Errors:
+                - Type: ForbiddenError
+                  Details: You cannot have more than 2 clusters.
+                  Code: '403'
+                ResponseContext:
+                  RequestId: 45a64090-2e5b-428f-bfea-83a5f783f9e6
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '422':
+          description: ValidationError
+          content:
+            application/json:
+              example:
+                Errors:
+                - Type: ValidationError
+                  Details: "Invalid CIDR: 'cidr' is not an IPv4 range. Only IPv4 CIDR
+                    blocks are supported."
+                  Code: '422'
+                - Type: ValidationError
+                  Details: "Invalid CIDR: 'cidr' is not a private IP range as defined
+                    by RFC1918."
+                  Code: '422'
+                - Type: ValidationError
+                  Details: "Invalid CIDR: 'cidr' has a prefix length of /network.prefixlen.
+                    The minimal accepted prefix length is /23"
+                  Code: '422'
+                - Type: ValidationError
+                  Details: "Invalid CIDR: 'cidr' is not allowed as it belongs to the
+                    restricted subnet 172.31.0.0/16."
+                  Code: '422'
+                - Type: ValidationError
+                  Details: "Invalid CIDR: 'cidr' is not a valid CIDR block."
+                  Code: '422'
+                - Type: ValidationError
+                  Details: Failed to create cluster. cluster_dns is not part of 
+                    cidr_service
+                  Code: '422'
+                - Type: ValidationError
+                  Details: 'Private RFC1918 IPs are not allowed: cidr'
+                  Code: '422'
+                - Type: ValidationError
+                  Details: 'Loopback IPs are not allowed: cidr'
+                  Code: '422'
+                - Type: ValidationError
+                  Details: 'IPv6 addresses are not allowed: cidr'
+                  Code: '422'
+                - Type: ValidationError
+                  Details: 'Invalid network address: cidr'
+                  Code: '422'
+                - Type: ValidationError
+                  Details: 'Invalid cidr in the admin_whitelist: cidr'
+                  Code: '422'
+                - Type: ValidationError
+                  Details: 'Invalid plugin(s): list of invalid_plugins. Allowed plugins
+                    to enable/disable are: list of allowed_plugins'
+                  Code: '422'
+                - Type: ValidationError
+                  Details: "Failed to create cluster. Control plane plan 'control_planes'
+                    does not exist. Valid plans are: list of valid_plans"
+                  Code: '422'
+                - Type: ValidationError
+                  Details: Multi AZ is not allowed for the requested 
+                    control_plane size.
+                  Code: '422'
+                - Type: ValidationError
+                  Details: The requested subregions must be unique.
+                  Code: '422'
+                - Type: ValidationError
+                  Details: "The requested subregions 'cp_subregions' cannot be specified
+                    for multi AZ configuration (cp_multi_az: 'cp_multi_az'). Multi
+                    AZ cluster must have at least 3 subregions."
+                  Code: '422'
+                - Type: ValidationError
+                  Details: "The requested subregions 'cp_subregions' cannot be specified
+                    for the mono AZ configuration (cp_multi_az: 'cp_multi_az')."
+                  Code: '422'
+                - Type: ValidationError
+                  Details: The number of requested subregions exceeds the 
+                    available subregions.
+                  Code: '422'
+                - Type: ValidationError
+                  Details: The subregion 'subregion' does not exist.
+                  Code: '422'
+                - Type: ValidationError
+                  Details: This version of Kubernetes is not implemented.
+                  Code: '422'
+                - Type: ValidationError
+                  Details: Invalid version format. Use 'X.Y' (e.g., '1.30').
+                  Code: '422'
+                - Type: ValidationError
+                  Details: Invalid cluster version update. Only +1 minor version
+                    allowed.
+                  Code: '422'
+                - Type: ValidationError
+                  Details:
+                  - loc:
+                    - string
+                    - 0
+                    msg: string
+                    type: string
+                  Code: '422'
+                ResponseContext:
+                  RequestId: 45a64090-2e5b-428f-bfea-83a5f783f9e6
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: InternalError
+          content:
+            application/json:
+              example:
+                Errors:
+                - Type: InternalError
+                  Details: Failed to create cluster. Unable to set default 
+                    cp_subregion.
+                  Code: '500'
+                - Type: InternalError
+                  Details: Failed to create cluster.
+                  Code: '500'
+                ResponseContext:
+                  RequestId: 45a64090-2e5b-428f-bfea-83a5f783f9e6
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '501':
+          description: ResourceNotImplemented
+          content:
+            application/json:
+              example:
+                Errors:
+                - Type: ResourceNotImplemented
+                  Details: This cp_subregions is not implemented.
+                  Code: '501'
+                ResponseContext:
+                  RequestId: 45a64090-2e5b-428f-bfea-83a5f783f9e6
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '400':
+          description: InvalidResource
+          content:
+            application/json:
+              example:
+                Errors:
+                - Type: InvalidResource
+                  Details: The 'version' field is required.
+                  Code: '400'
+                ResponseContext:
+                  RequestId: 45a64090-2e5b-428f-bfea-83a5f783f9e6
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+    get:
+      tags:
+      - Clusters
+      summary: Get Clusters
+      description: Retrieves a list of clusters assosiated to project ID. You 
+        can optionally filter clusters by name, status, version, or deletion 
+        status. Returns a list of matching clusters
+      operationId: ListClustersByProjectID
+      parameters:
+      - name: project_id
+        in: query
+        required: false
+        schema:
+          type: string
+          nullable: true
+      - name: name
+        in: query
+        required: false
+        schema:
+          type: string
+          nullable: true
+      - name: status
+        in: query
+        required: false
+        schema:
+          type: string
+          nullable: true
+      - name: version
+        in: query
+        required: false
+        schema:
+          type: string
+          nullable: true
+      - name: deleted
+        in: query
+        required: false
+        schema:
+          type: boolean
+          nullable: true
+      - name: cursor
+        in: query
+        required: false
+        schema:
+          type: string
+          nullable: true
+      - name: page
+        in: query
+        required: false
+        schema:
+          type: integer
+          nullable: true
+      - name: limit
+        in: query
+        required: false
+        schema:
+          type: integer
+          maximum: 100
+          exclusiveMinimum: false
+          nullable: true
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ClusterResponseList'
+        '404':
+          description: NotFoundError
+          content:
+            application/json:
+              example:
+                Errors:
+                - Type: NotFoundError
+                  Details: Cluster $uuid not found.
+                  Code: '404'
+                - Type: NotFoundError
+                  Details: Project $uuid not found
+                  Code: '404'
+                ResponseContext:
+                  RequestId: 45a64090-2e5b-428f-bfea-83a5f783f9e6
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '400':
+          description: InvalidResource
+          content:
+            application/json:
+              example:
+                Errors:
+                - Type: InvalidResource
+                  Details: Invalid cluster data format
+                  Code: '400'
+                ResponseContext:
+                  RequestId: 45a64090-2e5b-428f-bfea-83a5f783f9e6
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: InternalError
+          content:
+            application/json:
+              example:
+                Errors:
+                - Type: InternalError
+                  Details: Internal server error
+                  Code: '500'
+                ResponseContext:
+                  RequestId: 45a64090-2e5b-428f-bfea-83a5f783f9e6
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '422':
+          description: ValidationError
+          content:
+            application/json:
+              example:
+                Errors:
+                - Type: ValidationError
+                  Details:
+                  - loc:
+                    - string
+                    - 0
+                    msg: string
+                    type: string
+                  Code: '422'
+                ResponseContext:
+                  RequestId: 45a64090-2e5b-428f-bfea-83a5f783f9e6
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  /clusters/all:
+    get:
+      tags:
+      - Clusters
+      summary: Get All Clusters
+      description: Retrieves a list of all clusters, with optional filters for 
+        name, status, version, and deletion status. Returns a list of matching 
+        clusters
+      operationId: ListAllClusters
+      parameters:
+      - name: name
+        in: query
+        required: false
+        schema:
+          type: string
+          nullable: true
+      - name: status
+        in: query
+        required: false
+        schema:
+          type: string
+          nullable: true
+      - name: version
+        in: query
+        required: false
+        schema:
+          type: string
+          nullable: true
+      - name: deleted
+        in: query
+        required: false
+        schema:
+          type: boolean
+          nullable: true
+      - name: cursor
+        in: query
+        required: false
+        schema:
+          type: string
+          nullable: true
+      - name: page
+        in: query
+        required: false
+        schema:
+          type: integer
+          nullable: true
+      - name: limit
+        in: query
+        required: false
+        schema:
+          type: integer
+          maximum: 100
+          exclusiveMinimum: false
+          nullable: true
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ClusterResponseList'
+        '500':
+          description: InternalError
+          content:
+            application/json:
+              example:
+                Errors:
+                - Type: InternalError
+                  Details: Internal server error
+                  Code: '500'
+                ResponseContext:
+                  RequestId: 45a64090-2e5b-428f-bfea-83a5f783f9e6
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '422':
+          description: ValidationError
+          content:
+            application/json:
+              example:
+                Errors:
+                - Type: ValidationError
+                  Details:
+                  - loc:
+                    - string
+                    - 0
+                    msg: string
+                    type: string
+                  Code: '422'
+                ResponseContext:
+                  RequestId: 45a64090-2e5b-428f-bfea-83a5f783f9e6
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: NotFoundError
+          content:
+            application/json:
+              example:
+                Errors:
+                - Type: NotFoundError
+                  Details: Cluster $uuid not found.
+                  Code: '404'
+                - Type: NotFoundError
+                  Details: Project $uuid not found
+                  Code: '404'
+                ResponseContext:
+                  RequestId: 45a64090-2e5b-428f-bfea-83a5f783f9e6
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '400':
+          description: InvalidResource
+          content:
+            application/json:
+              example:
+                Errors:
+                - Type: InvalidResource
+                  Details: Invalid cluster data format
+                  Code: '400'
+                ResponseContext:
+                  RequestId: 45a64090-2e5b-428f-bfea-83a5f783f9e6
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  /clusters/{cluster_id}:
+    get:
+      tags:
+      - Clusters
+      summary: Get Cluster
+      description: Retrieves detailed information about a specific cluster by 
+        its ID. Returns the cluster details if found.
+      operationId: GetCluster
+      parameters:
+      - name: cluster_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Cluster Id
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ClusterResponse'
+        '404':
+          description: NotFoundError
+          content:
+            application/json:
+              example:
+                Errors:
+                - Type: NotFoundError
+                  Details: Cluster $uuid not found.
+                  Code: '404'
+                - Type: NotFoundError
+                  Details: Project $uuid not found
+                  Code: '404'
+                ResponseContext:
+                  RequestId: 45a64090-2e5b-428f-bfea-83a5f783f9e6
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '400':
+          description: InvalidResource
+          content:
+            application/json:
+              example:
+                Errors:
+                - Type: InvalidResource
+                  Details: Invalid cluster data format
+                  Code: '400'
+                ResponseContext:
+                  RequestId: 45a64090-2e5b-428f-bfea-83a5f783f9e6
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: InternalError
+          content:
+            application/json:
+              example:
+                Errors:
+                - Type: InternalError
+                  Details: Error processing cluster data
+                  Code: '500'
+                ResponseContext:
+                  RequestId: 45a64090-2e5b-428f-bfea-83a5f783f9e6
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '422':
+          description: ValidationError
+          content:
+            application/json:
+              example:
+                Errors:
+                - Type: ValidationError
+                  Details:
+                  - loc:
+                    - string
+                    - 0
+                    msg: string
+                    type: string
+                  Code: '422'
+                ResponseContext:
+                  RequestId: 45a64090-2e5b-428f-bfea-83a5f783f9e6
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+    patch:
+      tags:
+      - Clusters
+      summary: Update Cluster
+      description: Updates the configuration of an existing cluster by its ID. 
+        The request must include the updated cluster details in the request 
+        body. Returns the updated cluster information
+      operationId: UpdateCluster
+      parameters:
+      - name: cluster_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Cluster Id
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ClusterUpdate'
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ClusterResponse'
+        '503':
+          description: ResourceIsNotReady
+          content:
+            application/json:
+              example:
+                Errors:
+                - Type: ResourceIsNotReady
+                  Details: The service has been under global maintenance for 15 
+                    mins. Please, try again later
+                  Code: '503'
+                - Type: ResourceIsNotReady
+                  Details: 'Project not ready: status'
+                  Code: '503'
+                ResponseContext:
+                  RequestId: 45a64090-2e5b-428f-bfea-83a5f783f9e6
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '423':
+          description: LockedResource
+          content:
+            application/json:
+              example:
+                Errors:
+                - Type: LockedResource
+                  Details: The project has been under maintenance for 15 mins. 
+                    Please, try again later
+                  Code: '423'
+                ResponseContext:
+                  RequestId: 45a64090-2e5b-428f-bfea-83a5f783f9e6
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: NotFoundError
+          content:
+            application/json:
+              example:
+                Errors:
+                - Type: NotFoundError
+                  Details: Cluster $uuid not found.
+                  Code: '404'
+                - Type: NotFoundError
+                  Details: Project $uuid not found
+                  Code: '404'
+                ResponseContext:
+                  RequestId: 45a64090-2e5b-428f-bfea-83a5f783f9e6
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '409':
+          description: ResourceConflict
+          content:
+            application/json:
+              example:
+                Errors:
+                - Type: ResourceConflict
+                  Details: The requested action cannot be performed because the 
+                    project has been deleted.
+                  Code: '409'
+                - Type: ResourceConflict
+                  Details: The requested action cannot be performed because the 
+                    cluster has been deleted.
+                  Code: '409'
+                ResponseContext:
+                  RequestId: 45a64090-2e5b-428f-bfea-83a5f783f9e6
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '400':
+          description: InvalidResource
+          content:
+            application/json:
+              example:
+                Errors:
+                - Type: InvalidResource
+                  Details: Invalid value for control_planes
+                  Code: '400'
+                - Type: InvalidResource
+                  Details: Downgrade from a multi-master setup (cp.3) to a 
+                    single master (cp.mono.master) is not allowed.
+                  Code: '400'
+                - Type: InvalidResource
+                  Details: The 'version' field is required.
+                  Code: '400'
+                ResponseContext:
+                  RequestId: 45a64090-2e5b-428f-bfea-83a5f783f9e6
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '422':
+          description: ValidationError
+          content:
+            application/json:
+              example:
+                Errors:
+                - Type: ValidationError
+                  Details: 'Invalid plugin(s): list of invalid_plugins. Allowed plugins
+                    to enable/disable are: list of allowed_plugins'
+                  Code: '422'
+                - Type: ValidationError
+                  Details: 'Private RFC1918 IPs are not allowed: cidr'
+                  Code: '422'
+                - Type: ValidationError
+                  Details: 'Loopback IPs are not allowed: cidr'
+                  Code: '422'
+                - Type: ValidationError
+                  Details: 'IPv6 addresses are not allowed: cidr'
+                  Code: '422'
+                - Type: ValidationError
+                  Details: 'Invalid network address: cidr'
+                  Code: '422'
+                - Type: ValidationError
+                  Details: 'Invalid cidr in the admin_whitelist: cidr'
+                  Code: '422'
+                - Type: ValidationError
+                  Details: This version of Kubernetes is not implemented.
+                  Code: '422'
+                - Type: ValidationError
+                  Details: Invalid cluster version update. Only +1 minor version
+                    allowed.
+                  Code: '422'
+                - Type: ValidationError
+                  Details:
+                  - loc:
+                    - string
+                    - 0
+                    msg: string
+                    type: string
+                  Code: '422'
+                ResponseContext:
+                  RequestId: 45a64090-2e5b-428f-bfea-83a5f783f9e6
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: InternalError
+          content:
+            application/json:
+              example:
+                Errors:
+                - Type: InternalError
+                  Details: Failed to update cluster
+                  Code: '500'
+                ResponseContext:
+                  RequestId: 45a64090-2e5b-428f-bfea-83a5f783f9e6
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+    delete:
+      tags:
+      - Clusters
+      summary: Delete Cluster
+      description: Deletes a specific cluster by its ID. Returns confirmation of
+        the deletion.
+      operationId: DeleteCluster
+      parameters:
+      - name: cluster_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Cluster Id
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DetailResponse'
+        '503':
+          description: ResourceIsNotReady
+          content:
+            application/json:
+              example:
+                Errors:
+                - Type: ResourceIsNotReady
+                  Details: The service has been under global maintenance for 15 
+                    mins. Please, try again later
+                  Code: '503'
+                - Type: ResourceIsNotReady
+                  Details: 'Project not ready: status'
+                  Code: '503'
+                ResponseContext:
+                  RequestId: 45a64090-2e5b-428f-bfea-83a5f783f9e6
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '423':
+          description: LockedResource
+          content:
+            application/json:
+              example:
+                Errors:
+                - Type: LockedResource
+                  Details: The project has been under maintenance for 15 mins. 
+                    Please, try again later
+                  Code: '423'
+                ResponseContext:
+                  RequestId: 45a64090-2e5b-428f-bfea-83a5f783f9e6
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: NotFoundError
+          content:
+            application/json:
+              example:
+                Errors:
+                - Type: NotFoundError
+                  Details: Cluster $uuid not found.
+                  Code: '404'
+                - Type: NotFoundError
+                  Details: Project $uuid not found
+                  Code: '404'
+                ResponseContext:
+                  RequestId: 45a64090-2e5b-428f-bfea-83a5f783f9e6
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '409':
+          description: ResourceConflict
+          content:
+            application/json:
+              example:
+                Errors:
+                - Type: ResourceConflict
+                  Details: The requested action cannot be performed because the 
+                    project has been deleted.
+                  Code: '409'
+                - Type: ResourceConflict
+                  Details: The requested action cannot be performed because the 
+                    cluster has been deleted.
+                  Code: '409'
+                ResponseContext:
+                  RequestId: 45a64090-2e5b-428f-bfea-83a5f783f9e6
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '422':
+          description: ValidationError
+          content:
+            application/json:
+              example:
+                Errors:
+                - Type: ValidationError
+                  Details:
+                  - loc:
+                    - string
+                    - 0
+                    msg: string
+                    type: string
+                  Code: '422'
+                ResponseContext:
+                  RequestId: 45a64090-2e5b-428f-bfea-83a5f783f9e6
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: InternalError
+          content:
+            application/json:
+              example:
+                Errors:
+                - Type: InternalError
+                  Details: Internal server error
+                  Code: '500'
+                ResponseContext:
+                  RequestId: 45a64090-2e5b-428f-bfea-83a5f783f9e6
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: ForbiddenError
+          content:
+            application/json:
+              example:
+                Errors:
+                - Type: ForbiddenError
+                  Details: Cluster $uuid can't be deleted because 
+                    disable_api_termination is enable
+                  Code: '403'
+                ResponseContext:
+                  RequestId: 45a64090-2e5b-428f-bfea-83a5f783f9e6
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  /clusters/{cluster_id}/kubeconfig:
+    get:
+      tags:
+      - Clusters
+      summary: Get Cluster Kubeconfig
+      description: Retrieves the kubeconfig for a specific cluster by its ID. 
+        Optionally, you can specify a user, group, and TTL (time-to-live) for 
+        the kubeconfig. Returns the kubeconfig details as a dictionary.
+      operationId: GetKubeconfig
+      parameters:
+      - name: cluster_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Cluster Id
+      - name: user
+        in: query
+        required: false
+        schema:
+          type: string
+          nullable: true
+      - name: group
+        in: query
+        required: false
+        schema:
+          type: string
+          nullable: true
+      - name: ttl
+        in: query
+        required: false
+        schema:
+          type: string
+          nullable: true
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/KubeconfigResponse'
+        '404':
+          description: NotFoundError
+          content:
+            application/json:
+              example:
+                Errors:
+                - Type: NotFoundError
+                  Details: Cluster $uuid not found.
+                  Code: '404'
+                - Type: NotFoundError
+                  Details: Project $uuid not found
+                  Code: '404'
+                ResponseContext:
+                  RequestId: 45a64090-2e5b-428f-bfea-83a5f783f9e6
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '400':
+          description: InvalidResource
+          content:
+            application/json:
+              example:
+                Errors:
+                - Type: InvalidResource
+                  Details: Invalid cluster data format
+                  Code: '400'
+                ResponseContext:
+                  RequestId: 45a64090-2e5b-428f-bfea-83a5f783f9e6
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: InternalError
+          content:
+            application/json:
+              example:
+                Errors:
+                - Type: InternalError
+                  Details: Error processing project data
+                  Code: '500'
+                ResponseContext:
+                  RequestId: 45a64090-2e5b-428f-bfea-83a5f783f9e6
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '422':
+          description: ValidationError
+          content:
+            application/json:
+              example:
+                Errors:
+                - Type: ValidationError
+                  Details: "Invalid user 'user': Usernames cannot start with 'system:'
+                    or 'oks:' as these are reserved."
+                  Code: '422'
+                - Type: ValidationError
+                  Details: "Invalid group 'group': Group names cannot start with 'system:'
+                    or 'oks:' as these are reserved."
+                  Code: '422'
+                - Type: ValidationError
+                  Details:
+                  - loc:
+                    - string
+                    - 0
+                    msg: string
+                    type: string
+                  Code: '422'
+                ResponseContext:
+                  RequestId: 45a64090-2e5b-428f-bfea-83a5f783f9e6
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '408':
+          description: TimeoutError
+          content:
+            application/json:
+              example:
+                Errors:
+                - Type: TimeoutError
+                  Details: Request Timeout. The server timed out waiting for the
+                    request.
+                  Code: '408'
+                ResponseContext:
+                  RequestId: 45a64090-2e5b-428f-bfea-83a5f783f9e6
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '503':
+          description: ResourceIsNotReady
+          content:
+            application/json:
+              example:
+                Errors:
+                - Type: ResourceIsNotReady
+                  Details: The cluster is currently being created and is not yet
+                    available. Please try in few minutes.
+                  Code: '503'
+                - Type: ResourceIsNotReady
+                  Details: 'Project not ready: status'
+                  Code: '503'
+                ResponseContext:
+                  RequestId: 45a64090-2e5b-428f-bfea-83a5f783f9e6
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '409':
+          description: ResourceConflict
+          content:
+            application/json:
+              example:
+                Errors:
+                - Type: ResourceConflict
+                  Details: The requested action cannot be performed because the 
+                    project has been deleted.
+                  Code: '409'
+                - Type: ResourceConflict
+                  Details: The requested action cannot be performed because the 
+                    cluster has been deleted.
+                  Code: '409'
+                ResponseContext:
+                  RequestId: 45a64090-2e5b-428f-bfea-83a5f783f9e6
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+    post:
+      tags:
+      - Clusters
+      summary: Post Cluster Kubeconfig
+      description: Retrieves the kubeconfig for a specific cluster by its ID 
+        with optional NaCl public key encryption. Optionally, you can specify a 
+        user, group, and TTL (time-to-live) for the kubeconfig. If the 
+        x_encrypt_nacl header is provided, the kubeconfig will be encrypted 
+        using the given NaCl public key. Returns the kubeconfig details as a 
+        dictionary.
+      operationId: GetKubeconfigWithPubkeyNACL
+      parameters:
+      - name: cluster_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Cluster Id
+      - name: user
+        in: query
+        required: false
+        schema:
+          type: string
+          nullable: true
+      - name: group
+        in: query
+        required: false
+        schema:
+          type: string
+          nullable: true
+      - name: ttl
+        in: query
+        required: false
+        schema:
+          type: string
+          nullable: true
+      - name: x-encrypt-nacl
+        in: header
+        required: false
+        schema:
+          type: string
+          nullable: true
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/KubeconfigResponse'
+        '404':
+          description: NotFoundError
+          content:
+            application/json:
+              example:
+                Errors:
+                - Type: NotFoundError
+                  Details: Cluster $uuid not found.
+                  Code: '404'
+                - Type: NotFoundError
+                  Details: Project $uuid not found
+                  Code: '404'
+                ResponseContext:
+                  RequestId: 45a64090-2e5b-428f-bfea-83a5f783f9e6
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '400':
+          description: InvalidResource
+          content:
+            application/json:
+              example:
+                Errors:
+                - Type: InvalidResource
+                  Details: Invalid cluster data format
+                  Code: '400'
+                ResponseContext:
+                  RequestId: 45a64090-2e5b-428f-bfea-83a5f783f9e6
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: InternalError
+          content:
+            application/json:
+              example:
+                Errors:
+                - Type: InternalError
+                  Details: Error processing project data
+                  Code: '500'
+                ResponseContext:
+                  RequestId: 45a64090-2e5b-428f-bfea-83a5f783f9e6
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '422':
+          description: ValidationError
+          content:
+            application/json:
+              example:
+                Errors:
+                - Type: ValidationError
+                  Details: "Invalid user 'user': Usernames cannot start with 'system:'
+                    or 'oks:' as these are reserved."
+                  Code: '422'
+                - Type: ValidationError
+                  Details: "Invalid group 'group': Group names cannot start with 'system:'
+                    or 'oks:' as these are reserved."
+                  Code: '422'
+                - Type: ValidationError
+                  Details:
+                  - loc:
+                    - string
+                    - 0
+                    msg: string
+                    type: string
+                  Code: '422'
+                ResponseContext:
+                  RequestId: 45a64090-2e5b-428f-bfea-83a5f783f9e6
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '408':
+          description: TimeoutError
+          content:
+            application/json:
+              example:
+                Errors:
+                - Type: TimeoutError
+                  Details: Request Timeout. The server timed out waiting for the
+                    request.
+                  Code: '408'
+                ResponseContext:
+                  RequestId: 45a64090-2e5b-428f-bfea-83a5f783f9e6
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '503':
+          description: ResourceIsNotReady
+          content:
+            application/json:
+              example:
+                Errors:
+                - Type: ResourceIsNotReady
+                  Details: The cluster is currently being created and is not yet
+                    available. Please try in few minutes.
+                  Code: '503'
+                - Type: ResourceIsNotReady
+                  Details: 'Project not ready: status'
+                  Code: '503'
+                ResponseContext:
+                  RequestId: 45a64090-2e5b-428f-bfea-83a5f783f9e6
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '409':
+          description: ResourceConflict
+          content:
+            application/json:
+              example:
+                Errors:
+                - Type: ResourceConflict
+                  Details: The requested action cannot be performed because the 
+                    project has been deleted.
+                  Code: '409'
+                - Type: ResourceConflict
+                  Details: The requested action cannot be performed because the 
+                    cluster has been deleted.
+                  Code: '409'
+                ResponseContext:
+                  RequestId: 45a64090-2e5b-428f-bfea-83a5f783f9e6
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  /clusters/{cluster_id}/upgrade:
+    patch:
+      tags:
+      - Clusters
+      summary: Upgrade Cluster
+      description: Upgrades a specific cluster by its ID to the latest available
+        version. Returns the updated cluster details after the upgrade process 
+        is completed.
+      operationId: UpgradeCluster
+      parameters:
+      - name: cluster_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Cluster Id
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ClusterResponse'
+        '503':
+          description: ResourceIsNotReady
+          content:
+            application/json:
+              example:
+                Errors:
+                - Type: ResourceIsNotReady
+                  Details: The service has been under global maintenance for 15 
+                    mins. Please, try again later
+                  Code: '503'
+                - Type: ResourceIsNotReady
+                  Details: 'Project not ready: status'
+                  Code: '503'
+                ResponseContext:
+                  RequestId: 45a64090-2e5b-428f-bfea-83a5f783f9e6
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '423':
+          description: LockedResource
+          content:
+            application/json:
+              example:
+                Errors:
+                - Type: LockedResource
+                  Details: The project has been under maintenance for 15 mins. 
+                    Please, try again later
+                  Code: '423'
+                ResponseContext:
+                  RequestId: 45a64090-2e5b-428f-bfea-83a5f783f9e6
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: NotFoundError
+          content:
+            application/json:
+              example:
+                Errors:
+                - Type: NotFoundError
+                  Details: Cluster $uuid not found.
+                  Code: '404'
+                - Type: NotFoundError
+                  Details: Project $uuid not found
+                  Code: '404'
+                ResponseContext:
+                  RequestId: 45a64090-2e5b-428f-bfea-83a5f783f9e6
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '409':
+          description: ResourceConflict
+          content:
+            application/json:
+              example:
+                Errors:
+                - Type: ResourceConflict
+                  Details: The requested action cannot be performed because the 
+                    project has been deleted.
+                  Code: '409'
+                - Type: ResourceConflict
+                  Details: The requested action cannot be performed because the 
+                    cluster has been deleted.
+                  Code: '409'
+                ResponseContext:
+                  RequestId: 45a64090-2e5b-428f-bfea-83a5f783f9e6
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '422':
+          description: ValidationError
+          content:
+            application/json:
+              example:
+                Errors:
+                - Type: ValidationError
+                  Details:
+                  - loc:
+                    - string
+                    - 0
+                    msg: string
+                    type: string
+                  Code: '422'
+                ResponseContext:
+                  RequestId: 45a64090-2e5b-428f-bfea-83a5f783f9e6
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: InternalError
+          content:
+            application/json:
+              example:
+                Errors:
+                - Type: InternalError
+                  Details: Failed to upgrade cluster
+                  Code: '500'
+                ResponseContext:
+                  RequestId: 45a64090-2e5b-428f-bfea-83a5f783f9e6
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  /clusters/limits/kubernetes_versions:
+    get:
+      tags:
+      - Clusters
+      summary: Get Kubernetes Versions
+      description: Retrieves the available Kubernetes versions for cluster 
+        creation or upgrades. Returns a list of supported Kubernetes versions.
+      operationId: GetKubernetesVersions
+      parameters: []
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/KubernetesVersionsResponse'
+        '422':
+          description: ValidationError
+          content:
+            application/json:
+              example:
+                Errors:
+                - Type: ValidationError
+                  Details:
+                  - loc:
+                    - string
+                    - 0
+                    msg: string
+                    type: string
+                  Code: '422'
+                ResponseContext:
+                  RequestId: 45a64090-2e5b-428f-bfea-83a5f783f9e6
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  /clusters/limits/cp_subregions:
+    get:
+      tags:
+      - Clusters
+      summary: Get Cp Subregions
+      description: Retrieves the available subregions for cluster deployment. 
+        Returns a list of supported subregions for cluster creation.
+      operationId: GetCPSubregions
+      parameters: []
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CPSubregionsResponse'
+        '422':
+          description: ValidationError
+          content:
+            application/json:
+              example:
+                Errors:
+                - Type: ValidationError
+                  Details:
+                  - loc:
+                    - string
+                    - 0
+                    msg: string
+                    type: string
+                  Code: '422'
+                ResponseContext:
+                  RequestId: 45a64090-2e5b-428f-bfea-83a5f783f9e6
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  /clusters/limits/control_plane_plans:
+    get:
+      tags:
+      - Clusters
+      summary: Get Control Plane Plans
+      description: Retrieves the available control plane plans for cluster 
+        deployment. Returns a list of supported control plane plans for cluster 
+        creation or upgrades.
+      operationId: GetControlPlanePlans
+      parameters: []
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ControlPlanesResponse'
+        '422':
+          description: ValidationError
+          content:
+            application/json:
+              example:
+                Errors:
+                - Type: ValidationError
+                  Details:
+                  - loc:
+                    - string
+                    - 0
+                    msg: string
+                    type: string
+                  Code: '422'
+                ResponseContext:
+                  RequestId: 45a64090-2e5b-428f-bfea-83a5f783f9e6
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  /templates/project:
+    get:
+      tags:
+      - Templates
+      summary: Get Project Template
+      description: Retrieves the default project template, including predefined 
+        network configurations, region, and metadata. Returns a JSON response 
+        containing the request context and template details, such as CIDR block,
+        project name, region, description, and tags.
+      operationId: GetProjectTemplate
+      parameters: []
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TemplateResponse_ProjectInput_'
+        '422':
+          description: ValidationError
+          content:
+            application/json:
+              example:
+                Errors:
+                - Type: ValidationError
+                  Details:
+                  - loc:
+                    - string
+                    - 0
+                    msg: string
+                    type: string
+                  Code: '422'
+                ResponseContext:
+                  RequestId: 45a64090-2e5b-428f-bfea-83a5f783f9e6
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  /templates/cluster:
+    get:
+      tags:
+      - Templates
+      summary: Get Cluster Template
+      description: Retrieves the default cluster template, including predefined 
+        control plane configurations, networking settings, and maintenance 
+        schedules. Returns a JSON response containing the request context and 
+        template details, such as control plane type, CIDR ranges for pods and 
+        services, admission flags, multi-AZ support, Kubernetes version, 
+        subregions, and scheduled automatic maintenance settings.
+      operationId: GetClusterTemplate
+      parameters:
+      - name: X-Real-IP
+        in: header
+        required: false
+        schema:
+          type: string
+          nullable: true
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TemplateResponse_ClusterInputTemplate_'
+        '422':
+          description: ValidationError
+          content:
+            application/json:
+              example:
+                Errors:
+                - Type: ValidationError
+                  Details:
+                  - loc:
+                    - string
+                    - 0
+                    msg: string
+                    type: string
+                  Code: '422'
+                ResponseContext:
+                  RequestId: 45a64090-2e5b-428f-bfea-83a5f783f9e6
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  /templates/nodepool:
+    get:
+      tags:
+      - Templates
+      summary: Get Nodepool Template
+      description: Retrieves the default node pool template, including 
+        predefined configurations for node scaling, storage, and upgrade 
+        strategies. Returns a JSON response containing the request context and 
+        template details, such as node count, node type, availability zones, 
+        volume specifications, upgrade strategy, and auto-healing settings.
+      operationId: GetNodepoolTemplate
+      parameters: []
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TemplateResponse_Nodepool_'
+        '422':
+          description: ValidationError
+          content:
+            application/json:
+              example:
+                Errors:
+                - Type: ValidationError
+                  Details:
+                  - loc:
+                    - string
+                    - 0
+                    msg: string
+                    type: string
+                  Code: '422'
+                ResponseContext:
+                  RequestId: 45a64090-2e5b-428f-bfea-83a5f783f9e6
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  /templates/netpeeringrequest:
+    get:
+      tags:
+      - Templates
+      summary: Get Netpeering Request Template
+      description: NetPeering Request manifest
+      operationId: GetNetPeeringRequestTemplate
+      parameters: []
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TemplateResponse_NetPeeringRequest_'
+        '422':
+          description: ValidationError
+          content:
+            application/json:
+              example:
+                Errors:
+                - Type: ValidationError
+                  Details:
+                  - loc:
+                    - string
+                    - 0
+                    msg: string
+                    type: string
+                  Code: '422'
+                ResponseContext:
+                  RequestId: 45a64090-2e5b-428f-bfea-83a5f783f9e6
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  /templates/netpeeringacceptance:
+    get:
+      tags:
+      - Templates
+      summary: Get Netpeering Acceptance Template
+      description: NetPeering Acceptance manifest
+      operationId: GetNetPeeringAcceptanceTemplate
+      parameters: []
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TemplateResponse_NetPeeringAcceptance_'
+        '422':
+          description: ValidationError
+          content:
+            application/json:
+              example:
+                Errors:
+                - Type: ValidationError
+                  Details:
+                  - loc:
+                    - string
+                    - 0
+                    msg: string
+                    type: string
+                  Code: '422'
+                ResponseContext:
+                  RequestId: 45a64090-2e5b-428f-bfea-83a5f783f9e6
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  /quotas:
+    get:
+      tags:
+      - Quotas
+      summary: Get Quotas
+      description: Get OKS Quotas.
+      operationId: GetQuotas
+      parameters: []
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/quotas__quota_schema__QuotasResponse'
+        '500':
+          description: InternalError
+          content:
+            application/json:
+              example:
+                Errors:
+                - Type: InternalError
+                  Details: Validation error limits not set
+                  Code: '500'
+                - Type: InternalError
+                  Details: Validation error limits not set for projects.
+                  Code: '500'
+                - Type: InternalError
+                  Details: Validation error limits not set for clusters.
+                  Code: '500'
+                - Type: InternalError
+                  Details: Failed to get quotas
+                  Code: '500'
+                ResponseContext:
+                  RequestId: 45a64090-2e5b-428f-bfea-83a5f783f9e6
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '422':
+          description: ValidationError
+          content:
+            application/json:
+              example:
+                Errors:
+                - Type: ValidationError
+                  Details:
+                  - loc:
+                    - string
+                    - 0
+                    msg: string
+                    type: string
+                  Code: '422'
+                ResponseContext:
+                  RequestId: 45a64090-2e5b-428f-bfea-83a5f783f9e6
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  /myip:
+    get:
+      tags:
+      - MyIp
+      summary: Get Client Ip
+      description: Returns client IP headers and request ID.
+      operationId: GetClientIP
+      parameters:
+      - name: X-Real-IP
+        in: header
+        required: false
+        schema:
+          type: string
+          nullable: true
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/IPResponse'
+        '422':
+          description: ValidationError
+          content:
+            application/json:
+              example:
+                Errors:
+                - Type: ValidationError
+                  Details:
+                  - loc:
+                    - string
+                    - 0
+                    msg: string
+                    type: string
+                  Code: '422'
+                ResponseContext:
+                  RequestId: 45a64090-2e5b-428f-bfea-83a5f783f9e6
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+components:
+  schemas:
+    AdmissionFlags:
+      properties:
+        disable_admission_plugins:
+          items:
+            type: string
+          type: array
+          title: Disable Admission Plugins
+          description: List of Kubernetes admission plugins that are disabled
+          default: []
+        enable_admission_plugins:
+          items:
+            type: string
+          type: array
+          title: Enable Admission Plugins
+          description: List of Kubernetes admission plugins that are enabled
+          default: []
+        applied_admission_plugins:
+          items:
+            type: string
+          type: array
+          title: Applied Admission Plugins
+          description: List of admission plugins currently applied to the 
+            cluster
+          default:
+          - CertificateApproval
+          - CertificateSigning
+          - CertificateSubjectRestriction
+          - ClusterTrustBundleAttest
+          - DefaultIngressClass
+          - DefaultStorageClass
+          - DefaultTolerationSeconds
+          - LimitRanger
+          - MutatingAdmissionWebhook
+          - NamespaceLifecycle
+          - PersistentVolumeClaimResize
+          - PodSecurity
+          - Priority
+          - ResourceQuota
+          - RuntimeClass
+          - ServiceAccount
+          - StorageObjectInUseProtection
+          - TaintNodesByCondition
+          - ValidatingAdmissionPolicy
+          - ValidatingAdmissionWebhook
+      type: object
+      title: AdmissionFlags
+    AdmissionFlagsInput:
+      properties:
+        disable_admission_plugins:
+          items:
+            type: string
+          type: array
+          title: Disable Admission Plugins
+          description: List of Kubernetes admission plugins to disable
+        enable_admission_plugins:
+          items:
+            type: string
+          type: array
+          title: Enable Admission Plugins
+          description: List of Kubernetes admission plugins to enable
+      type: object
+      title: AdmissionFlagsInput
+    AuthStrategy:
+      properties:
+        oidc:
+          allOf:
+          - $ref: '#/components/schemas/OpenIdConnectConfig'
+          title: OpenID Connect Authentication
+          description: Configuration for authenticating to the cluster using 
+            OpenID Connect (OIDC).
+      type: object
+      required:
+      - oidc
+      title: AuthStrategy
+    AutoMaintenances:
+      properties:
+        minor_upgrade_maintenance:
+          allOf:
+          - $ref: '#/components/schemas/MaintenanceWindow'
+          title: Minor Upgrade Maintenance
+          description: Maintenance window configuration for minor Kubernetes 
+            upgrades
+        patch_upgrade_maintenance:
+          allOf:
+          - $ref: '#/components/schemas/MaintenanceWindow'
+          title: Patch Upgrade Maintenance
+          description: Maintenance window configuration for patch Kubernetes 
+            upgrades
+      type: object
+      required:
+      - minor_upgrade_maintenance
+      - patch_upgrade_maintenance
+      title: AutoMaintenances
+    AutoUpgradeMaintenance:
+      properties:
+        durationHours:
+          type: integer
+          title: Duration Hours
+          description: Duration of the maintenance window in hours
+        startHour:
+          type: integer
+          maximum: 23.0
+          minimum: 0.0
+          title: Start Hour
+          description: Hour of the day when maintenance window starts (0-23)
+        weekDay:
+          type: string
+          enum:
+          - Mon
+          - Tue
+          - Wed
+          - Thu
+          - Fri
+          - Sat
+          - Sun
+          title: Week Day
+          description: Day of the week for the maintenance window (e.g., Mon, 
+            Tue)
+      type: object
+      required:
+      - durationHours
+      - startHour
+      - weekDay
+      title: AutoUpgradeMaintenance
+    CPSubregionsResponse:
+      properties:
+        ResponseContext:
+          $ref: '#/components/schemas/clusters__cluster_schema__ResponseContext'
+        CPSubregions:
+          items:
+            type: string
+          type: array
+          title: CP Subregions
+          description: List of available control plane subregions
+      type: object
+      required:
+      - ResponseContext
+      - CPSubregions
+      title: CP Subregions Response
+    Cluster:
+      properties:
+        project_id:
+          type: string
+          title: Project ID
+          description: Unique identifier of the project this cluster belongs to
+        id:
+          type: string
+          title: Cluster ID
+          description: Unique UUID of the cluster
+        name:
+          type: string
+          title: Cluster Name
+          description: Unique cluster name per project
+        description:
+          type: string
+          title: Description
+          description: Optional description of the cluster
+          default: ''
+        cp_multi_az:
+          type: boolean
+          title: Control Plane Multi-AZ
+          description: Flag indicating if multi-availability zone is enabled for
+            the control plane
+        cp_subregions:
+          items:
+            type: string
+          type: array
+          title: Control Plane Subregions
+          description: Subregions where control plane components are deployed
+        version:
+          type: string
+          title: Kubernetes Version
+          description: Version of Kubernetes deployed in the cluster
+        expected_version:
+          type: string
+          nullable: true
+        cni:
+          type: string
+          title: CNI
+          description: Container Network Interface used in the cluster
+        admin_lbu:
+          type: boolean
+          title: Admin LBU
+          description: Flag indicating if admin load balancer is enabled for 
+            cluster management
+        admission_flags:
+          allOf:
+          - $ref: '#/components/schemas/AdmissionFlags'
+          title: Admission Flags
+          description: Configuration for Kubernetes admission controllers
+        cidr_pods:
+          type: string
+          title: Pods CIDR
+          description: CIDR block for Kubernetes pods network
+        cidr_service:
+          type: string
+          title: Service CIDR
+          description: CIDR block for Kubernetes services network
+        cluster_dns:
+          type: string
+          title: Cluster DNS
+          description: IP address for cluster DNS service
+        tags:
+          additionalProperties:
+            type: string
+          type: object
+          title: Tags
+          description: Key-value pairs for cluster metadata
+          example:
+            key: value
+        auto_maintenances:
+          allOf:
+          - $ref: '#/components/schemas/AutoMaintenances'
+          nullable: true
+        maintenance_window:
+          allOf:
+          - $ref: '#/components/schemas/Maintenance'
+          nullable: true
+        control_planes:
+          type: string
+          title: Control Planes
+          description: Type of control plane deployment for the cluster
+        expected_control_planes:
+          type: string
+          nullable: true
+        admin_whitelist:
+          items:
+            type: string
+          type: array
+          title: Admin Whitelist
+          description: List of CIDR blocks or IP addresses allowed to access the
+            Kubernetes API
+        statuses:
+          allOf:
+          - $ref: '#/components/schemas/Statuses'
+          description: Current status information about the cluster
+        disable_api_termination:
+          type: boolean
+          title: Disable API Termination
+          description: Flag to prevent accidental cluster deletion
+          default: false
+          example: false
+        auth:
+          allOf:
+          - $ref: '#/components/schemas/AuthStrategy'
+          nullable: true
+      type: object
+      required:
+      - project_id
+      - id
+      - name
+      - cp_multi_az
+      - cp_subregions
+      - version
+      - cni
+      - admin_lbu
+      - admission_flags
+      - cidr_pods
+      - cidr_service
+      - cluster_dns
+      - tags
+      - control_planes
+      - admin_whitelist
+      - statuses
+      title: Cluster
+    ClusterInput:
+      properties:
+        name:
+          type: string
+          maxLength: 40
+          minLength: 1
+          pattern: ^[a-z][a-z0-9-]*[a-z0-9]$
+          title: Cluster Name
+          description: Unique cluster name per project, must start with a letter
+            and contain only lowercase letters, numbers, or hyphens
+          example: awesome-cluster
+        project_id:
+          type: string
+          title: Project ID
+          description: Unique identifier of the project this cluster belongs to
+        description:
+          type: string
+          nullable: true
+        cp_multi_az:
+          type: boolean
+          title: Control Plane Multi-AZ
+          description: Flag to enable multi-availability zone for the control 
+            plane
+        cp_subregions:
+          items:
+            type: string
+          type: array
+          title: Control Plane Subregions
+          description: List of subregions where control plane components are 
+            deployed
+          default: []
+        version:
+          type: string
+          title: Kubernetes Version
+          description: Version of Kubernetes to be deployed
+        admin_lbu:
+          type: boolean
+          title: Admin LBU
+          description: Flag to enable admin load balancer for cluster management
+          default: false
+        admission_flags:
+          allOf:
+          - $ref: '#/components/schemas/AdmissionFlagsInput'
+          title: Admission Flags
+          description: Configuration for Kubernetes admission controllers
+          default: {}
+        cidr_pods:
+          type: string
+          title: Pods CIDR
+          description: CIDR block for Kubernetes pods network
+          example: 10.91.0.0/16
+        cidr_service:
+          type: string
+          title: Service CIDR
+          description: CIDR block for Kubernetes services network
+          example: 10.92.0.0/16
+        cluster_dns:
+          type: string
+          title: Cluster DNS
+          description: IP address for cluster DNS service
+          example: 10.92.0.10
+        tags:
+          additionalProperties:
+            type: string
+          type: object
+          nullable: true
+        auto_maintenances:
+          allOf:
+          - $ref: '#/components/schemas/AutoMaintenances'
+          title: Auto Maintenances
+          description: Use 'maintenance_window' instead
+          deprecated: true
+        maintenance_window:
+          allOf:
+          - $ref: '#/components/schemas/Maintenance'
+          title: Maintenance Window
+          description: Configuration for automated maintenance windows
+        control_planes:
+          type: string
+          title: Control Planes
+          description: Size of control plane deployment for the cluster
+          default: cp.3.masters.small
+        admin_whitelist:
+          items:
+            type: string
+          type: array
+          title: Admin Whitelist
+          description: List of CIDR blocks or IP addresses allowed to access the
+            Kubernetes API
+        quirks:
+          items:
+            type: string
+          type: array
+          nullable: true
+        disable_api_termination:
+          type: boolean
+          title: Disable API Termination
+          description: Flag to prevent accidental cluster deletion
+          default: false
+          example: false
+        auth:
+          allOf:
+          - $ref: '#/components/schemas/AuthStrategy'
+          nullable: true
+      type: object
+      required:
+      - name
+      - project_id
+      - version
+      - cidr_pods
+      - cidr_service
+      - admin_whitelist
+      title: ClusterInput
+    ClusterInputTemplate:
+      properties:
+        project_id:
+          type: string
+          title: Project ID
+          description: Unique identifier of the project this cluster belongs to
+        description:
+          type: string
+          nullable: true
+        version:
+          type: string
+          title: Kubernetes Version
+          description: Version of Kubernetes to be deployed
+        admin_lbu:
+          type: boolean
+          title: Admin LBU
+          description: Flag to enable admin load balancer for cluster management
+          default: false
+        admission_flags:
+          allOf:
+          - $ref: '#/components/schemas/AdmissionFlagsInput'
+          title: Admission Flags
+          description: Configuration for Kubernetes admission controllers
+          default: {}
+        cidr_pods:
+          type: string
+          title: Pods CIDR
+          description: CIDR block for Kubernetes pods network
+          example: 10.91.0.0/16
+        cidr_service:
+          type: string
+          title: Service CIDR
+          description: CIDR block for Kubernetes services network
+          example: 10.92.0.0/16
+        cluster_dns:
+          type: string
+          title: Cluster DNS
+          description: IP address for cluster DNS service
+          example: 10.92.0.10
+        tags:
+          additionalProperties:
+            type: string
+          type: object
+          title: Tags
+          description: Key-value pairs for cluster metadata
+          example:
+            key: value
+        auto_maintenances:
+          allOf:
+          - $ref: '#/components/schemas/AutoMaintenances'
+          nullable: true
+        maintenance_window:
+          allOf:
+          - $ref: '#/components/schemas/Maintenance'
+          nullable: true
+        control_planes:
+          type: string
+          title: Control Planes
+          description: Size of control plane deployment for the cluster
+          default: cp.3.masters.small
+        admin_whitelist:
+          items:
+            type: string
+          type: array
+          title: Admin Whitelist
+          description: List of CIDR blocks or IP addresses allowed to access the
+            Kubernetes API
+        quirks:
+          items:
+            type: string
+          type: array
+          nullable: true
+        disable_api_termination:
+          type: boolean
+          title: Disable API Termination
+          description: Flag to prevent accidental cluster deletion
+          default: false
+          example: false
+      type: object
+      required:
+      - project_id
+      - version
+      - admin_whitelist
+      title: ClusterInputTemplate
+    ClusterResponse:
+      properties:
+        ResponseContext:
+          $ref: '#/components/schemas/clusters__cluster_schema__ResponseContext'
+        Cluster:
+          $ref: '#/components/schemas/Cluster'
+      type: object
+      required:
+      - ResponseContext
+      - Cluster
+      title: Cluster Response
+    ClusterResponseList:
+      properties:
+        ResponseContext:
+          $ref: '#/components/schemas/clusters__cluster_schema__ResponseContext'
+        Pagination:
+          $ref: '#/components/schemas/Pagination'
+        Clusters:
+          items:
+            $ref: '#/components/schemas/Cluster'
+          type: array
+          title: Clusters
+          description: List of clusters retrieved from the API
+      type: object
+      required:
+      - ResponseContext
+      - Pagination
+      - Clusters
+      title: Cluster Response List
+    ClusterUpdate:
+      properties:
+        description:
+          type: string
+          nullable: true
+        admission_flags:
+          allOf:
+          - $ref: '#/components/schemas/AdmissionFlagsInput'
+          nullable: true
+        tags:
+          additionalProperties:
+            type: string
+          type: object
+          nullable: true
+        auto_maintenances:
+          allOf:
+          - $ref: '#/components/schemas/AutoMaintenances'
+          nullable: true
+        maintenance_window:
+          allOf:
+          - $ref: '#/components/schemas/Maintenance'
+          nullable: true
+        admin_whitelist:
+          items:
+            type: string
+          type: array
+          nullable: true
+        quirks:
+          items:
+            type: string
+          type: array
+          nullable: true
+        disable_api_termination:
+          type: boolean
+          nullable: true
+        version:
+          type: string
+          nullable: true
+        control_planes:
+          type: string
+          title: Control Planes
+          description: Size of control plane deployment for the cluster
+        auth:
+          allOf:
+          - $ref: '#/components/schemas/AuthStrategy'
+          nullable: true
+      type: object
+      title: ClusterUpdate
+    ControlPlanesResponse:
+      properties:
+        ResponseContext:
+          $ref: '#/components/schemas/clusters__cluster_schema__ResponseContext'
+        ControlPlanes:
+          items:
+            type: string
+          type: array
+          title: Control Planes
+          description: List of available control plane types
+      type: object
+      required:
+      - ResponseContext
+      - ControlPlanes
+      title: Control Planes Response
+    Cursor:
+      properties:
+        next_cursor:
+          type: string
+          nullable: true
+      type: object
+      title: Cursor
+    DetailResponse:
+      properties:
+        ResponseContext:
+          $ref: '#/components/schemas/projects__project_schema__ResponseContext'
+        detail:
+          type: string
+          title: Detail
+          description: Detailed message related to the API response
+      type: object
+      required:
+      - ResponseContext
+      - detail
+      title: DetailResponse
+    ErrorItem:
+      properties:
+        Type:
+          type: string
+          title: Type
+        Details:
+          anyOf:
+          - type: string
+          - items:
+              $ref: '#/components/schemas/ValidationDetail'
+            type: array
+        Code:
+          type: string
+          title: Code
+      type: object
+      required:
+      - Type
+      - Details
+      - Code
+      title: ErrorItem
+    ErrorResponse:
+      properties:
+        Errors:
+          items:
+            $ref: '#/components/schemas/ErrorItem'
+          type: array
+          title: Errors
+        ResponseContext:
+          $ref: '#/components/schemas/ResponseContext-Input'
+      type: object
+      required:
+      - Errors
+      - ResponseContext
+      title: ErrorResponse
+    IPDetails:
+      properties:
+        x_real_ip:
+          type: string
+          nullable: true
+      type: object
+      title: IPDetails
+    IPResponse:
+      properties:
+        ResponseContext:
+          $ref: '#/components/schemas/myip__myip_schema__ResponseContext'
+        IP:
+          $ref: '#/components/schemas/IPDetails'
+      type: object
+      required:
+      - ResponseContext
+      - IP
+      title: IPResponse
+    KubeconfigData:
+      properties:
+        kubeconfig:
+          type: string
+          title: Kubeconfig
+          description: Kubernetes configuration file content for cluster access
+      type: object
+      required:
+      - kubeconfig
+      title: KubeconfigData
+    KubeconfigResponse:
+      properties:
+        ResponseContext:
+          $ref: '#/components/schemas/clusters__cluster_schema__ResponseContext'
+        Cluster:
+          $ref: '#/components/schemas/clusters__cluster_schema__RPCResponse'
+      type: object
+      required:
+      - ResponseContext
+      - Cluster
+      title: Kubeconfig Response
+    KubernetesVersionsResponse:
+      properties:
+        ResponseContext:
+          $ref: '#/components/schemas/clusters__cluster_schema__ResponseContext'
+        Versions:
+          items:
+            type: string
+          type: array
+          title: Versions
+          description: List of available Kubernetes versions
+      type: object
+      required:
+      - ResponseContext
+      - Versions
+      title: Kubernetes Versions Response
+    Maintenance:
+      properties:
+        duration_hours:
+          type: integer
+          maximum: 23.0
+          minimum: 0.0
+          title: Duration Hours
+          description: Duration of the maintenance window in hours
+        start_hour:
+          type: integer
+          maximum: 23.0
+          minimum: 0.0
+          title: Start Hour
+          description: Hour of the day when maintenance window starts (0-23)
+        week_day:
+          type: string
+          enum:
+          - Mon
+          - Tue
+          - Wed
+          - Thu
+          - Fri
+          - Sat
+          - Sun
+          - string
+          title: Week Day
+          description: Day of the week for the maintenance window
+        tz:
+          type: string
+          title: Timezone
+          description: Timezone for the maintenance window
+          default: UTC
+      type: object
+      required:
+      - duration_hours
+      - start_hour
+      - week_day
+      title: Maintenance
+    MaintenanceWindow:
+      properties:
+        enabled:
+          type: boolean
+          title: Enabled
+          description: Flag to enable or disable the maintenance window
+          default: true
+        duration_hours:
+          type: integer
+          maximum: 23.0
+          minimum: 0.0
+          title: Duration Hours
+          description: Duration of the maintenance window in hours
+          default: 0
+        start_hour:
+          type: integer
+          maximum: 23.0
+          minimum: 0.0
+          title: Start Hour
+          description: Hour of the day when maintenance window starts (0-23)
+          default: 12
+        week_day:
+          type: string
+          enum:
+          - Mon
+          - Tue
+          - Wed
+          - Thu
+          - Fri
+          - Sat
+          - Sun
+          - string
+          title: Week Day
+          description: Day of the week for the maintenance window
+          default: Tue
+        tz:
+          type: string
+          title: Timezone
+          description: Timezone for the maintenance window
+          default: UTC
+      type: object
+      title: MaintenanceWindow
+    Net:
+      properties:
+        DhcpOptionsSetId:
+          type: string
+          title: DHCP Options ID
+          description: The ID of the DHCP options set (or default if you want to
+            associate the default one).
+        IpRange:
+          type: string
+          title: IP Range
+          description: The IP range for the Net, in CIDR notation (for example, 
+            10.0.0.0/16).
+        NetId:
+          type: string
+          title: Net ID
+          description: The ID of the Net.
+        State:
+          type: string
+          title: State
+          description: The state of the Net (pending | available | deleting).
+        Tenancy:
+          type: string
+          title: Tenancy
+          description: The VM tenancy in a Net.
+      type: object
+      required:
+      - DhcpOptionsSetId
+      - IpRange
+      - NetId
+      - State
+      - Tenancy
+      title: Net
+    NetPeeringAcceptance:
+      properties:
+        apiVersion:
+          type: string
+          title: API Version
+          description: Version of the NetPeeringAcceptance API being used
+        kind:
+          type: string
+          title: Kind
+          description: Resource type, always 'NetPeeringAcceptance' for 
+            netpeering acceptance resources
+        metadata:
+          allOf:
+          - $ref: '#/components/schemas/netpeerings__netpeering_schema__Metadata'
+          description: Metadata information for the netpeering acceptance
+        spec:
+          allOf:
+          - $ref: '#/components/schemas/SpecNetPeeringAcceptance'
+          title: Spec
+          description: Specification of the netpeering acceptance configuration
+      type: object
+      required:
+      - apiVersion
+      - kind
+      - metadata
+      - spec
+      title: NetPeeringAcceptance
+    NetPeeringRequest:
+      properties:
+        apiVersion:
+          type: string
+          title: API Version
+          description: Version of the NetPeeringRequest API being used
+        kind:
+          type: string
+          title: Kind
+          description: Resource type, always 'NetPeeringRequest' for netpeering 
+            request resources
+        metadata:
+          allOf:
+          - $ref: '#/components/schemas/netpeerings__netpeering_schema__Metadata'
+          description: Metadata information for the netpeering request
+        spec:
+          allOf:
+          - $ref: '#/components/schemas/SpecNetPeeringRequest'
+          title: Spec
+          description: Specification of the netpeering request configuration
+      type: object
+      required:
+      - apiVersion
+      - kind
+      - metadata
+      - spec
+      title: NetPeeringRequest
+    NetsResponse:
+      properties:
+        ResponseContext:
+          $ref: '#/components/schemas/projects__project_schema__ResponseContext'
+        Nets:
+          items:
+            $ref: '#/components/schemas/Net'
+          type: array
+          title: Nets
+          description: Information about the described Nets
+      type: object
+      required:
+      - ResponseContext
+      - Nets
+      title: NetsResponse
+    Nodepool:
+      properties:
+        apiVersion:
+          type: string
+          title: API Version
+          description: Version of the Nodepool API being used
+        kind:
+          type: string
+          title: Kind
+          description: Resource type, always 'Nodepool' for nodepool resources
+        metadata:
+          allOf:
+          - $ref: '#/components/schemas/nodepools__nodepool_schema__Metadata'
+          description: Metadata information for the nodepool
+        spec:
+          allOf:
+          - $ref: '#/components/schemas/Spec'
+          description: Specification of the nodepool configuration
+      type: object
+      required:
+      - apiVersion
+      - kind
+      - metadata
+      - spec
+      title: Nodepool
+    OKSQuotas:
+      properties:
+        Projects:
+          type: integer
+          title: Projects
+        ClustersPerProject:
+          type: integer
+          title: Clustersperproject
+        KubeVersions:
+          items:
+            type: string
+          type: array
+          title: Max Value
+          description: Maximum allowed value for this quota
+        CPSubregions:
+          items:
+            type: string
+          type: array
+          title: Cpsubregions
+      type: object
+      required:
+      - Projects
+      - ClustersPerProject
+      - KubeVersions
+      - CPSubregions
+      title: OKSQuotas
+    Offset:
+      properties:
+        page:
+          type: integer
+          nullable: true
+        limit:
+          type: integer
+          nullable: true
+        total:
+          type: integer
+          nullable: true
+      type: object
+      title: Offset
+    OpenIdConnectConfig:
+      properties:
+        issuer-url:
+          type: string
+          title: OIDC Issuer URL
+          description: The URL of the provider that allows the API server to 
+            discover public signing keys.
+        client-id:
+          type: string
+          title: OIDC Client ID
+          description: The client id that all tokens must be issued for.
+        username-claim:
+          type: string
+          nullable: true
+        username-prefix:
+          type: string
+          nullable: true
+        groups-claim:
+          items:
+            type: string
+          type: array
+          nullable: true
+        groups-prefix:
+          type: string
+          nullable: true
+        required-claim:
+          additionalProperties:
+            type: string
+          type: object
+          nullable: true
+      type: object
+      required:
+      - issuer-url
+      - client-id
+      title: OpenIdConnectConfig
+    Pagination:
+      properties:
+        cursor:
+          allOf:
+          - $ref: '#/components/schemas/Cursor'
+          nullable: true
+        offset:
+          allOf:
+          - $ref: '#/components/schemas/Offset'
+          nullable: true
+      type: object
+      title: Pagination
+    PermissionsOnResource:
+      properties:
+        GlobalPermission:
+          type: integer
+          title: Global Permission
+          description: A global permission for all accounts.
+        AccountIds:
+          items:
+            type: string
+          type: array
+          title: Account IDs
+          description: One or more account IDs that the permission is associated
+            with.
+      type: object
+      required:
+      - GlobalPermission
+      - AccountIds
+      title: PermissionsOnResource
+    Project:
+      properties:
+        id:
+          type: string
+          title: Project ID
+          description: Unique UUID of the project
+        name:
+          type: string
+          title: Project Name
+          description: Unique project name per account
+        description:
+          type: string
+          title: Description
+          description: Optional description of the project
+          default: ''
+        cidr:
+          type: string
+          title: VPC CIDR
+          description: CIDR block associated with the project's VPC
+        region:
+          type: string
+          title: Region
+          description: Region where the project is deployed
+        status:
+          type: string
+          title: Status
+          description: Current status of the project
+        tags:
+          additionalProperties:
+            type: string
+          type: object
+          title: Tags
+          description: Key-value pairs tags
+        disable_api_termination:
+          type: boolean
+          title: Disable API Termination
+          description: Flag to prevent accidental project deletion
+          default: false
+          example: false
+        created_at:
+          type: string
+          format: date-time
+          title: Created At
+          description: Timestamp when the project was created
+        updated_at:
+          type: string
+          format: date-time
+          title: Updated At
+          description: Timestamp when the project was last updated
+        deleted_at:
+          type: string
+          format: date-time
+          nullable: true
+      type: object
+      required:
+      - id
+      - name
+      - cidr
+      - region
+      - status
+      - tags
+      - created_at
+      - updated_at
+      title: Project
+    ProjectInput:
+      properties:
+        name:
+          type: string
+          maxLength: 40
+          minLength: 1
+          pattern: ^[a-z][a-z0-9-]*[a-z0-9]$
+          title: Project Name
+          description: Unique name for the project, must start with a letter and
+            contain only lowercase letters, numbers, or hyphens
+          example: awesome-project
+        description:
+          type: string
+          title: Description
+          description: Optional description of the project
+          default: ''
+        cidr:
+          type: string
+          title: VPC CIDR
+          description: CIDR block associated with the project's VPC
+        region:
+          type: string
+          title: Region
+          description: Region where the project is deployed
+        tags:
+          additionalProperties:
+            type: string
+          type: object
+          nullable: true
+        quirks:
+          items:
+            type: string
+          type: array
+          nullable: true
+        disable_api_termination:
+          type: boolean
+          title: Disable API Termination
+          description: Flag to prevent accidental project deletion
+          default: false
+          example: false
+      type: object
+      required:
+      - name
+      - cidr
+      - region
+      title: ProjectInput
+    ProjectResponse:
+      properties:
+        ResponseContext:
+          $ref: '#/components/schemas/projects__project_schema__ResponseContext'
+        Project:
+          $ref: '#/components/schemas/Project'
+      type: object
+      required:
+      - ResponseContext
+      - Project
+      title: Project Response
+    ProjectResponseList:
+      properties:
+        ResponseContext:
+          $ref: '#/components/schemas/projects__project_schema__ResponseContext'
+        Pagination:
+          $ref: '#/components/schemas/Pagination'
+        Projects:
+          items:
+            $ref: '#/components/schemas/Project'
+          type: array
+          title: Projects
+          description: List of projects retrieved from the API
+      type: object
+      required:
+      - ResponseContext
+      - Pagination
+      - Projects
+      title: ProjectResponseList
+    ProjectUpdate:
+      properties:
+        description:
+          type: string
+          nullable: true
+        tags:
+          additionalProperties:
+            type: string
+          type: object
+          nullable: true
+        quirks:
+          items:
+            type: string
+          type: array
+          nullable: true
+        disable_api_termination:
+          type: boolean
+          nullable: true
+      type: object
+      title: ProjectUpdate
+    PublicIp:
+      properties:
+        Tags:
+          items:
+            $ref: '#/components/schemas/ResourceTag'
+          type: array
+          title: Tags
+          description: One or more tags associated with the public IP.
+        PublicIp:
+          type: string
+          title: Public IP
+          description: The public IP.
+        PublicIpId:
+          type: string
+          title: Public IP ID
+          description: The allocation ID of the public IP.
+      type: object
+      required:
+      - Tags
+      - PublicIp
+      - PublicIpId
+      title: PublicIp
+    PublicIpsResponse:
+      properties:
+        ResponseContext:
+          $ref: '#/components/schemas/projects__project_schema__ResponseContext'
+        PublicIps:
+          items:
+            $ref: '#/components/schemas/PublicIp'
+          type: array
+          title: Project Public IPs
+          description: Public IP details associated with the project
+      type: object
+      required:
+      - ResponseContext
+      - PublicIps
+      title: PublicIpsResponse
+    Quotas:
+      properties:
+        ShortDescription:
+          type: string
+          title: Short Description
+          description: Brief summary of the quota
+        QuotaCollection:
+          type: string
+          title: Quota Collection
+          description: Category or group to which the quota belongs
+        AccountId:
+          type: string
+          title: Account ID
+          description: Unique identifier for the account
+        Description:
+          type: string
+          title: Description
+          description: Detailed description of the quota
+        MaxValue:
+          type: integer
+          title: Max Value
+          description: Maximum allowed value for this quota
+        UsedValue:
+          type: integer
+          title: Used Value
+          description: Current usage value for this quota
+        Name:
+          type: string
+          title: Name
+          description: Quota name
+      type: object
+      required:
+      - ShortDescription
+      - QuotaCollection
+      - AccountId
+      - Description
+      - MaxValue
+      - UsedValue
+      - Name
+      title: Quotas
+    QuotasData:
+      properties:
+        quotas:
+          items:
+            $ref: '#/components/schemas/Quotas'
+          type: array
+          title: Quotas
+          description: List of quota details
+        subregions:
+          items:
+            $ref: '#/components/schemas/Subregion'
+          type: array
+          title: Subregions
+          description: List of subregion details
+      type: object
+      required:
+      - quotas
+      - subregions
+      title: QuotasData
+    ResourceTag:
+      properties:
+        Key:
+          type: string
+          title: Key
+          description: The key of the tag, with a minimum of 1 character.
+        Value:
+          type: string
+          title: Value
+          description: The value of the tag, between 0 and 255 characters.
+      type: object
+      required:
+      - Key
+      - Value
+      title: ResourceTag
+    ResponseContext-Input:
+      properties:
+        RequestId:
+          type: string
+          title: Requestid
+      type: object
+      required:
+      - RequestId
+      title: ResponseContext
+    Snapshot:
+      properties:
+        VolumeSize:
+          type: integer
+          title: Volume Size
+          description: The size of the volume used to create the snapshot, in 
+            gibibytes (GiB).
+        AccountId:
+          type: string
+          title: Account ID
+          description: The account ID of the owner of the snapshot.
+        VolumeId:
+          type: string
+          title: Volume ID
+          description: The ID of the volume used to create the snapshot.
+        CreationDate:
+          type: string
+          title: Creation Date
+          description: The date and time (UTC) at which the snapshot was 
+            created.
+        Progress:
+          type: integer
+          title: Progress
+          description: The progress of the snapshot, as a percentage.
+        SnapshotId:
+          type: string
+          title: Snapshot ID
+          description: The ID of the snapshot.
+        State:
+          type: string
+          title: State
+          description: The state of the snapshot (in-queue | pending | completed
+            | error | deleting).
+        Description:
+          type: string
+          title: Description
+          description: The description of the snapshot.
+        Tags:
+          items:
+            $ref: '#/components/schemas/ResourceTag'
+          type: array
+          title: Tags
+          description: One or more tags associated with the snapshot.
+        PermissionsToCreateVolume:
+          allOf:
+          - $ref: '#/components/schemas/PermissionsOnResource'
+          title: Permissions To Create Volume
+          description: Permissions for the resource.
+      type: object
+      required:
+      - VolumeSize
+      - AccountId
+      - VolumeId
+      - CreationDate
+      - Progress
+      - SnapshotId
+      - State
+      - Description
+      - Tags
+      - PermissionsToCreateVolume
+      title: Snapshot
+    SnapshotsResponse:
+      properties:
+        ResponseContext:
+          $ref: '#/components/schemas/projects__project_schema__ResponseContext'
+        Snapshots:
+          items:
+            $ref: '#/components/schemas/Snapshot'
+          type: array
+          title: Project Snapshots
+          description: Snapshot details associated with the project
+      type: object
+      required:
+      - ResponseContext
+      - Snapshots
+      title: SnapshotsResponse
+    Spec:
+      properties:
+        desiredNodes:
+          type: string
+          title: Desired Nodes
+          description: Number of nodes desired in the nodepool
+        nodeType:
+          type: string
+          title: Node Type
+          description: Instance type for the nodes
+        zones:
+          items:
+            type: string
+          type: array
+          title: Zones
+          description: List of availability zones where nodes should be deployed
+        volumes:
+          items:
+            $ref: '#/components/schemas/Volume'
+          type: array
+          title: Volumes
+          description: List of volume configurations for the nodes
+        upgradeStrategy:
+          allOf:
+          - $ref: '#/components/schemas/UpgradeStrategy'
+          title: Upgrade Strategy
+          description: Configuration for managing nodepool upgrades
+        autoHealing:
+          type: boolean
+          title: Auto Healing
+          description: Flag to enable automatic healing of failed nodes
+      type: object
+      required:
+      - desiredNodes
+      - nodeType
+      - zones
+      - volumes
+      - upgradeStrategy
+      - autoHealing
+      title: Spec
+    SpecNetPeeringAcceptance:
+      properties:
+        netPeeringId:
+          type: string
+          title: NetID
+          description: Net Peering ID
+      type: object
+      required:
+      - netPeeringId
+      title: SpecNetPeeringAcceptance
+    SpecNetPeeringRequest:
+      properties:
+        accepterNetId:
+          type: string
+          title: Accepter NetID
+          description: NetID (VPC ID) of the target
+        accepterOwnerId:
+          type: string
+          title: Accepter Owner ID
+          description: Owner ID (Account ID) of the target
+      type: object
+      required:
+      - accepterNetId
+      - accepterOwnerId
+      title: SpecNetPeeringRequest
+    Statuses:
+      properties:
+        created_at:
+          type: string
+          format: date-time
+          title: Created At
+          description: Timestamp when the cluster was created
+        deleted_at:
+          type: string
+          format: date-time
+          nullable: true
+        updated_at:
+          type: string
+          format: date-time
+          nullable: true
+        status:
+          type: string
+          nullable: true
+        available_upgrade:
+          type: string
+          title: Available Upgrade
+          description: Available Kubernetes version for upgrade if any
+          default: ''
+      type: object
+      required:
+      - created_at
+      title: Statuses
+    Subregion:
+      properties:
+        State:
+          type: string
+          title: State
+          description: The state of the Subregion
+        RegionName:
+          type: string
+          title: Region Name
+          description: The name of the Region containing the Subregion
+        SubregionName:
+          type: string
+          title: Subregion Name
+          description: The name of the Subregion
+        LocationCode:
+          type: string
+          title: Location Code
+          description: The location code (physical zone) of the Subregion
+      type: object
+      required:
+      - State
+      - RegionName
+      - SubregionName
+      - LocationCode
+      title: Subregion
+    TemplateResponse_ClusterInputTemplate_:
+      properties:
+        ResponseContext:
+          $ref: '#/components/schemas/templates__template_schema__ResponseContext'
+        Template:
+          allOf:
+          - $ref: '#/components/schemas/ClusterInputTemplate'
+          title: Template
+          description: Template resource returned by the API
+      type: object
+      required:
+      - ResponseContext
+      - Template
+      title: TemplateResponse[ClusterInputTemplate]
+    TemplateResponse_NetPeeringAcceptance_:
+      properties:
+        ResponseContext:
+          $ref: '#/components/schemas/templates__template_schema__ResponseContext'
+        Template:
+          allOf:
+          - $ref: '#/components/schemas/NetPeeringAcceptance'
+          title: Template
+          description: Template resource returned by the API
+      type: object
+      required:
+      - ResponseContext
+      - Template
+      title: TemplateResponse[NetPeeringAcceptance]
+    TemplateResponse_NetPeeringRequest_:
+      properties:
+        ResponseContext:
+          $ref: '#/components/schemas/templates__template_schema__ResponseContext'
+        Template:
+          allOf:
+          - $ref: '#/components/schemas/NetPeeringRequest'
+          title: Template
+          description: Template resource returned by the API
+      type: object
+      required:
+      - ResponseContext
+      - Template
+      title: TemplateResponse[NetPeeringRequest]
+    TemplateResponse_Nodepool_:
+      properties:
+        ResponseContext:
+          $ref: '#/components/schemas/templates__template_schema__ResponseContext'
+        Template:
+          allOf:
+          - $ref: '#/components/schemas/Nodepool'
+          title: Template
+          description: Template resource returned by the API
+      type: object
+      required:
+      - ResponseContext
+      - Template
+      title: TemplateResponse[Nodepool]
+    TemplateResponse_ProjectInput_:
+      properties:
+        ResponseContext:
+          $ref: '#/components/schemas/templates__template_schema__ResponseContext'
+        Template:
+          allOf:
+          - $ref: '#/components/schemas/ProjectInput'
+          title: Template
+          description: Template resource returned by the API
+      type: object
+      required:
+      - ResponseContext
+      - Template
+      title: TemplateResponse[ProjectInput]
+    UpgradeStrategy:
+      properties:
+        maxUnavailable:
+          type: integer
+          title: Max Unavailable
+          description: Maximum number of nodes that can be unavailable during an
+            upgrade
+        maxSurge:
+          type: integer
+          title: Max Surge
+          description: Maximum number of extra nodes that can be created during 
+            an upgrade
+        autoUpgradeEnabled:
+          type: boolean
+          title: Auto Upgrade Enabled
+          description: Flag to enable automatic upgrades for the nodepool
+        autoUpgradeMaintenance:
+          allOf:
+          - $ref: '#/components/schemas/AutoUpgradeMaintenance'
+          title: Auto Upgrade Maintenance
+          description: Configuration for the automated upgrade maintenance 
+            window
+      type: object
+      required:
+      - maxUnavailable
+      - maxSurge
+      - autoUpgradeEnabled
+      - autoUpgradeMaintenance
+      title: UpgradeStrategy
+    ValidationDetail:
+      properties:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+          title: Loc
+        msg:
+          type: string
+          title: Msg
+        type:
+          type: string
+          title: Type
+      type: object
+      required:
+      - loc
+      - msg
+      - type
+      title: ValidationDetail
+    Volume:
+      properties:
+        device:
+          type: string
+          title: Device
+          description: Device name for the volume
+        type:
+          type: string
+          title: Type
+          description: Type of the volume (gp2, io1, standard)
+        size:
+          type: integer
+          title: Size
+          description: Size of the volume
+        dir:
+          type: string
+          title: Directory
+          description: Mount point directory path for the volume
+      type: object
+      required:
+      - device
+      - type
+      - size
+      - dir
+      title: Volume
+    clusters__cluster_schema__RPCResponse:
+      properties:
+        request_id:
+          type: string
+          title: Request ID
+          description: Unique identifier for the API request
+        data:
+          allOf:
+          - $ref: '#/components/schemas/KubeconfigData'
+          title: Data
+          description: Kubeconfig data for the cluster
+      type: object
+      required:
+      - request_id
+      - data
+      title: RPCResponse
+    clusters__cluster_schema__ResponseContext:
+      properties:
+        RequestId:
+          type: string
+          title: Request ID
+          description: Unique identifier for the API request
+      type: object
+      required:
+      - RequestId
+      title: ResponseContext
+    myip__myip_schema__ResponseContext:
+      properties:
+        RequestId:
+          type: string
+          title: Request ID
+          description: Unique identifier for the API request
+      type: object
+      required:
+      - RequestId
+      title: ResponseContext
+    netpeerings__netpeering_schema__Metadata:
+      properties:
+        name:
+          type: string
+          title: Name
+          description: Unique name identifier for the netpeering
+      type: object
+      required:
+      - name
+      title: Metadata
+    nodepools__nodepool_schema__Metadata:
+      properties:
+        name:
+          type: string
+          title: Name
+          description: Unique name identifier for the nodepool
+      type: object
+      required:
+      - name
+      title: Metadata
+    projects__project_schema__QuotasResponse:
+      properties:
+        ResponseContext:
+          $ref: '#/components/schemas/projects__project_schema__ResponseContext'
+        Project:
+          allOf:
+          - $ref: '#/components/schemas/projects__project_schema__RPCResponse'
+          title: Project Quotas
+          description: Quota details associated with the project
+      type: object
+      required:
+      - ResponseContext
+      - Project
+      title: QuotasResponse
+    projects__project_schema__RPCResponse:
+      properties:
+        request_id:
+          type: string
+          title: Request ID
+          description: Unique identifier for the API request
+        data:
+          allOf:
+          - $ref: '#/components/schemas/QuotasData'
+          title: Data
+          description: Quota information related to the request
+      type: object
+      required:
+      - request_id
+      - data
+      title: RPCResponse
+    projects__project_schema__ResponseContext:
+      properties:
+        RequestId:
+          type: string
+          title: Request ID
+          description: Unique identifier for the API request
+      type: object
+      required:
+      - RequestId
+      title: Response Context
+    quotas__quota_schema__QuotasResponse:
+      properties:
+        ResponseContext:
+          $ref: '#/components/schemas/quotas__quota_schema__ResponseContext'
+        Quotas:
+          $ref: '#/components/schemas/OKSQuotas'
+      type: object
+      required:
+      - ResponseContext
+      - Quotas
+      title: QuotasResponse
+    quotas__quota_schema__ResponseContext:
+      properties:
+        RequestId:
+          type: string
+          title: Request ID
+          description: Unique identifier for the API request
+      type: object
+      required:
+      - RequestId
+      title: Response Context
+    templates__template_schema__ResponseContext:
+      properties:
+        RequestId:
+          type: string
+          title: Request ID
+          description: Unique identifier for the API request
+      type: object
+      required:
+      - RequestId
+      title: ResponseContext
+  securitySchemes:
+    BasicAuth:
+      type: http
+      scheme: basic
+      description: Username and Password for API authentication
+    AccessKeyAuth:
+      type: apiKey
+      in: header
+      name: AccessKey
+      description: AccessKey for API authentication
+    SecretKeyAuth:
+      type: apiKey
+      in: header
+      name: SecretKey
+      description: SecretKey for API authentication
+    AccessTokenAuth:
+      type: apiKey
+      in: header
+      name: AccessToken
+      description: Access Token for API authentication
+    RefreshTokenAuth:
+      type: apiKey
+      in: header
+      name: RefreshToken
+      description: Refresh Token for API authentication
+    OTPCodeAuth:
+      type: apiKey
+      in: header
+      name: X-OTP-Code
+      description: OTP token for API authentication
+security:
+- BasicAuth: []
+  OTPCodeAuth: []
+- AccessKeyAuth: []
+  SecretKeyAuth: []
+  OTPCodeAuth: []
+- AccessTokenAuth: []
+  RefreshTokenAuth: []
+servers:
+- url: /{api_prefix}
+  variables:
+    api_prefix:
+      default: api/v2
+      description: API prefix
