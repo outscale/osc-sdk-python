@@ -1,4 +1,5 @@
 from .outscale_gateway import OutscaleGateway as Gateway
+from .outscale_gateway import AsyncOutscaleGateway as AsyncGateway
 from .outscale_gateway import LOG_NONE
 from .outscale_gateway import LOG_STDERR
 from .outscale_gateway import LOG_STDIO
@@ -18,6 +19,7 @@ __all__ = [
     "__version__",
     "__author__",
     "Gateway",
+    "AsyncGateway",
     "LOG_NONE",
     "LOG_STDERR",
     "LOG_STDIO",

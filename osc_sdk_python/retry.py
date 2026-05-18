@@ -24,16 +24,16 @@ class Retry:
         # Extract all retry parameters
         self.attempt: int = int(self.request_kwargs.pop("attempt", 0))
         self.max_retries: int = int(
-            self.request_kwargs.get("max_retries", MAX_RETRIES)
+            self.request_kwargs.pop("max_retries", MAX_RETRIES)
         )
         self.backoff_factor: float = float(
-            self.request_kwargs.get("backoff_factor", RETRY_BACKOFF_FACTOR)
+            self.request_kwargs.pop("backoff_factor", RETRY_BACKOFF_FACTOR)
         )
         self.backoff_jitter: float = float(
-            self.request_kwargs.get("backoff_jitter", RETRY_BACKOFF_JITTER)
+            self.request_kwargs.pop("backoff_jitter", RETRY_BACKOFF_JITTER)
         )
         self.backoff_max: float = float(
-            self.request_kwargs.get("backoff_max", RETRY_BACKOFF_MAX)
+            self.request_kwargs.pop("backoff_max", RETRY_BACKOFF_MAX)
         )
 
     def execute_once(self) -> requests.Response:
@@ -48,6 +48,10 @@ class Retry:
         """
         new_kwargs = self.request_kwargs.copy()
         new_kwargs["attempt"] = self.attempt + 1
+        new_kwargs["max_retries"] = self.max_retries
+        new_kwargs["backoff_factor"] = self.backoff_factor
+        new_kwargs["backoff_jitter"] = self.backoff_jitter
+        new_kwargs["backoff_max"] = self.backoff_max
         return Retry(self.session, self.method, self.url, **new_kwargs)
 
     def should_retry(self, e: requests.exceptions.RequestException) -> bool:
