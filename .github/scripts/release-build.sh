@@ -18,8 +18,8 @@ new_sdk_version_minor=$(( local_sdk_version_minor + 1 ))
 new_sdk_version="$local_sdk_version_major.$new_sdk_version_minor.0"
 
 # Update osc-api version
-curl --retry 10 -o "${root}/osc_sdk_python/resources/outscale.yaml" "https://raw.githubusercontent.com/outscale/osc-api/refs/tags/${osc_api_version}/outscale.yaml"
-git add "${root}/osc_sdk_python/resources/outscale.yaml"
+curl --retry 10 -o "${root}/osc_sdk_python/resources/osc/api.yaml" "https://raw.githubusercontent.com/outscale/osc-api/refs/tags/${osc_api_version}/outscale.yaml"
+git add "${root}/osc_sdk_python/resources/osc/api.yaml"
 
 # Setup new SDK version
 for f in "$root/README.md" "$root/osc_sdk_python/VERSION"; do

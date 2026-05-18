@@ -22,8 +22,12 @@ class Authentication:
         signed_headers="content-type;host;x-osc-date",
         user_agent=DEFAULT_USER_AGENT,
     ):
-        self.access_key = credentials.access_key
-        self.secret_key = credentials.secret_key
+        if service in credentials.iam_v2_services:
+            self.access_key = credentials.access_key_v2
+            self.secret_key = credentials.secret_key_v2
+        else:
+            self.access_key = credentials.access_key
+            self.secret_key = credentials.secret_key
         self.login = credentials.login
         self.password = credentials.password
         self.host = host
@@ -36,13 +40,15 @@ class Authentication:
         self.user_agent = user_agent
         self.x509_client_cert = credentials.x509_client_cert
 
-    def forge_headers_signed(self, uri, request_data):
+    def forge_headers_signed(self, uri, request_data, canonical_querystring=""):
         date_iso, date = self.build_dates()
         credential_scope = "{}/{}/{}/osc4_request".format(
             date, self.region, self.service
         )
 
-        canonical_request = self.build_canonical_request(date_iso, uri, request_data)
+        canonical_request = self.build_canonical_request(
+            date_iso, uri, request_data, canonical_querystring
+        )
         str_to_sign = self.create_string_to_sign(
             date_iso, credential_scope, canonical_request
         )
@@ -53,6 +59,13 @@ class Authentication:
             "Content-Type": self.content_type,
             "X-Osc-Date": date_iso,
             "Authorization": authorisation,
+            "User-Agent": self.user_agent,
+        }
+
+    def forge_headers_oks(self):
+        return {
+            "AccessKey": self.access_key,
+            "SecretKey": self.secret_key,
             "User-Agent": self.user_agent,
         }
 
@@ -71,7 +84,9 @@ class Authentication:
         k_signing = self.sign(k_service, "osc4_request")
         return k_signing
 
-    def build_canonical_request(self, date_iso, canonical_uri, request_data):
+    def build_canonical_request(
+        self, date_iso, canonical_uri, request_data, canonical_querystring=""
+    ):
         #
         # Step 1 is to define the verb (GET, POST, etc.)--already done.
         # Step 2: Create canonical URI--the part of the URI from domain to query
@@ -91,7 +106,6 @@ class Authentication:
         # Step 6: Create payload hash. In this example, the payload (body of
         #         the request) contains the request parameters.
         # Step 7: Combine elements to create canonical request
-        canonical_querystring = ""
         canonical_headers = (
             "content-type:"
             + self.content_type

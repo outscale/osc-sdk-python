@@ -1,6 +1,7 @@
 import json
 import warnings
 from datetime import timedelta
+from urllib.parse import urlencode
 
 import httpx
 from urllib3.util import parse_url
@@ -9,6 +10,7 @@ from .requester import AsyncRequester
 from ...authentication import Authentication, DEFAULT_USER_AGENT
 from ...credentials import Profile
 from ...limiter import RateLimiter
+from ..request import RequestSpec
 
 
 class AsyncCall(object):
@@ -71,11 +73,18 @@ class AsyncCall(object):
                 self.retry_kwargs[key] = float(value)
         return kwargs
 
-    async def api(self, action, service="api", **data):
-        endpoint = self.profile.get_endpoint(service) + "/" + action
+    async def request(self, spec: RequestSpec, path_params=None):
+        path = spec.resolved_path(path_params)
+        endpoint = (
+            self.profile.get_endpoint(spec.service).rstrip("/") + "/" + path.lstrip("/")
+        )
         parsed_url = parse_url(endpoint)
         uri = parsed_url.path
         host = parsed_url.host
+        canonical_querystring = urlencode(
+            sorted((spec.query_params or {}).items()), doseq=True
+        )
+        payload = "" if spec.json_body is None else json.dumps(spec.json_body)
 
         if self.limiter is not None:
             await self.limiter.async_acquire()
@@ -85,6 +94,8 @@ class AsyncCall(object):
             Authentication(
                 self.profile,
                 host,
+                method=spec.method.upper(),
+                service=spec.service,
                 user_agent=self.user_agent,
             ),
             endpoint,
@@ -92,10 +103,29 @@ class AsyncCall(object):
         )
         if self.logger is not None:
             self.logger.do_log(
-                "uri: " + uri + "\npayload:\n" + json.dumps(data, indent=2)
+                "uri: "
+                + uri
+                + "\npayload:\n"
+                + json.dumps(spec.json_body, indent=2)
             )
-        response = await requester.send(uri, json.dumps(data))
+        response = await requester.send(
+            spec.method.upper(),
+            uri,
+            payload,
+            query_params=spec.query_params,
+            canonical_querystring=canonical_querystring,
+        )
         return response.json()
+
+    async def api(self, action, service="api", **data):
+        return await self.request(
+            RequestSpec(
+                service=service,
+                method="POST",
+                path="/" + action,
+                json_body=data,
+            )
+        )
 
     async def close(self):
         if self.client:

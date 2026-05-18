@@ -173,6 +173,36 @@ if __name__ == "__main__":
     asyncio.run(main())
 ```
 
+### Multi-Service Client
+
+Use `Client` or `AsyncClient` to access multiple services from one SDK object:
+
+```python
+from osc_sdk_python import Client
+
+with Client(profile="default") as client:
+    vms = client.osc.ReadVms()
+    projects = client.oks.ListProjects()
+```
+
+Async example:
+
+```python
+import asyncio
+
+from osc_sdk_python import AsyncClient
+
+
+async def main():
+    async with AsyncClient(profile="default") as client:
+        vms = await client.osc.ReadVms()
+        projects = await client.oks.ListProjects()
+
+
+if __name__ == "__main__":
+    asyncio.run(main())
+```
+
 ### Retry Options
 
 The following options can be provided when initializing the `Gateway` or `AsyncGateway` to customize the retry behavior of the SDK:

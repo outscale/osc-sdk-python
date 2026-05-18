@@ -1,14 +1,15 @@
-from ...authentication import Authentication
-from ...authentication import DEFAULT_USER_AGENT
+import json
+import warnings
+from datetime import timedelta
+from urllib.parse import urlencode
+
+from ...authentication import Authentication, DEFAULT_USER_AGENT
 from ...credentials import Profile
+from ...limiter import RateLimiter
+from ..request import RequestSpec
 from .requester import Requester
 from requests import Session
 from urllib3.util import parse_url
-from datetime import timedelta
-from ...limiter import RateLimiter
-
-import json
-import warnings
 
 
 class Call(object):
@@ -64,12 +65,21 @@ class Call(object):
                 self.retry_kwargs[key] = float(value)
         return kwargs
 
-    def api(self, action, service="api", **data):
+    def request(self, spec: RequestSpec, path_params=None):
         try:
-            endpoint = self.profile.get_endpoint(service) + "/" + action
+            path = spec.resolved_path(path_params)
+            endpoint = (
+                self.profile.get_endpoint(spec.service).rstrip("/")
+                + "/"
+                + path.lstrip("/")
+            )
             parsed_url = parse_url(endpoint)
             uri = parsed_url.path
             host = parsed_url.host
+            canonical_querystring = urlencode(
+                sorted((spec.query_params or {}).items()), doseq=True
+            )
+            payload = "" if spec.json_body is None else json.dumps(spec.json_body)
 
             if self.limiter is not None:
                 self.limiter.acquire()
@@ -79,6 +89,8 @@ class Call(object):
                 Authentication(
                     self.profile,
                     host,
+                    method=spec.method.upper(),
+                    service=spec.service,
                     user_agent=self.user_agent,
                 ),
                 endpoint,
@@ -86,11 +98,30 @@ class Call(object):
             )
             if self.logger is not None:
                 self.logger.do_log(
-                    "uri: " + uri + "\npayload:\n" + json.dumps(data, indent=2)
+                    "uri: "
+                    + uri
+                    + "\npayload:\n"
+                    + json.dumps(spec.json_body, indent=2)
                 )
-            return requester.send(uri, json.dumps(data))
+            return requester.send(
+                spec.method.upper(),
+                uri,
+                payload,
+                query_params=spec.query_params,
+                canonical_querystring=canonical_querystring,
+            )
         except Exception as err:
             raise err
+
+    def api(self, action, service="api", **data):
+        return self.request(
+            RequestSpec(
+                service=service,
+                method="POST",
+                path="/" + action,
+                json_body=data,
+            )
+        )
 
     def close(self):
         if self.session:
