@@ -2,7 +2,7 @@ import requests
 import time
 import random
 from requests.exceptions import JSONDecodeError
-from .problem import ProblemDecoder, LegacyProblemDecoder, LegacyProblem, Problem
+from ...problem import ProblemDecoder, LegacyProblemDecoder, LegacyProblem, Problem
 
 MAX_RETRIES = 3
 RETRY_BACKOFF_FACTOR = 1.0

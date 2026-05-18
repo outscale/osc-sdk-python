@@ -4,8 +4,8 @@ import random
 
 import httpx
 
-from .problem import LegacyProblem, LegacyProblemDecoder, Problem, ProblemDecoder
-from .retry import (
+from ...problem import LegacyProblem, LegacyProblemDecoder, Problem, ProblemDecoder
+from ..sync.retry import (
     MAX_RETRIES,
     RETRY_BACKOFF_FACTOR,
     RETRY_BACKOFF_JITTER,

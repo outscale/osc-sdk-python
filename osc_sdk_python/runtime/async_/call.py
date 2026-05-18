@@ -5,10 +5,10 @@ from datetime import timedelta
 import httpx
 from urllib3.util import parse_url
 
-from .async_requester import AsyncRequester
-from .authentication import Authentication, DEFAULT_USER_AGENT
-from .credentials import Profile
-from .limiter import RateLimiter
+from .requester import AsyncRequester
+from ...authentication import Authentication, DEFAULT_USER_AGENT
+from ...credentials import Profile
+from ...limiter import RateLimiter
 
 
 class AsyncCall(object):

@@ -1,4 +1,4 @@
-from .async_retry import AsyncRetry
+from .retry import AsyncRetry
 
 
 class AsyncRequester:

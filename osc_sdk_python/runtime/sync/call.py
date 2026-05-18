@@ -1,11 +1,11 @@
-from .authentication import Authentication
-from .authentication import DEFAULT_USER_AGENT
-from .credentials import Profile
+from ...authentication import Authentication
+from ...authentication import DEFAULT_USER_AGENT
+from ...credentials import Profile
 from .requester import Requester
 from requests import Session
 from urllib3.util import parse_url
 from datetime import timedelta
-from .limiter import RateLimiter
+from ...limiter import RateLimiter
 
 import json
 import warnings
