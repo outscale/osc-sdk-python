@@ -1,5 +1,6 @@
 import os
 import sys
+from .async_call import AsyncCall
 from .call import Call
 from .limiter import RateLimiter
 import ruamel.yaml
@@ -253,6 +254,54 @@ class BaseAPI:
 
 
 class OutscaleGateway(BaseAPI):
+    def __init__(self, **kwargs):
+        super().__init__(
+            os.path.join(os.path.dirname(__file__), "resources/outscale.yaml"), **kwargs
+        )
+
+
+class AsyncBaseAPI(BaseAPI):
+    def __init__(self, spec, **kwargs):
+        self._load_gateway_structure(spec)
+        self._load_errors()
+        self.log = Logger()
+        self.limiter = RateLimiter(DEFAULT_LIMITER_WINDOW, DEFAULT_LIMITER_MAX_REQUESTS)
+        self.call = AsyncCall(
+            logger=self.log,
+            version=self.endpoint_api_version,
+            limiter=self.limiter,
+            **kwargs,
+        )
+
+    def _get_action(self, action_name):
+        async def action(**kwargs):
+            kwargs = self._remove_none_parameters(**kwargs)
+            self._check(action_name, **kwargs)
+            result = await self.call.api(action_name, **kwargs)
+            return result
+
+        return action
+
+    async def raw(self, action_name, **kwargs):
+        return await self.call.api(action_name, **kwargs)
+
+    async def __aenter__(self):
+        return self
+
+    async def __aexit__(self, type, value, traceback):
+        await self.call.close()
+
+    def __enter__(self):
+        raise TypeError("AsyncGateway must be used with 'async with'")
+
+    def __exit__(self, type, value, traceback):
+        return None
+
+    async def close(self):
+        await self.call.close()
+
+
+class AsyncOutscaleGateway(AsyncBaseAPI):
     def __init__(self, **kwargs):
         super().__init__(
             os.path.join(os.path.dirname(__file__), "resources/outscale.yaml"), **kwargs
