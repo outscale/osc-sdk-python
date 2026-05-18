@@ -1,7 +1,7 @@
 import os
 import sys
-from .async_call import AsyncCall
-from .call import Call
+from .runtime.async_.call import AsyncCall
+from .runtime.sync.call import Call
 from .limiter import RateLimiter
 import ruamel.yaml
 from .version import get_version

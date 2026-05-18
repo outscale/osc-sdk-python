@@ -3,7 +3,7 @@ import requests
 from unittest.mock import Mock, patch
 from requests.exceptions import RequestException, HTTPError, ConnectionError
 
-from osc_sdk_python.retry import Retry
+from osc_sdk_python.runtime.sync.retry import Retry
 
 
 class TestRetry:
