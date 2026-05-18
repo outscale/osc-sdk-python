@@ -1,0 +1,19 @@
+overlay: 1.1.0
+info:
+  title: aaa
+  version: 1.0.0
+  description: bbb
+actions:
+  - target: $.components.schemas
+    update:
+      ResponseContext:
+        additionalProperties: false
+        description: Information about the context of the response.
+        properties:
+          RequestId:
+            description: The ID of the request.
+            type: string
+        type: object
+  - target: $.components.schemas.*.properties.ResponseContext
+    update:
+      "$ref": "#/components/schemas/ResponseContext"

@@ -256,7 +256,7 @@ class BaseAPI:
 class OutscaleGateway(BaseAPI):
     def __init__(self, **kwargs):
         super().__init__(
-            os.path.join(os.path.dirname(__file__), "resources/outscale.yaml"), **kwargs
+            os.path.join(os.path.dirname(__file__), "resources/osc/api.yaml"), **kwargs
         )
 
 
@@ -304,7 +304,7 @@ class AsyncBaseAPI(BaseAPI):
 class AsyncOutscaleGateway(AsyncBaseAPI):
     def __init__(self, **kwargs):
         super().__init__(
-            os.path.join(os.path.dirname(__file__), "resources/outscale.yaml"), **kwargs
+            os.path.join(os.path.dirname(__file__), "resources/osc/api.yaml"), **kwargs
         )
 
 
