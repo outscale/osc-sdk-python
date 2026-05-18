@@ -46,6 +46,34 @@ from osc_sdk_python import AsyncGateway
 gw = AsyncGateway(profile="profile_1")
 ```
 
+Using multiple services from one client:
+
+```python
+from osc_sdk_python import Client
+
+with Client(profile="profile_1") as client:
+    vms = client.osc.ReadVms()
+    projects = client.oks.ListProjects()
+```
+
+Using multiple services from one async client:
+
+```python
+import asyncio
+
+from osc_sdk_python import AsyncClient
+
+
+async def main():
+    async with AsyncClient(profile="profile_1") as client:
+        vms = await client.osc.ReadVms()
+        projects = await client.oks.ListProjects()
+
+
+if __name__ == "__main__":
+    asyncio.run(main())
+```
+
 Calling actions:
 
 * **Typed methods**: `gw.ReadVms(...)`, `gw.CreateVms(...)`, etc.

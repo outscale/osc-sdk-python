@@ -3,17 +3,17 @@ import sys
 import unittest
 
 sys.path.append("..")
-from osc_sdk_python import AsyncGateway
+from osc_sdk_python import AsyncClient
 
 
 class TestAsyncVm(unittest.TestCase):
     def test_listing(self):
         async def run():
-            gw = AsyncGateway()
+            client = AsyncClient()
             try:
-                vms = await gw.ReadVms()
+                vms = await client.osc.ReadVms()
             finally:
-                await gw.close()
+                await client.close()
 
             self.assertEqual(type(vms), dict)
             self.assertEqual(type(vms.get("Vms")), list)
@@ -22,8 +22,8 @@ class TestAsyncVm(unittest.TestCase):
 
     def test_listing_with_context_manager(self):
         async def run():
-            async with AsyncGateway() as gw:
-                vms = await gw.ReadVms()
+            async with AsyncClient() as client:
+                vms = await client.osc.ReadVms()
                 self.assertEqual(type(vms), dict)
                 self.assertEqual(type(vms.get("Vms")), list)
 
