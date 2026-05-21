@@ -3,6 +3,13 @@ import sys
 from .runtime.async_.call import AsyncCall
 from .runtime.sync.call import Call
 from .runtime.request import RequestSpec
+try:
+    from .generated.oks import AsyncOksTypedMixin
+except (ImportError, ModuleNotFoundError):
+    # This allows the generator to run even if the generated code is missing
+    class AsyncOksTypedMixin:
+        pass
+
 from .limiter import RateLimiter
 import ruamel.yaml
 from .version import get_version
@@ -261,11 +268,6 @@ class OpenAPIActionAPI:
         self.call.close()
 
 
-class OutscaleGateway(OpenAPIActionAPI):
-    def __init__(self, **kwargs):
-        super().__init__(OSC_SPEC, service="api", **kwargs)
-
-
 class AsyncOpenAPIActionAPI(OpenAPIActionAPI):
     def __init__(self, spec, service="api", **kwargs):
         self.service = service
@@ -306,16 +308,6 @@ class AsyncOpenAPIActionAPI(OpenAPIActionAPI):
 
     async def close(self):
         await self.call.close()
-
-
-class AsyncOutscaleGateway(AsyncOpenAPIActionAPI):
-    def __init__(self, **kwargs):
-        super().__init__(OSC_SPEC, service="api", **kwargs)
-
-
-
-
-
 
 
 class OpenAPIPathAPI:
@@ -459,8 +451,14 @@ class AsyncOpenAPIPathAPI(OpenAPIPathAPI):
         return None
 
 
-BaseAPI = OpenAPIActionAPI
-AsyncBaseAPI = AsyncOpenAPIActionAPI
+class OutscaleGateway(OpenAPIActionAPI):
+    def __init__(self, **kwargs):
+        super().__init__(OSC_SPEC, service="api", **kwargs)
+
+
+class AsyncOutscaleGateway(AsyncOpenAPIActionAPI):
+    def __init__(self, **kwargs):
+        super().__init__(OSC_SPEC, service="api", **kwargs)
 
 
 class OksGateway(OpenAPIPathAPI):
@@ -468,7 +466,7 @@ class OksGateway(OpenAPIPathAPI):
         super().__init__(OKS_SPEC, service="oks", **kwargs)
 
 
-class AsyncOksGateway(AsyncOpenAPIPathAPI):
+class AsyncOksGateway(AsyncOksTypedMixin, AsyncOpenAPIPathAPI):
     def __init__(self, **kwargs):
         super().__init__(OKS_SPEC, service="oks", **kwargs)
 

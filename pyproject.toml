@@ -21,6 +21,7 @@ classifiers = [
 ]
 dependencies = [
     "httpx>=0.28.0",
+    "pydantic>=2.0.0",
     "requests>=2.20.0",
     "ruamel.yaml==0.19.1",
     "urllib3>=2.6.3",
