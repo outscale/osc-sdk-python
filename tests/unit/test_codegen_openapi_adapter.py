@@ -211,6 +211,30 @@ def test_scalar_enums_render_as_literals():
     assert "state: Literal['pending', 'running'] | None" in rendered_models
 
 
+def test_required_schema_fields_render_without_default_none():
+    spec = {
+        "paths": {},
+        "components": {
+            "schemas": {
+                "CreateVmRequest": {
+                    "type": "object",
+                    "required": ["ImageId"],
+                    "properties": {
+                        "ImageId": {"type": "string"},
+                        "DryRun": {"type": "boolean"},
+                    },
+                }
+            }
+        },
+    }
+
+    adapter = PathOperationAdapter(spec, service="api")
+    rendered_models = render_models([], adapter.schema_models(), "osc")
+
+    assert "image_id: str = Field(alias='ImageId')" in rendered_models
+    assert "dry_run: bool | None = Field(default=None, alias='DryRun')" in rendered_models
+
+
 def test_non_model_response_uses_type_adapter():
     spec = {
         "paths": {
