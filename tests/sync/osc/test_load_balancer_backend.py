@@ -3,7 +3,7 @@ import time
 import unittest
 
 sys.path.append("..")
-from osc_sdk_python import Gateway
+from osc_sdk_python import Client
 from tests.integration_utils import (
     build_name_tag_request,
     get_first_subregion_name,
@@ -17,16 +17,17 @@ from tests.integration_utils import (
 
 class TestLoadBalancerBackend(unittest.TestCase):
     def test_load_balancer_backend_lifecycle(self):
-        gw = Gateway()
-        subregion_name = get_first_subregion_name(gw)
-        image_id = get_latest_public_ubuntu_image_id(gw)
+        client = Client()
+        osc = client.osc
+        subregion_name = get_first_subregion_name(osc)
+        image_id = get_latest_public_ubuntu_image_id(osc)
         log_test_step("Using subregion {} and image {}".format(subregion_name, image_id))
         vm_id = None
         load_balancer_name = get_tagged_name("osc-sdk-python-lb")
         load_balancer_created = False
         try:
             log_test_step("Creating backend VM")
-            vm_response = gw.CreateVms(
+            vm_response = osc.CreateVms(
                 ImageId=image_id,
                 MinVmsCount=1,
                 MaxVmsCount=1,
@@ -41,11 +42,11 @@ class TestLoadBalancerBackend(unittest.TestCase):
             self.assertTrue(vm_id)
             log_test_step("Created backend VM {}".format(vm_id))
 
-            gw.CreateTags(**build_name_tag_request(vm_id))
+            osc.CreateTags(**build_name_tag_request(vm_id))
             log_test_step("Tagged backend VM {}".format(vm_id))
 
             for _ in range(36):
-                vm = read_single_resource(gw, "ReadVms", "Vms", "VmIds", vm_id)
+                vm = read_single_resource(osc, "ReadVms", "Vms", "VmIds", vm_id)
                 log_test_step("VM {} state={}".format(vm_id, vm.get("State")))
                 if vm.get("State") == "running":
                     break
@@ -54,7 +55,7 @@ class TestLoadBalancerBackend(unittest.TestCase):
                 time.sleep(10)
 
             log_test_step("Creating load balancer {}".format(load_balancer_name))
-            load_balancer_response = gw.CreateLoadBalancer(
+            load_balancer_response = osc.CreateLoadBalancer(
                 LoadBalancerName=load_balancer_name,
                 Listeners=[
                     {
@@ -71,12 +72,12 @@ class TestLoadBalancerBackend(unittest.TestCase):
             load_balancer_created = True
 
             log_test_step("Linking backend VM {} to {}".format(vm_id, load_balancer_name))
-            gw.LinkLoadBalancerBackendMachines(
+            osc.LinkLoadBalancerBackendMachines(
                 LoadBalancerName=load_balancer_name, BackendVmIds=[vm_id]
             )
 
             log_test_step("Reading load balancer {}".format(load_balancer_name))
-            read_balancers = gw.ReadLoadBalancers(
+            read_balancers = osc.ReadLoadBalancers(
                 Filters={"LoadBalancerNames": [load_balancer_name]}
             )
             balancers = read_balancers.get("LoadBalancers")
@@ -86,7 +87,7 @@ class TestLoadBalancerBackend(unittest.TestCase):
 
             health = None
             for _ in range(18):
-                health = gw.ReadVmsHealth(
+                health = osc.ReadVmsHealth(
                     LoadBalancerName=load_balancer_name, BackendVmIds=[vm_id]
                 )
                 entry_count = len(health.get("BackendVmHealth", []) or [])
@@ -113,11 +114,12 @@ class TestLoadBalancerBackend(unittest.TestCase):
         finally:
             if load_balancer_created:
                 log_test_step("Deleting load balancer {}".format(load_balancer_name))
-                gw.DeleteLoadBalancer(LoadBalancerName=load_balancer_name)
+                osc.DeleteLoadBalancer(LoadBalancerName=load_balancer_name)
             if vm_id:
                 time.sleep(1)
                 log_test_step("Deleting backend VM {}".format(vm_id))
-                gw.DeleteVms(VmIds=[vm_id])
+                osc.DeleteVms(VmIds=[vm_id])
+            client.close()
 
 
 if __name__ == "__main__":

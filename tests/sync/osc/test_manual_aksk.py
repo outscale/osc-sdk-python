@@ -3,7 +3,7 @@ import sys
 import os
 
 sys.path.append("..")
-from osc_sdk_python import Gateway
+from osc_sdk_python import Client
 import copy
 
 
@@ -22,10 +22,10 @@ class TestLoginManualAkSk(unittest.TestCase):
             sk = os.environ.pop("OSC_SECRET_KEY", None)
             self.assertIsNotNone(ak)
             self.assertIsNotNone(sk)
-            gw = Gateway(access_key=ak, secret_key=sk)
-            volumes = gw.ReadVolumes()
-            self.assertIsInstance(volumes, dict)
-            self.assertIsInstance(volumes.get("Volumes"), list)
+            with Client(access_key=ak, secret_key=sk) as client:
+                volumes = client.osc.ReadVolumes()
+                self.assertIsInstance(volumes, dict)
+                self.assertIsInstance(volumes.get("Volumes"), list)
 
 
 if __name__ == "__main__":

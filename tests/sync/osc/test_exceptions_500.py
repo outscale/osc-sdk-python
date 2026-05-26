@@ -7,7 +7,7 @@ import os
 import time
 
 sys.path.append("..")
-from osc_sdk_python import Gateway
+from osc_sdk_python import Client
 from requests.exceptions import RetryError
 from requests import HTTPError
 import copy
@@ -60,16 +60,20 @@ class TestServerError(unittest.TestCase):
 
     def test_server_error(self):
         os.environ["OSC_ENDPOINT_API"] = "http://127.0.0.1:8000"
-        gw = Gateway()
+        client = Client()
+        osc = client.osc
         # a is not a valide argument
         with self.assertRaises(RetryError):
-            gw.ReadVms()
+            osc.ReadVms()
             os.environ.pop("OSC_ENDPOINT_API", None)
             os.environ["OSC_ENDPOINT_API"] = "http://127.0.0.1:8000"
-            gw = Gateway()
+            client.close()
+            client = Client()
+            osc = client.osc
             # a is not a valide argument
             with self.assertRaises(HTTPError):
-                gw.ReadVms()
+                osc.ReadVms()
+        client.close()
 
 
 if __name__ == "__main__":

@@ -3,7 +3,7 @@ import sys
 import os
 
 sys.path.append("..")
-from osc_sdk_python import Gateway
+from osc_sdk_python import Client
 import copy
 
 
@@ -28,10 +28,10 @@ class TestLoginPassword(unittest.TestCase):
             password = os.getenv("OSC_TEST_PASSWORD")
             self.assertIsNotNone(email, None)
             self.assertIsNotNone(password, None)
-            gw = Gateway(email=email, password=password)
-            keys = gw.ReadAccessKeys()
-            self.assertIsInstance(keys, dict)
-            self.assertIsInstance(keys.get("AccessKeys"), list)
+            with Client(email=email, password=password) as client:
+                keys = client.osc.ReadAccessKeys()
+                self.assertIsInstance(keys, dict)
+                self.assertIsInstance(keys.get("AccessKeys"), list)
 
 
 if __name__ == "__main__":

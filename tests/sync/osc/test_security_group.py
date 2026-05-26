@@ -2,19 +2,20 @@ import sys
 import unittest
 
 sys.path.append("..")
-from osc_sdk_python import Gateway
+from osc_sdk_python import Client
 from tests.integration_utils import get_tagged_name, log_test_step
 
 
 class TestSecurityGroup(unittest.TestCase):
     def test_security_group_lifecycle(self):
-        gw = Gateway()
+        client = Client()
+        osc = client.osc
         security_group_id = None
         tcp = "tcp"
         ip_range = "0.0.0.0/0"
         try:
             log_test_step("Creating security group")
-            response = gw.CreateSecurityGroup(
+            response = osc.CreateSecurityGroup(
                 SecurityGroupName=get_tagged_name("osc-sdk-python-sg"),
                 Description="Test security group lifecycle",
             )
@@ -25,7 +26,7 @@ class TestSecurityGroup(unittest.TestCase):
             log_test_step("Created security group {}".format(security_group_id))
 
             log_test_step("Creating inbound SSH rule on {}".format(security_group_id))
-            rule_response = gw.CreateSecurityGroupRule(
+            rule_response = osc.CreateSecurityGroupRule(
                 SecurityGroupId=security_group_id,
                 Flow="Inbound",
                 IpProtocol=tcp,
@@ -36,7 +37,7 @@ class TestSecurityGroup(unittest.TestCase):
             self.assertIsInstance(rule_response.get("SecurityGroup"), dict)
 
             log_test_step("Reading security group {}".format(security_group_id))
-            read_response = gw.ReadSecurityGroups(
+            read_response = osc.ReadSecurityGroups(
                 Filters={"SecurityGroupIds": [security_group_id]}
             )
             security_groups = read_response.get("SecurityGroups")
@@ -56,7 +57,7 @@ class TestSecurityGroup(unittest.TestCase):
             )
 
             log_test_step("Deleting inbound SSH rule on {}".format(security_group_id))
-            gw.DeleteSecurityGroupRule(
+            osc.DeleteSecurityGroupRule(
                 SecurityGroupId=security_group_id,
                 Flow="Inbound",
                 IpProtocol=tcp,
@@ -67,7 +68,8 @@ class TestSecurityGroup(unittest.TestCase):
         finally:
             if security_group_id:
                 log_test_step("Deleting security group {}".format(security_group_id))
-                gw.DeleteSecurityGroup(SecurityGroupId=security_group_id)
+                osc.DeleteSecurityGroup(SecurityGroupId=security_group_id)
+            client.close()
 
 
 if __name__ == "__main__":
