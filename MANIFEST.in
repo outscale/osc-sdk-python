@@ -1,3 +1,2 @@
 recursive-include osc_sdk_python/resources *.yaml
-include osc_sdk_python/resources/gateway_errors.yaml
 include osc_sdk_python/VERSION
