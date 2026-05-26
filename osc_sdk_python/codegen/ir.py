@@ -13,6 +13,7 @@ class Field:
 class Model:
     name: str
     fields: list[Field] = field(default_factory=list)
+    alias: str | None = None
 
 
 @dataclass
@@ -26,3 +27,4 @@ class Operation:
     path_fields: list[Field] = field(default_factory=list)
     query_fields: list[Field] = field(default_factory=list)
     body_field: Field | None = None
+    uses_request_as_body: bool = False

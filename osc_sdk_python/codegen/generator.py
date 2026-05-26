@@ -1,4 +1,6 @@
 from pathlib import Path
+import argparse
+import re
 from typing import Iterable
 
 import ruamel.yaml
@@ -7,12 +9,33 @@ from .adapters import PathOperationAdapter
 from .ir import Field, Model, Operation
 
 
-GENERATED_HEADER = '''"""Generated typed OKS client slice.
+GENERATED_HEADER = '''"""Generated typed {service_label} client slice.
 
 Do not edit by hand. Regenerate with:
     python -m osc_sdk_python.codegen.generator
 """
 '''
+
+
+DEFAULT_SERVICE_NAMES = {
+    "osc": "api",
+}
+
+
+def _service_label(package_name: str) -> str:
+    return package_name.upper()
+
+
+def _service_class_name(package_name: str) -> str:
+    return "".join(part.capitalize() for part in re.split(r"[_\W]+", package_name) if part)
+
+
+def _mixin_name(package_name: str) -> str:
+    return f"Async{_service_class_name(package_name)}TypedMixin"
+
+
+def _header(package_name: str) -> str:
+    return GENERATED_HEADER.format(service_label=_service_label(package_name))
 
 
 def _annotation(value: str, required: bool) -> str:
@@ -28,6 +51,9 @@ def _field_args(required: bool, alias: str) -> str:
 
 
 def _render_model(model: Model) -> str:
+    if model.alias is not None:
+        return f"{model.name} = {model.alias}"
+
     lines = [f"class {model.name}(GeneratedModel):"]
     if not model.fields:
         lines.append("    pass")
@@ -40,13 +66,23 @@ def _render_model(model: Model) -> str:
     return "\n".join(lines)
 
 
-def render_models(operations: Iterable[Operation], schema_models: Iterable[Model]) -> str:
+def render_models(
+    operations: Iterable[Operation],
+    schema_models: Iterable[Model],
+    package_name: str,
+) -> str:
+    schema_models = list(schema_models)
+    schema_model_names = {model.name for model in schema_models}
     models = [_render_model(model) for model in schema_models]
-    models.extend(_render_model(operation.request_model) for operation in operations)
+    models.extend(
+        _render_model(operation.request_model)
+        for operation in operations
+        if operation.request_model.name not in schema_model_names
+    )
     return (
-        GENERATED_HEADER
+        _header(package_name)
         + "from __future__ import annotations\n\n"
-        + "from typing import Any\n\n"
+        + "from typing import Any, Literal\n\n"
         + "from pydantic import BaseModel, ConfigDict, Field\n\n\n"
         + "class GeneratedModel(BaseModel):\n"
         + "    model_config = ConfigDict(populate_by_name=True, extra=\"allow\")\n\n\n"
@@ -59,15 +95,28 @@ def _field_dump(field: Field) -> str:
     return f"{field.alias!r}: request.{field.name}"
 
 
-def render_async_client(operations: list[Operation]) -> str:
-    imports = sorted(
-        {operation.request_model.name for operation in operations}
-        | {operation.response_model for operation in operations}
+def _model_imports(operations: list[Operation]) -> list[str]:
+    names = {operation.request_model.name for operation in operations}
+    names.update(
+        operation.response_model
+        for operation in operations
+        if re.fullmatch(r"[A-Za-z_][A-Za-z0-9_]*", operation.response_model)
     )
+    return sorted(names)
+
+
+def render_async_client(
+    operations: list[Operation],
+    service: str,
+    package_name: str,
+) -> str:
+    imports = _model_imports(operations)
     model_imports = "\n".join(f"    {name}," for name in imports)
     lines = [
-        GENERATED_HEADER,
+        _header(package_name),
         "from typing import Any",
+        "",
+        "from pydantic import TypeAdapter",
         "",
         "from osc_sdk_python.runtime.request import RequestSpec",
         "from .models import (",
@@ -81,14 +130,15 @@ def render_async_client(operations: list[Operation]) -> str:
         "    return value",
         "",
         "",
-        "class AsyncOksTypedMixin:",
+        f"class {_mixin_name(package_name)}:",
     ]
     for operation in operations:
-        json_body = (
-            f"_dump_json_body(request.{operation.body_field.name})"
-            if operation.body_field is not None
-            else "None"
-        )
+        if operation.uses_request_as_body:
+            json_body = "_dump_json_body(request)"
+        elif operation.body_field is not None:
+            json_body = f"_dump_json_body(request.{operation.body_field.name})"
+        else:
+            json_body = "None"
         lines.extend(
             [
                 f"    async def {operation.method_name}(",
@@ -114,7 +164,7 @@ def render_async_client(operations: list[Operation]) -> str:
                 "        }",
                 "        response = await self.call.request(",
                 "            RequestSpec(",
-                "                service=\"oks\",",
+                f"                service=\"{service}\",",
                 f"                method=\"{operation.http_method}\",",
                 f"                path=\"{operation.path}\",",
                 f"                json_body={json_body},",
@@ -126,20 +176,25 @@ def render_async_client(operations: list[Operation]) -> str:
                 "            ),",
                 "            path_params=path_params,",
                 "        )",
-                f"        return {operation.response_model}.model_validate(response)",
+                f"        return TypeAdapter({operation.response_model}).validate_python(response)",
                 "",
             ]
         )
     return "\n".join(lines)
 
 
-def render_init(operations: list[Operation], schema_models: list[Model]) -> str:
+def render_init(
+    operations: list[Operation],
+    schema_models: list[Model],
+    package_name: str,
+) -> str:
     model_names = sorted(
         {model.name for model in schema_models}
         | {operation.request_model.name for operation in operations}
     )
+    mixin_name = _mixin_name(package_name)
     lines = [
-        "from .async_client import AsyncOksTypedMixin",
+        f"from .async_client import {mixin_name}",
         "from .models import (",
     ]
     lines.extend(f"    {name}," for name in model_names)
@@ -148,7 +203,7 @@ def render_init(operations: list[Operation], schema_models: list[Model]) -> str:
             ")",
             "",
             "__all__ = [",
-            "    \"AsyncOksTypedMixin\",",
+            f"    \"{mixin_name}\",",
         ]
     )
     lines.extend(f"    {name!r}," for name in model_names)
@@ -156,25 +211,52 @@ def render_init(operations: list[Operation], schema_models: list[Model]) -> str:
     return "\n".join(lines)
 
 
-def generate(spec_path: Path, output_dir: Path) -> None:
+def generate(spec_path: Path, output_dir: Path, service: str, package_name: str | None = None) -> None:
+    package_name = package_name or output_dir.name
     yaml = ruamel.yaml.YAML(typ="safe")
     spec = yaml.load(spec_path.read_text())
-    adapter = PathOperationAdapter(spec, service="oks")
+    adapter = PathOperationAdapter(spec, service=service)
     operations = adapter.operations()
     schema_models = adapter.schema_models()
 
     output_dir.mkdir(parents=True, exist_ok=True)
-    (output_dir / "models.py").write_text(render_models(operations, schema_models))
-    (output_dir / "async_client.py").write_text(render_async_client(operations))
-    (output_dir / "__init__.py").write_text(render_init(operations, schema_models))
+    (output_dir / "models.py").write_text(render_models(operations, schema_models, package_name))
+    (output_dir / "async_client.py").write_text(
+        render_async_client(operations, service, package_name)
+    )
+    (output_dir / "__init__.py").write_text(render_init(operations, schema_models, package_name))
+
+
+def generate_all(root: Path, services: list[str] | None = None) -> None:
+    resources_root = root / "resources"
+    service_dirs = [
+        path
+        for path in sorted(resources_root.iterdir())
+        if path.is_dir() and (path / "api.yaml").exists()
+    ]
+    selected = set(services or [])
+    for service_dir in service_dirs:
+        package_name = service_dir.name
+        if selected and package_name not in selected:
+            continue
+        generate(
+            service_dir / "api.yaml",
+            root / "generated" / package_name,
+            DEFAULT_SERVICE_NAMES.get(package_name, package_name),
+            package_name,
+        )
 
 
 def main() -> None:
-    root = Path(__file__).resolve().parents[1]
-    generate(
-        root / "resources" / "oks" / "api.yaml",
-        root / "generated" / "oks",
+    parser = argparse.ArgumentParser(description="Generate typed SDK service slices.")
+    parser.add_argument(
+        "services",
+        nargs="*",
+        help="Service package names to generate, for example: osc oks. Defaults to all resources/*/api.yaml services.",
     )
+    args = parser.parse_args()
+    root = Path(__file__).resolve().parents[1]
+    generate_all(root, args.services or None)
 
 
 if __name__ == "__main__":

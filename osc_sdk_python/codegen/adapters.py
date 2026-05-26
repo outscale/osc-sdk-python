@@ -37,6 +37,10 @@ def schema_type(schema: dict[str, Any], ref_resolver=class_name) -> str:
     if "$ref" in schema:
         return ref_resolver(ref_name(schema["$ref"]))
 
+    enum_values = schema.get("enum")
+    if enum_values:
+        return "Literal[" + ", ".join(repr(value) for value in enum_values) + "]"
+
     for composed in ("allOf", "oneOf", "anyOf"):
         options = schema.get(composed)
         if not options:
@@ -81,6 +85,8 @@ class PathOperationAdapter:
                     continue
 
                 operation_id = operation.get("operationId")
+                if operation_id is None:
+                    continue
                 if selected is not None and operation_id not in selected:
                     continue
 
@@ -102,12 +108,31 @@ class PathOperationAdapter:
                     else:
                         query_fields.append(field)
 
-                body_field = self._body_field(operation)
+                body_schema, body_required = self._body_schema(operation)
+                uses_request_as_body = False
+                body_field = None
                 request_fields = path_fields + query_fields
-                if body_field is not None:
+                request_model = None
+
+                if (
+                    body_schema is not None
+                    and not request_fields
+                    and "$ref" in body_schema
+                    and self._is_action_body_operation(path, operation_id)
+                ):
+                    request_model = Model(class_name(ref_name(body_schema["$ref"])))
+                    uses_request_as_body = True
+                elif body_schema is not None:
+                    body_field = Field(
+                        name="body",
+                        alias="body",
+                        annotation=schema_type(body_schema),
+                        required=body_required,
+                    )
                     request_fields.append(body_field)
 
-                request_model = Model(f"{operation_id}Request", request_fields)
+                if request_model is None:
+                    request_model = Model(f"{operation_id}Request", request_fields)
                 response_model = self._response_model(operation)
                 operations.append(
                     Operation(
@@ -120,6 +145,7 @@ class PathOperationAdapter:
                         path_fields=path_fields,
                         query_fields=query_fields,
                         body_field=body_field,
+                        uses_request_as_body=uses_request_as_body,
                     )
                 )
         return operations
@@ -130,6 +156,12 @@ class PathOperationAdapter:
         for schema_name, schema in schemas.items():
             required_fields = set(schema.get("required", []))
             fields = []
+            if "properties" not in schema and (
+                schema.get("enum") or schema.get("type") not in {None, "object"}
+            ):
+                models.append(Model(class_name(schema_name), alias=schema_type(schema)))
+                continue
+
             for property_name, property_schema in schema.get("properties", {}).items():
                 fields.append(
                     Field(
@@ -142,19 +174,17 @@ class PathOperationAdapter:
             models.append(Model(class_name(schema_name), fields))
         return models
 
-    def _body_field(self, operation: dict[str, Any]) -> Field | None:
+    def _body_schema(self, operation: dict[str, Any]) -> tuple[dict[str, Any] | None, bool]:
         request_body = operation.get("requestBody")
         if request_body is None:
-            return None
+            return None, False
 
         content = request_body.get("content", {})
         schema = content.get("application/json", {}).get("schema", {})
-        return Field(
-            name="body",
-            alias="body",
-            annotation=schema_type(schema),
-            required=request_body.get("required", False),
-        )
+        return schema, request_body.get("required", False)
+
+    def _is_action_body_operation(self, path: str, operation_id: str) -> bool:
+        return path.strip("/").lower() == operation_id.lower()
 
     def _response_model(self, operation: dict[str, Any]) -> str:
         responses = operation.get("responses", {})
