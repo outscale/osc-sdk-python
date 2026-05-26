@@ -6,6 +6,8 @@ Do not edit by hand. Regenerate with:
 
 from typing import Any
 
+from pydantic import TypeAdapter
+
 from osc_sdk_python.runtime.request import RequestSpec
 from .models import (
     CPSubregionsResponse,
@@ -98,7 +100,7 @@ class AsyncOksTypedMixin:
             ),
             path_params=path_params,
         )
-        return ProjectResponseList.model_validate(response)
+        return TypeAdapter(ProjectResponseList).validate_python(response)
 
     async def create_project(
         self,
@@ -125,7 +127,7 @@ class AsyncOksTypedMixin:
             ),
             path_params=path_params,
         )
-        return ProjectResponse.model_validate(response)
+        return TypeAdapter(ProjectResponse).validate_python(response)
 
     async def get_project(
         self,
@@ -153,7 +155,7 @@ class AsyncOksTypedMixin:
             ),
             path_params=path_params,
         )
-        return ProjectResponse.model_validate(response)
+        return TypeAdapter(ProjectResponse).validate_python(response)
 
     async def update_project(
         self,
@@ -181,7 +183,7 @@ class AsyncOksTypedMixin:
             ),
             path_params=path_params,
         )
-        return ProjectResponse.model_validate(response)
+        return TypeAdapter(ProjectResponse).validate_python(response)
 
     async def delete_project(
         self,
@@ -209,7 +211,7 @@ class AsyncOksTypedMixin:
             ),
             path_params=path_params,
         )
-        return DetailResponse.model_validate(response)
+        return TypeAdapter(DetailResponse).validate_python(response)
 
     async def get_project_quotas(
         self,
@@ -237,7 +239,7 @@ class AsyncOksTypedMixin:
             ),
             path_params=path_params,
         )
-        return projects__project_schema__QuotasResponse.model_validate(response)
+        return TypeAdapter(projects__project_schema__QuotasResponse).validate_python(response)
 
     async def get_project_snapshots(
         self,
@@ -265,7 +267,7 @@ class AsyncOksTypedMixin:
             ),
             path_params=path_params,
         )
-        return SnapshotsResponse.model_validate(response)
+        return TypeAdapter(SnapshotsResponse).validate_python(response)
 
     async def get_project_public_ips(
         self,
@@ -293,7 +295,7 @@ class AsyncOksTypedMixin:
             ),
             path_params=path_params,
         )
-        return PublicIpsResponse.model_validate(response)
+        return TypeAdapter(PublicIpsResponse).validate_python(response)
 
     async def get_project_nets(
         self,
@@ -321,7 +323,7 @@ class AsyncOksTypedMixin:
             ),
             path_params=path_params,
         )
-        return NetsResponse.model_validate(response)
+        return TypeAdapter(NetsResponse).validate_python(response)
 
     async def list_clusters_by_project_id(
         self,
@@ -356,7 +358,7 @@ class AsyncOksTypedMixin:
             ),
             path_params=path_params,
         )
-        return ClusterResponseList.model_validate(response)
+        return TypeAdapter(ClusterResponseList).validate_python(response)
 
     async def create_cluster(
         self,
@@ -383,7 +385,7 @@ class AsyncOksTypedMixin:
             ),
             path_params=path_params,
         )
-        return ClusterResponse.model_validate(response)
+        return TypeAdapter(ClusterResponse).validate_python(response)
 
     async def list_all_clusters(
         self,
@@ -417,7 +419,7 @@ class AsyncOksTypedMixin:
             ),
             path_params=path_params,
         )
-        return ClusterResponseList.model_validate(response)
+        return TypeAdapter(ClusterResponseList).validate_python(response)
 
     async def get_cluster(
         self,
@@ -445,7 +447,7 @@ class AsyncOksTypedMixin:
             ),
             path_params=path_params,
         )
-        return ClusterResponse.model_validate(response)
+        return TypeAdapter(ClusterResponse).validate_python(response)
 
     async def update_cluster(
         self,
@@ -473,7 +475,7 @@ class AsyncOksTypedMixin:
             ),
             path_params=path_params,
         )
-        return ClusterResponse.model_validate(response)
+        return TypeAdapter(ClusterResponse).validate_python(response)
 
     async def delete_cluster(
         self,
@@ -501,7 +503,7 @@ class AsyncOksTypedMixin:
             ),
             path_params=path_params,
         )
-        return DetailResponse.model_validate(response)
+        return TypeAdapter(DetailResponse).validate_python(response)
 
     async def get_kubeconfig(
         self,
@@ -532,7 +534,7 @@ class AsyncOksTypedMixin:
             ),
             path_params=path_params,
         )
-        return KubeconfigResponse.model_validate(response)
+        return TypeAdapter(KubeconfigResponse).validate_python(response)
 
     async def get_kubeconfig_with_pubkey_nacl(
         self,
@@ -563,7 +565,7 @@ class AsyncOksTypedMixin:
             ),
             path_params=path_params,
         )
-        return KubeconfigResponse.model_validate(response)
+        return TypeAdapter(KubeconfigResponse).validate_python(response)
 
     async def upgrade_cluster(
         self,
@@ -591,7 +593,7 @@ class AsyncOksTypedMixin:
             ),
             path_params=path_params,
         )
-        return ClusterResponse.model_validate(response)
+        return TypeAdapter(ClusterResponse).validate_python(response)
 
     async def get_kubernetes_versions(
         self,
@@ -618,7 +620,7 @@ class AsyncOksTypedMixin:
             ),
             path_params=path_params,
         )
-        return KubernetesVersionsResponse.model_validate(response)
+        return TypeAdapter(KubernetesVersionsResponse).validate_python(response)
 
     async def get_cp_subregions(
         self,
@@ -645,7 +647,7 @@ class AsyncOksTypedMixin:
             ),
             path_params=path_params,
         )
-        return CPSubregionsResponse.model_validate(response)
+        return TypeAdapter(CPSubregionsResponse).validate_python(response)
 
     async def get_control_plane_plans(
         self,
@@ -672,7 +674,7 @@ class AsyncOksTypedMixin:
             ),
             path_params=path_params,
         )
-        return ControlPlanesResponse.model_validate(response)
+        return TypeAdapter(ControlPlanesResponse).validate_python(response)
 
     async def get_project_template(
         self,
@@ -699,7 +701,7 @@ class AsyncOksTypedMixin:
             ),
             path_params=path_params,
         )
-        return TemplateResponse_ProjectInput.model_validate(response)
+        return TypeAdapter(TemplateResponse_ProjectInput).validate_python(response)
 
     async def get_cluster_template(
         self,
@@ -726,7 +728,7 @@ class AsyncOksTypedMixin:
             ),
             path_params=path_params,
         )
-        return TemplateResponse_ClusterInputTemplate.model_validate(response)
+        return TypeAdapter(TemplateResponse_ClusterInputTemplate).validate_python(response)
 
     async def get_nodepool_template(
         self,
@@ -753,7 +755,7 @@ class AsyncOksTypedMixin:
             ),
             path_params=path_params,
         )
-        return TemplateResponse_Nodepool.model_validate(response)
+        return TypeAdapter(TemplateResponse_Nodepool).validate_python(response)
 
     async def get_net_peering_request_template(
         self,
@@ -780,7 +782,7 @@ class AsyncOksTypedMixin:
             ),
             path_params=path_params,
         )
-        return TemplateResponse_NetPeeringRequest.model_validate(response)
+        return TypeAdapter(TemplateResponse_NetPeeringRequest).validate_python(response)
 
     async def get_net_peering_acceptance_template(
         self,
@@ -807,7 +809,7 @@ class AsyncOksTypedMixin:
             ),
             path_params=path_params,
         )
-        return TemplateResponse_NetPeeringAcceptance.model_validate(response)
+        return TypeAdapter(TemplateResponse_NetPeeringAcceptance).validate_python(response)
 
     async def get_quotas(
         self,
@@ -834,7 +836,7 @@ class AsyncOksTypedMixin:
             ),
             path_params=path_params,
         )
-        return quotas__quota_schema__QuotasResponse.model_validate(response)
+        return TypeAdapter(quotas__quota_schema__QuotasResponse).validate_python(response)
 
     async def get_client_ip(
         self,
@@ -861,4 +863,4 @@ class AsyncOksTypedMixin:
             ),
             path_params=path_params,
         )
-        return IPResponse.model_validate(response)
+        return TypeAdapter(IPResponse).validate_python(response)

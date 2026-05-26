@@ -5,7 +5,7 @@ Do not edit by hand. Regenerate with:
 """
 from __future__ import annotations
 
-from typing import Any
+from typing import Any, Literal
 
 from pydantic import BaseModel, ConfigDict, Field
 
@@ -33,7 +33,7 @@ class AutoMaintenances(GeneratedModel):
 class AutoUpgradeMaintenance(GeneratedModel):
     duration_hours: int = Field(alias='durationHours')
     start_hour: int = Field(alias='startHour')
-    week_day: str = Field(alias='weekDay')
+    week_day: Literal['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'] = Field(alias='weekDay')
 
 class CPSubregionsResponse(GeneratedModel):
     response_context: clusters__cluster_schema__ResponseContext = Field(alias='ResponseContext')
@@ -165,14 +165,14 @@ class KubernetesVersionsResponse(GeneratedModel):
 class Maintenance(GeneratedModel):
     duration_hours: int = Field(alias='duration_hours')
     start_hour: int = Field(alias='start_hour')
-    week_day: str = Field(alias='week_day')
+    week_day: Literal['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun', 'string'] = Field(alias='week_day')
     tz: str | None = Field(default=None, alias='tz')
 
 class MaintenanceWindow(GeneratedModel):
     enabled: bool | None = Field(default=None, alias='enabled')
     duration_hours: int | None = Field(default=None, alias='duration_hours')
     start_hour: int | None = Field(default=None, alias='start_hour')
-    week_day: str | None = Field(default=None, alias='week_day')
+    week_day: Literal['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun', 'string'] | None = Field(default=None, alias='week_day')
     tz: str | None = Field(default=None, alias='tz')
 
 class Net(GeneratedModel):
