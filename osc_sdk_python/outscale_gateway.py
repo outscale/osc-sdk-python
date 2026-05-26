@@ -3,12 +3,21 @@ import sys
 from .runtime.async_.call import AsyncCall
 from .runtime.sync.call import Call
 from .runtime.request import RequestSpec
+
+# Bootstrap logic for generated mixins. 
+# This allows the SDK to load even if specific service code isn't generated yet.
 try:
     from .generated.oks import AsyncOksTypedMixin
 except (ImportError, ModuleNotFoundError):
-    # This allows the generator to run even if the generated code is missing
-    class AsyncOksTypedMixin:
-        pass
+    class AsyncOksTypedMixin: pass
+
+try:
+    from .generated.osc import AsyncOscTypedMixin
+except (ImportError, ModuleNotFoundError):
+    class AsyncOscTypedMixin: pass
+
+# Replicate this pattern here for future services (e.g., EIM, FCU) 
+# if they are generated into separate mixins.
 
 from .limiter import RateLimiter
 import ruamel.yaml
@@ -34,6 +43,8 @@ DEFAULT_LIMITER_MAX_REQUESTS = 5  # 5 requests / sec
 RESOURCE_DIR = os.path.join(os.path.dirname(__file__), "resources")
 OSC_SPEC = os.path.join(RESOURCE_DIR, "osc/api.yaml")
 OKS_SPEC = os.path.join(RESOURCE_DIR, "oks/api.yaml")
+# Replicate this pattern here for future services (e.g., EIM, FCU)
+# if they are generated into separate mixins.
 
 
 class ActionNotExists(NotImplementedError):
@@ -85,7 +96,6 @@ class OpenAPIActionAPI:
     def __init__(self, spec, service="api", **kwargs):
         self.service = service
         self._load_gateway_structure(spec)
-        self._load_errors()
         self.log = Logger()
         self.limiter = RateLimiter(DEFAULT_LIMITER_WINDOW, DEFAULT_LIMITER_MAX_REQUESTS)
         self.call = Call(
@@ -168,13 +178,6 @@ class OpenAPIActionAPI:
 
     def _load_gateway_structure(self, spec):
         self.gateway_structure = self._convert(spec)
-
-    def _load_errors(self):
-        dir_path = os.path.join(os.path.dirname(__file__))
-        yaml_file = os.path.abspath("{}/resources/gateway_errors.yaml".format(dir_path))
-        with open(yaml_file, "r") as yam:
-            yaml = ruamel.yaml.YAML(typ="safe")
-            self.gateway_errors = yaml.load(yam.read())
 
     def _check_parameters_type(self, action_structure, input_structure):
         for i_param, i_value in input_structure.items():
@@ -272,7 +275,6 @@ class AsyncOpenAPIActionAPI(OpenAPIActionAPI):
     def __init__(self, spec, service="api", **kwargs):
         self.service = service
         self._load_gateway_structure(spec)
-        self._load_errors()
         self.log = Logger()
         self.limiter = RateLimiter(DEFAULT_LIMITER_WINDOW, DEFAULT_LIMITER_MAX_REQUESTS)
         self.call = AsyncCall(
@@ -314,7 +316,6 @@ class OpenAPIPathAPI:
     def __init__(self, spec, service, **kwargs):
         self.service = service
         self.operations = self._load_operations(spec)
-        self._load_errors()
         self.log = Logger()
         self.limiter = RateLimiter(DEFAULT_LIMITER_WINDOW, DEFAULT_LIMITER_MAX_REQUESTS)
         self.call = Call(logger=self.log, limiter=self.limiter, **kwargs)
@@ -343,13 +344,6 @@ class OpenAPIPathAPI:
                         "request_body": operation.get("requestBody"),
                     }
         return operations
-
-    def _load_errors(self):
-        dir_path = os.path.join(os.path.dirname(__file__))
-        yaml_file = os.path.abspath("{}/resources/gateway_errors.yaml".format(dir_path))
-        with open(yaml_file, "r") as yam:
-            yaml = ruamel.yaml.YAML(typ="safe")
-            self.gateway_errors = yaml.load(yam.read())
 
     def _build_request(self, operation_name, kwargs):
         if operation_name not in self.operations:
@@ -423,7 +417,6 @@ class AsyncOpenAPIPathAPI(OpenAPIPathAPI):
     def __init__(self, spec, service, **kwargs):
         self.service = service
         self.operations = self._load_operations(spec)
-        self._load_errors()
         self.log = Logger()
         self.limiter = RateLimiter(DEFAULT_LIMITER_WINDOW, DEFAULT_LIMITER_MAX_REQUESTS)
         self.call = AsyncCall(logger=self.log, limiter=self.limiter, **kwargs)
@@ -456,7 +449,7 @@ class OutscaleGateway(OpenAPIActionAPI):
         super().__init__(OSC_SPEC, service="api", **kwargs)
 
 
-class AsyncOutscaleGateway(AsyncOpenAPIActionAPI):
+class AsyncOutscaleGateway(AsyncOscTypedMixin, AsyncOpenAPIActionAPI):
     def __init__(self, **kwargs):
         super().__init__(OSC_SPEC, service="api", **kwargs)
 
@@ -471,10 +464,16 @@ class AsyncOksGateway(AsyncOksTypedMixin, AsyncOpenAPIPathAPI):
         super().__init__(OKS_SPEC, service="oks", **kwargs)
 
 
+# Replicate this pattern here for future services (e.g., EIM, FCU)
+# if they are generated into separate mixins.
+
+
 class Client:
     def __init__(self, **kwargs):
         self.osc = OutscaleGateway(**kwargs)
         self.oks = OksGateway(**kwargs)
+        # Replicate this pattern here for future services (e.g., EIM, FCU)
+        # if they are generated into separate mixins.
 
     def close(self):
         self.osc.close()
@@ -491,6 +490,8 @@ class AsyncClient:
     def __init__(self, **kwargs):
         self.osc = AsyncOutscaleGateway(**kwargs)
         self.oks = AsyncOksGateway(**kwargs)
+        # Replicate this pattern here for future services (e.g., EIM, FCU)
+        # if they are generated into separate mixins.
 
     async def close(self):
         await self.osc.close()
