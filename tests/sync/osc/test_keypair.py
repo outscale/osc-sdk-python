@@ -1,0 +1,31 @@
+import sys
+import unittest
+
+sys.path.append("..")
+from osc_sdk_python import Client
+from tests.integration_utils import get_tagged_name, log_test_step
+
+
+class TestKeypair(unittest.TestCase):
+    def test_keypair_lifecycle(self):
+        client = Client()
+        osc = client.osc
+        keypair_name = get_tagged_name("osc-sdk-python-keypair")
+        keypair_id = None
+        try:
+            log_test_step("Creating keypair {}".format(keypair_name))
+            response = osc.CreateKeypair(KeypairName=keypair_name)
+            keypair = response.get("Keypair")
+            self.assertIsInstance(keypair, dict)
+            keypair_id = keypair.get("KeypairId")
+            self.assertTrue(keypair_id)
+            log_test_step("Created keypair {}".format(keypair_id))
+        finally:
+            if keypair_id:
+                log_test_step("Deleting keypair {}".format(keypair_id))
+                osc.DeleteKeypair(KeypairId=keypair_id)
+            client.close()
+
+
+if __name__ == "__main__":
+    unittest.main()

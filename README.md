@@ -38,6 +38,7 @@
 It allows you to:
 
 - Configure multiple profiles through environment variables or credential files.
+- Use either the synchronous `Gateway` or asynchronous `AsyncGateway`.
 - Customize retry and rate-limit behavior.
 - Enable detailed logging of requests and responses.
 
@@ -152,9 +153,59 @@ with Gateway(email="your@email.com", password="yourAccountPassword") as gw:
     keys = gw.ReadAccessKeys()
 ```
 
+### Async Usage
+
+Use `AsyncGateway` when calling the SDK from async Python code:
+
+```python
+import asyncio
+
+from osc_sdk_python import AsyncGateway
+
+
+async def main():
+    async with AsyncGateway(profile="default") as gw:
+        vms = await gw.ReadVms()
+        print(vms)
+
+
+if __name__ == "__main__":
+    asyncio.run(main())
+```
+
+### Multi-Service Client
+
+Use `Client` or `AsyncClient` to access multiple services from one SDK object:
+
+```python
+from osc_sdk_python import Client
+
+with Client(profile="default") as client:
+    vms = client.osc.ReadVms()
+    projects = client.oks.ListProjects()
+```
+
+Async example:
+
+```python
+import asyncio
+
+from osc_sdk_python import AsyncClient
+
+
+async def main():
+    async with AsyncClient(profile="default") as client:
+        vms = await client.osc.ReadVms()
+        projects = await client.oks.ListProjects()
+
+
+if __name__ == "__main__":
+    asyncio.run(main())
+```
+
 ### Retry Options
 
-The following options can be provided when initializing the `Gateway` to customize the retry behavior of the SDK:
+The following options can be provided when initializing the `Gateway` or `AsyncGateway` to customize the retry behavior of the SDK:
 
 * `max_retries` (integer, default `3`)
 * `retry_backoff_factor` (float, default `1.0`)
@@ -205,6 +256,7 @@ More usage patterns and logging examples are documented in:
 Some example topics covered in `docs/examples.md`:
 
 * Listing VMs and volumes
+* Async usage with `AsyncGateway`
 * Using profiles and regions
 * Raw calls with `gw.raw("ActionName", **params)`
 * Enabling and reading logs

@@ -6,6 +6,10 @@ on:
       api_version:
         description: 'Outscale API version'
         required: true
+      oks_api_url:
+        description: 'OKS OpenAPI URL'
+        required: false
+        default: 'https://docs.outscale.com/_attachments/oks.yaml'
 
 permissions:
   contents: write
@@ -24,9 +28,10 @@ jobs:
     - name: Set up Python
       run: uv python install
     - name: Build release
-      run: .github/scripts/release-build.sh "$API_VERSION"
+      run: .github/scripts/release-build.sh "$API_VERSION" "$OKS_API_URL"
       env:
         API_VERSION: ${{ github.event.inputs.api_version }}
+        OKS_API_URL: ${{ github.event.inputs.oks_api_url }}
     - name: Get SDK version
       id: get-sdk-version
       run: |
@@ -38,11 +43,12 @@ jobs:
         author: "Outscale Bot <opensource+bot@outscale.com>"
         commit-message: "🔖 release: osc-sdk-python v${{ env.sdk_version }}"
         body: |
-          Automatic build of SDK v${{ env.sdk_version }} version based on Outscale API ${{ env.api_version }}.
+          Automatic build of SDK v${{ env.sdk_version }} version based on Outscale API ${{ env.api_version }} and OKS API ${{ env.oks_api_url }}.
         title: "SDK v${{ env.sdk_version }}"
         token: "${{ env.token }}"
         labels: "kind/feature"
       env:
         sdk_version: ${{ steps.get-sdk-version.outputs.sdk_version }}
         api_version: ${{ github.event.inputs.api_version }}
+        oks_api_url: ${{ github.event.inputs.oks_api_url }}
         token: ${{ secrets.GH_TOKEN || secrets.GITHUB_TOKEN }}

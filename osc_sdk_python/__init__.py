@@ -1,4 +1,7 @@
 from .outscale_gateway import OutscaleGateway as Gateway
+from .outscale_gateway import AsyncOutscaleGateway as AsyncGateway
+from .outscale_gateway import Client
+from .outscale_gateway import AsyncClient
 from .outscale_gateway import LOG_NONE
 from .outscale_gateway import LOG_STDERR
 from .outscale_gateway import LOG_STDIO
@@ -6,7 +9,7 @@ from .outscale_gateway import LOG_MEMORY
 from .version import get_version
 from .problem import Problem, ProblemDecoder
 from .limiter import RateLimiter
-from .retry import Retry
+from .runtime.sync.retry import Retry
 
 # what to Log
 from .outscale_gateway import LOG_ALL
@@ -18,6 +21,9 @@ __all__ = [
     "__version__",
     "__author__",
     "Gateway",
+    "AsyncGateway",
+    "Client",
+    "AsyncClient",
     "LOG_NONE",
     "LOG_STDERR",
     "LOG_STDIO",

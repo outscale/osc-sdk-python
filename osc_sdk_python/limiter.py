@@ -1,4 +1,5 @@
 from datetime import datetime, timezone, timedelta
+import asyncio
 import time
 
 
@@ -18,6 +19,21 @@ class RateLimiter:
             oldest = self.requests[0]
             wait_time = self.window - (now - oldest)
             time.sleep(wait_time.total_seconds())
+
+            now = self.datetime_cls.now(timezone.utc)
+            self.clean_old_requests(now)
+
+        self.requests.append(now)
+
+    async def async_acquire(self):
+        now = self.datetime_cls.now(timezone.utc)
+
+        self.clean_old_requests(now)
+
+        if len(self.requests) >= self.max_requests:
+            oldest = self.requests[0]
+            wait_time = self.window - (now - oldest)
+            await asyncio.sleep(wait_time.total_seconds())
 
             now = self.datetime_cls.now(timezone.utc)
             self.clean_old_requests(now)

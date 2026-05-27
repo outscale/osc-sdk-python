@@ -1,0 +1,899 @@
+overlay: 1.0.0
+info:
+  title: "Example to indicate how to use the OpenAPI Overlay specification (https://github.com/OAI/Overlay-Specification)"
+  version: 1.0.0
+actions:
+- target: $.components.schemas.Vm
+  description: Required fields for Vm
+  update:
+    required:
+    - ActionsOnNextBoot
+    - Architecture
+    - BlockDeviceMappings
+    - BootMode
+    - CreationDate
+    - DeletionProtection
+    - Hypervisor
+    - ImageId
+    - LaunchNumber
+    - NestedVirtualization
+    - Nics
+    - OsFamily
+    - Performance
+    - Placement
+    - PrivateIp
+    - ProductCodes
+    - ReservationId
+    - RootDeviceName
+    - RootDeviceType
+    - SecurityGroups
+    - State
+    - StateReason
+    - Tags
+    - TpmEnabled
+    - UserData
+    - VmId
+    - VmInitiatedShutdownBehavior
+    - VmType
+- target: $.components.schemas.VmState
+  description: Rename VmState type
+  update:
+    x-rs-name: VmStateInfo
+- target: $.components.schemas.Vm.*.State
+  description: Type for Vm.State
+  update:
+    enum:
+    - pending
+    - running
+    - stopping
+    - stopped
+    - shutting-down
+    - terminated
+    - quarantine
+- target: $.components.schemas.FiltersVm.*.VmStateNames.items
+  description:
+  update:
+    x-rs-type: VmState
+- target: $.components.schemas.VmStates
+  description: Required fields for VmStates
+  update:
+    required:
+    - MaintenanceEvents
+    - SubregionName
+    - VmId
+    - VmState
+- target: $.components.schemas.VmStates.*.VmState
+  description:
+  update:
+    x-rs-type: VmState
+- target: $.components.schemas.FiltersVmsState.*.VmStates.items
+  description:
+  update:
+    x-rs-type: VmState
+- target: $.components.schemas.BlockDeviceMappingCreated
+  description: Required fields for BlockDeviceMappingCreated
+  update:
+    required:
+    - Bsu
+    - DeviceName
+- target: $.components.schemas.BsuCreated
+  description: Required fields for BsuCreated
+  update:
+    required:
+    - DeleteOnVmDeletion
+    - LinkDate
+    - State
+    - VolumeId
+- target: $.components.schemas.Nic
+  description: Required fields for Nic
+  update:
+    required:
+    - AccountId
+    - Description
+    - IsSourceDestChecked
+    - MacAddress
+    - NetId
+    - NicId
+    - PrivateDnsName
+    - PrivateIps
+    - SecurityGroups
+    - State
+    - SubnetId
+    - SubregionName
+    - Tags
+- target: $.components.schemas.NicLight
+  description: Required fields for NicLight
+  update:
+    required:
+    - AccountId
+    - Description
+    - IsSourceDestChecked
+    - MacAddress
+    - NetId
+    - NicId
+    - PrivateDnsName
+    - PrivateIps
+    - SecurityGroups
+    - State
+    - SubnetId
+- target: $.components.schemas.LinkNic
+  description: Required fields for LinkNic
+  update:
+    required:
+    - LinkNicId
+    - DeleteOnVmDeletion
+    - DeviceNumber
+    - MacAddress
+    - LinkNicId
+    - State
+    - VmAccountId
+    - VmId
+- target: $.components.schemas.LinkNicLight
+  description: Required fields for LinkNicLight
+  update:
+    required:
+    - DeleteOnVmDeletion
+    - DeviceNumber
+    - MacAddress
+    - LinkNicId
+    - State
+- target: $.components.schemas.LinkPublicIp
+  description: Required fields for LinkPublicIp
+  update:
+    required:
+    - LinkPublicIpId
+    - PublicIpId
+    - PublicDnsName
+    - PublicIp
+    - PublicIpAccountId
+- target: $.components.schemas.LinkPublicIpLightForVm
+  description: Required fields for LinkPublicIpLightForVm
+  update:
+    required:
+    - PublicDnsName
+    - PublicIp
+    - PublicIpAccountId
+- target: $.components.schemas.PrivateIp
+  description: Required fields for PrivateIp
+  update:
+    required:
+    - IsPrimary
+    - PrivateDnsName
+    - PrivateIp
+- target: $.components.schemas.PrivateIpLight
+  description: Required fields for PrivateIpLight
+  update:
+    required:
+    - IsPrimary
+    - PrivateDnsName
+    - PrivateIp
+- target: $.components.schemas.PrivateIpLightForVm
+  description: Required fields for PrivateIpLightForVm
+  update:
+    required:
+    - IsPrimary
+    - PrivateDnsName
+    - PrivateIp
+- target: $.components.schemas.Placement
+  description: Required fields for Placement
+  update:
+    required:
+    - SubregionName
+    - Tenancy
+- target: $.components.schemas.SecurityGroupLight
+  description: Required fields for SecurityGroupLight
+  update:
+    required:
+    - SecurityGroupId
+    - SecurityGroupName
+- target: $.components.schemas.CreateVmsRequest.*.*[?(@.type == 'array')]
+  description: Remove pointer from CreateVmsRequest attributes
+  update:
+    x-rs-type-skip-optional-pointer: true
+- target: $.components.schemas.UpdateVmRequest.*.*[?(@.type == 'array')]
+  description: Remove pointer from UpdateVmRequest attributes
+  update:
+    x-rs-type-skip-optional-pointer: true
+- target: $.components.schemas.BsuToUpdateVm
+  description: Required fields for BsuToUpdateVm
+  update:
+    required:
+    - DeleteOnVmDeletion
+    - VolumeId
+- target: $.components.schemas.SecurityGroup
+  description: Required fields for SecurityGroup
+  update:
+    required:
+    - AccountId
+    - Description
+    - InboundRules
+    - OutboundRules
+    - SecurityGroupId
+    - SecurityGroupName
+    - Tags
+- target: $.components.schemas.SecurityGroupRule.*.*
+  description: Remove pointer from SecurityGroupRule attributes
+  update:
+    x-rs-type-skip-optional-pointer: true
+- target: $.components.schemas.SecurityGroupsMember
+  description: Required fields for SecurityGroupsMember
+  update:
+    required:
+    - SecurityGroupId
+- target: $.components.schemas.CreateSecurityGroupRuleRequest.*.Rules
+  description: Remove pointer from CreateSecurityGroupRuleRequest attributes
+  update:
+    x-rs-type-skip-optional-pointer: true
+- target: $.components.schemas.DeleteSecurityGroupRuleRequest.*.Rules
+  description: Remove pointer from DeleteSecurityGroupRuleRequest attributes
+  update:
+    x-rs-type-skip-optional-pointer: true
+- target: $.components.schemas.SecurityGroupsMember
+  description: Required fields for SecurityGroupsMember
+  update:
+    required:
+    - SecurityGroupId
+- target: $.components.schemas.Net
+  description: Required fields for Net
+  update:
+    required:
+    - DhcpOptionsSetId
+    - IpRange
+    - NetId
+    - State
+    - Tags
+    - Tenancy
+- target: $.components.schemas.Net.*.State
+  description: Type for Net.State
+  update:
+    enum:
+    - pending
+    - available
+    - deleting
+- target: $.components.schemas.FiltersNet.*.States.items
+  description:
+  update:
+    x-rs-type: NetState
+- target: $.components.schemas.Subnet
+  description: Required fields for Subnet
+  update:
+    required:
+    - AvailableIpsCount
+    - IpRange
+    - MapPublicIpOnLaunch
+    - NetId
+    - State
+    - SubnetId
+    - SubregionName
+    - Tags
+- target: $.components.schemas.Subnet.*.State
+  description: Type for Subnet.State
+  update:
+    enum:
+    - pending
+    - available
+    - deleted
+- target: $.components.schemas.FiltersSubnet.*.States.items
+  description:
+  update:
+    x-rs-type: SubnetState
+- target: $.components.schemas.InternetService
+  description: Required fields for InternetService
+  update:
+    required:
+    - InternetServiceId
+    - NetId
+    - State
+    - Tags
+- target: $.components.schemas.NatService
+  description: Required fields for NatService
+  update:
+    required:
+    - NatServiceId
+    - NetId
+    - PublicIps
+    - State
+    - SubnetId
+    - Tags
+- target: $.components.schemas.NatService.*.State
+  description: Type for NatService.State
+  update:
+    enum:
+    - pending
+    - available
+    - deleting
+    - deleted
+- target: $.components.schemas.FiltersNatService.*.States.items
+  description:
+  update:
+    x-rs-type: NatServiceState
+- target: $.components.schemas.NetPeering
+  description: Required fields for NetPeering
+  update:
+    required:
+    - AccepterNet
+    - NetPeeringId
+    - SourceNet
+    - State
+    - Tags
+- target: $.components.schemas.NetPeeringState
+  description: Required fields for NetPeeringState
+  update:
+    required:
+    - Message
+    - Name
+- target: $.components.schemas.NetPeeringState.*.Name
+  description: Type for NetPeeringState.Name
+  update:
+    enum:
+    - pending-acceptance
+    - active
+    - rejected
+    - failed
+    - expired
+    - deleted
+- target: $.components.schemas.FiltersNetPeering.*.StateNames.items
+  description:
+  update:
+    x-rs-type: NetPeeringStateName
+- target: $.components.schemas.Image
+  description: Required fields for Image
+  update:
+    required:
+    - AccountId
+    - Architecture
+    - BlockDeviceMapping
+    - CreationDate
+    - ImageId
+    - State
+    - BootModes
+    - RootDeviceType
+    - SecureBoot
+    - Tags
+- target: $.components.schemas.Image.*.State
+  description: Type for Image.State
+  update:
+    enum:
+    - pending
+    - available
+    - failed
+- target: $.components.schemas.FiltersImage.*.States.items
+  description:
+  update:
+    x-rs-type: ImageState
+- target: $.components.schemas.Snapshot
+  description: Required fields for Snapshot
+  update:
+    required:
+    - CreationDate
+    - SnapshotId
+    - State
+    - AccountId
+    - VolumeId
+    - VolumeSize
+- target: $.components.schemas.Snapshot.*.State
+  description: Type for Snapshot.State
+  update:
+    enum:
+    - in-queue
+    - pending
+    - completed
+    - error
+    - deleting
+- target: $.components.schemas.FiltersSnapshot.*.States.items
+  description:
+  update:
+    x-rs-type: SnapshotState
+- target: $.components.schemas.SnapshotExportTask
+  description: Required fields for SnapshotExportTask
+  update:
+    required:
+    - Comment
+    - OsuExport
+    - Progress
+    - SnapshotId
+    - State
+    - Tags
+    - TaskId
+- target: $.components.schemas.SnapshotExportTask.*.State
+  description: Type for SnapshotExportTask.State
+  update:
+    enum:
+    - pending
+    - active
+    - completed
+    - cancelled
+    - failed
+- target: $.components.schemas.ErrorResponse
+  description: Required fields for ErrorResponse
+  update:
+    required:
+    - Errors
+- target: $.components.schemas.Errors
+  description: Required fields for Errors
+  update:
+    required:
+    - Code
+    - Details
+    - Type
+- target: $.components.schemas.BackendVmHealth.*.State
+  description: Type for BackendVmHealth.State
+  update:
+    enum:
+    - InService
+    - OutOfService
+    - Unknown
+- target: $.components.schemas.Volume
+  description: Required fields for Volume
+  update:
+    required:
+    - VolumeId
+    - CreationDate
+    - Iops
+    - Size
+    - State
+    - SubregionName
+    - Tags
+    - VolumeType
+    - LinkedVolumes
+- target: $.components.schemas
+  description: Create type VolumeType
+  update:
+    VolumeType:
+      type: string
+      enum:
+      - io1
+      - gp2
+      - standard
+- target: $.components.schemas.Volume.*.VolumeType
+  description: Type for Volume.VolumeType
+  update:
+    x-rs-type: VolumeType
+- target: $.components.schemas.FiltersImage.*.BlockDeviceMappingVolumeTypes.items
+  description:
+  update:
+    $ref: "#/components/schemas/VolumeType"
+- target: $.components.schemas.FiltersVolume.*.VolumeTypes.items
+  description:
+  update:
+    $ref: "#/components/schemas/VolumeType"
+- target: $.components.schemas.CreateVolumeRequest.*.VolumeType
+  description:
+  update:
+    x-rs-type: VolumeType
+- target: $.components.schemas.UpdateVolumeRequest.*.VolumeType
+  description:
+  update:
+    x-rs-type: VolumeType
+- target: $.components.schemas.BsuToCreate.*.VolumeType
+  description:
+  update:
+    x-rs-type: VolumeType
+- target: $.components.schemas.Volume.*.State
+  description: Type for Volume.State
+  update:
+    enum:
+    - creating
+    - available
+    - in-use
+    - deleting
+    - error
+- target: $.components.schemas.FiltersVolume.*.VolumeStates.items
+  description:
+  update:
+    x-rs-type: VolumeState
+- target: $.components.schemas.BlockDeviceMappingCreated
+  description: Required fields for BlockDeviceMappingCreated
+  update:
+    required:
+    - Bsu
+    - DeviceName
+- target: $.components.schemas.BsuCreated
+  description: Required fields for BsuCreated
+  update:
+    required:
+    - VolumeId
+    - DeleteOnVmDeletion
+    - LinkDate
+    - State
+- target: $.components.schemas.BsuCreated.*.State
+  description:
+  update:
+    x-rs-type: LinkedVolumeState
+- target: $.components.schemas.LinkedVolume
+  description: Required fields for LinkedVolume
+  update:
+    required:
+    - DeleteOnVmDeletion
+    - DeviceName
+    - State
+    - VmId
+    - VolumeId
+- target: $.components.schemas.LinkedVolume.*.State
+  description: Type for LinkedVolume.State
+  update:
+    enum:
+    - attaching
+    - detaching
+    - attached
+    - detached
+- target: $.components.schemas.FiltersVolume.*.LinkVolumeLinkStates.items
+  description:
+  update:
+    x-rs-type: LinkedVolumeState
+- target: $.components.schemas.FlexibleGpu
+  description: Required fields for FlexibleGpu
+  update:
+    required:
+    - DeleteOnVmDeletion
+    - FlexibleGpuId
+    - Generation
+    - ModelName
+    - State
+    - SubregionName
+- target: $.components.schemas.FlexibleGpu.*.State
+  description: Type for FlexibleGpu.State
+  update:
+    enum:
+    - allocated
+    - attaching
+    - attached
+    - detaching
+- target: $.components.schemas.FiltersFlexibleGpu.*.States.items
+  description:
+  update:
+    x-rs-type: FlexibleGpuState
+- target: $.components.schemas.NetAccessPoint.*.State
+  description: Type for NetAccessPoint.State
+  update:
+    enum:
+    - pending
+    - available
+    - deleting
+    - deleted
+- target: $.components.schemas.FiltersNetAccessPoint.*.States.items
+  description:
+  update:
+    x-rs-type: NetAccessPointState
+- target: $.components.schemas.AccessKey.*.State
+  description: Type for AccessKey.State
+  update:
+    enum:
+    - ACTIVE
+    - INACTIVE
+- target: $.components.schemas.FiltersAccessKeys.*.States.items
+  description:
+  update:
+    x-rs-type: AccessKeyState
+- target: $.components.schemas.Nic.*.State
+  description: Type for Nic.State
+  update:
+    enum:
+    - available
+    - attaching
+    - in-use
+    - detaching
+- target: $.components.schemas.NicLight.*.State
+  description:
+  update:
+    x-rs-type: NicState
+- target: $.components.schemas.FiltersNic.*.States.items
+  description:
+  update:
+    x-rs-type: NicState
+- target: $.components.schemas.LinkNic.*.State
+  description: Type for LinkNic.State
+  update:
+    enum:
+    - attaching
+    - attached
+    - detaching
+    - detached
+- target: $.components.schemas.FiltersLoadBalancer.*.States.items
+  description:
+  update:
+    x-rs-type: LoadBalancerState
+- target: $.components.schemas.LoadBalancer.*.State
+  description: Type for LoadBalancer.State
+  update:
+    enum:
+    - provisioning
+    - starting
+    - reloading
+    - active
+    - reconfiguring
+    - deleting
+    - deleted
+- target: $.components.schemas.LinkNicLight.*.State
+  description:
+  update:
+    x-rs-type: LinkNicState
+- target: $.components.schemas.PublicIp
+  description: Required fields for PublicIp
+  update:
+    required:
+    - PublicIpId
+    - PublicIp
+    - Tags
+- target: $.components.schemas.PublicIpLight
+  description: Required fields for PublicIpLight
+  update:
+    required:
+    - PublicIpId
+    - PublicIp
+- target: $.components.schemas.LinkPublicIpLightForVm
+  description: Required fields for LinkPublicIpLightForVm
+  update:
+    required:
+    - PublicDnsName
+    - PublicIp
+- target: $.components.schemas.PrivateIpLightForVm
+  description: Required fields for PrivateIpLightForVm
+  update:
+    required:
+    - IsPrimary
+    - PrivateDnsName
+    - PrivateIp
+- target: $.components.schemas.Listener
+  description: Required fields for Listener
+  update:
+    required:
+    - BackendPort
+    - BackendProtocol
+    - LoadBalancerPort
+    - LoadBalancerProtocol
+- target: $.components.schemas.Listener.*.PolicyNames
+  description: Remove pointer from Listener attributes
+  update:
+    x-rs-type-skip-optional-pointer: true
+- target: $.components.schemas.AccessLog
+  description: Required fields for AccessLog
+  update:
+    required:
+    - IsEnabled
+- target: $.components.schemas.LoadBalancer
+  description: Required fields for LoadBalancer
+  update:
+    required:
+    - State
+    - AccessLog
+    - ApplicationStickyCookiePolicies
+    - BackendIps
+    - BackendVmIds
+    - DnsName
+    - HealthCheck
+    - Listeners
+    - LoadBalancerName
+    - LoadBalancerStickyCookiePolicies
+    - LoadBalancerType
+    - SecuredCookies
+    - SecurityGroups
+    - SourceSecurityGroup
+    - SubregionNames
+    - Tags
+- target: $.components.schemas.LoadBalancer.*.Subnets
+  description: Remove pointer from LoadBalancer attributes
+  update:
+    x-rs-type-skip-optional-pointer: true
+- target: $.components.schemas.LoadBalancerTag
+  description: Required fields for LoadBalancerTag
+  update:
+    required:
+    - LoadBalancerName
+    - Key
+    - Value
+- target: $.components.schemas.Tag
+  description: Required fields for Tag
+  update:
+    required:
+    - ResourceId
+    - ResourceType
+    - Key
+    - Value
+- target: $.components.schemas.Tag.*.ResourceType
+  description: Enum for Tag.ResourceType
+  update:
+    enum:
+    - customer-gateway
+    - dhcpoptions
+    - flexible-gpu
+    - image
+    - instance
+    - keypair
+    - natgateway
+    - network-interface
+    - public-ip
+    - route-table
+    - security-group
+    - snapshot
+    - subnet
+    - task
+    - virtual-private-gateway
+    - volume
+    - vpc
+    - vpc-endpoint
+    - vpc-peering-connection
+    - vpn-connection
+    x-enum-varnames:
+    - ClientGateway
+    - DHCPOptions
+    - flexible-gpu
+    - image
+    - vm
+    - keypair
+    - NatServiceOrNetAccessPoint
+    - nic
+    - public-ip
+    - route-table
+    - security-group
+    - snapshot
+    - subnet
+    - task
+    - VirtualGateway
+    - volume
+    - Net
+    - NetEndpoint
+    - NetPeering
+    - vpn-connection
+- target: $.components.schemas.RouteTable
+  description: Required fields for RouteTable
+  update:
+    required:
+    - LinkRouteTables
+    - NetId
+    - RoutePropagatingVirtualGateways
+    - RouteTableId
+    - Routes
+    - Tags
+- target: $.components.schemas.LinkRouteTable
+  description: Required fields for LinkRouteTable
+  update:
+    required:
+    - LinkRouteTableId
+    - Main
+    - NetId
+    - RouteTableId
+    - SubnetId
+- target: $.components.schemas.Route
+  description: Required fields for Route
+  update:
+    required:
+    - CreationMethod
+    - DestinationIpRange
+    - State
+- target: $.components.schemas.RouteLight
+  description: Required fields for RouteLight
+  update:
+    required:
+    - DestinationIpRange
+    - RouteType
+    - State
+- target: $.components.schemas.VirtualGateway
+  description: Required fields for VirtualGateway
+  update:
+    required:
+    - ConnectionType
+    - NetToVirtualGatewayLinks
+    - State
+    - Tags
+    - VirtualGatewayId
+- target: $.components.schemas.ClientGateway
+  description: Required fields for ClientGateway
+  update:
+    required:
+    - BgpAsn
+    - ConnectionType
+    - PublicIp
+    - State
+    - Tags
+    - ClientGatewayId
+- target: $.components.schemas.ClientGateway.*.State
+  description: Type for ClientGateway.State
+  update:
+    enum:
+      - pending
+      - available
+      - deleting
+      - deleted
+- target: $.components.schemas.FiltersClientGateway.*.States.items
+  description:
+  update:
+    x-rs-type: ClientGatewayState
+- target: $.components.schemas.VpnConnection
+  description: Required fields for VpnConnection
+  update:
+    required:
+    - ClientGatewayId
+    - ConnectionType
+    - Routes
+    - VirtualGatewayId
+    - VgwTelemetries
+    - StaticRoutesOnly
+    - State
+    - Tags
+    - VpnConnectionId
+- target: $.components.schemas.NetAccessPoint
+  description: Required fields for NetAccessPoint
+  update:
+    required:
+    - NetId
+    - RouteTableIds
+    - ServiceName
+    - State
+    - Tags
+    - NetAccessPointId
+- target: $.components.schemas.*.*.NextPageToken.format
+  description: Switch pagination to string
+  remove: true
+- target: $.paths["/DeleteSecurityGroup"].post.responses
+  update:
+    '409':
+      content:
+        application/json:
+          schema:
+            "$ref": "#/components/schemas/ErrorResponse"
+      description: The HTTP 409 response (Conflict).
+- target: $.paths["/DeleteSubnet"].post.responses
+  update:
+    '409':
+      content:
+        application/json:
+          schema:
+            "$ref": "#/components/schemas/ErrorResponse"
+      description: The HTTP 409 response (Conflict).
+- target: $.paths["/CreateLoadBalancer"].post.responses
+  update:
+    '409':
+      content:
+        application/json:
+          schema:
+            "$ref": "#/components/schemas/ErrorResponse"
+      description: The HTTP 409 response (Conflict).
+- target: $.paths["/UpdateLoadBalancer"].post.responses
+  update:
+    '409':
+      content:
+        application/json:
+          schema:
+            "$ref": "#/components/schemas/ErrorResponse"
+      description: The HTTP 409 response (Conflict).
+- target: $.paths["/CreateNatService"].post.responses
+  update:
+    '409':
+      content:
+        application/json:
+          schema:
+            "$ref": "#/components/schemas/ErrorResponse"
+      description: The HTTP 409 response (Conflict).
+- target: $.paths["/UnlinkInternetService"].post.responses
+  update:
+    '424':
+      content:
+        application/json:
+          schema:
+            "$ref": "#/components/schemas/ErrorResponse"
+      description: The HTTP 424 response (Failed Dependency).
+- target: $.paths["/AddUserToUserGroup"].post.responses
+  update:
+    '404':
+      content:
+        application/json:
+          schema:
+            "$ref": "#/components/schemas/ErrorResponse"
+      description: The HTTP 404 response (Not Found).
+- target: $.paths.*.post.responses
+  update:
+    '400':
+      content:
+        application/json:
+          schema:
+            "$ref": "#/components/schemas/ErrorResponse"
+      description: The HTTP 400 response (Bad Request).
+- target: $.paths.*.post.responses
+  update:
+    '500':
+      content:
+        application/json:
+          schema:
+            "$ref": "#/components/schemas/ErrorResponse"
+      description: The HTTP 500 response (Internal Server Error).
