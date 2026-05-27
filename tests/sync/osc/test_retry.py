@@ -1,7 +1,7 @@
 import pytest
 import requests
 from unittest.mock import Mock, patch
-from requests.exceptions import RequestException, HTTPError, ConnectionError
+from requests.exceptions import RequestException, HTTPError, ConnectionError, Timeout
 
 from osc_sdk_python.runtime.sync.retry import Retry
 
@@ -233,3 +233,43 @@ class TestRetry:
         # Should try 3 times (initial + 2 retries)
         assert self.mock_session.request.call_count == 3
         assert mock_sleep.call_count == 2
+
+    @patch("time.sleep")
+    @patch("random.uniform")
+    def test_execute_with_timeout_retry(self, mock_random, mock_sleep):
+        """Test execute method retries timeout errors"""
+        mock_random.return_value = 1.0
+
+        exception = Timeout()
+        exception.response = None
+        self.mock_session.request.side_effect = exception
+
+        retry = Retry(
+            self.mock_session, self.method, self.url, max_retries=2, **self.base_kwargs
+        )
+
+        with pytest.raises(Timeout):
+            retry.execute()
+
+        assert self.mock_session.request.call_count == 3
+        assert mock_sleep.call_count == 2
+
+    @patch("time.sleep")
+    @patch("random.uniform")
+    def test_execute_uses_retry_after_header(self, mock_random, mock_sleep):
+        """Test Retry-After header overrides calculated backoff"""
+        mock_random.return_value = 1.0
+
+        mock_response = self.build_response(429, "Too Many Requests")
+        mock_response.headers["Retry-After"] = "7"
+        self.mock_session.request.return_value = mock_response
+
+        retry = Retry(
+            self.mock_session, self.method, self.url, max_retries=1, **self.base_kwargs
+        )
+
+        with pytest.raises(HTTPError):
+            retry.execute()
+
+        assert self.mock_session.request.call_count == 2
+        mock_sleep.assert_called_once_with(7.0)

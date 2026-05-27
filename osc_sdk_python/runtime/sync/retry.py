@@ -1,6 +1,8 @@
 import requests
 import time
 import random
+from datetime import datetime, timezone
+from email.utils import parsedate_to_datetime
 from requests.exceptions import JSONDecodeError
 from ...problem import ProblemDecoder, LegacyProblemDecoder, LegacyProblem, Problem
 
@@ -81,6 +83,29 @@ class Retry:
         backoff += random.uniform(0, self.backoff_jitter)
         return min(backoff, self.backoff_max)
 
+    def get_retry_after_time(self, e: requests.exceptions.RequestException):
+        response = getattr(e, "response", None)
+        if response is None:
+            return None
+
+        retry_after = response.headers.get("Retry-After")
+        if retry_after is None:
+            return None
+
+        try:
+            return max(0.0, float(retry_after))
+        except ValueError:
+            pass
+
+        try:
+            retry_date = parsedate_to_datetime(retry_after)
+        except (TypeError, ValueError):
+            return None
+
+        if retry_date.tzinfo is None:
+            retry_date = retry_date.replace(tzinfo=timezone.utc)
+        return max(0.0, (retry_date - datetime.now(timezone.utc)).total_seconds())
+
     def execute(self) -> requests.Response:
         try:
             res = self.execute_once()
@@ -88,7 +113,9 @@ class Retry:
             return res
         except requests.exceptions.RequestException as e:
             if self.should_retry(e):
-                sleep_time = self.get_backoff_time()
+                sleep_time = self.get_retry_after_time(e)
+                if sleep_time is None:
+                    sleep_time = self.get_backoff_time()
                 time.sleep(sleep_time)
                 return self.increment().execute()
             else:

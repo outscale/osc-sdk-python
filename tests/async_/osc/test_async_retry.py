@@ -26,10 +26,18 @@ class TestAsyncRetry:
         self.url = "https://api.test-region.outscale.com/"
         self.base_kwargs = {"timeout": 30}
 
-    def build_response(self, status_code, reason="OK", content_type="application/json"):
+    def build_response(
+        self,
+        status_code,
+        reason="OK",
+        content_type="application/json",
+        headers=None,
+    ):
+        response_headers = {"content-type": content_type}
+        response_headers.update(headers or {})
         return httpx.Response(
             status_code,
-            headers={"content-type": content_type},
+            headers=response_headers,
             json={"Errors": []},
             request=httpx.Request(self.method, self.url),
             extensions={"reason_phrase": reason.encode()},
@@ -211,6 +219,65 @@ class TestAsyncRetry:
 
             assert len(client.calls) == 3
             assert mock_sleep.call_count == 2
+
+        asyncio.run(run())
+
+    @patch("asyncio.sleep")
+    @patch("random.uniform")
+    def test_execute_with_timeout_retry(self, mock_random, mock_sleep):
+        async def run():
+            mock_random.return_value = 1.0
+            mock_sleep.return_value = None
+            exception = httpx.TimeoutException(
+                "timed out",
+                request=httpx.Request(self.method, self.url),
+            )
+            client = RecordingAsyncClient(exception=exception)
+            retry = AsyncRetry(
+                client,
+                self.method,
+                self.url,
+                max_retries=2,
+                **self.base_kwargs,
+            )
+
+            with pytest.raises(httpx.TimeoutException):
+                await retry.execute()
+
+            assert len(client.calls) == 3
+            assert mock_sleep.call_count == 2
+
+        asyncio.run(run())
+
+    @patch("asyncio.sleep")
+    @patch("random.uniform")
+    def test_execute_uses_retry_after_header(self, mock_random, mock_sleep):
+        async def run():
+            mock_random.return_value = 1.0
+            mock_sleep.return_value = None
+            client = RecordingAsyncClient(
+                [
+                    self.build_response(
+                        429,
+                        "Too Many Requests",
+                        headers={"Retry-After": "7"},
+                    )
+                    for _ in range(2)
+                ]
+            )
+            retry = AsyncRetry(
+                client,
+                self.method,
+                self.url,
+                max_retries=1,
+                **self.base_kwargs,
+            )
+
+            with pytest.raises(httpx.HTTPStatusError):
+                await retry.execute()
+
+            assert len(client.calls) == 2
+            mock_sleep.assert_called_once_with(7.0)
 
         asyncio.run(run())
 

@@ -11,6 +11,7 @@ from ..sync.retry import (
     RETRY_BACKOFF_JITTER,
     RETRY_BACKOFF_MAX,
     get_default_reason,
+    Retry,
 )
 
 
@@ -75,6 +76,9 @@ class AsyncRetry:
         backoff += random.uniform(0, self.backoff_jitter)
         return min(backoff, self.backoff_max)
 
+    def get_retry_after_time(self, e: httpx.HTTPError):
+        return Retry.get_retry_after_time(self, e)
+
     async def execute(self) -> httpx.Response:
         try:
             res = await self.execute_once()
@@ -82,7 +86,9 @@ class AsyncRetry:
             return res
         except httpx.HTTPError as e:
             if self.should_retry(e):
-                sleep_time = self.get_backoff_time()
+                sleep_time = self.get_retry_after_time(e)
+                if sleep_time is None:
+                    sleep_time = self.get_backoff_time()
                 await asyncio.sleep(sleep_time)
                 return await self.increment().execute()
             raise e
