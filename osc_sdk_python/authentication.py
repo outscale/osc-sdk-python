@@ -1,7 +1,9 @@
+from requests.structures import CaseInsensitiveDict
 import datetime
 import hashlib
 import hmac
 import base64
+import requests
 
 from .version import get_version
 from .credentials import Profile
@@ -174,3 +176,17 @@ class Authentication:
             "X-Osc-Date": date_iso,
             "Authorization": "Basic " + b64_creds,
         }
+
+    def __call__(self, request: requests.PreparedRequest) -> requests.PreparedRequest:
+        if self.is_basic_auth_configured():
+            auth_headers = self.get_basic_auth_header()
+        else:
+            auth_headers = self.forge_headers_signed(request.path_url, request.body or "")
+        
+        if request.headers is None:
+            request.headers = CaseInsensitiveDict()
+
+        for head in auth_headers:
+            request.headers[head] = auth_headers[head]
+
+        return request
