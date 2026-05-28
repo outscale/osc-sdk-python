@@ -21,7 +21,6 @@ class Call(object):
         self.limiter: RateLimiter | None = limiter
         self.retry_kwargs = {}
         self.session = Session()
-        self.session.trust_env = False
 
         kwargs = self.update_limiter(**kwargs)
         kwargs = self.update_retry(**kwargs)
@@ -88,7 +87,7 @@ class Call(object):
                 self.logger.do_log(
                     "uri: " + uri + "\npayload:\n" + json.dumps(data, indent=2)
                 )
-            return requester.send(uri, json.dumps(data))
+            return requester.send(json.dumps(data))
         except Exception as err:
             raise err
 
