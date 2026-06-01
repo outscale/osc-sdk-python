@@ -38,7 +38,7 @@
 It allows you to:
 
 - Configure multiple profiles through environment variables or credential files.
-- Use either the synchronous `Gateway` or asynchronous `AsyncGateway`.
+- Use either the synchronous `Client` or asynchronous `AsyncClient`.
 - Customize retry and rate-limit behavior.
 - Enable detailed logging of requests and responses.
 
@@ -147,25 +147,25 @@ Note that some API calls may be blocked with this method. See the [authenticatio
 Example:
 
 ```python
-from osc_sdk_python import Gateway
+from osc_sdk_python import Client
 
-with Gateway(email="your@email.com", password="yourAccountPassword") as gw:
-    keys = gw.ReadAccessKeys()
+with Client(email="your@email.com", password="yourAccountPassword") as client:
+    keys = client.osc.ReadAccessKeys()
 ```
 
 ### Async Usage
 
-Use `AsyncGateway` when calling the SDK from async Python code:
+Use `AsyncClient` when calling the SDK from async Python code:
 
 ```python
 import asyncio
 
-from osc_sdk_python import AsyncGateway
+from osc_sdk_python import AsyncClient
 
 
 async def main():
-    async with AsyncGateway(profile="default") as gw:
-        vms = await gw.ReadVms()
+    async with AsyncClient(profile="default") as client:
+        vms = await client.osc.read_vms()
         print(vms)
 
 
@@ -195,8 +195,8 @@ from osc_sdk_python import AsyncClient
 
 async def main():
     async with AsyncClient(profile="default") as client:
-        vms = await client.osc.ReadVms()
-        projects = await client.oks.ListProjects()
+        vms = await client.osc.read_vms()
+        projects = await client.oks.list_projects()
 
 
 if __name__ == "__main__":
@@ -205,7 +205,7 @@ if __name__ == "__main__":
 
 ### Retry Options
 
-The following options can be provided when initializing the `Gateway` or `AsyncGateway` to customize the retry behavior of the SDK:
+The following options can be provided when initializing the `Client` or `AsyncClient` to customize the retry behavior of the SDK:
 
 * `max_retries` (integer, default `3`)
 * `retry_backoff_factor` (float, default `1.0`)
@@ -217,9 +217,9 @@ These correspond to their counterparts in [`urllib3.util.Retry`](https://urllib3
 Example:
 
 ```python
-from osc_sdk_python import Gateway
+from osc_sdk_python import Client
 
-gw = Gateway(
+client = Client(
     max_retries=5,
     retry_backoff_factor=0.5,
     retry_backoff_jitter=1.0,
@@ -229,7 +229,7 @@ gw = Gateway(
 
 ### Rate Limit Options
 
-You can also configure rate limiting when initializing the `Gateway`:
+You can also configure rate limiting when initializing the `Client`:
 
 * `limiter_max_requests` (integer, default `5`)
 * `limiter_window` (integer, default `1`)
@@ -237,9 +237,9 @@ You can also configure rate limiting when initializing the `Gateway`:
 Example:
 
 ```python
-from osc_sdk_python import Gateway
+from osc_sdk_python import Client
 
-gw = Gateway(
+client = Client(
     limiter_max_requests=20,
     limiter_window=5,
 )
@@ -256,9 +256,9 @@ More usage patterns and logging examples are documented in:
 Some example topics covered in `docs/examples.md`:
 
 * Listing VMs and volumes
-* Async usage with `AsyncGateway`
+* Async usage with `AsyncClient`
 * Using profiles and regions
-* Raw calls with `gw.raw("ActionName", **params)`
+* Raw calls with `client.osc.raw("ActionName", **params)`
 * Enabling and reading logs
 
 ---

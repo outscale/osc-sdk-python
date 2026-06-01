@@ -3,11 +3,11 @@
 Basic usage with the default profile:
 
 ```python
-from osc_sdk_python import Gateway
+from osc_sdk_python import Client
 
-with Gateway() as gw:
+with Client() as client:
     # Example: list VMs
-    vms = gw.ReadVms()
+    vms = client.osc.ReadVms()
     print(vms)
 ```
 
@@ -16,13 +16,13 @@ Async usage with the default profile:
 ```python
 import asyncio
 
-from osc_sdk_python import AsyncGateway
+from osc_sdk_python import AsyncClient
 
 
 async def main():
-    async with AsyncGateway() as gw:
+    async with AsyncClient() as client:
         # Example: list VMs
-        vms = await gw.ReadVms()
+        vms = await client.osc.read_vms()
         print(vms)
 
 
@@ -33,17 +33,17 @@ if __name__ == "__main__":
 Using a specific profile:
 
 ```python
-from osc_sdk_python import Gateway
+from osc_sdk_python import Client
 
-gw = Gateway(profile="profile_1")
+client = Client(profile="profile_1")
 ```
 
 Using a specific profile with the async client:
 
 ```python
-from osc_sdk_python import AsyncGateway
+from osc_sdk_python import AsyncClient
 
-gw = AsyncGateway(profile="profile_1")
+client = AsyncClient(profile="profile_1")
 ```
 
 Using multiple services from one client:
@@ -66,8 +66,8 @@ from osc_sdk_python import AsyncClient
 
 async def main():
     async with AsyncClient(profile="profile_1") as client:
-        vms = await client.osc.ReadVms()
-        projects = await client.oks.ListProjects()
+        vms = await client.osc.read_vms()
+        projects = await client.oks.list_projects()
 
 
 if __name__ == "__main__":
@@ -76,23 +76,24 @@ if __name__ == "__main__":
 
 Calling actions:
 
-* **Typed methods**: `gw.ReadVms(...)`, `gw.CreateVms(...)`, etc.
-* **Raw calls**: `gw.raw("ActionName", **params)`
-* **Async calls**: `await gw.ReadVms(...)`, `await gw.raw("ActionName", **params)`
+* **Sync dynamic methods**: `client.osc.ReadVms(...)`, `client.osc.CreateVms(...)`, etc.
+* **Raw calls**: `client.osc.raw("ActionName", **params)`
+* **Async typed methods**: `await client.osc.read_vms(...)`, `await client.osc.create_vms(...)`, etc.
+* **Async raw calls**: `await client.osc.raw("ActionName", **params)`
 
 Example:
 
 ```python
-from osc_sdk_python import Gateway
+from osc_sdk_python import Client
 
-with Gateway(profile="profile_1") as gw:
+with Client(profile="profile_1") as client:
     # Calls with API action as method
-    result = gw.ReadSecurityGroups(Filters={"SecurityGroupNames": ["default"]})
-    result = gw.CreateVms(ImageId="ami-3e158364", VmType="tinav4.c2r4")
+    result = client.osc.ReadSecurityGroups(Filters={"SecurityGroupNames": ["default"]})
+    result = client.osc.CreateVms(ImageId="ami-3e158364", VmType="tinav4.c2r4")
 
     # Or raw calls:
-    result = gw.raw("ReadVms")
-    result = gw.raw(
+    result = client.osc.raw("ReadVms")
+    result = client.osc.raw(
         "CreateVms",
         ImageId="ami-xx",
         BlockDeviceMappings=[{"/dev/sda1": {"Size": 10}}],
@@ -106,20 +107,23 @@ Async example:
 ```python
 import asyncio
 
-from osc_sdk_python import AsyncGateway
+from osc_sdk_python import AsyncClient
+from osc_sdk_python.generated.osc import CreateVmsRequest, ReadSecurityGroupsRequest
 
 
 async def main():
-    async with AsyncGateway(profile="profile_1") as gw:
-        # Calls with API action as method
-        result = await gw.ReadSecurityGroups(
-            Filters={"SecurityGroupNames": ["default"]}
+    async with AsyncClient(profile="profile_1") as client:
+        # Calls with operationId converted to snake_case
+        result = await client.osc.read_security_groups(
+            ReadSecurityGroupsRequest(filters={"SecurityGroupNames": ["default"]})
         )
-        result = await gw.CreateVms(ImageId="ami-3e158364", VmType="tinav4.c2r4")
+        result = await client.osc.create_vms(
+            CreateVmsRequest(image_id="ami-3e158364", vm_type="tinav4.c2r4")
+        )
 
         # Or raw calls:
-        result = await gw.raw("ReadVms")
-        result = await gw.raw(
+        result = await client.osc.raw("ReadVms")
+        result = await client.osc.raw(
             "CreateVms",
             ImageId="ami-xx",
             BlockDeviceMappings=[{"/dev/sda1": {"Size": 10}}],
@@ -139,16 +143,16 @@ if __name__ == "__main__":
 ### List all VM and Volume IDs
 
 ```python
-from osc_sdk_python import Gateway
+from osc_sdk_python import Client
 
 if __name__ == "__main__":
-    with Gateway() as gw:
+    with Client() as client:
         print("Your virtual machines:")
-        for vm in gw.ReadVms()["Vms"]:
+        for vm in client.osc.ReadVms()["Vms"]:
             print(vm["VmId"])
 
         print("\nYour volumes:")
-        for volume in gw.ReadVolumes()["Volumes"]:
+        for volume in client.osc.ReadVolumes()["Volumes"]:
             print(volume["VolumeId"])
 ```
 
@@ -157,18 +161,18 @@ if __name__ == "__main__":
 ```python
 import asyncio
 
-from osc_sdk_python import AsyncGateway
+from osc_sdk_python import AsyncClient
 
 
 async def main():
-    async with AsyncGateway() as gw:
+    async with AsyncClient() as client:
         print("Your virtual machines:")
-        for vm in (await gw.ReadVms())["Vms"]:
-            print(vm["VmId"])
+        for vm in (await client.osc.read_vms()).vms:
+            print(vm.vm_id)
 
         print("\nYour volumes:")
-        for volume in (await gw.ReadVolumes())["Volumes"]:
-            print(volume["VolumeId"])
+        for volume in (await client.osc.read_volumes()).volumes:
+            print(volume.volume_id)
 
 
 if __name__ == "__main__":
@@ -178,17 +182,17 @@ if __name__ == "__main__":
 ### Enabling logs
 
 ```python
-from osc_sdk_python import *
+from osc_sdk_python import Client, LOG_ALL, LOG_KEEP_ONLY_LAST_REQ, LOG_MEMORY, LOG_STDERR, LOG_STDIO
 
 if __name__ == "__main__":
-    with Gateway(profile="profile_1") as gw:
+    with Client(profile="profile_1") as client:
         # 'what' can be LOG_KEEP_ONLY_LAST_REQ or LOG_ALL
         # Here we print logs in memory, standard output and standard error
-        gw.log.config(type=LOG_MEMORY | LOG_STDIO | LOG_STDERR, what=LOG_KEEP_ONLY_LAST_REQ)
+        client.osc.log.config(type=LOG_MEMORY | LOG_STDIO | LOG_STDERR, what=LOG_KEEP_ONLY_LAST_REQ)
 
-        result = gw.raw("ReadVms")
+        result = client.osc.raw("ReadVms")
 
-        last_request = gw.log.str()
+        last_request = client.osc.log.str()
         print(last_request)
 ```
 

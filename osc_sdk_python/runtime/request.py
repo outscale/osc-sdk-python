@@ -1,5 +1,9 @@
 from dataclasses import dataclass, field
+import re
 from urllib.parse import quote
+
+
+PATH_PLACEHOLDER_RE = re.compile(r"{([^{}]+)}")
 
 
 @dataclass
@@ -14,4 +18,9 @@ class RequestSpec:
         path = self.path
         for name, value in (path_params or {}).items():
             path = path.replace("{" + name + "}", quote(str(value), safe=""))
+        missing = PATH_PLACEHOLDER_RE.findall(path)
+        if missing:
+            raise ValueError(
+                "Missing path parameter(s): {}".format(", ".join(sorted(set(missing))))
+            )
         return path
