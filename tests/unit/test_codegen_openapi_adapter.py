@@ -3,6 +3,7 @@ from osc_sdk_python.codegen.generator import render_async_client, render_init, r
 
 
 def test_action_body_schema_reuses_component_request_model():
+    """Ensure action-style request bodies reuse existing request models."""
     spec = {
         "paths": {
             "/CreateVms": {
@@ -67,6 +68,7 @@ def test_action_body_schema_reuses_component_request_model():
 
 
 def test_path_query_service_generates_combined_request_model():
+    """Ensure REST path and query parameters are exposed through one request model."""
     spec = {
         "paths": {
             "/projects/{project_id}": {
@@ -125,6 +127,7 @@ def test_path_query_service_generates_combined_request_model():
 
 
 def test_rest_body_schema_keeps_operation_request_wrapper():
+    """Ensure REST request bodies are wrapped so body fields can coexist with params."""
     spec = {
         "paths": {
             "/projects": {
@@ -180,6 +183,7 @@ def test_rest_body_schema_keeps_operation_request_wrapper():
 
 
 def test_scalar_enums_render_as_literals():
+    """Ensure scalar enum schemas render as Literal annotations in generated models."""
     spec = {
         "paths": {},
         "components": {
@@ -212,6 +216,7 @@ def test_scalar_enums_render_as_literals():
 
 
 def test_required_schema_fields_render_without_default_none():
+    """Ensure required generated model fields are not made optional with default None."""
     spec = {
         "paths": {},
         "components": {
@@ -236,6 +241,7 @@ def test_required_schema_fields_render_without_default_none():
 
 
 def test_non_model_response_uses_type_adapter():
+    """Ensure primitive or collection responses are validated through TypeAdapter."""
     spec = {
         "paths": {
             "/names": {
@@ -264,3 +270,43 @@ def test_non_model_response_uses_type_adapter():
     assert "async def list_names(" in rendered_client
     assert "    ) -> list[str]:" in rendered_client
     assert "return TypeAdapter(list[str]).validate_python(response)" in rendered_client
+
+
+def test_requestless_operation_does_not_create_unused_request_variable():
+    """Ensure requestless methods keep API compatibility without unused variables."""
+    spec = {
+        "paths": {
+            "/clusters/limits/kubernetes_versions": {
+                "get": {
+                    "operationId": "GetKubernetesVersions",
+                    "responses": {
+                        "200": {
+                            "content": {
+                                "application/json": {
+                                    "schema": {
+                                        "$ref": "#/components/schemas/KubernetesVersionsResponse"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                }
+            }
+        },
+        "components": {
+            "schemas": {
+                "KubernetesVersionsResponse": {
+                    "type": "object",
+                    "properties": {"versions": {"type": "array", "items": {"type": "string"}}},
+                }
+            }
+        },
+    }
+
+    adapter = PathOperationAdapter(spec, service="oks")
+    rendered_client = render_async_client(adapter.operations(), "oks", "oks")
+
+    assert "request: GetKubernetesVersionsRequest | None = None" in rendered_client
+    assert "request = GetKubernetesVersionsRequest()" not in rendered_client
+    assert "_ = request" in rendered_client
+    assert "path=\"/clusters/limits/kubernetes_versions\"" in rendered_client

@@ -93,12 +93,12 @@ class Logger:
 
 
 class OpenAPIActionAPI:
-    def __init__(self, spec, service="api", **kwargs):
+    def __init__(self, spec, service="api", *, _call_cls=Call, **kwargs):
         self.service = service
         self._load_gateway_structure(spec)
         self.log = Logger()
         self.limiter = RateLimiter(DEFAULT_LIMITER_WINDOW, DEFAULT_LIMITER_MAX_REQUESTS)
-        self.call = Call(
+        self.call = _call_cls(
             logger=self.log,
             version=self.endpoint_api_version,
             limiter=self.limiter,
@@ -273,16 +273,7 @@ class OpenAPIActionAPI:
 
 class AsyncOpenAPIActionAPI(OpenAPIActionAPI):
     def __init__(self, spec, service="api", **kwargs):
-        self.service = service
-        self._load_gateway_structure(spec)
-        self.log = Logger()
-        self.limiter = RateLimiter(DEFAULT_LIMITER_WINDOW, DEFAULT_LIMITER_MAX_REQUESTS)
-        self.call = AsyncCall(
-            logger=self.log,
-            version=self.endpoint_api_version,
-            limiter=self.limiter,
-            **kwargs,
-        )
+        super().__init__(spec, service=service, _call_cls=AsyncCall, **kwargs)
 
     def _get_action(self, action_name):
         async def action(**kwargs):
@@ -313,12 +304,12 @@ class AsyncOpenAPIActionAPI(OpenAPIActionAPI):
 
 
 class OpenAPIPathAPI:
-    def __init__(self, spec, service, **kwargs):
+    def __init__(self, spec, service, *, _call_cls=Call, **kwargs):
         self.service = service
         self.operations = self._load_operations(spec)
         self.log = Logger()
         self.limiter = RateLimiter(DEFAULT_LIMITER_WINDOW, DEFAULT_LIMITER_MAX_REQUESTS)
-        self.call = Call(logger=self.log, limiter=self.limiter, **kwargs)
+        self.call = _call_cls(logger=self.log, limiter=self.limiter, **kwargs)
 
     def _load_operations(self, spec):
         with open(spec, "r") as fi:
@@ -415,11 +406,7 @@ class OpenAPIPathAPI:
 
 class AsyncOpenAPIPathAPI(OpenAPIPathAPI):
     def __init__(self, spec, service, **kwargs):
-        self.service = service
-        self.operations = self._load_operations(spec)
-        self.log = Logger()
-        self.limiter = RateLimiter(DEFAULT_LIMITER_WINDOW, DEFAULT_LIMITER_MAX_REQUESTS)
-        self.call = AsyncCall(logger=self.log, limiter=self.limiter, **kwargs)
+        super().__init__(spec, service, _call_cls=AsyncCall, **kwargs)
 
     def _get_operation(self, operation_name):
         async def operation(**kwargs):

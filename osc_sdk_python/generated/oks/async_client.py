@@ -599,8 +599,7 @@ class AsyncOksTypedMixin:
         self,
         request: GetKubernetesVersionsRequest | None = None,
     ) -> KubernetesVersionsResponse:
-        if request is None:
-            request = GetKubernetesVersionsRequest()
+        _ = request
 
         path_params = {
         }
@@ -626,8 +625,7 @@ class AsyncOksTypedMixin:
         self,
         request: GetCPSubregionsRequest | None = None,
     ) -> CPSubregionsResponse:
-        if request is None:
-            request = GetCPSubregionsRequest()
+        _ = request
 
         path_params = {
         }
@@ -653,8 +651,7 @@ class AsyncOksTypedMixin:
         self,
         request: GetControlPlanePlansRequest | None = None,
     ) -> ControlPlanesResponse:
-        if request is None:
-            request = GetControlPlanePlansRequest()
+        _ = request
 
         path_params = {
         }
@@ -680,8 +677,7 @@ class AsyncOksTypedMixin:
         self,
         request: GetProjectTemplateRequest | None = None,
     ) -> TemplateResponse_ProjectInput:
-        if request is None:
-            request = GetProjectTemplateRequest()
+        _ = request
 
         path_params = {
         }
@@ -707,8 +703,7 @@ class AsyncOksTypedMixin:
         self,
         request: GetClusterTemplateRequest | None = None,
     ) -> TemplateResponse_ClusterInputTemplate:
-        if request is None:
-            request = GetClusterTemplateRequest()
+        _ = request
 
         path_params = {
         }
@@ -734,8 +729,7 @@ class AsyncOksTypedMixin:
         self,
         request: GetNodepoolTemplateRequest | None = None,
     ) -> TemplateResponse_Nodepool:
-        if request is None:
-            request = GetNodepoolTemplateRequest()
+        _ = request
 
         path_params = {
         }
@@ -761,8 +755,7 @@ class AsyncOksTypedMixin:
         self,
         request: GetNetPeeringRequestTemplateRequest | None = None,
     ) -> TemplateResponse_NetPeeringRequest:
-        if request is None:
-            request = GetNetPeeringRequestTemplateRequest()
+        _ = request
 
         path_params = {
         }
@@ -788,8 +781,7 @@ class AsyncOksTypedMixin:
         self,
         request: GetNetPeeringAcceptanceTemplateRequest | None = None,
     ) -> TemplateResponse_NetPeeringAcceptance:
-        if request is None:
-            request = GetNetPeeringAcceptanceTemplateRequest()
+        _ = request
 
         path_params = {
         }
@@ -815,8 +807,7 @@ class AsyncOksTypedMixin:
         self,
         request: GetQuotasRequest | None = None,
     ) -> quotas__quota_schema__QuotasResponse:
-        if request is None:
-            request = GetQuotasRequest()
+        _ = request
 
         path_params = {
         }
@@ -842,8 +833,7 @@ class AsyncOksTypedMixin:
         self,
         request: GetClientIPRequest | None = None,
     ) -> IPResponse:
-        if request is None:
-            request = GetClientIPRequest()
+        _ = request
 
         path_params = {
         }

@@ -133,6 +133,12 @@ def render_async_client(
         f"class {_mixin_name(package_name)}:",
     ]
     for operation in operations:
+        request_is_used = bool(
+            operation.uses_request_as_body
+            or operation.body_field is not None
+            or operation.path_fields
+            or operation.query_fields
+        )
         if operation.uses_request_as_body:
             json_body = "_dump_json_body(request)"
         elif operation.body_field is not None:
@@ -145,12 +151,24 @@ def render_async_client(
                 "        self,",
                 f"        request: {operation.request_model.name} | None = None,",
                 f"    ) -> {operation.response_model}:",
-                "        if request is None:",
-                f"            request = {operation.request_model.name}()",
-                "",
-                "        path_params = {",
             ]
         )
+        if request_is_used:
+            lines.extend(
+                [
+                    "        if request is None:",
+                    f"            request = {operation.request_model.name}()",
+                    "",
+                ]
+            )
+        else:
+            lines.extend(
+                [
+                    "        _ = request",
+                    "",
+                ]
+            )
+        lines.append("        path_params = {")
         lines.extend(f"            {_field_dump(field)}," for field in operation.path_fields)
         lines.extend(
             [
