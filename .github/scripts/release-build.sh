@@ -1,14 +1,30 @@
 #!/bin/env bash
 set -e
-osc_api_version=${1#v}
-oks_api_url=${2:-https://docs.outscale.com/_attachments/oks.yaml}
+service=${1:-all}
+osc_api_version=${2#v}
+oks_api_url=${3:-https://docs.outscale.com/_attachments/oks.yaml}
 
-if [ -z "$osc_api_version" ]; then
-    echo "run $0 with version tag as argument, abort."
+case "$service" in
+    osc|oks|all)
+        ;;
+    *)
+        echo "Unknown service '$service'. Expected one of: osc, oks, all."
+        exit 1
+        ;;
+esac
+
+if [ "$service" != "oks" ] && [ -z "$osc_api_version" ]; then
+    echo "run $0 with an OSC API version when building service '$service', abort."
+    exit 1
+fi
+
+if [ "$service" != "osc" ] && [ -z "$oks_api_url" ]; then
+    echo "run $0 with an OKS OpenAPI URL when building service '$service', abort."
     exit 1
 fi
 
 root=$(cd "$(dirname $0)/../.." && pwd)
+cd "$root"
 
 # build new version number
 local_sdk_version=$(cat $root/osc_sdk_python/VERSION)
@@ -18,13 +34,19 @@ local_sdk_version_patch=$(echo $local_sdk_version | cut -d '.' -f 3)
 new_sdk_version_minor=$(( local_sdk_version_minor + 1 ))
 new_sdk_version="$local_sdk_version_major.$new_sdk_version_minor.0"
 
-# Update osc-api version
-curl --retry 10 -o "${root}/osc_sdk_python/resources/osc/api.yaml" "https://raw.githubusercontent.com/outscale/osc-api/refs/tags/${osc_api_version}/outscale.yaml"
-git add "${root}/osc_sdk_python/resources/osc/api.yaml"
+if [ "$service" = "osc" ] || [ "$service" = "all" ]; then
+    # Update osc-api version
+    curl --retry 10 -o "${root}/osc_sdk_python/resources/osc/api.yaml" "https://raw.githubusercontent.com/outscale/osc-api/refs/tags/${osc_api_version}/outscale.yaml"
+    uv run python -m osc_sdk_python.codegen.generator osc
+    git add "${root}/osc_sdk_python/resources/osc/api.yaml" "${root}/osc_sdk_python/generated/osc"
+fi
 
-# Update oks-api version
-curl --retry 10 -o "${root}/osc_sdk_python/resources/oks/api.yaml" "${oks_api_url}"
-git add "${root}/osc_sdk_python/resources/oks/api.yaml"
+if [ "$service" = "oks" ] || [ "$service" = "all" ]; then
+    # Update oks-api version
+    curl --retry 10 -o "${root}/osc_sdk_python/resources/oks/api.yaml" "${oks_api_url}"
+    uv run python -m osc_sdk_python.codegen.generator oks
+    git add "${root}/osc_sdk_python/resources/oks/api.yaml" "${root}/osc_sdk_python/generated/oks"
+fi
 
 # Setup new SDK version
 for f in "$root/README.md" "$root/osc_sdk_python/VERSION"; do
@@ -32,4 +54,4 @@ for f in "$root/README.md" "$root/osc_sdk_python/VERSION"; do
     git add "$f"
 done
 
-uv version $(cat osc_sdk_python/VERSION)
+uv version "$(cat osc_sdk_python/VERSION)"

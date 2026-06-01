@@ -3,11 +3,20 @@ name: osc-sdk-python release build
 on:
   workflow_dispatch:
     inputs:
-      api_version:
-        description: 'Outscale API version'
+      service:
+        description: 'Service to build'
         required: true
+        type: choice
+        default: all
+        options:
+          - osc
+          - oks
+          - all
+      api_version:
+        description: 'Outscale API version, required for osc or all'
+        required: false
       oks_api_url:
-        description: 'OKS OpenAPI URL'
+        description: 'OKS OpenAPI URL, used for oks or all'
         required: false
         default: 'https://docs.outscale.com/_attachments/oks.yaml'
 
@@ -28,8 +37,9 @@ jobs:
     - name: Set up Python
       run: uv python install
     - name: Build release
-      run: .github/scripts/release-build.sh "$API_VERSION" "$OKS_API_URL"
+      run: .github/scripts/release-build.sh "$SERVICE" "$API_VERSION" "$OKS_API_URL"
       env:
+        SERVICE: ${{ github.event.inputs.service }}
         API_VERSION: ${{ github.event.inputs.api_version }}
         OKS_API_URL: ${{ github.event.inputs.oks_api_url }}
     - name: Get SDK version
@@ -43,12 +53,16 @@ jobs:
         author: "Outscale Bot <opensource+bot@outscale.com>"
         commit-message: "🔖 release: osc-sdk-python v${{ env.sdk_version }}"
         body: |
-          Automatic build of SDK v${{ env.sdk_version }} version based on Outscale API ${{ env.api_version }} and OKS API ${{ env.oks_api_url }}.
-        title: "SDK v${{ env.sdk_version }}"
+          Automatic ${{ env.service }} build of SDK v${{ env.sdk_version }}.
+
+          Outscale API version: ${{ env.api_version }}
+          OKS API URL: ${{ env.oks_api_url }}
+        title: "SDK v${{ env.sdk_version }} (${{ env.service }})"
         token: "${{ env.token }}"
         labels: "kind/feature"
       env:
         sdk_version: ${{ steps.get-sdk-version.outputs.sdk_version }}
+        service: ${{ github.event.inputs.service }}
         api_version: ${{ github.event.inputs.api_version }}
         oks_api_url: ${{ github.event.inputs.oks_api_url }}
         token: ${{ secrets.GH_TOKEN || secrets.GITHUB_TOKEN }}
