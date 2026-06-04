@@ -3,10 +3,9 @@ import argparse
 import re
 from typing import Iterable
 
-import ruamel.yaml
-
 from .adapters import PathOperationAdapter
 from .ir import Field, Model, Operation
+from .overlay import load_spec
 
 
 GENERATED_HEADER = '''"""Generated typed {service_label} client slice.
@@ -231,8 +230,7 @@ def render_init(
 
 def generate(spec_path: Path, output_dir: Path, service: str, package_name: str | None = None) -> None:
     package_name = package_name or output_dir.name
-    yaml = ruamel.yaml.YAML(typ="safe")
-    spec = yaml.load(spec_path.read_text())
+    spec = load_spec(spec_path)
     adapter = PathOperationAdapter(spec, service=service)
     operations = adapter.operations()
     schema_models = adapter.schema_models()
@@ -258,7 +256,7 @@ def generate_all(root: Path, services: list[str] | None = None) -> None:
         if selected and package_name not in selected:
             continue
         generate(
-            service_dir / "api.yaml",
+            service_dir / "cfg.yaml" if (service_dir / "cfg.yaml").exists() else service_dir / "api.yaml",
             root / "generated" / package_name,
             DEFAULT_SERVICE_NAMES.get(package_name, package_name),
             package_name,

@@ -36,7 +36,7 @@ class AutoUpgradeMaintenance(GeneratedModel):
     week_day: Literal['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'] = Field(alias='weekDay')
 
 class CPSubregionsResponse(GeneratedModel):
-    response_context: clusters__cluster_schema__ResponseContext = Field(alias='ResponseContext')
+    response_context: ResponseContext = Field(alias='ResponseContext')
     cp_subregions: list[str] = Field(alias='CPSubregions')
 
 class Cluster(GeneratedModel):
@@ -103,11 +103,11 @@ class ClusterInputTemplate(GeneratedModel):
     disable_api_termination: bool | None = Field(default=None, alias='disable_api_termination')
 
 class ClusterResponse(GeneratedModel):
-    response_context: clusters__cluster_schema__ResponseContext = Field(alias='ResponseContext')
+    response_context: ResponseContext = Field(alias='ResponseContext')
     cluster: Cluster = Field(alias='Cluster')
 
 class ClusterResponseList(GeneratedModel):
-    response_context: clusters__cluster_schema__ResponseContext = Field(alias='ResponseContext')
+    response_context: ResponseContext = Field(alias='ResponseContext')
     pagination: Pagination = Field(alias='Pagination')
     clusters: list[Cluster] = Field(alias='Clusters')
 
@@ -125,14 +125,14 @@ class ClusterUpdate(GeneratedModel):
     auth: AuthStrategy | None = Field(default=None, alias='auth')
 
 class ControlPlanesResponse(GeneratedModel):
-    response_context: clusters__cluster_schema__ResponseContext = Field(alias='ResponseContext')
+    response_context: ResponseContext = Field(alias='ResponseContext')
     control_planes: list[str] = Field(alias='ControlPlanes')
 
 class Cursor(GeneratedModel):
     next_cursor: str | None = Field(default=None, alias='next_cursor')
 
 class DetailResponse(GeneratedModel):
-    response_context: projects__project_schema__ResponseContext = Field(alias='ResponseContext')
+    response_context: ResponseContext = Field(alias='ResponseContext')
     detail: str = Field(alias='detail')
 
 class ErrorItem(GeneratedModel):
@@ -142,24 +142,24 @@ class ErrorItem(GeneratedModel):
 
 class ErrorResponse(GeneratedModel):
     errors: list[ErrorItem] = Field(alias='Errors')
-    response_context: ResponseContext_Input = Field(alias='ResponseContext')
+    response_context: ResponseContext = Field(alias='ResponseContext')
 
 class IPDetails(GeneratedModel):
     x_real_ip: str | None = Field(default=None, alias='x_real_ip')
 
 class IPResponse(GeneratedModel):
-    response_context: myip__myip_schema__ResponseContext = Field(alias='ResponseContext')
+    response_context: ResponseContext = Field(alias='ResponseContext')
     ip: IPDetails = Field(alias='IP')
 
 class KubeconfigData(GeneratedModel):
     kubeconfig: str = Field(alias='kubeconfig')
 
 class KubeconfigResponse(GeneratedModel):
-    response_context: clusters__cluster_schema__ResponseContext = Field(alias='ResponseContext')
+    response_context: ResponseContext = Field(alias='ResponseContext')
     cluster: clusters__cluster_schema__RPCResponse = Field(alias='Cluster')
 
 class KubernetesVersionsResponse(GeneratedModel):
-    response_context: clusters__cluster_schema__ResponseContext = Field(alias='ResponseContext')
+    response_context: ResponseContext = Field(alias='ResponseContext')
     versions: list[str] = Field(alias='Versions')
 
 class Maintenance(GeneratedModel):
@@ -195,7 +195,7 @@ class NetPeeringRequest(GeneratedModel):
     spec: SpecNetPeeringRequest = Field(alias='spec')
 
 class NetsResponse(GeneratedModel):
-    response_context: projects__project_schema__ResponseContext = Field(alias='ResponseContext')
+    response_context: ResponseContext = Field(alias='ResponseContext')
     nets: list[Net] = Field(alias='Nets')
 
 class Nodepool(GeneratedModel):
@@ -255,11 +255,11 @@ class ProjectInput(GeneratedModel):
     disable_api_termination: bool | None = Field(default=None, alias='disable_api_termination')
 
 class ProjectResponse(GeneratedModel):
-    response_context: projects__project_schema__ResponseContext = Field(alias='ResponseContext')
+    response_context: ResponseContext = Field(alias='ResponseContext')
     project: Project = Field(alias='Project')
 
 class ProjectResponseList(GeneratedModel):
-    response_context: projects__project_schema__ResponseContext = Field(alias='ResponseContext')
+    response_context: ResponseContext = Field(alias='ResponseContext')
     pagination: Pagination = Field(alias='Pagination')
     projects: list[Project] = Field(alias='Projects')
 
@@ -275,7 +275,7 @@ class PublicIp(GeneratedModel):
     public_ip_id: str = Field(alias='PublicIpId')
 
 class PublicIpsResponse(GeneratedModel):
-    response_context: projects__project_schema__ResponseContext = Field(alias='ResponseContext')
+    response_context: ResponseContext = Field(alias='ResponseContext')
     public_ips: list[PublicIp] = Field(alias='PublicIps')
 
 class Quotas(GeneratedModel):
@@ -311,7 +311,7 @@ class Snapshot(GeneratedModel):
     permissions_to_create_volume: PermissionsOnResource = Field(alias='PermissionsToCreateVolume')
 
 class SnapshotsResponse(GeneratedModel):
-    response_context: projects__project_schema__ResponseContext = Field(alias='ResponseContext')
+    response_context: ResponseContext = Field(alias='ResponseContext')
     snapshots: list[Snapshot] = Field(alias='Snapshots')
 
 class Spec(GeneratedModel):
@@ -343,23 +343,23 @@ class Subregion(GeneratedModel):
     location_code: str = Field(alias='LocationCode')
 
 class TemplateResponse_ClusterInputTemplate(GeneratedModel):
-    response_context: templates__template_schema__ResponseContext = Field(alias='ResponseContext')
+    response_context: ResponseContext = Field(alias='ResponseContext')
     template: ClusterInputTemplate = Field(alias='Template')
 
 class TemplateResponse_NetPeeringAcceptance(GeneratedModel):
-    response_context: templates__template_schema__ResponseContext = Field(alias='ResponseContext')
+    response_context: ResponseContext = Field(alias='ResponseContext')
     template: NetPeeringAcceptance = Field(alias='Template')
 
 class TemplateResponse_NetPeeringRequest(GeneratedModel):
-    response_context: templates__template_schema__ResponseContext = Field(alias='ResponseContext')
+    response_context: ResponseContext = Field(alias='ResponseContext')
     template: NetPeeringRequest = Field(alias='Template')
 
 class TemplateResponse_Nodepool(GeneratedModel):
-    response_context: templates__template_schema__ResponseContext = Field(alias='ResponseContext')
+    response_context: ResponseContext = Field(alias='ResponseContext')
     template: Nodepool = Field(alias='Template')
 
 class TemplateResponse_ProjectInput(GeneratedModel):
-    response_context: templates__template_schema__ResponseContext = Field(alias='ResponseContext')
+    response_context: ResponseContext = Field(alias='ResponseContext')
     template: ProjectInput = Field(alias='Template')
 
 class UpgradeStrategy(GeneratedModel):
@@ -396,7 +396,7 @@ class nodepools__nodepool_schema__Metadata(GeneratedModel):
     name: str = Field(alias='name')
 
 class projects__project_schema__QuotasResponse(GeneratedModel):
-    response_context: projects__project_schema__ResponseContext = Field(alias='ResponseContext')
+    response_context: ResponseContext = Field(alias='ResponseContext')
     project: projects__project_schema__RPCResponse = Field(alias='Project')
 
 class projects__project_schema__RPCResponse(GeneratedModel):
@@ -407,7 +407,7 @@ class projects__project_schema__ResponseContext(GeneratedModel):
     request_id: str = Field(alias='RequestId')
 
 class quotas__quota_schema__QuotasResponse(GeneratedModel):
-    response_context: quotas__quota_schema__ResponseContext = Field(alias='ResponseContext')
+    response_context: ResponseContext = Field(alias='ResponseContext')
     quotas: OKSQuotas = Field(alias='Quotas')
 
 class quotas__quota_schema__ResponseContext(GeneratedModel):
@@ -415,6 +415,9 @@ class quotas__quota_schema__ResponseContext(GeneratedModel):
 
 class templates__template_schema__ResponseContext(GeneratedModel):
     request_id: str = Field(alias='RequestId')
+
+class ResponseContext(GeneratedModel):
+    request_id: str | None = Field(default=None, alias='RequestId')
 
 class ListProjectsRequest(GeneratedModel):
     name: str | None = Field(default=None, alias='name')

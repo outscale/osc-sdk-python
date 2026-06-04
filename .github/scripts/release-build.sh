@@ -38,14 +38,14 @@ if [ "$service" = "osc" ] || [ "$service" = "all" ]; then
     # Update osc-api version
     curl --retry 10 -o "${root}/osc_sdk_python/resources/osc/api.yaml" "https://raw.githubusercontent.com/outscale/osc-api/refs/tags/${osc_api_version}/outscale.yaml"
     uv run python -m osc_sdk_python.codegen.generator osc
-    git add "${root}/osc_sdk_python/resources/osc/api.yaml" "${root}/osc_sdk_python/generated/osc"
+    git add "${root}/osc_sdk_python/resources/osc" "${root}/osc_sdk_python/generated/osc"
 fi
 
 if [ "$service" = "oks" ] || [ "$service" = "all" ]; then
     # Update oks-api version
     curl --retry 10 -o "${root}/osc_sdk_python/resources/oks/api.yaml" "${oks_api_url}"
     uv run python -m osc_sdk_python.codegen.generator oks
-    git add "${root}/osc_sdk_python/resources/oks/api.yaml" "${root}/osc_sdk_python/generated/oks"
+    git add "${root}/osc_sdk_python/resources/oks" "${root}/osc_sdk_python/generated/oks"
 fi
 
 # Setup new SDK version
