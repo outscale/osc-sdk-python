@@ -1,7 +1,7 @@
 import time
 import unittest
 
-import requests
+import httpx
 
 from osc_sdk_python import Client
 from tests.integration_utils import get_tagged_name, log_test_step
@@ -29,7 +29,7 @@ def delete_project_when_ready(client, project_id):
             delete_response = client.oks.DeleteProject(project_id=project_id)
             log_test_step("Deleted OKS project {}".format(project_id))
             return delete_response
-        except requests.HTTPError as err:
+        except httpx.HTTPStatusError as err:
             if err.response is None or err.response.status_code != 503:
                 raise
             log_test_step(

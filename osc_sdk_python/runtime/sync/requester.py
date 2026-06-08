@@ -19,18 +19,11 @@ class Requester:
                 uri, payload, canonical_querystring=canonical_querystring
             )
 
-        if self.auth.x509_client_cert is not None:
-            cert_file = self.auth.x509_client_cert
-        else:
-            cert_file = None
-
         retry_kwargs = self.request_kwargs.copy()
         retry_kwargs.update(
             {
-                "data": payload,
+                "content": payload,
                 "headers": headers,
-                "verify": True,
-                "cert": cert_file,
                 "params": query_params or {},
             }
         )

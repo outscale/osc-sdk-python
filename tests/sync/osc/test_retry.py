@@ -1,7 +1,7 @@
-import pytest
-import requests
 from unittest.mock import Mock, patch
-from requests.exceptions import RequestException, HTTPError, ConnectionError, Timeout
+
+import httpx
+import pytest
 
 from osc_sdk_python.runtime.sync.retry import Retry
 
@@ -11,25 +11,26 @@ class TestRetry:
 
     def setup_method(self):
         """Set up test fixtures"""
-        self.mock_session = Mock(spec=requests.Session)
+        self.mock_session = Mock(spec=httpx.Client)
         self.method = "POST"
         self.url = "https://api.test-region.outscalce.com/"
         self.base_kwargs = {"timeout": 30}
 
     def build_response(self, status_code, reason):
-        mock_response = Mock(spec=requests.Response)
-        mock_response.status_code = status_code
-        mock_response.reason = reason
-        mock_response.headers = {"content-type": "application/json"}
-        mock_response.url = self.url
-        return mock_response
+        return httpx.Response(
+            status_code,
+            json={},
+            headers={"content-type": "application/json"},
+            request=httpx.Request(self.method, self.url),
+            extensions={"reason_phrase": reason.encode()},
+        )
 
     def build_response_success(self):
         return self.build_response(200, "OK")
 
     def test_execute_once_success(self):
         """Test execute_once method with successful request"""
-        mock_response = Mock(spec=requests.Response)
+        mock_response = Mock(spec=httpx.Response)
         self.mock_session.request.return_value = mock_response
 
         retry = Retry(self.mock_session, self.method, self.url, **self.base_kwargs)
@@ -46,8 +47,11 @@ class TestRetry:
 
         mock_response = Mock()
         mock_response.status_code = 400
-        exception = RequestException()
-        exception.response = mock_response
+        exception = httpx.HTTPStatusError(
+            "bad request",
+            request=Mock(),
+            response=mock_response,
+        )
 
         assert not retry.should_retry(exception)
 
@@ -57,8 +61,11 @@ class TestRetry:
 
         mock_response = Mock()
         mock_response.status_code = 429
-        exception = RequestException()
-        exception.response = mock_response
+        exception = httpx.HTTPStatusError(
+            "too many requests",
+            request=Mock(),
+            response=mock_response,
+        )
 
         assert retry.should_retry(exception)
 
@@ -68,8 +75,11 @@ class TestRetry:
 
         mock_response = Mock()
         mock_response.status_code = 500
-        exception = RequestException()
-        exception.response = mock_response
+        exception = httpx.HTTPStatusError(
+            "server error",
+            request=Mock(),
+            response=mock_response,
+        )
 
         assert retry.should_retry(exception)
 
@@ -77,10 +87,7 @@ class TestRetry:
         """Test should_retry returns True for exceptions without response"""
         retry = Retry(self.mock_session, self.method, self.url, **self.base_kwargs)
 
-        exception = ConnectionError()
-        exception.response = None
-
-        assert retry.should_retry(exception)
+        assert retry.should_retry(httpx.ConnectError("connection failed"))
 
     def test_should_retry_at_max_retries(self):
         """Test should_retry returns False when at max retries"""
@@ -88,10 +95,7 @@ class TestRetry:
             self.mock_session, self.method, self.url, attempt=3, **self.base_kwargs
         )
 
-        exception = ConnectionError()
-        exception.response = None
-
-        assert not retry.should_retry(exception)
+        assert not retry.should_retry(httpx.ConnectError("connection failed"))
 
     @patch("random.uniform")
     def test_get_backoff_time(self, mock_random):
@@ -102,7 +106,7 @@ class TestRetry:
             self.mock_session, self.method, self.url, attempt=2, **self.base_kwargs
         )
 
-        expected_backoff = 1.0 * (2**2) + 1.5  # backoff_factor * (2^attempt) + jitter
+        expected_backoff = 1.0 * (2**2) + 1.5
         assert retry.get_backoff_time() == expected_backoff
 
     @patch("random.uniform")
@@ -138,13 +142,8 @@ class TestRetry:
     def test_execute_with_retry_success(self, mock_random, mock_sleep):
         """Test execute method with retry leading to success"""
         mock_random.return_value = 1.0
-
-        # First call fails, second succeeds
         mock_response_fail = self.build_response(500, "Internal Server Error")
-
-        # Configure the successful response
         mock_response_success = self.build_response_success()
-
         self.mock_session.request.side_effect = [
             mock_response_fail,
             mock_response_success,
@@ -159,13 +158,11 @@ class TestRetry:
 
     def test_execute_with_4xx_error_no_retry(self):
         """Test execute method doesn't retry on 4xx errors"""
-        mock_response = self.build_response(400, "Bad Request")
-
-        self.mock_session.request.return_value = mock_response
+        self.mock_session.request.return_value = self.build_response(400, "Bad Request")
 
         retry = Retry(self.mock_session, self.method, self.url, **self.base_kwargs)
 
-        with pytest.raises(HTTPError):
+        with pytest.raises(httpx.HTTPStatusError):
             retry.execute()
 
         self.mock_session.request.assert_called_once()
@@ -175,18 +172,17 @@ class TestRetry:
     def test_execute_with_429_error_retry(self, mock_random, mock_sleep):
         """Test execute method retry on 429 errors"""
         mock_random.return_value = 1.0
-
-        mock_response = self.build_response(429, "Too Many Requests")
-        self.mock_session.request.return_value = mock_response
+        self.mock_session.request.return_value = self.build_response(
+            429, "Too Many Requests"
+        )
 
         retry = Retry(
             self.mock_session, self.method, self.url, max_retries=2, **self.base_kwargs
         )
 
-        with pytest.raises(HTTPError):
+        with pytest.raises(httpx.HTTPStatusError):
             retry.execute()
 
-        # Should try 2 times (initial + 2 retries)
         assert self.mock_session.request.call_count == 3
         assert mock_sleep.call_count == 2
 
@@ -197,7 +193,6 @@ class TestRetry:
     ):
         """Test execute method retry on 500 errors"""
         mock_random.return_value = 1.0
-
         mock_response = self.build_response(500, "Internal Server Error")
         mock_response.headers["content-type"] = "text/plain"
         self.mock_session.request.return_value = mock_response
@@ -206,10 +201,9 @@ class TestRetry:
             self.mock_session, self.method, self.url, max_retries=2, **self.base_kwargs
         )
 
-        with pytest.raises(HTTPError):
+        with pytest.raises(httpx.HTTPStatusError):
             retry.execute()
 
-        # Should try 2 times (initial + 2 retries)
         assert self.mock_session.request.call_count == 3
         assert mock_sleep.call_count == 2
 
@@ -218,19 +212,15 @@ class TestRetry:
     def test_execute_max_retries_exceeded(self, mock_random, mock_sleep):
         """Test execute method when max retries are exceeded"""
         mock_random.return_value = 1.0
-
-        exception = ConnectionError()
-        exception.response = None
-        self.mock_session.request.side_effect = exception
+        self.mock_session.request.side_effect = httpx.ConnectError("connection failed")
 
         retry = Retry(
             self.mock_session, self.method, self.url, max_retries=2, **self.base_kwargs
         )
 
-        with pytest.raises(ConnectionError):
+        with pytest.raises(httpx.ConnectError):
             retry.execute()
 
-        # Should try 3 times (initial + 2 retries)
         assert self.mock_session.request.call_count == 3
         assert mock_sleep.call_count == 2
 
@@ -239,16 +229,13 @@ class TestRetry:
     def test_execute_with_timeout_retry(self, mock_random, mock_sleep):
         """Test execute method retries timeout errors"""
         mock_random.return_value = 1.0
-
-        exception = Timeout()
-        exception.response = None
-        self.mock_session.request.side_effect = exception
+        self.mock_session.request.side_effect = httpx.TimeoutException("timed out")
 
         retry = Retry(
             self.mock_session, self.method, self.url, max_retries=2, **self.base_kwargs
         )
 
-        with pytest.raises(Timeout):
+        with pytest.raises(httpx.TimeoutException):
             retry.execute()
 
         assert self.mock_session.request.call_count == 3
@@ -259,7 +246,6 @@ class TestRetry:
     def test_execute_uses_retry_after_header(self, mock_random, mock_sleep):
         """Test Retry-After header overrides calculated backoff"""
         mock_random.return_value = 1.0
-
         mock_response = self.build_response(429, "Too Many Requests")
         mock_response.headers["Retry-After"] = "7"
         self.mock_session.request.return_value = mock_response
@@ -268,7 +254,7 @@ class TestRetry:
             self.mock_session, self.method, self.url, max_retries=1, **self.base_kwargs
         )
 
-        with pytest.raises(HTTPError):
+        with pytest.raises(httpx.HTTPStatusError):
             retry.execute()
 
         assert self.mock_session.request.call_count == 2

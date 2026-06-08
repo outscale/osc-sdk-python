@@ -2,15 +2,16 @@ import unittest
 import sys
 
 sys.path.append("..")
+import httpx
+
 from osc_sdk_python import Client
-from requests.exceptions import HTTPError
 
 
 class TestExcept(unittest.TestCase):
     def test_listing(self):
         with Client() as client:
             # a is not a valide argument
-            with self.assertRaises(HTTPError):
+            with self.assertRaises(httpx.HTTPStatusError):
                 client.osc.ReadVms(Filters="a")
 
 

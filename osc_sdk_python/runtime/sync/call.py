@@ -3,12 +3,13 @@ import warnings
 from datetime import timedelta
 from urllib.parse import urlencode
 
+import httpx
+
 from ...authentication import Authentication, DEFAULT_USER_AGENT
 from ...credentials import Profile
 from ...limiter import RateLimiter
 from ..request import RequestSpec
 from .requester import Requester
-from requests import Session
 from urllib3.util import parse_url
 
 
@@ -21,12 +22,18 @@ class Call(object):
         self.logger = logger
         self.limiter: RateLimiter | None = limiter
         self.retry_kwargs = {}
-        self.session = Session()
-        self.session.trust_env = False
 
         kwargs = self.update_limiter(**kwargs)
         kwargs = self.update_retry(**kwargs)
         self.update_profile(**kwargs)
+        self.session = self._make_client()
+
+    def _make_client(self):
+        return httpx.Client(
+            trust_env=False,
+            verify=not self.profile.tls_skip_verify,
+            cert=self.profile.x509_client_cert,
+        )
 
     def update_credentials(self, **kwargs):
         warnings.warn(

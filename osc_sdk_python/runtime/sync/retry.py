@@ -1,9 +1,11 @@
-import requests
-import time
+import json
 import random
+import time
 from datetime import datetime, timezone
 from email.utils import parsedate_to_datetime
-from requests.exceptions import JSONDecodeError
+
+import httpx
+
 from ...problem import ProblemDecoder, LegacyProblemDecoder, LegacyProblem, Problem
 
 MAX_RETRIES = 3
@@ -17,7 +19,7 @@ class Retry:
     Hold a request attempt and try to execute it
     """
 
-    def __init__(self, session: requests.Session, method: str, url: str, **kwargs):
+    def __init__(self, session: httpx.Client, method: str, url: str, **kwargs):
         self.session = session
         self.method: str = method
         self.url: str = url
@@ -38,7 +40,7 @@ class Retry:
             self.request_kwargs.pop("backoff_max", RETRY_BACKOFF_MAX)
         )
 
-    def execute_once(self) -> requests.Response:
+    def execute_once(self) -> httpx.Response:
         """
         Execute the request without retry
         """
@@ -56,19 +58,20 @@ class Retry:
         new_kwargs["backoff_max"] = self.backoff_max
         return Retry(self.session, self.method, self.url, **new_kwargs)
 
-    def should_retry(self, e: requests.exceptions.RequestException) -> bool:
-        if isinstance(e, requests.exceptions.TooManyRedirects):
+    def should_retry(self, e: httpx.HTTPError) -> bool:
+        if isinstance(e, httpx.TooManyRedirects):
             return False
 
-        if isinstance(e, requests.exceptions.URLRequired):
+        if isinstance(e, httpx.InvalidURL | httpx.UnsupportedProtocol):
             return False
 
         if isinstance(e, ValueError):
             # can be raised on bogus request
             return False
 
-        if e.response is not None:
-            if 400 <= e.response.status_code < 500 and e.response.status_code != 429:
+        response = getattr(e, "response", None)
+        if response is not None:
+            if 400 <= response.status_code < 500 and response.status_code != 429:
                 return False
 
         return self.attempt < self.max_retries
@@ -83,7 +86,7 @@ class Retry:
         backoff += random.uniform(0, self.backoff_jitter)
         return min(backoff, self.backoff_max)
 
-    def get_retry_after_time(self, e: requests.exceptions.RequestException):
+    def get_retry_after_time(self, e: httpx.HTTPError):
         response = getattr(e, "response", None)
         if response is None:
             return None
@@ -106,12 +109,12 @@ class Retry:
             retry_date = retry_date.replace(tzinfo=timezone.utc)
         return max(0.0, (retry_date - datetime.now(timezone.utc)).total_seconds())
 
-    def execute(self) -> requests.Response:
+    def execute(self) -> httpx.Response:
         try:
             res = self.execute_once()
             raise_for_status(res)
             return res
-        except requests.exceptions.RequestException as e:
+        except httpx.HTTPError as e:
             if self.should_retry(e):
                 sleep_time = self.get_retry_after_time(e)
                 if sleep_time is None:
@@ -122,21 +125,21 @@ class Retry:
                 raise e
 
 
-def raise_for_status(response: requests.Response):
+def raise_for_status(response: httpx.Response):
     http_error_msg = ""
     problem = None
     reason = get_default_reason(response)
 
     try:
         ct = response.headers.get("content-type") or ""
-        if "application/json" in ct:
-            problem = response.json(cls=LegacyProblemDecoder)
+        if "application/problem+json" in ct:
+            problem = json.loads(response.text, cls=ProblemDecoder)
             problem.status = problem.status or str(response.status_code)
-            problem.url = response.url
-        elif "application/problem+json" in ct:
-            problem = response.json(cls=ProblemDecoder)
+        elif "application/json" in ct:
+            problem = json.loads(response.text, cls=LegacyProblemDecoder)
             problem.status = problem.status or str(response.status_code)
-    except JSONDecodeError:
+            problem.url = str(response.url)
+    except json.JSONDecodeError:
         pass
     else:
         if 400 <= response.status_code < 500:
@@ -152,18 +155,26 @@ def raise_for_status(response: requests.Response):
                 http_error_msg = f"{response.status_code} Server Error: {reason} for url: {response.url}"
 
         if http_error_msg:
-            raise requests.HTTPError(http_error_msg, response=response)
+            raise httpx.HTTPStatusError(
+                http_error_msg,
+                request=response.request,
+                response=response,
+            )
 
 
 def get_default_reason(response):
-    if isinstance(response.reason, bytes):
+    reason = getattr(response, "reason", None)
+    if reason is None:
+        return getattr(response, "reason_phrase", "")
+
+    if isinstance(reason, bytes):
         # We attempt to decode utf-8 first because some servers
         # choose to localize their reason strings. If the string
         # isn't utf-8, we fall back to iso-8859-1 for all other
         # encodings. (See PR #3538)
         try:
-            return response.reason.decode("utf-8")
+            return reason.decode("utf-8")
         except UnicodeDecodeError:
-            return response.reason.decode("iso-8859-1")
+            return reason.decode("iso-8859-1")
     else:
-        return response.reason
+        return reason
