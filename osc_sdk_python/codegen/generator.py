@@ -228,9 +228,15 @@ def render_init(
     return "\n".join(lines)
 
 
-def generate(spec_path: Path, output_dir: Path, service: str, package_name: str | None = None) -> None:
+def generate(
+    spec_path: Path,
+    output_dir: Path,
+    service: str,
+    package_name: str | None = None,
+    skip_overlay: bool = False,
+) -> None:
     package_name = package_name or output_dir.name
-    spec = load_spec(spec_path)
+    spec = load_spec(spec_path, skip_overlay=skip_overlay)
     adapter = PathOperationAdapter(spec, service=service)
     operations = adapter.operations()
     schema_models = adapter.schema_models()
@@ -243,7 +249,11 @@ def generate(spec_path: Path, output_dir: Path, service: str, package_name: str 
     (output_dir / "__init__.py").write_text(render_init(operations, schema_models, package_name))
 
 
-def generate_all(root: Path, services: list[str] | None = None) -> None:
+def generate_all(
+    root: Path,
+    services: list[str] | None = None,
+    skip_overlay: bool = False,
+) -> None:
     resources_root = root / "resources"
     service_dirs = [
         path
@@ -260,6 +270,7 @@ def generate_all(root: Path, services: list[str] | None = None) -> None:
             root / "generated" / package_name,
             DEFAULT_SERVICE_NAMES.get(package_name, package_name),
             package_name,
+            skip_overlay=skip_overlay,
         )
 
 
@@ -270,9 +281,14 @@ def main() -> None:
         nargs="*",
         help="Service package names to generate, for example: osc oks. Defaults to all resources/*/api.yaml services.",
     )
+    parser.add_argument(
+        "--skip-overlay",
+        action="store_true",
+        help="When generating from cfg.yaml, ignore the overlay and use the base spec only.",
+    )
     args = parser.parse_args()
     root = Path(__file__).resolve().parents[1]
-    generate_all(root, args.services or None)
+    generate_all(root, args.services or None, skip_overlay=args.skip_overlay)
 
 
 if __name__ == "__main__":

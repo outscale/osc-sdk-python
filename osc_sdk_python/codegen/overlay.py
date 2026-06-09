@@ -112,7 +112,7 @@ def apply_overlay(spec: dict[str, Any], overlay: dict[str, Any]) -> dict[str, An
     return patched
 
 
-def load_spec(path: Path) -> dict[str, Any]:
+def load_spec(path: Path, skip_overlay: bool = False) -> dict[str, Any]:
     yaml = ruamel.yaml.YAML(typ="safe")
     document = yaml.load(path.read_text())
 
@@ -122,7 +122,7 @@ def load_spec(path: Path) -> dict[str, Any]:
     spec_path = (path.parent / document["spec"]).resolve()
     spec = yaml.load(spec_path.read_text())
     overlay_path = document.get("overlay")
-    if overlay_path:
+    if overlay_path and not skip_overlay:
         overlay = yaml.load((path.parent / overlay_path).resolve().read_text())
         spec = apply_overlay(spec, overlay)
     return spec

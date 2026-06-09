@@ -32,7 +32,7 @@ class AccessKey(GeneratedModel):
     creation_date: str | None = Field(default=None, alias='CreationDate')
     expiration_date: str | None = Field(default=None, alias='ExpirationDate')
     last_modification_date: str | None = Field(default=None, alias='LastModificationDate')
-    state: Literal['ACTIVE', 'INACTIVE'] | None = Field(default=None, alias='State')
+    state: str | None = Field(default=None, alias='State')
     tag: str | None = Field(default=None, alias='Tag')
 
 class AccessKeySecretKey(GeneratedModel):
@@ -45,7 +45,7 @@ class AccessKeySecretKey(GeneratedModel):
     tag: str | None = Field(default=None, alias='Tag')
 
 class AccessLog(GeneratedModel):
-    is_enabled: bool = Field(alias='IsEnabled')
+    is_enabled: bool | None = Field(default=None, alias='IsEnabled')
     osu_bucket_name: str | None = Field(default=None, alias='OsuBucketName')
     osu_bucket_prefix: str | None = Field(default=None, alias='OsuBucketPrefix')
     publication_interval: int | None = Field(default=None, alias='PublicationInterval')
@@ -98,13 +98,13 @@ class ApplicationStickyCookiePolicy(GeneratedModel):
 
 class BackendVmHealth(GeneratedModel):
     description: str | None = Field(default=None, alias='Description')
-    state: Literal['InService', 'OutOfService', 'Unknown'] | None = Field(default=None, alias='State')
+    state: str | None = Field(default=None, alias='State')
     state_reason: str | None = Field(default=None, alias='StateReason')
     vm_id: str | None = Field(default=None, alias='VmId')
 
 class BlockDeviceMappingCreated(GeneratedModel):
-    bsu: BsuCreated = Field(alias='Bsu')
-    device_name: str = Field(alias='DeviceName')
+    bsu: BsuCreated | None = Field(default=None, alias='Bsu')
+    device_name: str | None = Field(default=None, alias='DeviceName')
 
 class BlockDeviceMappingImage(GeneratedModel):
     bsu: BsuToCreate | None = Field(default=None, alias='Bsu')
@@ -126,10 +126,10 @@ class BlockDeviceMappingVmUpdate(GeneratedModel):
 BootMode = Literal['uefi', 'legacy']
 
 class BsuCreated(GeneratedModel):
-    delete_on_vm_deletion: bool = Field(alias='DeleteOnVmDeletion')
-    link_date: str = Field(alias='LinkDate')
-    state: str = Field(alias='State')
-    volume_id: str = Field(alias='VolumeId')
+    delete_on_vm_deletion: bool | None = Field(default=None, alias='DeleteOnVmDeletion')
+    link_date: str | None = Field(default=None, alias='LinkDate')
+    state: str | None = Field(default=None, alias='State')
+    volume_id: str | None = Field(default=None, alias='VolumeId')
 
 class BsuToCreate(GeneratedModel):
     delete_on_vm_deletion: bool | None = Field(default=None, alias='DeleteOnVmDeletion')
@@ -139,8 +139,8 @@ class BsuToCreate(GeneratedModel):
     volume_type: str | None = Field(default=None, alias='VolumeType')
 
 class BsuToUpdateVm(GeneratedModel):
-    delete_on_vm_deletion: bool = Field(alias='DeleteOnVmDeletion')
-    volume_id: str = Field(alias='VolumeId')
+    delete_on_vm_deletion: bool | None = Field(default=None, alias='DeleteOnVmDeletion')
+    volume_id: str | None = Field(default=None, alias='VolumeId')
 
 class CO2CategoryDistribution(GeneratedModel):
     category: str | None = Field(default=None, alias='Category')
@@ -191,12 +191,12 @@ class CheckAuthenticationResponse(GeneratedModel):
     response_context: ResponseContext | None = Field(default=None, alias='ResponseContext')
 
 class ClientGateway(GeneratedModel):
-    bgp_asn: int = Field(alias='BgpAsn')
-    client_gateway_id: str = Field(alias='ClientGatewayId')
-    connection_type: str = Field(alias='ConnectionType')
-    public_ip: str = Field(alias='PublicIp')
-    state: Literal['pending', 'available', 'deleting', 'deleted'] = Field(alias='State')
-    tags: list[ResourceTag] = Field(alias='Tags')
+    bgp_asn: int | None = Field(default=None, alias='BgpAsn')
+    client_gateway_id: str | None = Field(default=None, alias='ClientGatewayId')
+    connection_type: str | None = Field(default=None, alias='ConnectionType')
+    public_ip: str | None = Field(default=None, alias='PublicIp')
+    state: str | None = Field(default=None, alias='State')
+    tags: list[ResourceTag] | None = Field(default=None, alias='Tags')
 
 class ConsumptionEntry(GeneratedModel):
     account_id: str | None = Field(default=None, alias='AccountId')
@@ -1184,13 +1184,13 @@ class EnableOutscaleLoginResponse(GeneratedModel):
     response_context: ResponseContext | None = Field(default=None, alias='ResponseContext')
 
 class ErrorResponse(GeneratedModel):
-    errors: list[Errors] = Field(alias='Errors')
+    errors: list[Errors] | None = Field(default=None, alias='Errors')
     response_context: ResponseContext | None = Field(default=None, alias='ResponseContext')
 
 class Errors(GeneratedModel):
-    code: str = Field(alias='Code')
-    details: str = Field(alias='Details')
-    type: str = Field(alias='Type')
+    code: str | None = Field(default=None, alias='Code')
+    details: str | None = Field(default=None, alias='Details')
+    type: str | None = Field(default=None, alias='Type')
 
 class FiltersAccessKeys(GeneratedModel):
     access_key_ids: list[str] | None = Field(default=None, alias='AccessKeyIds')
@@ -1276,7 +1276,7 @@ class FiltersImage(GeneratedModel):
     block_device_mapping_device_names: list[str] | None = Field(default=None, alias='BlockDeviceMappingDeviceNames')
     block_device_mapping_snapshot_ids: list[str] | None = Field(default=None, alias='BlockDeviceMappingSnapshotIds')
     block_device_mapping_volume_sizes: list[int] | None = Field(default=None, alias='BlockDeviceMappingVolumeSizes')
-    block_device_mapping_volume_types: list[VolumeType] | None = Field(default=None, alias='BlockDeviceMappingVolumeTypes')
+    block_device_mapping_volume_types: list[str] | None = Field(default=None, alias='BlockDeviceMappingVolumeTypes')
     boot_modes: list[BootMode] | None = Field(default=None, alias='BootModes')
     descriptions: list[str] | None = Field(default=None, alias='Descriptions')
     file_locations: list[str] | None = Field(default=None, alias='FileLocations')
@@ -1666,7 +1666,7 @@ class FiltersVolume(GeneratedModel):
     volume_ids: list[str] | None = Field(default=None, alias='VolumeIds')
     volume_sizes: list[int] | None = Field(default=None, alias='VolumeSizes')
     volume_states: list[str] | None = Field(default=None, alias='VolumeStates')
-    volume_types: list[VolumeType] | None = Field(default=None, alias='VolumeTypes')
+    volume_types: list[str] | None = Field(default=None, alias='VolumeTypes')
 
 class FiltersVpnConnection(GeneratedModel):
     bgp_asns: list[int] | None = Field(default=None, alias='BgpAsns')
@@ -1682,12 +1682,12 @@ class FiltersVpnConnection(GeneratedModel):
     vpn_connection_ids: list[str] | None = Field(default=None, alias='VpnConnectionIds')
 
 class FlexibleGpu(GeneratedModel):
-    delete_on_vm_deletion: bool = Field(alias='DeleteOnVmDeletion')
-    flexible_gpu_id: str = Field(alias='FlexibleGpuId')
-    generation: str = Field(alias='Generation')
-    model_name: str = Field(alias='ModelName')
-    state: Literal['allocated', 'attaching', 'attached', 'detaching'] = Field(alias='State')
-    subregion_name: str = Field(alias='SubregionName')
+    delete_on_vm_deletion: bool | None = Field(default=None, alias='DeleteOnVmDeletion')
+    flexible_gpu_id: str | None = Field(default=None, alias='FlexibleGpuId')
+    generation: str | None = Field(default=None, alias='Generation')
+    model_name: str | None = Field(default=None, alias='ModelName')
+    state: str | None = Field(default=None, alias='State')
+    subregion_name: str | None = Field(default=None, alias='SubregionName')
     tags: list[Tag] | None = Field(default=None, alias='Tags')
     vm_id: str | None = Field(default=None, alias='VmId')
 
@@ -1709,24 +1709,24 @@ class HealthCheck(GeneratedModel):
 
 class Image(GeneratedModel):
     account_alias: str | None = Field(default=None, alias='AccountAlias')
-    account_id: str = Field(alias='AccountId')
-    architecture: str = Field(alias='Architecture')
+    account_id: str | None = Field(default=None, alias='AccountId')
+    architecture: str | None = Field(default=None, alias='Architecture')
     block_device_mappings: list[BlockDeviceMappingImage] | None = Field(default=None, alias='BlockDeviceMappings')
-    boot_modes: list[BootMode] = Field(alias='BootModes')
-    creation_date: str = Field(alias='CreationDate')
+    boot_modes: list[BootMode] | None = Field(default=None, alias='BootModes')
+    creation_date: str | None = Field(default=None, alias='CreationDate')
     description: str | None = Field(default=None, alias='Description')
     file_location: str | None = Field(default=None, alias='FileLocation')
-    image_id: str = Field(alias='ImageId')
+    image_id: str | None = Field(default=None, alias='ImageId')
     image_name: str | None = Field(default=None, alias='ImageName')
     image_type: str | None = Field(default=None, alias='ImageType')
     permissions_to_launch: PermissionsOnResource | None = Field(default=None, alias='PermissionsToLaunch')
     product_codes: list[str] | None = Field(default=None, alias='ProductCodes')
     root_device_name: str | None = Field(default=None, alias='RootDeviceName')
-    root_device_type: str = Field(alias='RootDeviceType')
-    secure_boot: bool = Field(alias='SecureBoot')
-    state: Literal['pending', 'available', 'failed'] = Field(alias='State')
+    root_device_type: str | None = Field(default=None, alias='RootDeviceType')
+    secure_boot: bool | None = Field(default=None, alias='SecureBoot')
+    state: str | None = Field(default=None, alias='State')
     state_comment: StateComment | None = Field(default=None, alias='StateComment')
-    tags: list[ResourceTag] = Field(alias='Tags')
+    tags: list[ResourceTag] | None = Field(default=None, alias='Tags')
     tpm_mandatory: bool | None = Field(default=None, alias='TpmMandatory')
 
 class ImageExportTask(GeneratedModel):
@@ -1743,10 +1743,10 @@ class InlinePolicy(GeneratedModel):
     name: str | None = Field(default=None, alias='Name')
 
 class InternetService(GeneratedModel):
-    internet_service_id: str = Field(alias='InternetServiceId')
-    net_id: str = Field(alias='NetId')
-    state: str = Field(alias='State')
-    tags: list[ResourceTag] = Field(alias='Tags')
+    internet_service_id: str | None = Field(default=None, alias='InternetServiceId')
+    net_id: str | None = Field(default=None, alias='NetId')
+    state: str | None = Field(default=None, alias='State')
+    tags: list[ResourceTag] | None = Field(default=None, alias='Tags')
 
 class Keypair(GeneratedModel):
     keypair_fingerprint: str | None = Field(default=None, alias='KeypairFingerprint')
@@ -1797,18 +1797,18 @@ class LinkManagedPolicyToUserGroupResponse(GeneratedModel):
     response_context: ResponseContext | None = Field(default=None, alias='ResponseContext')
 
 class LinkNic(GeneratedModel):
-    delete_on_vm_deletion: bool = Field(alias='DeleteOnVmDeletion')
-    device_number: int = Field(alias='DeviceNumber')
-    link_nic_id: str = Field(alias='LinkNicId')
-    state: Literal['attaching', 'attached', 'detaching', 'detached'] = Field(alias='State')
-    vm_account_id: str = Field(alias='VmAccountId')
-    vm_id: str = Field(alias='VmId')
+    delete_on_vm_deletion: bool | None = Field(default=None, alias='DeleteOnVmDeletion')
+    device_number: int | None = Field(default=None, alias='DeviceNumber')
+    link_nic_id: str | None = Field(default=None, alias='LinkNicId')
+    state: str | None = Field(default=None, alias='State')
+    vm_account_id: str | None = Field(default=None, alias='VmAccountId')
+    vm_id: str | None = Field(default=None, alias='VmId')
 
 class LinkNicLight(GeneratedModel):
-    delete_on_vm_deletion: bool = Field(alias='DeleteOnVmDeletion')
-    device_number: int = Field(alias='DeviceNumber')
-    link_nic_id: str = Field(alias='LinkNicId')
-    state: str = Field(alias='State')
+    delete_on_vm_deletion: bool | None = Field(default=None, alias='DeleteOnVmDeletion')
+    device_number: int | None = Field(default=None, alias='DeviceNumber')
+    link_nic_id: str | None = Field(default=None, alias='LinkNicId')
+    state: str | None = Field(default=None, alias='State')
 
 class LinkNicRequest(GeneratedModel):
     device_number: int = Field(alias='DeviceNumber')
@@ -1843,15 +1843,15 @@ class LinkPrivateIpsResponse(GeneratedModel):
     response_context: ResponseContext | None = Field(default=None, alias='ResponseContext')
 
 class LinkPublicIp(GeneratedModel):
-    link_public_ip_id: str = Field(alias='LinkPublicIpId')
-    public_dns_name: str = Field(alias='PublicDnsName')
-    public_ip: str = Field(alias='PublicIp')
-    public_ip_account_id: str = Field(alias='PublicIpAccountId')
-    public_ip_id: str = Field(alias='PublicIpId')
+    link_public_ip_id: str | None = Field(default=None, alias='LinkPublicIpId')
+    public_dns_name: str | None = Field(default=None, alias='PublicDnsName')
+    public_ip: str | None = Field(default=None, alias='PublicIp')
+    public_ip_account_id: str | None = Field(default=None, alias='PublicIpAccountId')
+    public_ip_id: str | None = Field(default=None, alias='PublicIpId')
 
 class LinkPublicIpLightForVm(GeneratedModel):
-    public_dns_name: str = Field(alias='PublicDnsName')
-    public_ip: str = Field(alias='PublicIp')
+    public_dns_name: str | None = Field(default=None, alias='PublicDnsName')
+    public_ip: str | None = Field(default=None, alias='PublicIp')
     public_ip_account_id: str | None = Field(default=None, alias='PublicIpAccountId')
 
 class LinkPublicIpRequest(GeneratedModel):
@@ -1868,11 +1868,11 @@ class LinkPublicIpResponse(GeneratedModel):
     response_context: ResponseContext | None = Field(default=None, alias='ResponseContext')
 
 class LinkRouteTable(GeneratedModel):
-    link_route_table_id: str = Field(alias='LinkRouteTableId')
-    main: bool = Field(alias='Main')
-    net_id: str = Field(alias='NetId')
-    route_table_id: str = Field(alias='RouteTableId')
-    subnet_id: str = Field(alias='SubnetId')
+    link_route_table_id: str | None = Field(default=None, alias='LinkRouteTableId')
+    main: bool | None = Field(default=None, alias='Main')
+    net_id: str | None = Field(default=None, alias='NetId')
+    route_table_id: str | None = Field(default=None, alias='RouteTableId')
+    subnet_id: str | None = Field(default=None, alias='SubnetId')
 
 class LinkRouteTableRequest(GeneratedModel):
     dry_run: bool | None = Field(default=None, alias='DryRun')
@@ -1909,17 +1909,17 @@ class LinkedPolicy(GeneratedModel):
     policy_name: str | None = Field(default=None, alias='PolicyName')
 
 class LinkedVolume(GeneratedModel):
-    delete_on_vm_deletion: bool = Field(alias='DeleteOnVmDeletion')
-    device_name: str = Field(alias='DeviceName')
-    state: Literal['attaching', 'detaching', 'attached', 'detached'] = Field(alias='State')
-    vm_id: str = Field(alias='VmId')
-    volume_id: str = Field(alias='VolumeId')
+    delete_on_vm_deletion: bool | None = Field(default=None, alias='DeleteOnVmDeletion')
+    device_name: str | None = Field(default=None, alias='DeviceName')
+    state: str | None = Field(default=None, alias='State')
+    vm_id: str | None = Field(default=None, alias='VmId')
+    volume_id: str | None = Field(default=None, alias='VolumeId')
 
 class Listener(GeneratedModel):
-    backend_port: int = Field(alias='BackendPort')
-    backend_protocol: str = Field(alias='BackendProtocol')
-    load_balancer_port: int = Field(alias='LoadBalancerPort')
-    load_balancer_protocol: str = Field(alias='LoadBalancerProtocol')
+    backend_port: int | None = Field(default=None, alias='BackendPort')
+    backend_protocol: str | None = Field(default=None, alias='BackendProtocol')
+    load_balancer_port: int | None = Field(default=None, alias='LoadBalancerPort')
+    load_balancer_protocol: str | None = Field(default=None, alias='LoadBalancerProtocol')
     policy_names: list[str] | None = Field(default=None, alias='PolicyNames')
     server_certificate_id: str | None = Field(default=None, alias='ServerCertificateId')
 
@@ -1948,25 +1948,25 @@ class ListenerRuleForCreation(GeneratedModel):
     priority: int = Field(alias='Priority')
 
 class LoadBalancer(GeneratedModel):
-    access_log: AccessLog = Field(alias='AccessLog')
-    application_sticky_cookie_policies: list[ApplicationStickyCookiePolicy] = Field(alias='ApplicationStickyCookiePolicies')
-    backend_ips: list[str] = Field(alias='BackendIps')
-    backend_vm_ids: list[str] = Field(alias='BackendVmIds')
-    dns_name: str = Field(alias='DnsName')
-    health_check: HealthCheck = Field(alias='HealthCheck')
-    listeners: list[Listener] = Field(alias='Listeners')
-    load_balancer_name: str = Field(alias='LoadBalancerName')
-    load_balancer_sticky_cookie_policies: list[LoadBalancerStickyCookiePolicy] = Field(alias='LoadBalancerStickyCookiePolicies')
-    load_balancer_type: str = Field(alias='LoadBalancerType')
+    access_log: AccessLog | None = Field(default=None, alias='AccessLog')
+    application_sticky_cookie_policies: list[ApplicationStickyCookiePolicy] | None = Field(default=None, alias='ApplicationStickyCookiePolicies')
+    backend_ips: list[str] | None = Field(default=None, alias='BackendIps')
+    backend_vm_ids: list[str] | None = Field(default=None, alias='BackendVmIds')
+    dns_name: str | None = Field(default=None, alias='DnsName')
+    health_check: HealthCheck | None = Field(default=None, alias='HealthCheck')
+    listeners: list[Listener] | None = Field(default=None, alias='Listeners')
+    load_balancer_name: str | None = Field(default=None, alias='LoadBalancerName')
+    load_balancer_sticky_cookie_policies: list[LoadBalancerStickyCookiePolicy] | None = Field(default=None, alias='LoadBalancerStickyCookiePolicies')
+    load_balancer_type: str | None = Field(default=None, alias='LoadBalancerType')
     net_id: str | None = Field(default=None, alias='NetId')
     public_ip: str | None = Field(default=None, alias='PublicIp')
-    secured_cookies: bool = Field(alias='SecuredCookies')
-    security_groups: list[str] = Field(alias='SecurityGroups')
-    source_security_group: SourceSecurityGroup = Field(alias='SourceSecurityGroup')
-    state: Literal['provisioning', 'starting', 'reloading', 'active', 'reconfiguring', 'deleting', 'deleted'] = Field(alias='State')
+    secured_cookies: bool | None = Field(default=None, alias='SecuredCookies')
+    security_groups: list[str] | None = Field(default=None, alias='SecurityGroups')
+    source_security_group: SourceSecurityGroup | None = Field(default=None, alias='SourceSecurityGroup')
+    state: str | None = Field(default=None, alias='State')
     subnets: list[str] | None = Field(default=None, alias='Subnets')
-    subregion_names: list[str] = Field(alias='SubregionNames')
-    tags: list[ResourceTag] = Field(alias='Tags')
+    subregion_names: list[str] | None = Field(default=None, alias='SubregionNames')
+    tags: list[ResourceTag] | None = Field(default=None, alias='Tags')
 
 class LoadBalancerLight(GeneratedModel):
     load_balancer_name: str = Field(alias='LoadBalancerName')
@@ -1977,9 +1977,9 @@ class LoadBalancerStickyCookiePolicy(GeneratedModel):
     policy_name: str | None = Field(default=None, alias='PolicyName')
 
 class LoadBalancerTag(GeneratedModel):
-    key: str = Field(alias='Key')
-    load_balancer_name: str = Field(alias='LoadBalancerName')
-    value: str = Field(alias='Value')
+    key: str | None = Field(default=None, alias='Key')
+    load_balancer_name: str | None = Field(default=None, alias='LoadBalancerName')
+    value: str | None = Field(default=None, alias='Value')
 
 class Location(GeneratedModel):
     code: str | None = Field(default=None, alias='Code')
@@ -2016,61 +2016,61 @@ class MinimalPolicy(GeneratedModel):
 
 class NatService(GeneratedModel):
     client_token: str | None = Field(default=None, alias='ClientToken')
-    nat_service_id: str = Field(alias='NatServiceId')
-    net_id: str = Field(alias='NetId')
-    public_ips: list[PublicIpLight] = Field(alias='PublicIps')
-    state: Literal['pending', 'available', 'deleting', 'deleted'] = Field(alias='State')
-    subnet_id: str = Field(alias='SubnetId')
-    tags: list[ResourceTag] = Field(alias='Tags')
+    nat_service_id: str | None = Field(default=None, alias='NatServiceId')
+    net_id: str | None = Field(default=None, alias='NetId')
+    public_ips: list[PublicIpLight] | None = Field(default=None, alias='PublicIps')
+    state: str | None = Field(default=None, alias='State')
+    subnet_id: str | None = Field(default=None, alias='SubnetId')
+    tags: list[ResourceTag] | None = Field(default=None, alias='Tags')
 
 class Net(GeneratedModel):
-    dhcp_options_set_id: str = Field(alias='DhcpOptionsSetId')
-    ip_range: str = Field(alias='IpRange')
-    net_id: str = Field(alias='NetId')
-    state: Literal['pending', 'available', 'deleting'] = Field(alias='State')
-    tags: list[ResourceTag] = Field(alias='Tags')
-    tenancy: str = Field(alias='Tenancy')
+    dhcp_options_set_id: str | None = Field(default=None, alias='DhcpOptionsSetId')
+    ip_range: str | None = Field(default=None, alias='IpRange')
+    net_id: str | None = Field(default=None, alias='NetId')
+    state: str | None = Field(default=None, alias='State')
+    tags: list[ResourceTag] | None = Field(default=None, alias='Tags')
+    tenancy: str | None = Field(default=None, alias='Tenancy')
 
 class NetAccessPoint(GeneratedModel):
-    net_access_point_id: str = Field(alias='NetAccessPointId')
-    net_id: str = Field(alias='NetId')
-    route_table_ids: list[str] = Field(alias='RouteTableIds')
-    service_name: str = Field(alias='ServiceName')
-    state: Literal['pending', 'available', 'deleting', 'deleted'] = Field(alias='State')
-    tags: list[ResourceTag] = Field(alias='Tags')
+    net_access_point_id: str | None = Field(default=None, alias='NetAccessPointId')
+    net_id: str | None = Field(default=None, alias='NetId')
+    route_table_ids: list[str] | None = Field(default=None, alias='RouteTableIds')
+    service_name: str | None = Field(default=None, alias='ServiceName')
+    state: str | None = Field(default=None, alias='State')
+    tags: list[ResourceTag] | None = Field(default=None, alias='Tags')
 
 class NetPeering(GeneratedModel):
-    accepter_net: AccepterNet = Field(alias='AccepterNet')
+    accepter_net: AccepterNet | None = Field(default=None, alias='AccepterNet')
     expiration_date: str | None = Field(default=None, alias='ExpirationDate')
-    net_peering_id: str = Field(alias='NetPeeringId')
-    source_net: SourceNet = Field(alias='SourceNet')
-    state: NetPeeringState = Field(alias='State')
-    tags: list[ResourceTag] = Field(alias='Tags')
+    net_peering_id: str | None = Field(default=None, alias='NetPeeringId')
+    source_net: SourceNet | None = Field(default=None, alias='SourceNet')
+    state: NetPeeringState | None = Field(default=None, alias='State')
+    tags: list[ResourceTag] | None = Field(default=None, alias='Tags')
 
 class NetPeeringState(GeneratedModel):
-    message: str = Field(alias='Message')
-    name: Literal['pending-acceptance', 'active', 'rejected', 'failed', 'expired', 'deleted'] = Field(alias='Name')
+    message: str | None = Field(default=None, alias='Message')
+    name: str | None = Field(default=None, alias='Name')
 
 class NetToVirtualGatewayLink(GeneratedModel):
     net_id: str | None = Field(default=None, alias='NetId')
     state: str | None = Field(default=None, alias='State')
 
 class Nic(GeneratedModel):
-    account_id: str = Field(alias='AccountId')
-    description: str = Field(alias='Description')
-    is_source_dest_checked: bool = Field(alias='IsSourceDestChecked')
+    account_id: str | None = Field(default=None, alias='AccountId')
+    description: str | None = Field(default=None, alias='Description')
+    is_source_dest_checked: bool | None = Field(default=None, alias='IsSourceDestChecked')
     link_nic: LinkNic | None = Field(default=None, alias='LinkNic')
     link_public_ip: LinkPublicIp | None = Field(default=None, alias='LinkPublicIp')
-    mac_address: str = Field(alias='MacAddress')
-    net_id: str = Field(alias='NetId')
-    nic_id: str = Field(alias='NicId')
-    private_dns_name: str = Field(alias='PrivateDnsName')
-    private_ips: list[PrivateIp] = Field(alias='PrivateIps')
-    security_groups: list[SecurityGroupLight] = Field(alias='SecurityGroups')
-    state: Literal['available', 'attaching', 'in-use', 'detaching'] = Field(alias='State')
-    subnet_id: str = Field(alias='SubnetId')
-    subregion_name: str = Field(alias='SubregionName')
-    tags: list[ResourceTag] = Field(alias='Tags')
+    mac_address: str | None = Field(default=None, alias='MacAddress')
+    net_id: str | None = Field(default=None, alias='NetId')
+    nic_id: str | None = Field(default=None, alias='NicId')
+    private_dns_name: str | None = Field(default=None, alias='PrivateDnsName')
+    private_ips: list[PrivateIp] | None = Field(default=None, alias='PrivateIps')
+    security_groups: list[SecurityGroupLight] | None = Field(default=None, alias='SecurityGroups')
+    state: str | None = Field(default=None, alias='State')
+    subnet_id: str | None = Field(default=None, alias='SubnetId')
+    subregion_name: str | None = Field(default=None, alias='SubregionName')
+    tags: list[ResourceTag] | None = Field(default=None, alias='Tags')
 
 class NicForVmCreation(GeneratedModel):
     delete_on_vm_deletion: bool | None = Field(default=None, alias='DeleteOnVmDeletion')
@@ -2083,19 +2083,19 @@ class NicForVmCreation(GeneratedModel):
     subnet_id: str | None = Field(default=None, alias='SubnetId')
 
 class NicLight(GeneratedModel):
-    account_id: str = Field(alias='AccountId')
-    description: str = Field(alias='Description')
-    is_source_dest_checked: bool = Field(alias='IsSourceDestChecked')
+    account_id: str | None = Field(default=None, alias='AccountId')
+    description: str | None = Field(default=None, alias='Description')
+    is_source_dest_checked: bool | None = Field(default=None, alias='IsSourceDestChecked')
     link_nic: LinkNicLight | None = Field(default=None, alias='LinkNic')
     link_public_ip: LinkPublicIpLightForVm | None = Field(default=None, alias='LinkPublicIp')
-    mac_address: str = Field(alias='MacAddress')
-    net_id: str = Field(alias='NetId')
-    nic_id: str = Field(alias='NicId')
-    private_dns_name: str = Field(alias='PrivateDnsName')
-    private_ips: list[PrivateIpLightForVm] = Field(alias='PrivateIps')
-    security_groups: list[SecurityGroupLight] = Field(alias='SecurityGroups')
-    state: str = Field(alias='State')
-    subnet_id: str = Field(alias='SubnetId')
+    mac_address: str | None = Field(default=None, alias='MacAddress')
+    net_id: str | None = Field(default=None, alias='NetId')
+    nic_id: str | None = Field(default=None, alias='NicId')
+    private_dns_name: str | None = Field(default=None, alias='PrivateDnsName')
+    private_ips: list[PrivateIpLightForVm] | None = Field(default=None, alias='PrivateIps')
+    security_groups: list[SecurityGroupLight] | None = Field(default=None, alias='SecurityGroups')
+    state: str | None = Field(default=None, alias='State')
+    subnet_id: str | None = Field(default=None, alias='SubnetId')
 
 class OsuApiKey(GeneratedModel):
     api_key_id: str | None = Field(default=None, alias='ApiKeyId')
@@ -2146,8 +2146,8 @@ class Phase2Options(GeneratedModel):
     pre_shared_key: str | None = Field(default=None, alias='PreSharedKey')
 
 class Placement(GeneratedModel):
-    subregion_name: str = Field(alias='SubregionName')
-    tenancy: str = Field(alias='Tenancy')
+    subregion_name: str | None = Field(default=None, alias='SubregionName')
+    tenancy: str | None = Field(default=None, alias='Tenancy')
 
 class Policy(GeneratedModel):
     creation_date: str | None = Field(default=None, alias='CreationDate')
@@ -2177,20 +2177,20 @@ class PolicyVersion(GeneratedModel):
     version_id: str | None = Field(default=None, alias='VersionId')
 
 class PrivateIp(GeneratedModel):
-    is_primary: bool = Field(alias='IsPrimary')
+    is_primary: bool | None = Field(default=None, alias='IsPrimary')
     link_public_ip: LinkPublicIp | None = Field(default=None, alias='LinkPublicIp')
-    private_dns_name: str = Field(alias='PrivateDnsName')
-    private_ip: str = Field(alias='PrivateIp')
+    private_dns_name: str | None = Field(default=None, alias='PrivateDnsName')
+    private_ip: str | None = Field(default=None, alias='PrivateIp')
 
 class PrivateIpLight(GeneratedModel):
-    is_primary: bool = Field(alias='IsPrimary')
-    private_ip: str = Field(alias='PrivateIp')
+    is_primary: bool | None = Field(default=None, alias='IsPrimary')
+    private_ip: str | None = Field(default=None, alias='PrivateIp')
 
 class PrivateIpLightForVm(GeneratedModel):
-    is_primary: bool = Field(alias='IsPrimary')
+    is_primary: bool | None = Field(default=None, alias='IsPrimary')
     link_public_ip: LinkPublicIpLightForVm | None = Field(default=None, alias='LinkPublicIp')
-    private_dns_name: str = Field(alias='PrivateDnsName')
-    private_ip: str = Field(alias='PrivateIp')
+    private_dns_name: str | None = Field(default=None, alias='PrivateDnsName')
+    private_ip: str | None = Field(default=None, alias='PrivateIp')
 
 class ProductType(GeneratedModel):
     description: str | None = Field(default=None, alias='Description')
@@ -2202,14 +2202,14 @@ class PublicIp(GeneratedModel):
     nic_account_id: str | None = Field(default=None, alias='NicAccountId')
     nic_id: str | None = Field(default=None, alias='NicId')
     private_ip: str | None = Field(default=None, alias='PrivateIp')
-    public_ip: str = Field(alias='PublicIp')
-    public_ip_id: str = Field(alias='PublicIpId')
-    tags: list[ResourceTag] = Field(alias='Tags')
+    public_ip: str | None = Field(default=None, alias='PublicIp')
+    public_ip_id: str | None = Field(default=None, alias='PublicIpId')
+    tags: list[ResourceTag] | None = Field(default=None, alias='Tags')
     vm_id: str | None = Field(default=None, alias='VmId')
 
 class PublicIpLight(GeneratedModel):
-    public_ip: str = Field(alias='PublicIp')
-    public_ip_id: str = Field(alias='PublicIpId')
+    public_ip: str | None = Field(default=None, alias='PublicIp')
+    public_ip_id: str | None = Field(default=None, alias='PublicIpId')
 
 class PutUserGroupPolicyRequest(GeneratedModel):
     dry_run: bool | None = Field(default=None, alias='DryRun')
@@ -3040,33 +3040,33 @@ class ResponseContext(GeneratedModel):
     request_id: str | None = Field(default=None, alias='RequestId')
 
 class Route(GeneratedModel):
-    creation_method: str = Field(alias='CreationMethod')
-    destination_ip_range: str = Field(alias='DestinationIpRange')
+    creation_method: str | None = Field(default=None, alias='CreationMethod')
+    destination_ip_range: str | None = Field(default=None, alias='DestinationIpRange')
     destination_service_id: str | None = Field(default=None, alias='DestinationServiceId')
     gateway_id: str | None = Field(default=None, alias='GatewayId')
     nat_service_id: str | None = Field(default=None, alias='NatServiceId')
     net_access_point_id: str | None = Field(default=None, alias='NetAccessPointId')
     net_peering_id: str | None = Field(default=None, alias='NetPeeringId')
     nic_id: str | None = Field(default=None, alias='NicId')
-    state: str = Field(alias='State')
+    state: str | None = Field(default=None, alias='State')
     vm_account_id: str | None = Field(default=None, alias='VmAccountId')
     vm_id: str | None = Field(default=None, alias='VmId')
 
 class RouteLight(GeneratedModel):
-    destination_ip_range: str = Field(alias='DestinationIpRange')
-    route_type: str = Field(alias='RouteType')
-    state: str = Field(alias='State')
+    destination_ip_range: str | None = Field(default=None, alias='DestinationIpRange')
+    route_type: str | None = Field(default=None, alias='RouteType')
+    state: str | None = Field(default=None, alias='State')
 
 class RoutePropagatingVirtualGateway(GeneratedModel):
     virtual_gateway_id: str | None = Field(default=None, alias='VirtualGatewayId')
 
 class RouteTable(GeneratedModel):
-    link_route_tables: list[LinkRouteTable] = Field(alias='LinkRouteTables')
-    net_id: str = Field(alias='NetId')
-    route_propagating_virtual_gateways: list[RoutePropagatingVirtualGateway] = Field(alias='RoutePropagatingVirtualGateways')
-    route_table_id: str = Field(alias='RouteTableId')
-    routes: list[Route] = Field(alias='Routes')
-    tags: list[ResourceTag] = Field(alias='Tags')
+    link_route_tables: list[LinkRouteTable] | None = Field(default=None, alias='LinkRouteTables')
+    net_id: str | None = Field(default=None, alias='NetId')
+    route_propagating_virtual_gateways: list[RoutePropagatingVirtualGateway] | None = Field(default=None, alias='RoutePropagatingVirtualGateways')
+    route_table_id: str | None = Field(default=None, alias='RouteTableId')
+    routes: list[Route] | None = Field(default=None, alias='Routes')
+    tags: list[ResourceTag] | None = Field(default=None, alias='Tags')
 
 class ScaleDownVmGroupRequest(GeneratedModel):
     dry_run: bool | None = Field(default=None, alias='DryRun')
@@ -3087,18 +3087,18 @@ class ScaleUpVmGroupResponse(GeneratedModel):
 SecureBootAction = Literal['enable', 'disable', 'setup-mode', 'none', 'restore-factory-keys']
 
 class SecurityGroup(GeneratedModel):
-    account_id: str = Field(alias='AccountId')
-    description: str = Field(alias='Description')
-    inbound_rules: list[SecurityGroupRule] = Field(alias='InboundRules')
+    account_id: str | None = Field(default=None, alias='AccountId')
+    description: str | None = Field(default=None, alias='Description')
+    inbound_rules: list[SecurityGroupRule] | None = Field(default=None, alias='InboundRules')
     net_id: str | None = Field(default=None, alias='NetId')
-    outbound_rules: list[SecurityGroupRule] = Field(alias='OutboundRules')
-    security_group_id: str = Field(alias='SecurityGroupId')
-    security_group_name: str = Field(alias='SecurityGroupName')
-    tags: list[ResourceTag] = Field(alias='Tags')
+    outbound_rules: list[SecurityGroupRule] | None = Field(default=None, alias='OutboundRules')
+    security_group_id: str | None = Field(default=None, alias='SecurityGroupId')
+    security_group_name: str | None = Field(default=None, alias='SecurityGroupName')
+    tags: list[ResourceTag] | None = Field(default=None, alias='Tags')
 
 class SecurityGroupLight(GeneratedModel):
-    security_group_id: str = Field(alias='SecurityGroupId')
-    security_group_name: str = Field(alias='SecurityGroupName')
+    security_group_id: str | None = Field(default=None, alias='SecurityGroupId')
+    security_group_name: str | None = Field(default=None, alias='SecurityGroupName')
 
 class SecurityGroupRule(GeneratedModel):
     from_port_range: int | None = Field(default=None, alias='FromPortRange')
@@ -3111,7 +3111,7 @@ class SecurityGroupRule(GeneratedModel):
 
 class SecurityGroupsMember(GeneratedModel):
     account_id: str | None = Field(default=None, alias='AccountId')
-    security_group_id: str = Field(alias='SecurityGroupId')
+    security_group_id: str | None = Field(default=None, alias='SecurityGroupId')
     security_group_name: str | None = Field(default=None, alias='SecurityGroupName')
 
 class ServerCertificate(GeneratedModel):
@@ -3136,26 +3136,26 @@ class SetDefaultPolicyVersionResponse(GeneratedModel):
 
 class Snapshot(GeneratedModel):
     account_alias: str | None = Field(default=None, alias='AccountAlias')
-    account_id: str = Field(alias='AccountId')
+    account_id: str | None = Field(default=None, alias='AccountId')
     client_token: str | None = Field(default=None, alias='ClientToken')
-    creation_date: str = Field(alias='CreationDate')
+    creation_date: str | None = Field(default=None, alias='CreationDate')
     description: str | None = Field(default=None, alias='Description')
     permissions_to_create_volume: PermissionsOnResource | None = Field(default=None, alias='PermissionsToCreateVolume')
     progress: int | None = Field(default=None, alias='Progress')
-    snapshot_id: str = Field(alias='SnapshotId')
-    state: Literal['in-queue', 'pending', 'completed', 'error', 'deleting'] = Field(alias='State')
+    snapshot_id: str | None = Field(default=None, alias='SnapshotId')
+    state: str | None = Field(default=None, alias='State')
     tags: list[ResourceTag] | None = Field(default=None, alias='Tags')
-    volume_id: str = Field(alias='VolumeId')
-    volume_size: int = Field(alias='VolumeSize')
+    volume_id: str | None = Field(default=None, alias='VolumeId')
+    volume_size: int | None = Field(default=None, alias='VolumeSize')
 
 class SnapshotExportTask(GeneratedModel):
-    comment: str = Field(alias='Comment')
-    osu_export: OsuExportSnapshotExportTask = Field(alias='OsuExport')
-    progress: int = Field(alias='Progress')
-    snapshot_id: str = Field(alias='SnapshotId')
-    state: Literal['pending', 'active', 'completed', 'cancelled', 'failed'] = Field(alias='State')
-    tags: list[ResourceTag] = Field(alias='Tags')
-    task_id: str = Field(alias='TaskId')
+    comment: str | None = Field(default=None, alias='Comment')
+    osu_export: OsuExportSnapshotExportTask | None = Field(default=None, alias='OsuExport')
+    progress: int | None = Field(default=None, alias='Progress')
+    snapshot_id: str | None = Field(default=None, alias='SnapshotId')
+    state: str | None = Field(default=None, alias='State')
+    tags: list[ResourceTag] | None = Field(default=None, alias='Tags')
+    task_id: str | None = Field(default=None, alias='TaskId')
 
 class SourceNet(GeneratedModel):
     account_id: str | None = Field(default=None, alias='AccountId')
@@ -3188,14 +3188,14 @@ class StopVmsResponse(GeneratedModel):
     vms: list[VmState] | None = Field(default=None, alias='Vms')
 
 class Subnet(GeneratedModel):
-    available_ips_count: int = Field(alias='AvailableIpsCount')
-    ip_range: str = Field(alias='IpRange')
-    map_public_ip_on_launch: bool = Field(alias='MapPublicIpOnLaunch')
-    net_id: str = Field(alias='NetId')
-    state: Literal['pending', 'available', 'deleted'] = Field(alias='State')
-    subnet_id: str = Field(alias='SubnetId')
-    subregion_name: str = Field(alias='SubregionName')
-    tags: list[ResourceTag] = Field(alias='Tags')
+    available_ips_count: int | None = Field(default=None, alias='AvailableIpsCount')
+    ip_range: str | None = Field(default=None, alias='IpRange')
+    map_public_ip_on_launch: bool | None = Field(default=None, alias='MapPublicIpOnLaunch')
+    net_id: str | None = Field(default=None, alias='NetId')
+    state: str | None = Field(default=None, alias='State')
+    subnet_id: str | None = Field(default=None, alias='SubnetId')
+    subregion_name: str | None = Field(default=None, alias='SubregionName')
+    tags: list[ResourceTag] | None = Field(default=None, alias='Tags')
 
 class Subregion(GeneratedModel):
     location_code: str | None = Field(default=None, alias='LocationCode')
@@ -3204,10 +3204,10 @@ class Subregion(GeneratedModel):
     subregion_name: str | None = Field(default=None, alias='SubregionName')
 
 class Tag(GeneratedModel):
-    key: str = Field(alias='Key')
-    resource_id: str = Field(alias='ResourceId')
-    resource_type: Literal['customer-gateway', 'dhcpoptions', 'flexible-gpu', 'image', 'instance', 'keypair', 'natgateway', 'network-interface', 'public-ip', 'route-table', 'security-group', 'snapshot', 'subnet', 'task', 'virtual-private-gateway', 'volume', 'vpc', 'vpc-endpoint', 'vpc-peering-connection', 'vpn-connection'] = Field(alias='ResourceType')
-    value: str = Field(alias='Value')
+    key: str | None = Field(default=None, alias='Key')
+    resource_id: str | None = Field(default=None, alias='ResourceId')
+    resource_type: str | None = Field(default=None, alias='ResourceType')
+    value: str | None = Field(default=None, alias='Value')
 
 class UnitPriceEntry(GeneratedModel):
     currency: str | None = Field(default=None, alias='Currency')
@@ -3635,50 +3635,50 @@ class VgwTelemetry(GeneratedModel):
     state_description: str | None = Field(default=None, alias='StateDescription')
 
 class VirtualGateway(GeneratedModel):
-    connection_type: str = Field(alias='ConnectionType')
-    net_to_virtual_gateway_links: list[NetToVirtualGatewayLink] = Field(alias='NetToVirtualGatewayLinks')
-    state: str = Field(alias='State')
-    tags: list[ResourceTag] = Field(alias='Tags')
-    virtual_gateway_id: str = Field(alias='VirtualGatewayId')
+    connection_type: str | None = Field(default=None, alias='ConnectionType')
+    net_to_virtual_gateway_links: list[NetToVirtualGatewayLink] | None = Field(default=None, alias='NetToVirtualGatewayLinks')
+    state: str | None = Field(default=None, alias='State')
+    tags: list[ResourceTag] | None = Field(default=None, alias='Tags')
+    virtual_gateway_id: str | None = Field(default=None, alias='VirtualGatewayId')
 
 class Vm(GeneratedModel):
-    actions_on_next_boot: ActionsOnNextBoot = Field(alias='ActionsOnNextBoot')
-    architecture: str = Field(alias='Architecture')
-    block_device_mappings: list[BlockDeviceMappingCreated] = Field(alias='BlockDeviceMappings')
-    boot_mode: BootMode = Field(alias='BootMode')
+    actions_on_next_boot: ActionsOnNextBoot | None = Field(default=None, alias='ActionsOnNextBoot')
+    architecture: str | None = Field(default=None, alias='Architecture')
+    block_device_mappings: list[BlockDeviceMappingCreated] | None = Field(default=None, alias='BlockDeviceMappings')
+    boot_mode: BootMode | None = Field(default=None, alias='BootMode')
     bsu_optimized: bool | None = Field(default=None, alias='BsuOptimized')
     client_token: str | None = Field(default=None, alias='ClientToken')
-    creation_date: str = Field(alias='CreationDate')
-    deletion_protection: bool = Field(alias='DeletionProtection')
-    hypervisor: str = Field(alias='Hypervisor')
-    image_id: str = Field(alias='ImageId')
+    creation_date: str | None = Field(default=None, alias='CreationDate')
+    deletion_protection: bool | None = Field(default=None, alias='DeletionProtection')
+    hypervisor: str | None = Field(default=None, alias='Hypervisor')
+    image_id: str | None = Field(default=None, alias='ImageId')
     is_source_dest_checked: bool | None = Field(default=None, alias='IsSourceDestChecked')
     keypair_name: str | None = Field(default=None, alias='KeypairName')
-    launch_number: int = Field(alias='LaunchNumber')
-    nested_virtualization: bool = Field(alias='NestedVirtualization')
+    launch_number: int | None = Field(default=None, alias='LaunchNumber')
+    nested_virtualization: bool | None = Field(default=None, alias='NestedVirtualization')
     net_id: str | None = Field(default=None, alias='NetId')
-    nics: list[NicLight] = Field(alias='Nics')
-    os_family: str = Field(alias='OsFamily')
-    performance: str = Field(alias='Performance')
-    placement: Placement = Field(alias='Placement')
+    nics: list[NicLight] | None = Field(default=None, alias='Nics')
+    os_family: str | None = Field(default=None, alias='OsFamily')
+    performance: str | None = Field(default=None, alias='Performance')
+    placement: Placement | None = Field(default=None, alias='Placement')
     private_dns_name: str | None = Field(default=None, alias='PrivateDnsName')
-    private_ip: str = Field(alias='PrivateIp')
-    product_codes: list[str] = Field(alias='ProductCodes')
+    private_ip: str | None = Field(default=None, alias='PrivateIp')
+    product_codes: list[str] | None = Field(default=None, alias='ProductCodes')
     public_dns_name: str | None = Field(default=None, alias='PublicDnsName')
     public_ip: str | None = Field(default=None, alias='PublicIp')
-    reservation_id: str = Field(alias='ReservationId')
-    root_device_name: str = Field(alias='RootDeviceName')
-    root_device_type: str = Field(alias='RootDeviceType')
-    security_groups: list[SecurityGroupLight] = Field(alias='SecurityGroups')
-    state: Literal['pending', 'running', 'stopping', 'stopped', 'shutting-down', 'terminated', 'quarantine'] = Field(alias='State')
-    state_reason: str = Field(alias='StateReason')
+    reservation_id: str | None = Field(default=None, alias='ReservationId')
+    root_device_name: str | None = Field(default=None, alias='RootDeviceName')
+    root_device_type: str | None = Field(default=None, alias='RootDeviceType')
+    security_groups: list[SecurityGroupLight] | None = Field(default=None, alias='SecurityGroups')
+    state: str | None = Field(default=None, alias='State')
+    state_reason: str | None = Field(default=None, alias='StateReason')
     subnet_id: str | None = Field(default=None, alias='SubnetId')
-    tags: list[ResourceTag] = Field(alias='Tags')
-    tpm_enabled: bool = Field(alias='TpmEnabled')
-    user_data: str = Field(alias='UserData')
-    vm_id: str = Field(alias='VmId')
-    vm_initiated_shutdown_behavior: str = Field(alias='VmInitiatedShutdownBehavior')
-    vm_type: str = Field(alias='VmType')
+    tags: list[ResourceTag] | None = Field(default=None, alias='Tags')
+    tpm_enabled: bool | None = Field(default=None, alias='TpmEnabled')
+    user_data: str | None = Field(default=None, alias='UserData')
+    vm_id: str | None = Field(default=None, alias='VmId')
+    vm_initiated_shutdown_behavior: str | None = Field(default=None, alias='VmInitiatedShutdownBehavior')
+    vm_type: str | None = Field(default=None, alias='VmType')
 
 class VmGroup(GeneratedModel):
     creation_date: str | None = Field(default=None, alias='CreationDate')
@@ -3700,10 +3700,10 @@ class VmState(GeneratedModel):
     vm_id: str | None = Field(default=None, alias='VmId')
 
 class VmStates(GeneratedModel):
-    maintenance_events: list[MaintenanceEvent] = Field(alias='MaintenanceEvents')
-    subregion_name: str = Field(alias='SubregionName')
-    vm_id: str = Field(alias='VmId')
-    vm_state: str = Field(alias='VmState')
+    maintenance_events: list[MaintenanceEvent] | None = Field(default=None, alias='MaintenanceEvents')
+    subregion_name: str | None = Field(default=None, alias='SubregionName')
+    vm_id: str | None = Field(default=None, alias='VmId')
+    vm_state: str | None = Field(default=None, alias='VmState')
 
 class VmTemplate(GeneratedModel):
     cpu_cores: int = Field(alias='CpuCores')
@@ -3732,17 +3732,17 @@ class VmType(GeneratedModel):
 
 class Volume(GeneratedModel):
     client_token: str | None = Field(default=None, alias='ClientToken')
-    creation_date: str = Field(alias='CreationDate')
-    iops: int = Field(alias='Iops')
-    linked_volumes: list[LinkedVolume] = Field(alias='LinkedVolumes')
-    size: int = Field(alias='Size')
+    creation_date: str | None = Field(default=None, alias='CreationDate')
+    iops: int | None = Field(default=None, alias='Iops')
+    linked_volumes: list[LinkedVolume] | None = Field(default=None, alias='LinkedVolumes')
+    size: int | None = Field(default=None, alias='Size')
     snapshot_id: str | None = Field(default=None, alias='SnapshotId')
-    state: Literal['creating', 'available', 'in-use', 'deleting', 'error'] = Field(alias='State')
-    subregion_name: str = Field(alias='SubregionName')
-    tags: list[ResourceTag] = Field(alias='Tags')
+    state: str | None = Field(default=None, alias='State')
+    subregion_name: str | None = Field(default=None, alias='SubregionName')
+    tags: list[ResourceTag] | None = Field(default=None, alias='Tags')
     task_id: str | None = Field(default=None, alias='TaskId')
-    volume_id: str = Field(alias='VolumeId')
-    volume_type: str = Field(alias='VolumeType')
+    volume_id: str | None = Field(default=None, alias='VolumeId')
+    volume_type: str | None = Field(default=None, alias='VolumeType')
 
 class VolumeUpdate(GeneratedModel):
     origin: VolumeUpdateParameters | None = Field(default=None, alias='Origin')
@@ -3766,15 +3766,15 @@ class VolumeUpdateTask(GeneratedModel):
 
 class VpnConnection(GeneratedModel):
     client_gateway_configuration: str | None = Field(default=None, alias='ClientGatewayConfiguration')
-    client_gateway_id: str = Field(alias='ClientGatewayId')
-    connection_type: str = Field(alias='ConnectionType')
-    routes: list[RouteLight] = Field(alias='Routes')
-    state: str = Field(alias='State')
-    static_routes_only: bool = Field(alias='StaticRoutesOnly')
-    tags: list[ResourceTag] = Field(alias='Tags')
-    vgw_telemetries: list[VgwTelemetry] = Field(alias='VgwTelemetries')
-    virtual_gateway_id: str = Field(alias='VirtualGatewayId')
-    vpn_connection_id: str = Field(alias='VpnConnectionId')
+    client_gateway_id: str | None = Field(default=None, alias='ClientGatewayId')
+    connection_type: str | None = Field(default=None, alias='ConnectionType')
+    routes: list[RouteLight] | None = Field(default=None, alias='Routes')
+    state: str | None = Field(default=None, alias='State')
+    static_routes_only: bool | None = Field(default=None, alias='StaticRoutesOnly')
+    tags: list[ResourceTag] | None = Field(default=None, alias='Tags')
+    vgw_telemetries: list[VgwTelemetry] | None = Field(default=None, alias='VgwTelemetries')
+    virtual_gateway_id: str | None = Field(default=None, alias='VirtualGatewayId')
+    vpn_connection_id: str | None = Field(default=None, alias='VpnConnectionId')
     vpn_options: VpnOptions | None = Field(default=None, alias='VpnOptions')
 
 class VpnOptions(GeneratedModel):
@@ -3799,5 +3799,3 @@ class With(GeneratedModel):
     request_id: bool | None = Field(default=None, alias='RequestId')
     response_size: bool | None = Field(default=None, alias='ResponseSize')
     response_status_code: bool | None = Field(default=None, alias='ResponseStatusCode')
-
-VolumeType = Literal['io1', 'gp2', 'standard']
