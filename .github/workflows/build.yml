@@ -18,7 +18,7 @@ jobs:
     runs-on: ubuntu-24.04
     steps:
     - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6
-    - uses: chainguard-dev/actions/setup-gitsign@3e76343fe029f8e2a10bfbec0da8f437e5dab7a5 # main
+    - uses: chainguard-dev/actions/setup-gitsign@5f020827ba80ff5d64d45116542d0c733e8e7e71 # main
     - name: Install uv
       uses: astral-sh/setup-uv@fac544c07dec837d0ccb6301d7b5580bf5edae39 # v8.2.0
     - name: Set up Python
