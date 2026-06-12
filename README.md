@@ -40,7 +40,8 @@ It allows you to:
 - Configure multiple profiles through environment variables or credential files.
 - Use either the synchronous `Client` or asynchronous `AsyncClient`.
 - Customize retry and rate-limit behavior.
-- Enable detailed logging of requests and responses.
+- Use SDK-managed authentication, retry, and rate limiting through httpx.
+- Enable detailed request logging.
 
 You will need an Outscale account and API credentials. If you do not have one yet, please visit the [Outscale website](https://outscale.com/).
 
@@ -212,7 +213,7 @@ The following options can be provided when initializing the `Client` or `AsyncCl
 * `retry_backoff_jitter` (float, default `3.0`)
 * `retry_backoff_max` (float, default `30`)
 
-These correspond to their counterparts in [`urllib3.util.Retry`](https://urllib3.readthedocs.io/en/stable/reference/urllib3.util.html#urllib3.util.Retry).
+These configure the SDK retry policy used by the sync and async httpx transports.
 
 Example:
 
@@ -229,10 +230,10 @@ client = Client(
 
 ### Rate Limit Options
 
-You can also configure rate limiting when initializing the `Client`:
+You can also configure rate limiting when initializing the `Client` or `AsyncClient`:
 
 * `limiter_max_requests` (integer, default `5`)
-* `limiter_window` (integer, default `1`)
+* `limiter_window` (integer seconds, default `1`)
 
 Example:
 
@@ -244,6 +245,31 @@ client = Client(
     limiter_window=5,
 )
 ```
+
+### HTTP Transport Behavior
+
+Authentication, retry, rate limiting, and API error handling are integrated into the SDK httpx layer:
+
+* `SdkAuth` signs outgoing requests and also supports OKS and basic authentication.
+* `SdkTransport` applies sync rate limiting, retries, and SDK error conversion.
+* `AsyncSdkTransport` provides the same behavior for `AsyncClient`.
+
+Most users do not need to instantiate these classes directly. Configure behavior through `Client` or `AsyncClient` options:
+
+```python
+from osc_sdk_python import Client
+
+with Client(
+    profile="default",
+    max_retries=5,
+    retry_backoff_factor=0.5,
+    limiter_max_requests=20,
+    limiter_window=5,
+) as client:
+    vms = client.osc.ReadVms()
+```
+
+For custom httpx integrations, the transport components are available from `osc_sdk_python.runtime.transport`.
 
 More usage patterns and logging examples are documented in:
 
