@@ -8,8 +8,7 @@ from .outscale_gateway import LOG_STDIO
 from .outscale_gateway import LOG_MEMORY
 from .version import get_version
 from .problem import Problem, ProblemDecoder
-from .limiter import RateLimiter
-from .runtime.sync.retry import Retry
+from .runtime.transport import RateLimiter
 
 # what to Log
 from .outscale_gateway import LOG_ALL
@@ -33,5 +32,4 @@ __all__ = [
     "Problem",
     "ProblemDecoder",
     "RateLimiter",
-    "Retry",
 ]

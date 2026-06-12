@@ -1,5 +1,5 @@
 import os
-import sys
+import logging
 from .runtime.async_.call import AsyncCall
 from .runtime.sync.call import Call
 from .runtime.request import RequestSpec
@@ -9,17 +9,19 @@ from .runtime.request import RequestSpec
 try:
     from .generated.oks import AsyncOksTypedMixin
 except (ImportError, ModuleNotFoundError):
-    class AsyncOksTypedMixin: pass
+    class AsyncOksTypedMixin:
+        pass
 
 try:
     from .generated.osc import AsyncOscTypedMixin
 except (ImportError, ModuleNotFoundError):
-    class AsyncOscTypedMixin: pass
+    class AsyncOscTypedMixin:
+        pass
 
 # Replicate this pattern here for future services (e.g., EIM, FCU) 
 # if they are generated into separate mixins.
 
-from .limiter import RateLimiter
+from .runtime.transport import RateLimiter
 import ruamel.yaml
 from .version import get_version
 import warnings
@@ -64,9 +66,11 @@ class ParameterHasWrongType(NotImplementedError):
 
 
 class Logger:
-    string = ""
-    type = LOG_NONE
-    what = LOG_ALL
+    def __init__(self, name="osc_sdk_python"):
+        self.string = ""
+        self.type = LOG_NONE
+        self.what = LOG_ALL
+        self.logger = logging.getLogger(name)
 
     def config(self, type=None, what=None):
         if type is not None:
@@ -87,9 +91,9 @@ class Logger:
                 self.string = self.string + "\n" + s
 
         if self.type & LOG_STDIO:
-            print(s)
+            self.logger.info(s)
         if self.type & LOG_STDERR:
-            print(s, file=sys.stderr)
+            self.logger.error(s)
 
 
 class OpenAPIActionAPI:

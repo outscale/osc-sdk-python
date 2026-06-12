@@ -1,16 +1,19 @@
 import json
 import warnings
 from datetime import timedelta
-from urllib.parse import urlencode
 
 import httpx
 from urllib3.util import parse_url
 
-from .requester import AsyncRequester
-from ...authentication import Authentication, DEFAULT_USER_AGENT
 from ...credentials import Profile
-from ...limiter import RateLimiter
 from ..request import RequestSpec
+from ..transport import (
+    AsyncSdkTransport,
+    DEFAULT_USER_AGENT,
+    RateLimiter,
+    RetryPolicy,
+    SdkAuth,
+)
 
 
 class AsyncCall(object):
@@ -34,6 +37,12 @@ class AsyncCall(object):
             trust_env=False,
             verify=not self.profile.tls_skip_verify,
             cert=cert_file,
+            transport=AsyncSdkTransport(
+                limiter=self.limiter,
+                retry_policy=RetryPolicy(**self.retry_kwargs),
+                verify=not self.profile.tls_skip_verify,
+                cert=cert_file,
+            ),
         )
 
     def update_credentials(self, **kwargs):
@@ -78,29 +87,9 @@ class AsyncCall(object):
         endpoint = (
             self.profile.get_endpoint(spec.service).rstrip("/") + "/" + path.lstrip("/")
         )
-        parsed_url = parse_url(endpoint)
-        uri = parsed_url.path
-        host = parsed_url.host
-        canonical_querystring = urlencode(
-            sorted((spec.query_params or {}).items()), doseq=True
-        )
+        uri = parse_url(endpoint).path
         payload = "" if spec.json_body is None else json.dumps(spec.json_body)
 
-        if self.limiter is not None:
-            await self.limiter.async_acquire()
-
-        requester = AsyncRequester(
-            self.client,
-            Authentication(
-                self.profile,
-                host,
-                method=spec.method.upper(),
-                service=spec.service,
-                user_agent=self.user_agent,
-            ),
-            endpoint,
-            **self.retry_kwargs,
-        )
         if self.logger is not None:
             self.logger.do_log(
                 "uri: "
@@ -108,12 +97,17 @@ class AsyncCall(object):
                 + "\npayload:\n"
                 + json.dumps(spec.json_body, indent=2)
             )
-        response = await requester.send(
+
+        response = await self.client.request(
             spec.method.upper(),
-            uri,
-            payload,
-            query_params=spec.query_params,
-            canonical_querystring=canonical_querystring,
+            endpoint,
+            content=payload,
+            params=spec.query_params,
+            auth=SdkAuth(
+                self.profile,
+                service=spec.service,
+                user_agent=self.user_agent,
+            ),
         )
         return response.json()
 

@@ -1,15 +1,18 @@
 import json
 import warnings
 from datetime import timedelta
-from urllib.parse import urlencode
 
 import httpx
 
-from ...authentication import Authentication, DEFAULT_USER_AGENT
 from ...credentials import Profile
-from ...limiter import RateLimiter
 from ..request import RequestSpec
-from .requester import Requester
+from ..transport import (
+    DEFAULT_USER_AGENT,
+    RateLimiter,
+    RetryPolicy,
+    SdkAuth,
+    SdkTransport,
+)
 from urllib3.util import parse_url
 
 
@@ -33,6 +36,12 @@ class Call(object):
             trust_env=False,
             verify=not self.profile.tls_skip_verify,
             cert=self.profile.x509_client_cert,
+            transport=SdkTransport(
+                limiter=self.limiter,
+                retry_policy=RetryPolicy(**self.retry_kwargs),
+                verify=not self.profile.tls_skip_verify,
+                cert=self.profile.x509_client_cert,
+            ),
         )
 
     def update_credentials(self, **kwargs):
@@ -73,52 +82,35 @@ class Call(object):
         return kwargs
 
     def request(self, spec: RequestSpec, path_params=None):
-        try:
-            path = spec.resolved_path(path_params)
-            endpoint = (
-                self.profile.get_endpoint(spec.service).rstrip("/")
-                + "/"
-                + path.lstrip("/")
-            )
-            parsed_url = parse_url(endpoint)
-            uri = parsed_url.path
-            host = parsed_url.host
-            canonical_querystring = urlencode(
-                sorted((spec.query_params or {}).items()), doseq=True
-            )
-            payload = "" if spec.json_body is None else json.dumps(spec.json_body)
+        path = spec.resolved_path(path_params)
+        endpoint = (
+            self.profile.get_endpoint(spec.service).rstrip("/")
+            + "/"
+            + path.lstrip("/")
+        )
+        uri = parse_url(endpoint).path
+        payload = "" if spec.json_body is None else json.dumps(spec.json_body)
 
-            if self.limiter is not None:
-                self.limiter.acquire()
+        if self.logger is not None:
+            self.logger.do_log(
+                "uri: "
+                + uri
+                + "\npayload:\n"
+                + json.dumps(spec.json_body, indent=2)
+            )
 
-            requester = Requester(
-                self.session,
-                Authentication(
-                    self.profile,
-                    host,
-                    method=spec.method.upper(),
-                    service=spec.service,
-                    user_agent=self.user_agent,
-                ),
-                endpoint,
-                **self.retry_kwargs,
-            )
-            if self.logger is not None:
-                self.logger.do_log(
-                    "uri: "
-                    + uri
-                    + "\npayload:\n"
-                    + json.dumps(spec.json_body, indent=2)
-                )
-            return requester.send(
-                spec.method.upper(),
-                uri,
-                payload,
-                query_params=spec.query_params,
-                canonical_querystring=canonical_querystring,
-            )
-        except Exception as err:
-            raise err
+        response = self.session.request(
+            spec.method.upper(),
+            endpoint,
+            content=payload,
+            params=spec.query_params,
+            auth=SdkAuth(
+                self.profile,
+                service=spec.service,
+                user_agent=self.user_agent,
+            ),
+        )
+        return response.json()
 
     def api(self, action, service="api", **data):
         return self.request(
