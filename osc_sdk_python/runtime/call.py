@@ -1,4 +1,5 @@
 import json
+import logging
 import warnings
 from datetime import timedelta
 
@@ -16,14 +17,15 @@ from .transport import (
 )
 from urllib3.util import parse_url
 
+logger = logging.getLogger("osc_sdk_python")
+
 
 class Call(object):
-    def __init__(self, logger=None, limiter=None, **kwargs):
+    def __init__(self, limiter=None, **kwargs):
         self.version = kwargs.pop("version", "latest")
         self.host = kwargs.pop("host", None)
         self.ssl = kwargs.pop("_ssl", True)
         self.user_agent = kwargs.pop("user_agent", DEFAULT_USER_AGENT)
-        self.logger = logger
         self.limiter: RateLimiter | None = limiter
         self.retry_kwargs = {}
 
@@ -92,13 +94,13 @@ class Call(object):
         uri = parse_url(endpoint).path
         payload = "" if spec.json_body is None else json.dumps(spec.json_body)
 
-        if self.logger is not None:
-            self.logger.do_log(
-                "uri: "
-                + uri
-                + "\npayload:\n"
-                + json.dumps(spec.json_body, indent=2)
-            )
+        logger.info(
+            "mode: sync\nservice: %s\nmethod: %s\nuri: %s\npayload:\n%s",
+            spec.service,
+            spec.method.upper(),
+            uri,
+            json.dumps(spec.json_body, indent=2),
+        )
 
         response = self.session.request(
             spec.method.upper(),
@@ -129,12 +131,11 @@ class Call(object):
 
 
 class AsyncCall(object):
-    def __init__(self, logger=None, limiter=None, **kwargs):
+    def __init__(self, limiter=None, **kwargs):
         self.version = kwargs.pop("version", "latest")
         self.host = kwargs.pop("host", None)
         self.ssl = kwargs.pop("_ssl", True)
         self.user_agent = kwargs.pop("user_agent", DEFAULT_USER_AGENT)
-        self.logger = logger
         self.limiter: RateLimiter | None = limiter
         self.retry_kwargs = {}
 
@@ -202,13 +203,13 @@ class AsyncCall(object):
         uri = parse_url(endpoint).path
         payload = "" if spec.json_body is None else json.dumps(spec.json_body)
 
-        if self.logger is not None:
-            self.logger.do_log(
-                "uri: "
-                + uri
-                + "\npayload:\n"
-                + json.dumps(spec.json_body, indent=2)
-            )
+        logger.info(
+            "mode: async\nservice: %s\nmethod: %s\nuri: %s\npayload:\n%s",
+            spec.service,
+            spec.method.upper(),
+            uri,
+            json.dumps(spec.json_body, indent=2),
+        )
 
         response = await self.client.request(
             spec.method.upper(),

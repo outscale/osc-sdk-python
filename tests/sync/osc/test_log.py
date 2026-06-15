@@ -1,26 +1,34 @@
+import logging
 import unittest
 import sys
 
 sys.path.append("..")
-from osc_sdk_python import Client, LOG_MEMORY, LOG_KEEP_ONLY_LAST_REQ
+from osc_sdk_python import Client
 
 
 class TestLog(unittest.TestCase):
     def test_listing(self):
         with Client() as client:
-            client.osc.log.config(type=LOG_MEMORY, what=LOG_KEEP_ONLY_LAST_REQ)
-            client.osc.ReadVms()
+            with self.assertLogs("osc_sdk_python", level=logging.INFO) as logs:
+                client.osc.ReadVms()
             self.assertEqual(
-                client.osc.log.str(),
-                """uri: /api/v1/ReadVms
+                logs.records[-1].getMessage(),
+                """mode: sync
+service: api
+method: POST
+uri: /api/v1/ReadVms
 payload:
 {}""",
             )
 
-            client.osc.ReadVms(Filters={"TagKeys": ["test"]})
+            with self.assertLogs("osc_sdk_python", level=logging.INFO) as logs:
+                client.osc.ReadVms(Filters={"TagKeys": ["test"]})
             self.assertEqual(
-                client.osc.log.str(),
-                """uri: /api/v1/ReadVms
+                logs.records[-1].getMessage(),
+                """mode: sync
+service: api
+method: POST
+uri: /api/v1/ReadVms
 payload:
 {
   "Filters": {

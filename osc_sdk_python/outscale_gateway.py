@@ -1,5 +1,4 @@
 import os
-import logging
 from .runtime.call import (
     Call,
     AsyncCall
@@ -31,16 +30,6 @@ from datetime import timedelta
 
 type_mapping = {"boolean": "bool", "string": "str", "integer": "int", "array": "list"}
 
-# Logs Output Options
-LOG_NONE = 0
-LOG_STDERR = 1
-LOG_STDIO = 2
-LOG_MEMORY = 4
-
-# what to Log
-LOG_ALL = 0
-LOG_KEEP_ONLY_LAST_REQ = 1
-
 # Default
 DEFAULT_LIMITER_WINDOW = timedelta(seconds=1)  # 1 second
 DEFAULT_LIMITER_MAX_REQUESTS = 5  # 5 requests / sec
@@ -67,45 +56,12 @@ class ParameterHasWrongType(NotImplementedError):
     pass
 
 
-class Logger:
-    def __init__(self, name="osc_sdk_python"):
-        self.string = ""
-        self.type = LOG_NONE
-        self.what = LOG_ALL
-        self.logger = logging.getLogger(name)
-
-    def config(self, type=None, what=None):
-        if type is not None:
-            self.type = type
-        if what is not None:
-            self.what = what
-
-    def str(self):
-        if self.type == LOG_MEMORY:
-            return self.string
-        return None
-
-    def do_log(self, s):
-        if self.type & LOG_MEMORY:
-            if self.what == LOG_KEEP_ONLY_LAST_REQ:
-                self.string = s
-            else:
-                self.string = self.string + "\n" + s
-
-        if self.type & LOG_STDIO:
-            self.logger.info(s)
-        if self.type & LOG_STDERR:
-            self.logger.error(s)
-
-
 class OpenAPIActionAPI:
     def __init__(self, spec, service="api", *, _call_cls=Call, **kwargs):
         self.service = service
         self._load_gateway_structure(spec)
-        self.log = Logger()
         self.limiter = RateLimiter(DEFAULT_LIMITER_WINDOW, DEFAULT_LIMITER_MAX_REQUESTS)
         self.call = _call_cls(
-            logger=self.log,
             version=self.endpoint_api_version,
             limiter=self.limiter,
             **kwargs,
@@ -313,9 +269,8 @@ class OpenAPIPathAPI:
     def __init__(self, spec, service, *, _call_cls=Call, **kwargs):
         self.service = service
         self.operations = self._load_operations(spec)
-        self.log = Logger()
         self.limiter = RateLimiter(DEFAULT_LIMITER_WINDOW, DEFAULT_LIMITER_MAX_REQUESTS)
-        self.call = _call_cls(logger=self.log, limiter=self.limiter, **kwargs)
+        self.call = _call_cls(limiter=self.limiter, **kwargs)
 
     def _load_operations(self, spec):
         with open(spec, "r") as fi:
