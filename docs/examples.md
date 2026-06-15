@@ -182,18 +182,30 @@ if __name__ == "__main__":
 ### Enabling logs
 
 ```python
-from osc_sdk_python import Client, LOG_ALL, LOG_KEEP_ONLY_LAST_REQ, LOG_MEMORY, LOG_STDERR, LOG_STDIO
+import logging
+
+from osc_sdk_python import Client
 
 if __name__ == "__main__":
+    logging.basicConfig(
+        level=logging.INFO,
+        format="%(asctime)s - %(levelname)s - %(message)s",
+    )
+
     with Client(profile="profile_1") as client:
-        # 'what' can be LOG_KEEP_ONLY_LAST_REQ or LOG_ALL
-        # Here we print logs in memory, standard output and standard error
-        client.osc.log.config(type=LOG_MEMORY | LOG_STDIO | LOG_STDERR, what=LOG_KEEP_ONLY_LAST_REQ)
-
         result = client.osc.raw("ReadVms")
+        print(result)
+```
 
-        last_request = client.osc.log.str()
-        print(last_request)
+This logs requests through Python's standard `logging` module using the `osc_sdk_python` logger:
+
+```text
+2026-06-15 12:45:10,123 - INFO - mode: sync
+service: api
+method: POST
+uri: /api/v1/ReadVms
+payload:
+{}
 ```
 
 Usage examples can be combined with the official [Outscale API documentation](https://docs.outscale.com/en/userguide/Home.html).
