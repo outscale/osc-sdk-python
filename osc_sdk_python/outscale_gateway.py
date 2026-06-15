@@ -1,7 +1,9 @@
 import os
 import logging
-from .runtime.async_.call import AsyncCall
-from .runtime.sync.call import Call
+from .runtime.call import (
+    Call,
+    AsyncCall
+)
 from .runtime.request import RequestSpec
 
 # Bootstrap logic for generated mixins. 
