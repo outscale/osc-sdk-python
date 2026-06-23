@@ -138,7 +138,33 @@ if __name__ == "__main__":
 
 ---
 
-## 💡 Examples
+### Handling SDK exceptions
+
+Public SDK methods raise exceptions owned by the SDK. Catch `SdkError` to handle any SDK failure, or catch a narrower subclass when you need a specific category.
+
+```python
+import asyncio
+
+from osc_sdk_python import AsyncClient, SdkError, SdkClientError
+
+async def main():
+    try:
+        async with AsyncClient() as client:
+            print(await client.osc.read_vms())
+    except SdkClientError as err:
+        print("API rejected the request:", err)
+        if err.response is not None:
+            print("status:", err.response.status_code)
+    except SdkError as err:
+        print("SDK error:", err)
+
+if __name__ == "__main__":
+    asyncio.run(main())
+```
+
+---
+
+## Examples
 
 ### List all VM and Volume IDs
 

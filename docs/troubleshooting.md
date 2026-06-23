@@ -19,3 +19,7 @@ If you do not want your locale to be set system-wide, you can do:
 ```bash
 LC_ALL=en_US.UTF-8 pip install osc-sdk-python
 ```
+
+### SDK-owned exceptions
+
+Public SDK methods raise exceptions from `osc_sdk_python`, rooted at `SdkError`. Use `except SdkError` for a broad SDK boundary, then inspect subclasses such as `SdkClientError`, `SdkServerError`, `SdkTransportError`, `SdkValidationError`, `SdkConfigurationError`, and `SdkResponseError` when needed.
