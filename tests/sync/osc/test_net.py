@@ -1,16 +1,14 @@
 import unittest
 import sys
 
-import httpx
-
 sys.path.append("..")
-from osc_sdk_python import Client
+from osc_sdk_python import Client, SdkClientError
 
 
 class TestNet(unittest.TestCase):
     def test_creation_error(self):
         with Client() as client:
-            with self.assertRaises(httpx.HTTPStatusError) as cm:
+            with self.assertRaises(SdkClientError) as cm:
                 client.osc.CreateNet(IpRange="142.42.42.42/32")
 
             e = cm.exception

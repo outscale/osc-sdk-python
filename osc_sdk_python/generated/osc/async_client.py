@@ -6,8 +6,9 @@ Do not edit by hand. Regenerate with:
 
 from typing import Any
 
-from pydantic import TypeAdapter
+from pydantic import TypeAdapter, ValidationError
 
+from osc_sdk_python.exceptions import SdkResponseError, SdkValidationError
 from osc_sdk_python.runtime.request import RequestSpec
 from .models import (
     AcceptNetPeeringRequest,
@@ -487,13 +488,30 @@ def _dump_json_body(value: Any) -> Any:
     return value
 
 
+def _validate_request(model: type, value: Any) -> Any:
+    try:
+        if value is None:
+            return model()
+        if isinstance(value, model):
+            return value
+        return TypeAdapter(model).validate_python(value)
+    except ValidationError as error:
+        raise SdkValidationError(str(error)) from error
+
+
+def _validate_response(model: type, value: Any) -> Any:
+    try:
+        return TypeAdapter(model).validate_python(value)
+    except ValidationError as error:
+        raise SdkResponseError(str(error)) from error
+
+
 class AsyncOscTypedMixin:
     async def accept_net_peering(
         self,
         request: AcceptNetPeeringRequest | None = None,
     ) -> AcceptNetPeeringResponse:
-        if request is None:
-            request = AcceptNetPeeringRequest()
+        request = _validate_request(AcceptNetPeeringRequest, request)
 
         path_params = {
         }
@@ -513,14 +531,13 @@ class AsyncOscTypedMixin:
             ),
             path_params=path_params,
         )
-        return TypeAdapter(AcceptNetPeeringResponse).validate_python(response)
+        return _validate_response(AcceptNetPeeringResponse, response)
 
     async def add_user_to_user_group(
         self,
         request: AddUserToUserGroupRequest | None = None,
     ) -> AddUserToUserGroupResponse:
-        if request is None:
-            request = AddUserToUserGroupRequest()
+        request = _validate_request(AddUserToUserGroupRequest, request)
 
         path_params = {
         }
@@ -540,14 +557,13 @@ class AsyncOscTypedMixin:
             ),
             path_params=path_params,
         )
-        return TypeAdapter(AddUserToUserGroupResponse).validate_python(response)
+        return _validate_response(AddUserToUserGroupResponse, response)
 
     async def check_authentication(
         self,
         request: CheckAuthenticationRequest | None = None,
     ) -> CheckAuthenticationResponse:
-        if request is None:
-            request = CheckAuthenticationRequest()
+        request = _validate_request(CheckAuthenticationRequest, request)
 
         path_params = {
         }
@@ -567,14 +583,13 @@ class AsyncOscTypedMixin:
             ),
             path_params=path_params,
         )
-        return TypeAdapter(CheckAuthenticationResponse).validate_python(response)
+        return _validate_response(CheckAuthenticationResponse, response)
 
     async def create_access_key(
         self,
         request: CreateAccessKeyRequest | None = None,
     ) -> CreateAccessKeyResponse:
-        if request is None:
-            request = CreateAccessKeyRequest()
+        request = _validate_request(CreateAccessKeyRequest, request)
 
         path_params = {
         }
@@ -594,14 +609,13 @@ class AsyncOscTypedMixin:
             ),
             path_params=path_params,
         )
-        return TypeAdapter(CreateAccessKeyResponse).validate_python(response)
+        return _validate_response(CreateAccessKeyResponse, response)
 
     async def create_account(
         self,
         request: CreateAccountRequest | None = None,
     ) -> CreateAccountResponse:
-        if request is None:
-            request = CreateAccountRequest()
+        request = _validate_request(CreateAccountRequest, request)
 
         path_params = {
         }
@@ -621,14 +635,13 @@ class AsyncOscTypedMixin:
             ),
             path_params=path_params,
         )
-        return TypeAdapter(CreateAccountResponse).validate_python(response)
+        return _validate_response(CreateAccountResponse, response)
 
     async def create_api_access_rule(
         self,
         request: CreateApiAccessRuleRequest | None = None,
     ) -> CreateApiAccessRuleResponse:
-        if request is None:
-            request = CreateApiAccessRuleRequest()
+        request = _validate_request(CreateApiAccessRuleRequest, request)
 
         path_params = {
         }
@@ -648,14 +661,13 @@ class AsyncOscTypedMixin:
             ),
             path_params=path_params,
         )
-        return TypeAdapter(CreateApiAccessRuleResponse).validate_python(response)
+        return _validate_response(CreateApiAccessRuleResponse, response)
 
     async def create_ca(
         self,
         request: CreateCaRequest | None = None,
     ) -> CreateCaResponse:
-        if request is None:
-            request = CreateCaRequest()
+        request = _validate_request(CreateCaRequest, request)
 
         path_params = {
         }
@@ -675,14 +687,13 @@ class AsyncOscTypedMixin:
             ),
             path_params=path_params,
         )
-        return TypeAdapter(CreateCaResponse).validate_python(response)
+        return _validate_response(CreateCaResponse, response)
 
     async def create_client_gateway(
         self,
         request: CreateClientGatewayRequest | None = None,
     ) -> CreateClientGatewayResponse:
-        if request is None:
-            request = CreateClientGatewayRequest()
+        request = _validate_request(CreateClientGatewayRequest, request)
 
         path_params = {
         }
@@ -702,14 +713,13 @@ class AsyncOscTypedMixin:
             ),
             path_params=path_params,
         )
-        return TypeAdapter(CreateClientGatewayResponse).validate_python(response)
+        return _validate_response(CreateClientGatewayResponse, response)
 
     async def create_dedicated_group(
         self,
         request: CreateDedicatedGroupRequest | None = None,
     ) -> CreateDedicatedGroupResponse:
-        if request is None:
-            request = CreateDedicatedGroupRequest()
+        request = _validate_request(CreateDedicatedGroupRequest, request)
 
         path_params = {
         }
@@ -729,14 +739,13 @@ class AsyncOscTypedMixin:
             ),
             path_params=path_params,
         )
-        return TypeAdapter(CreateDedicatedGroupResponse).validate_python(response)
+        return _validate_response(CreateDedicatedGroupResponse, response)
 
     async def create_dhcp_options(
         self,
         request: CreateDhcpOptionsRequest | None = None,
     ) -> CreateDhcpOptionsResponse:
-        if request is None:
-            request = CreateDhcpOptionsRequest()
+        request = _validate_request(CreateDhcpOptionsRequest, request)
 
         path_params = {
         }
@@ -756,14 +765,13 @@ class AsyncOscTypedMixin:
             ),
             path_params=path_params,
         )
-        return TypeAdapter(CreateDhcpOptionsResponse).validate_python(response)
+        return _validate_response(CreateDhcpOptionsResponse, response)
 
     async def create_direct_link(
         self,
         request: CreateDirectLinkRequest | None = None,
     ) -> CreateDirectLinkResponse:
-        if request is None:
-            request = CreateDirectLinkRequest()
+        request = _validate_request(CreateDirectLinkRequest, request)
 
         path_params = {
         }
@@ -783,14 +791,13 @@ class AsyncOscTypedMixin:
             ),
             path_params=path_params,
         )
-        return TypeAdapter(CreateDirectLinkResponse).validate_python(response)
+        return _validate_response(CreateDirectLinkResponse, response)
 
     async def create_direct_link_interface(
         self,
         request: CreateDirectLinkInterfaceRequest | None = None,
     ) -> CreateDirectLinkInterfaceResponse:
-        if request is None:
-            request = CreateDirectLinkInterfaceRequest()
+        request = _validate_request(CreateDirectLinkInterfaceRequest, request)
 
         path_params = {
         }
@@ -810,14 +817,13 @@ class AsyncOscTypedMixin:
             ),
             path_params=path_params,
         )
-        return TypeAdapter(CreateDirectLinkInterfaceResponse).validate_python(response)
+        return _validate_response(CreateDirectLinkInterfaceResponse, response)
 
     async def create_flexible_gpu(
         self,
         request: CreateFlexibleGpuRequest | None = None,
     ) -> CreateFlexibleGpuResponse:
-        if request is None:
-            request = CreateFlexibleGpuRequest()
+        request = _validate_request(CreateFlexibleGpuRequest, request)
 
         path_params = {
         }
@@ -837,14 +843,13 @@ class AsyncOscTypedMixin:
             ),
             path_params=path_params,
         )
-        return TypeAdapter(CreateFlexibleGpuResponse).validate_python(response)
+        return _validate_response(CreateFlexibleGpuResponse, response)
 
     async def create_image(
         self,
         request: CreateImageRequest | None = None,
     ) -> CreateImageResponse:
-        if request is None:
-            request = CreateImageRequest()
+        request = _validate_request(CreateImageRequest, request)
 
         path_params = {
         }
@@ -864,14 +869,13 @@ class AsyncOscTypedMixin:
             ),
             path_params=path_params,
         )
-        return TypeAdapter(CreateImageResponse).validate_python(response)
+        return _validate_response(CreateImageResponse, response)
 
     async def create_image_export_task(
         self,
         request: CreateImageExportTaskRequest | None = None,
     ) -> CreateImageExportTaskResponse:
-        if request is None:
-            request = CreateImageExportTaskRequest()
+        request = _validate_request(CreateImageExportTaskRequest, request)
 
         path_params = {
         }
@@ -891,14 +895,13 @@ class AsyncOscTypedMixin:
             ),
             path_params=path_params,
         )
-        return TypeAdapter(CreateImageExportTaskResponse).validate_python(response)
+        return _validate_response(CreateImageExportTaskResponse, response)
 
     async def create_internet_service(
         self,
         request: CreateInternetServiceRequest | None = None,
     ) -> CreateInternetServiceResponse:
-        if request is None:
-            request = CreateInternetServiceRequest()
+        request = _validate_request(CreateInternetServiceRequest, request)
 
         path_params = {
         }
@@ -918,14 +921,13 @@ class AsyncOscTypedMixin:
             ),
             path_params=path_params,
         )
-        return TypeAdapter(CreateInternetServiceResponse).validate_python(response)
+        return _validate_response(CreateInternetServiceResponse, response)
 
     async def create_keypair(
         self,
         request: CreateKeypairRequest | None = None,
     ) -> CreateKeypairResponse:
-        if request is None:
-            request = CreateKeypairRequest()
+        request = _validate_request(CreateKeypairRequest, request)
 
         path_params = {
         }
@@ -945,14 +947,13 @@ class AsyncOscTypedMixin:
             ),
             path_params=path_params,
         )
-        return TypeAdapter(CreateKeypairResponse).validate_python(response)
+        return _validate_response(CreateKeypairResponse, response)
 
     async def create_listener_rule(
         self,
         request: CreateListenerRuleRequest | None = None,
     ) -> CreateListenerRuleResponse:
-        if request is None:
-            request = CreateListenerRuleRequest()
+        request = _validate_request(CreateListenerRuleRequest, request)
 
         path_params = {
         }
@@ -972,14 +973,13 @@ class AsyncOscTypedMixin:
             ),
             path_params=path_params,
         )
-        return TypeAdapter(CreateListenerRuleResponse).validate_python(response)
+        return _validate_response(CreateListenerRuleResponse, response)
 
     async def create_load_balancer(
         self,
         request: CreateLoadBalancerRequest | None = None,
     ) -> CreateLoadBalancerResponse:
-        if request is None:
-            request = CreateLoadBalancerRequest()
+        request = _validate_request(CreateLoadBalancerRequest, request)
 
         path_params = {
         }
@@ -999,14 +999,13 @@ class AsyncOscTypedMixin:
             ),
             path_params=path_params,
         )
-        return TypeAdapter(CreateLoadBalancerResponse).validate_python(response)
+        return _validate_response(CreateLoadBalancerResponse, response)
 
     async def create_load_balancer_listeners(
         self,
         request: CreateLoadBalancerListenersRequest | None = None,
     ) -> CreateLoadBalancerListenersResponse:
-        if request is None:
-            request = CreateLoadBalancerListenersRequest()
+        request = _validate_request(CreateLoadBalancerListenersRequest, request)
 
         path_params = {
         }
@@ -1026,14 +1025,13 @@ class AsyncOscTypedMixin:
             ),
             path_params=path_params,
         )
-        return TypeAdapter(CreateLoadBalancerListenersResponse).validate_python(response)
+        return _validate_response(CreateLoadBalancerListenersResponse, response)
 
     async def create_load_balancer_policy(
         self,
         request: CreateLoadBalancerPolicyRequest | None = None,
     ) -> CreateLoadBalancerPolicyResponse:
-        if request is None:
-            request = CreateLoadBalancerPolicyRequest()
+        request = _validate_request(CreateLoadBalancerPolicyRequest, request)
 
         path_params = {
         }
@@ -1053,14 +1051,13 @@ class AsyncOscTypedMixin:
             ),
             path_params=path_params,
         )
-        return TypeAdapter(CreateLoadBalancerPolicyResponse).validate_python(response)
+        return _validate_response(CreateLoadBalancerPolicyResponse, response)
 
     async def create_load_balancer_tags(
         self,
         request: CreateLoadBalancerTagsRequest | None = None,
     ) -> CreateLoadBalancerTagsResponse:
-        if request is None:
-            request = CreateLoadBalancerTagsRequest()
+        request = _validate_request(CreateLoadBalancerTagsRequest, request)
 
         path_params = {
         }
@@ -1080,14 +1077,13 @@ class AsyncOscTypedMixin:
             ),
             path_params=path_params,
         )
-        return TypeAdapter(CreateLoadBalancerTagsResponse).validate_python(response)
+        return _validate_response(CreateLoadBalancerTagsResponse, response)
 
     async def create_nat_service(
         self,
         request: CreateNatServiceRequest | None = None,
     ) -> CreateNatServiceResponse:
-        if request is None:
-            request = CreateNatServiceRequest()
+        request = _validate_request(CreateNatServiceRequest, request)
 
         path_params = {
         }
@@ -1107,14 +1103,13 @@ class AsyncOscTypedMixin:
             ),
             path_params=path_params,
         )
-        return TypeAdapter(CreateNatServiceResponse).validate_python(response)
+        return _validate_response(CreateNatServiceResponse, response)
 
     async def create_net(
         self,
         request: CreateNetRequest | None = None,
     ) -> CreateNetResponse:
-        if request is None:
-            request = CreateNetRequest()
+        request = _validate_request(CreateNetRequest, request)
 
         path_params = {
         }
@@ -1134,14 +1129,13 @@ class AsyncOscTypedMixin:
             ),
             path_params=path_params,
         )
-        return TypeAdapter(CreateNetResponse).validate_python(response)
+        return _validate_response(CreateNetResponse, response)
 
     async def create_net_access_point(
         self,
         request: CreateNetAccessPointRequest | None = None,
     ) -> CreateNetAccessPointResponse:
-        if request is None:
-            request = CreateNetAccessPointRequest()
+        request = _validate_request(CreateNetAccessPointRequest, request)
 
         path_params = {
         }
@@ -1161,14 +1155,13 @@ class AsyncOscTypedMixin:
             ),
             path_params=path_params,
         )
-        return TypeAdapter(CreateNetAccessPointResponse).validate_python(response)
+        return _validate_response(CreateNetAccessPointResponse, response)
 
     async def create_net_peering(
         self,
         request: CreateNetPeeringRequest | None = None,
     ) -> CreateNetPeeringResponse:
-        if request is None:
-            request = CreateNetPeeringRequest()
+        request = _validate_request(CreateNetPeeringRequest, request)
 
         path_params = {
         }
@@ -1188,14 +1181,13 @@ class AsyncOscTypedMixin:
             ),
             path_params=path_params,
         )
-        return TypeAdapter(CreateNetPeeringResponse).validate_python(response)
+        return _validate_response(CreateNetPeeringResponse, response)
 
     async def create_nic(
         self,
         request: CreateNicRequest | None = None,
     ) -> CreateNicResponse:
-        if request is None:
-            request = CreateNicRequest()
+        request = _validate_request(CreateNicRequest, request)
 
         path_params = {
         }
@@ -1215,14 +1207,13 @@ class AsyncOscTypedMixin:
             ),
             path_params=path_params,
         )
-        return TypeAdapter(CreateNicResponse).validate_python(response)
+        return _validate_response(CreateNicResponse, response)
 
     async def create_policy(
         self,
         request: CreatePolicyRequest | None = None,
     ) -> CreatePolicyResponse:
-        if request is None:
-            request = CreatePolicyRequest()
+        request = _validate_request(CreatePolicyRequest, request)
 
         path_params = {
         }
@@ -1242,14 +1233,13 @@ class AsyncOscTypedMixin:
             ),
             path_params=path_params,
         )
-        return TypeAdapter(CreatePolicyResponse).validate_python(response)
+        return _validate_response(CreatePolicyResponse, response)
 
     async def create_policy_version(
         self,
         request: CreatePolicyVersionRequest | None = None,
     ) -> CreatePolicyVersionResponse:
-        if request is None:
-            request = CreatePolicyVersionRequest()
+        request = _validate_request(CreatePolicyVersionRequest, request)
 
         path_params = {
         }
@@ -1269,14 +1259,13 @@ class AsyncOscTypedMixin:
             ),
             path_params=path_params,
         )
-        return TypeAdapter(CreatePolicyVersionResponse).validate_python(response)
+        return _validate_response(CreatePolicyVersionResponse, response)
 
     async def create_product_type(
         self,
         request: CreateProductTypeRequest | None = None,
     ) -> CreateProductTypeResponse:
-        if request is None:
-            request = CreateProductTypeRequest()
+        request = _validate_request(CreateProductTypeRequest, request)
 
         path_params = {
         }
@@ -1296,14 +1285,13 @@ class AsyncOscTypedMixin:
             ),
             path_params=path_params,
         )
-        return TypeAdapter(CreateProductTypeResponse).validate_python(response)
+        return _validate_response(CreateProductTypeResponse, response)
 
     async def create_public_ip(
         self,
         request: CreatePublicIpRequest | None = None,
     ) -> CreatePublicIpResponse:
-        if request is None:
-            request = CreatePublicIpRequest()
+        request = _validate_request(CreatePublicIpRequest, request)
 
         path_params = {
         }
@@ -1323,14 +1311,13 @@ class AsyncOscTypedMixin:
             ),
             path_params=path_params,
         )
-        return TypeAdapter(CreatePublicIpResponse).validate_python(response)
+        return _validate_response(CreatePublicIpResponse, response)
 
     async def create_route(
         self,
         request: CreateRouteRequest | None = None,
     ) -> CreateRouteResponse:
-        if request is None:
-            request = CreateRouteRequest()
+        request = _validate_request(CreateRouteRequest, request)
 
         path_params = {
         }
@@ -1350,14 +1337,13 @@ class AsyncOscTypedMixin:
             ),
             path_params=path_params,
         )
-        return TypeAdapter(CreateRouteResponse).validate_python(response)
+        return _validate_response(CreateRouteResponse, response)
 
     async def create_route_table(
         self,
         request: CreateRouteTableRequest | None = None,
     ) -> CreateRouteTableResponse:
-        if request is None:
-            request = CreateRouteTableRequest()
+        request = _validate_request(CreateRouteTableRequest, request)
 
         path_params = {
         }
@@ -1377,14 +1363,13 @@ class AsyncOscTypedMixin:
             ),
             path_params=path_params,
         )
-        return TypeAdapter(CreateRouteTableResponse).validate_python(response)
+        return _validate_response(CreateRouteTableResponse, response)
 
     async def create_security_group(
         self,
         request: CreateSecurityGroupRequest | None = None,
     ) -> CreateSecurityGroupResponse:
-        if request is None:
-            request = CreateSecurityGroupRequest()
+        request = _validate_request(CreateSecurityGroupRequest, request)
 
         path_params = {
         }
@@ -1404,14 +1389,13 @@ class AsyncOscTypedMixin:
             ),
             path_params=path_params,
         )
-        return TypeAdapter(CreateSecurityGroupResponse).validate_python(response)
+        return _validate_response(CreateSecurityGroupResponse, response)
 
     async def create_security_group_rule(
         self,
         request: CreateSecurityGroupRuleRequest | None = None,
     ) -> CreateSecurityGroupRuleResponse:
-        if request is None:
-            request = CreateSecurityGroupRuleRequest()
+        request = _validate_request(CreateSecurityGroupRuleRequest, request)
 
         path_params = {
         }
@@ -1431,14 +1415,13 @@ class AsyncOscTypedMixin:
             ),
             path_params=path_params,
         )
-        return TypeAdapter(CreateSecurityGroupRuleResponse).validate_python(response)
+        return _validate_response(CreateSecurityGroupRuleResponse, response)
 
     async def create_server_certificate(
         self,
         request: CreateServerCertificateRequest | None = None,
     ) -> CreateServerCertificateResponse:
-        if request is None:
-            request = CreateServerCertificateRequest()
+        request = _validate_request(CreateServerCertificateRequest, request)
 
         path_params = {
         }
@@ -1458,14 +1441,13 @@ class AsyncOscTypedMixin:
             ),
             path_params=path_params,
         )
-        return TypeAdapter(CreateServerCertificateResponse).validate_python(response)
+        return _validate_response(CreateServerCertificateResponse, response)
 
     async def create_snapshot(
         self,
         request: CreateSnapshotRequest | None = None,
     ) -> CreateSnapshotResponse:
-        if request is None:
-            request = CreateSnapshotRequest()
+        request = _validate_request(CreateSnapshotRequest, request)
 
         path_params = {
         }
@@ -1485,14 +1467,13 @@ class AsyncOscTypedMixin:
             ),
             path_params=path_params,
         )
-        return TypeAdapter(CreateSnapshotResponse).validate_python(response)
+        return _validate_response(CreateSnapshotResponse, response)
 
     async def create_snapshot_export_task(
         self,
         request: CreateSnapshotExportTaskRequest | None = None,
     ) -> CreateSnapshotExportTaskResponse:
-        if request is None:
-            request = CreateSnapshotExportTaskRequest()
+        request = _validate_request(CreateSnapshotExportTaskRequest, request)
 
         path_params = {
         }
@@ -1512,14 +1493,13 @@ class AsyncOscTypedMixin:
             ),
             path_params=path_params,
         )
-        return TypeAdapter(CreateSnapshotExportTaskResponse).validate_python(response)
+        return _validate_response(CreateSnapshotExportTaskResponse, response)
 
     async def create_subnet(
         self,
         request: CreateSubnetRequest | None = None,
     ) -> CreateSubnetResponse:
-        if request is None:
-            request = CreateSubnetRequest()
+        request = _validate_request(CreateSubnetRequest, request)
 
         path_params = {
         }
@@ -1539,14 +1519,13 @@ class AsyncOscTypedMixin:
             ),
             path_params=path_params,
         )
-        return TypeAdapter(CreateSubnetResponse).validate_python(response)
+        return _validate_response(CreateSubnetResponse, response)
 
     async def create_tags(
         self,
         request: CreateTagsRequest | None = None,
     ) -> CreateTagsResponse:
-        if request is None:
-            request = CreateTagsRequest()
+        request = _validate_request(CreateTagsRequest, request)
 
         path_params = {
         }
@@ -1566,14 +1545,13 @@ class AsyncOscTypedMixin:
             ),
             path_params=path_params,
         )
-        return TypeAdapter(CreateTagsResponse).validate_python(response)
+        return _validate_response(CreateTagsResponse, response)
 
     async def create_user(
         self,
         request: CreateUserRequest | None = None,
     ) -> CreateUserResponse:
-        if request is None:
-            request = CreateUserRequest()
+        request = _validate_request(CreateUserRequest, request)
 
         path_params = {
         }
@@ -1593,14 +1571,13 @@ class AsyncOscTypedMixin:
             ),
             path_params=path_params,
         )
-        return TypeAdapter(CreateUserResponse).validate_python(response)
+        return _validate_response(CreateUserResponse, response)
 
     async def create_user_group(
         self,
         request: CreateUserGroupRequest | None = None,
     ) -> CreateUserGroupResponse:
-        if request is None:
-            request = CreateUserGroupRequest()
+        request = _validate_request(CreateUserGroupRequest, request)
 
         path_params = {
         }
@@ -1620,14 +1597,13 @@ class AsyncOscTypedMixin:
             ),
             path_params=path_params,
         )
-        return TypeAdapter(CreateUserGroupResponse).validate_python(response)
+        return _validate_response(CreateUserGroupResponse, response)
 
     async def create_virtual_gateway(
         self,
         request: CreateVirtualGatewayRequest | None = None,
     ) -> CreateVirtualGatewayResponse:
-        if request is None:
-            request = CreateVirtualGatewayRequest()
+        request = _validate_request(CreateVirtualGatewayRequest, request)
 
         path_params = {
         }
@@ -1647,14 +1623,13 @@ class AsyncOscTypedMixin:
             ),
             path_params=path_params,
         )
-        return TypeAdapter(CreateVirtualGatewayResponse).validate_python(response)
+        return _validate_response(CreateVirtualGatewayResponse, response)
 
     async def create_vm_group(
         self,
         request: CreateVmGroupRequest | None = None,
     ) -> CreateVmGroupResponse:
-        if request is None:
-            request = CreateVmGroupRequest()
+        request = _validate_request(CreateVmGroupRequest, request)
 
         path_params = {
         }
@@ -1674,14 +1649,13 @@ class AsyncOscTypedMixin:
             ),
             path_params=path_params,
         )
-        return TypeAdapter(CreateVmGroupResponse).validate_python(response)
+        return _validate_response(CreateVmGroupResponse, response)
 
     async def create_vm_template(
         self,
         request: CreateVmTemplateRequest | None = None,
     ) -> CreateVmTemplateResponse:
-        if request is None:
-            request = CreateVmTemplateRequest()
+        request = _validate_request(CreateVmTemplateRequest, request)
 
         path_params = {
         }
@@ -1701,14 +1675,13 @@ class AsyncOscTypedMixin:
             ),
             path_params=path_params,
         )
-        return TypeAdapter(CreateVmTemplateResponse).validate_python(response)
+        return _validate_response(CreateVmTemplateResponse, response)
 
     async def create_vms(
         self,
         request: CreateVmsRequest | None = None,
     ) -> CreateVmsResponse:
-        if request is None:
-            request = CreateVmsRequest()
+        request = _validate_request(CreateVmsRequest, request)
 
         path_params = {
         }
@@ -1728,14 +1701,13 @@ class AsyncOscTypedMixin:
             ),
             path_params=path_params,
         )
-        return TypeAdapter(CreateVmsResponse).validate_python(response)
+        return _validate_response(CreateVmsResponse, response)
 
     async def create_volume(
         self,
         request: CreateVolumeRequest | None = None,
     ) -> CreateVolumeResponse:
-        if request is None:
-            request = CreateVolumeRequest()
+        request = _validate_request(CreateVolumeRequest, request)
 
         path_params = {
         }
@@ -1755,14 +1727,13 @@ class AsyncOscTypedMixin:
             ),
             path_params=path_params,
         )
-        return TypeAdapter(CreateVolumeResponse).validate_python(response)
+        return _validate_response(CreateVolumeResponse, response)
 
     async def create_vpn_connection(
         self,
         request: CreateVpnConnectionRequest | None = None,
     ) -> CreateVpnConnectionResponse:
-        if request is None:
-            request = CreateVpnConnectionRequest()
+        request = _validate_request(CreateVpnConnectionRequest, request)
 
         path_params = {
         }
@@ -1782,14 +1753,13 @@ class AsyncOscTypedMixin:
             ),
             path_params=path_params,
         )
-        return TypeAdapter(CreateVpnConnectionResponse).validate_python(response)
+        return _validate_response(CreateVpnConnectionResponse, response)
 
     async def create_vpn_connection_route(
         self,
         request: CreateVpnConnectionRouteRequest | None = None,
     ) -> CreateVpnConnectionRouteResponse:
-        if request is None:
-            request = CreateVpnConnectionRouteRequest()
+        request = _validate_request(CreateVpnConnectionRouteRequest, request)
 
         path_params = {
         }
@@ -1809,14 +1779,13 @@ class AsyncOscTypedMixin:
             ),
             path_params=path_params,
         )
-        return TypeAdapter(CreateVpnConnectionRouteResponse).validate_python(response)
+        return _validate_response(CreateVpnConnectionRouteResponse, response)
 
     async def delete_access_key(
         self,
         request: DeleteAccessKeyRequest | None = None,
     ) -> DeleteAccessKeyResponse:
-        if request is None:
-            request = DeleteAccessKeyRequest()
+        request = _validate_request(DeleteAccessKeyRequest, request)
 
         path_params = {
         }
@@ -1836,14 +1805,13 @@ class AsyncOscTypedMixin:
             ),
             path_params=path_params,
         )
-        return TypeAdapter(DeleteAccessKeyResponse).validate_python(response)
+        return _validate_response(DeleteAccessKeyResponse, response)
 
     async def delete_api_access_rule(
         self,
         request: DeleteApiAccessRuleRequest | None = None,
     ) -> DeleteApiAccessRuleResponse:
-        if request is None:
-            request = DeleteApiAccessRuleRequest()
+        request = _validate_request(DeleteApiAccessRuleRequest, request)
 
         path_params = {
         }
@@ -1863,14 +1831,13 @@ class AsyncOscTypedMixin:
             ),
             path_params=path_params,
         )
-        return TypeAdapter(DeleteApiAccessRuleResponse).validate_python(response)
+        return _validate_response(DeleteApiAccessRuleResponse, response)
 
     async def delete_ca(
         self,
         request: DeleteCaRequest | None = None,
     ) -> DeleteCaResponse:
-        if request is None:
-            request = DeleteCaRequest()
+        request = _validate_request(DeleteCaRequest, request)
 
         path_params = {
         }
@@ -1890,14 +1857,13 @@ class AsyncOscTypedMixin:
             ),
             path_params=path_params,
         )
-        return TypeAdapter(DeleteCaResponse).validate_python(response)
+        return _validate_response(DeleteCaResponse, response)
 
     async def delete_client_gateway(
         self,
         request: DeleteClientGatewayRequest | None = None,
     ) -> DeleteClientGatewayResponse:
-        if request is None:
-            request = DeleteClientGatewayRequest()
+        request = _validate_request(DeleteClientGatewayRequest, request)
 
         path_params = {
         }
@@ -1917,14 +1883,13 @@ class AsyncOscTypedMixin:
             ),
             path_params=path_params,
         )
-        return TypeAdapter(DeleteClientGatewayResponse).validate_python(response)
+        return _validate_response(DeleteClientGatewayResponse, response)
 
     async def delete_dedicated_group(
         self,
         request: DeleteDedicatedGroupRequest | None = None,
     ) -> DeleteDedicatedGroupResponse:
-        if request is None:
-            request = DeleteDedicatedGroupRequest()
+        request = _validate_request(DeleteDedicatedGroupRequest, request)
 
         path_params = {
         }
@@ -1944,14 +1909,13 @@ class AsyncOscTypedMixin:
             ),
             path_params=path_params,
         )
-        return TypeAdapter(DeleteDedicatedGroupResponse).validate_python(response)
+        return _validate_response(DeleteDedicatedGroupResponse, response)
 
     async def delete_dhcp_options(
         self,
         request: DeleteDhcpOptionsRequest | None = None,
     ) -> DeleteDhcpOptionsResponse:
-        if request is None:
-            request = DeleteDhcpOptionsRequest()
+        request = _validate_request(DeleteDhcpOptionsRequest, request)
 
         path_params = {
         }
@@ -1971,14 +1935,13 @@ class AsyncOscTypedMixin:
             ),
             path_params=path_params,
         )
-        return TypeAdapter(DeleteDhcpOptionsResponse).validate_python(response)
+        return _validate_response(DeleteDhcpOptionsResponse, response)
 
     async def delete_direct_link(
         self,
         request: DeleteDirectLinkRequest | None = None,
     ) -> DeleteDirectLinkResponse:
-        if request is None:
-            request = DeleteDirectLinkRequest()
+        request = _validate_request(DeleteDirectLinkRequest, request)
 
         path_params = {
         }
@@ -1998,14 +1961,13 @@ class AsyncOscTypedMixin:
             ),
             path_params=path_params,
         )
-        return TypeAdapter(DeleteDirectLinkResponse).validate_python(response)
+        return _validate_response(DeleteDirectLinkResponse, response)
 
     async def delete_direct_link_interface(
         self,
         request: DeleteDirectLinkInterfaceRequest | None = None,
     ) -> DeleteDirectLinkInterfaceResponse:
-        if request is None:
-            request = DeleteDirectLinkInterfaceRequest()
+        request = _validate_request(DeleteDirectLinkInterfaceRequest, request)
 
         path_params = {
         }
@@ -2025,14 +1987,13 @@ class AsyncOscTypedMixin:
             ),
             path_params=path_params,
         )
-        return TypeAdapter(DeleteDirectLinkInterfaceResponse).validate_python(response)
+        return _validate_response(DeleteDirectLinkInterfaceResponse, response)
 
     async def delete_export_task(
         self,
         request: DeleteExportTaskRequest | None = None,
     ) -> DeleteExportTaskResponse:
-        if request is None:
-            request = DeleteExportTaskRequest()
+        request = _validate_request(DeleteExportTaskRequest, request)
 
         path_params = {
         }
@@ -2052,14 +2013,13 @@ class AsyncOscTypedMixin:
             ),
             path_params=path_params,
         )
-        return TypeAdapter(DeleteExportTaskResponse).validate_python(response)
+        return _validate_response(DeleteExportTaskResponse, response)
 
     async def delete_flexible_gpu(
         self,
         request: DeleteFlexibleGpuRequest | None = None,
     ) -> DeleteFlexibleGpuResponse:
-        if request is None:
-            request = DeleteFlexibleGpuRequest()
+        request = _validate_request(DeleteFlexibleGpuRequest, request)
 
         path_params = {
         }
@@ -2079,14 +2039,13 @@ class AsyncOscTypedMixin:
             ),
             path_params=path_params,
         )
-        return TypeAdapter(DeleteFlexibleGpuResponse).validate_python(response)
+        return _validate_response(DeleteFlexibleGpuResponse, response)
 
     async def delete_image(
         self,
         request: DeleteImageRequest | None = None,
     ) -> DeleteImageResponse:
-        if request is None:
-            request = DeleteImageRequest()
+        request = _validate_request(DeleteImageRequest, request)
 
         path_params = {
         }
@@ -2106,14 +2065,13 @@ class AsyncOscTypedMixin:
             ),
             path_params=path_params,
         )
-        return TypeAdapter(DeleteImageResponse).validate_python(response)
+        return _validate_response(DeleteImageResponse, response)
 
     async def delete_internet_service(
         self,
         request: DeleteInternetServiceRequest | None = None,
     ) -> DeleteInternetServiceResponse:
-        if request is None:
-            request = DeleteInternetServiceRequest()
+        request = _validate_request(DeleteInternetServiceRequest, request)
 
         path_params = {
         }
@@ -2133,14 +2091,13 @@ class AsyncOscTypedMixin:
             ),
             path_params=path_params,
         )
-        return TypeAdapter(DeleteInternetServiceResponse).validate_python(response)
+        return _validate_response(DeleteInternetServiceResponse, response)
 
     async def delete_keypair(
         self,
         request: DeleteKeypairRequest | None = None,
     ) -> DeleteKeypairResponse:
-        if request is None:
-            request = DeleteKeypairRequest()
+        request = _validate_request(DeleteKeypairRequest, request)
 
         path_params = {
         }
@@ -2160,14 +2117,13 @@ class AsyncOscTypedMixin:
             ),
             path_params=path_params,
         )
-        return TypeAdapter(DeleteKeypairResponse).validate_python(response)
+        return _validate_response(DeleteKeypairResponse, response)
 
     async def delete_listener_rule(
         self,
         request: DeleteListenerRuleRequest | None = None,
     ) -> DeleteListenerRuleResponse:
-        if request is None:
-            request = DeleteListenerRuleRequest()
+        request = _validate_request(DeleteListenerRuleRequest, request)
 
         path_params = {
         }
@@ -2187,14 +2143,13 @@ class AsyncOscTypedMixin:
             ),
             path_params=path_params,
         )
-        return TypeAdapter(DeleteListenerRuleResponse).validate_python(response)
+        return _validate_response(DeleteListenerRuleResponse, response)
 
     async def delete_load_balancer(
         self,
         request: DeleteLoadBalancerRequest | None = None,
     ) -> DeleteLoadBalancerResponse:
-        if request is None:
-            request = DeleteLoadBalancerRequest()
+        request = _validate_request(DeleteLoadBalancerRequest, request)
 
         path_params = {
         }
@@ -2214,14 +2169,13 @@ class AsyncOscTypedMixin:
             ),
             path_params=path_params,
         )
-        return TypeAdapter(DeleteLoadBalancerResponse).validate_python(response)
+        return _validate_response(DeleteLoadBalancerResponse, response)
 
     async def delete_load_balancer_listeners(
         self,
         request: DeleteLoadBalancerListenersRequest | None = None,
     ) -> DeleteLoadBalancerListenersResponse:
-        if request is None:
-            request = DeleteLoadBalancerListenersRequest()
+        request = _validate_request(DeleteLoadBalancerListenersRequest, request)
 
         path_params = {
         }
@@ -2241,14 +2195,13 @@ class AsyncOscTypedMixin:
             ),
             path_params=path_params,
         )
-        return TypeAdapter(DeleteLoadBalancerListenersResponse).validate_python(response)
+        return _validate_response(DeleteLoadBalancerListenersResponse, response)
 
     async def delete_load_balancer_policy(
         self,
         request: DeleteLoadBalancerPolicyRequest | None = None,
     ) -> DeleteLoadBalancerPolicyResponse:
-        if request is None:
-            request = DeleteLoadBalancerPolicyRequest()
+        request = _validate_request(DeleteLoadBalancerPolicyRequest, request)
 
         path_params = {
         }
@@ -2268,14 +2221,13 @@ class AsyncOscTypedMixin:
             ),
             path_params=path_params,
         )
-        return TypeAdapter(DeleteLoadBalancerPolicyResponse).validate_python(response)
+        return _validate_response(DeleteLoadBalancerPolicyResponse, response)
 
     async def delete_load_balancer_tags(
         self,
         request: DeleteLoadBalancerTagsRequest | None = None,
     ) -> DeleteLoadBalancerTagsResponse:
-        if request is None:
-            request = DeleteLoadBalancerTagsRequest()
+        request = _validate_request(DeleteLoadBalancerTagsRequest, request)
 
         path_params = {
         }
@@ -2295,14 +2247,13 @@ class AsyncOscTypedMixin:
             ),
             path_params=path_params,
         )
-        return TypeAdapter(DeleteLoadBalancerTagsResponse).validate_python(response)
+        return _validate_response(DeleteLoadBalancerTagsResponse, response)
 
     async def delete_nat_service(
         self,
         request: DeleteNatServiceRequest | None = None,
     ) -> DeleteNatServiceResponse:
-        if request is None:
-            request = DeleteNatServiceRequest()
+        request = _validate_request(DeleteNatServiceRequest, request)
 
         path_params = {
         }
@@ -2322,14 +2273,13 @@ class AsyncOscTypedMixin:
             ),
             path_params=path_params,
         )
-        return TypeAdapter(DeleteNatServiceResponse).validate_python(response)
+        return _validate_response(DeleteNatServiceResponse, response)
 
     async def delete_net(
         self,
         request: DeleteNetRequest | None = None,
     ) -> DeleteNetResponse:
-        if request is None:
-            request = DeleteNetRequest()
+        request = _validate_request(DeleteNetRequest, request)
 
         path_params = {
         }
@@ -2349,14 +2299,13 @@ class AsyncOscTypedMixin:
             ),
             path_params=path_params,
         )
-        return TypeAdapter(DeleteNetResponse).validate_python(response)
+        return _validate_response(DeleteNetResponse, response)
 
     async def delete_net_access_point(
         self,
         request: DeleteNetAccessPointRequest | None = None,
     ) -> DeleteNetAccessPointResponse:
-        if request is None:
-            request = DeleteNetAccessPointRequest()
+        request = _validate_request(DeleteNetAccessPointRequest, request)
 
         path_params = {
         }
@@ -2376,14 +2325,13 @@ class AsyncOscTypedMixin:
             ),
             path_params=path_params,
         )
-        return TypeAdapter(DeleteNetAccessPointResponse).validate_python(response)
+        return _validate_response(DeleteNetAccessPointResponse, response)
 
     async def delete_net_peering(
         self,
         request: DeleteNetPeeringRequest | None = None,
     ) -> DeleteNetPeeringResponse:
-        if request is None:
-            request = DeleteNetPeeringRequest()
+        request = _validate_request(DeleteNetPeeringRequest, request)
 
         path_params = {
         }
@@ -2403,14 +2351,13 @@ class AsyncOscTypedMixin:
             ),
             path_params=path_params,
         )
-        return TypeAdapter(DeleteNetPeeringResponse).validate_python(response)
+        return _validate_response(DeleteNetPeeringResponse, response)
 
     async def delete_nic(
         self,
         request: DeleteNicRequest | None = None,
     ) -> DeleteNicResponse:
-        if request is None:
-            request = DeleteNicRequest()
+        request = _validate_request(DeleteNicRequest, request)
 
         path_params = {
         }
@@ -2430,14 +2377,13 @@ class AsyncOscTypedMixin:
             ),
             path_params=path_params,
         )
-        return TypeAdapter(DeleteNicResponse).validate_python(response)
+        return _validate_response(DeleteNicResponse, response)
 
     async def delete_policy(
         self,
         request: DeletePolicyRequest | None = None,
     ) -> DeletePolicyResponse:
-        if request is None:
-            request = DeletePolicyRequest()
+        request = _validate_request(DeletePolicyRequest, request)
 
         path_params = {
         }
@@ -2457,14 +2403,13 @@ class AsyncOscTypedMixin:
             ),
             path_params=path_params,
         )
-        return TypeAdapter(DeletePolicyResponse).validate_python(response)
+        return _validate_response(DeletePolicyResponse, response)
 
     async def delete_policy_version(
         self,
         request: DeletePolicyVersionRequest | None = None,
     ) -> DeletePolicyVersionResponse:
-        if request is None:
-            request = DeletePolicyVersionRequest()
+        request = _validate_request(DeletePolicyVersionRequest, request)
 
         path_params = {
         }
@@ -2484,14 +2429,13 @@ class AsyncOscTypedMixin:
             ),
             path_params=path_params,
         )
-        return TypeAdapter(DeletePolicyVersionResponse).validate_python(response)
+        return _validate_response(DeletePolicyVersionResponse, response)
 
     async def delete_product_type(
         self,
         request: DeleteProductTypeRequest | None = None,
     ) -> DeleteProductTypeResponse:
-        if request is None:
-            request = DeleteProductTypeRequest()
+        request = _validate_request(DeleteProductTypeRequest, request)
 
         path_params = {
         }
@@ -2511,14 +2455,13 @@ class AsyncOscTypedMixin:
             ),
             path_params=path_params,
         )
-        return TypeAdapter(DeleteProductTypeResponse).validate_python(response)
+        return _validate_response(DeleteProductTypeResponse, response)
 
     async def delete_public_ip(
         self,
         request: DeletePublicIpRequest | None = None,
     ) -> DeletePublicIpResponse:
-        if request is None:
-            request = DeletePublicIpRequest()
+        request = _validate_request(DeletePublicIpRequest, request)
 
         path_params = {
         }
@@ -2538,14 +2481,13 @@ class AsyncOscTypedMixin:
             ),
             path_params=path_params,
         )
-        return TypeAdapter(DeletePublicIpResponse).validate_python(response)
+        return _validate_response(DeletePublicIpResponse, response)
 
     async def delete_route(
         self,
         request: DeleteRouteRequest | None = None,
     ) -> DeleteRouteResponse:
-        if request is None:
-            request = DeleteRouteRequest()
+        request = _validate_request(DeleteRouteRequest, request)
 
         path_params = {
         }
@@ -2565,14 +2507,13 @@ class AsyncOscTypedMixin:
             ),
             path_params=path_params,
         )
-        return TypeAdapter(DeleteRouteResponse).validate_python(response)
+        return _validate_response(DeleteRouteResponse, response)
 
     async def delete_route_table(
         self,
         request: DeleteRouteTableRequest | None = None,
     ) -> DeleteRouteTableResponse:
-        if request is None:
-            request = DeleteRouteTableRequest()
+        request = _validate_request(DeleteRouteTableRequest, request)
 
         path_params = {
         }
@@ -2592,14 +2533,13 @@ class AsyncOscTypedMixin:
             ),
             path_params=path_params,
         )
-        return TypeAdapter(DeleteRouteTableResponse).validate_python(response)
+        return _validate_response(DeleteRouteTableResponse, response)
 
     async def delete_security_group(
         self,
         request: DeleteSecurityGroupRequest | None = None,
     ) -> DeleteSecurityGroupResponse:
-        if request is None:
-            request = DeleteSecurityGroupRequest()
+        request = _validate_request(DeleteSecurityGroupRequest, request)
 
         path_params = {
         }
@@ -2619,14 +2559,13 @@ class AsyncOscTypedMixin:
             ),
             path_params=path_params,
         )
-        return TypeAdapter(DeleteSecurityGroupResponse).validate_python(response)
+        return _validate_response(DeleteSecurityGroupResponse, response)
 
     async def delete_security_group_rule(
         self,
         request: DeleteSecurityGroupRuleRequest | None = None,
     ) -> DeleteSecurityGroupRuleResponse:
-        if request is None:
-            request = DeleteSecurityGroupRuleRequest()
+        request = _validate_request(DeleteSecurityGroupRuleRequest, request)
 
         path_params = {
         }
@@ -2646,14 +2585,13 @@ class AsyncOscTypedMixin:
             ),
             path_params=path_params,
         )
-        return TypeAdapter(DeleteSecurityGroupRuleResponse).validate_python(response)
+        return _validate_response(DeleteSecurityGroupRuleResponse, response)
 
     async def delete_server_certificate(
         self,
         request: DeleteServerCertificateRequest | None = None,
     ) -> DeleteServerCertificateResponse:
-        if request is None:
-            request = DeleteServerCertificateRequest()
+        request = _validate_request(DeleteServerCertificateRequest, request)
 
         path_params = {
         }
@@ -2673,14 +2611,13 @@ class AsyncOscTypedMixin:
             ),
             path_params=path_params,
         )
-        return TypeAdapter(DeleteServerCertificateResponse).validate_python(response)
+        return _validate_response(DeleteServerCertificateResponse, response)
 
     async def delete_snapshot(
         self,
         request: DeleteSnapshotRequest | None = None,
     ) -> DeleteSnapshotResponse:
-        if request is None:
-            request = DeleteSnapshotRequest()
+        request = _validate_request(DeleteSnapshotRequest, request)
 
         path_params = {
         }
@@ -2700,14 +2637,13 @@ class AsyncOscTypedMixin:
             ),
             path_params=path_params,
         )
-        return TypeAdapter(DeleteSnapshotResponse).validate_python(response)
+        return _validate_response(DeleteSnapshotResponse, response)
 
     async def delete_subnet(
         self,
         request: DeleteSubnetRequest | None = None,
     ) -> DeleteSubnetResponse:
-        if request is None:
-            request = DeleteSubnetRequest()
+        request = _validate_request(DeleteSubnetRequest, request)
 
         path_params = {
         }
@@ -2727,14 +2663,13 @@ class AsyncOscTypedMixin:
             ),
             path_params=path_params,
         )
-        return TypeAdapter(DeleteSubnetResponse).validate_python(response)
+        return _validate_response(DeleteSubnetResponse, response)
 
     async def delete_tags(
         self,
         request: DeleteTagsRequest | None = None,
     ) -> DeleteTagsResponse:
-        if request is None:
-            request = DeleteTagsRequest()
+        request = _validate_request(DeleteTagsRequest, request)
 
         path_params = {
         }
@@ -2754,14 +2689,13 @@ class AsyncOscTypedMixin:
             ),
             path_params=path_params,
         )
-        return TypeAdapter(DeleteTagsResponse).validate_python(response)
+        return _validate_response(DeleteTagsResponse, response)
 
     async def delete_user(
         self,
         request: DeleteUserRequest | None = None,
     ) -> DeleteUserResponse:
-        if request is None:
-            request = DeleteUserRequest()
+        request = _validate_request(DeleteUserRequest, request)
 
         path_params = {
         }
@@ -2781,14 +2715,13 @@ class AsyncOscTypedMixin:
             ),
             path_params=path_params,
         )
-        return TypeAdapter(DeleteUserResponse).validate_python(response)
+        return _validate_response(DeleteUserResponse, response)
 
     async def delete_user_group(
         self,
         request: DeleteUserGroupRequest | None = None,
     ) -> DeleteUserGroupResponse:
-        if request is None:
-            request = DeleteUserGroupRequest()
+        request = _validate_request(DeleteUserGroupRequest, request)
 
         path_params = {
         }
@@ -2808,14 +2741,13 @@ class AsyncOscTypedMixin:
             ),
             path_params=path_params,
         )
-        return TypeAdapter(DeleteUserGroupResponse).validate_python(response)
+        return _validate_response(DeleteUserGroupResponse, response)
 
     async def delete_user_group_policy(
         self,
         request: DeleteUserGroupPolicyRequest | None = None,
     ) -> DeleteUserGroupPolicyResponse:
-        if request is None:
-            request = DeleteUserGroupPolicyRequest()
+        request = _validate_request(DeleteUserGroupPolicyRequest, request)
 
         path_params = {
         }
@@ -2835,14 +2767,13 @@ class AsyncOscTypedMixin:
             ),
             path_params=path_params,
         )
-        return TypeAdapter(DeleteUserGroupPolicyResponse).validate_python(response)
+        return _validate_response(DeleteUserGroupPolicyResponse, response)
 
     async def delete_user_policy(
         self,
         request: DeleteUserPolicyRequest | None = None,
     ) -> DeleteUserPolicyResponse:
-        if request is None:
-            request = DeleteUserPolicyRequest()
+        request = _validate_request(DeleteUserPolicyRequest, request)
 
         path_params = {
         }
@@ -2862,14 +2793,13 @@ class AsyncOscTypedMixin:
             ),
             path_params=path_params,
         )
-        return TypeAdapter(DeleteUserPolicyResponse).validate_python(response)
+        return _validate_response(DeleteUserPolicyResponse, response)
 
     async def delete_virtual_gateway(
         self,
         request: DeleteVirtualGatewayRequest | None = None,
     ) -> DeleteVirtualGatewayResponse:
-        if request is None:
-            request = DeleteVirtualGatewayRequest()
+        request = _validate_request(DeleteVirtualGatewayRequest, request)
 
         path_params = {
         }
@@ -2889,14 +2819,13 @@ class AsyncOscTypedMixin:
             ),
             path_params=path_params,
         )
-        return TypeAdapter(DeleteVirtualGatewayResponse).validate_python(response)
+        return _validate_response(DeleteVirtualGatewayResponse, response)
 
     async def delete_vm_group(
         self,
         request: DeleteVmGroupRequest | None = None,
     ) -> DeleteVmGroupResponse:
-        if request is None:
-            request = DeleteVmGroupRequest()
+        request = _validate_request(DeleteVmGroupRequest, request)
 
         path_params = {
         }
@@ -2916,14 +2845,13 @@ class AsyncOscTypedMixin:
             ),
             path_params=path_params,
         )
-        return TypeAdapter(DeleteVmGroupResponse).validate_python(response)
+        return _validate_response(DeleteVmGroupResponse, response)
 
     async def delete_vm_template(
         self,
         request: DeleteVmTemplateRequest | None = None,
     ) -> DeleteVmTemplateResponse:
-        if request is None:
-            request = DeleteVmTemplateRequest()
+        request = _validate_request(DeleteVmTemplateRequest, request)
 
         path_params = {
         }
@@ -2943,14 +2871,13 @@ class AsyncOscTypedMixin:
             ),
             path_params=path_params,
         )
-        return TypeAdapter(DeleteVmTemplateResponse).validate_python(response)
+        return _validate_response(DeleteVmTemplateResponse, response)
 
     async def delete_vms(
         self,
         request: DeleteVmsRequest | None = None,
     ) -> DeleteVmsResponse:
-        if request is None:
-            request = DeleteVmsRequest()
+        request = _validate_request(DeleteVmsRequest, request)
 
         path_params = {
         }
@@ -2970,14 +2897,13 @@ class AsyncOscTypedMixin:
             ),
             path_params=path_params,
         )
-        return TypeAdapter(DeleteVmsResponse).validate_python(response)
+        return _validate_response(DeleteVmsResponse, response)
 
     async def delete_volume(
         self,
         request: DeleteVolumeRequest | None = None,
     ) -> DeleteVolumeResponse:
-        if request is None:
-            request = DeleteVolumeRequest()
+        request = _validate_request(DeleteVolumeRequest, request)
 
         path_params = {
         }
@@ -2997,14 +2923,13 @@ class AsyncOscTypedMixin:
             ),
             path_params=path_params,
         )
-        return TypeAdapter(DeleteVolumeResponse).validate_python(response)
+        return _validate_response(DeleteVolumeResponse, response)
 
     async def delete_vpn_connection(
         self,
         request: DeleteVpnConnectionRequest | None = None,
     ) -> DeleteVpnConnectionResponse:
-        if request is None:
-            request = DeleteVpnConnectionRequest()
+        request = _validate_request(DeleteVpnConnectionRequest, request)
 
         path_params = {
         }
@@ -3024,14 +2949,13 @@ class AsyncOscTypedMixin:
             ),
             path_params=path_params,
         )
-        return TypeAdapter(DeleteVpnConnectionResponse).validate_python(response)
+        return _validate_response(DeleteVpnConnectionResponse, response)
 
     async def delete_vpn_connection_route(
         self,
         request: DeleteVpnConnectionRouteRequest | None = None,
     ) -> DeleteVpnConnectionRouteResponse:
-        if request is None:
-            request = DeleteVpnConnectionRouteRequest()
+        request = _validate_request(DeleteVpnConnectionRouteRequest, request)
 
         path_params = {
         }
@@ -3051,14 +2975,13 @@ class AsyncOscTypedMixin:
             ),
             path_params=path_params,
         )
-        return TypeAdapter(DeleteVpnConnectionRouteResponse).validate_python(response)
+        return _validate_response(DeleteVpnConnectionRouteResponse, response)
 
     async def deregister_vms_in_load_balancer(
         self,
         request: DeregisterVmsInLoadBalancerRequest | None = None,
     ) -> DeregisterVmsInLoadBalancerResponse:
-        if request is None:
-            request = DeregisterVmsInLoadBalancerRequest()
+        request = _validate_request(DeregisterVmsInLoadBalancerRequest, request)
 
         path_params = {
         }
@@ -3078,14 +3001,13 @@ class AsyncOscTypedMixin:
             ),
             path_params=path_params,
         )
-        return TypeAdapter(DeregisterVmsInLoadBalancerResponse).validate_python(response)
+        return _validate_response(DeregisterVmsInLoadBalancerResponse, response)
 
     async def disable_outscale_login(
         self,
         request: DisableOutscaleLoginRequest | None = None,
     ) -> DisableOutscaleLoginResponse:
-        if request is None:
-            request = DisableOutscaleLoginRequest()
+        request = _validate_request(DisableOutscaleLoginRequest, request)
 
         path_params = {
         }
@@ -3105,14 +3027,13 @@ class AsyncOscTypedMixin:
             ),
             path_params=path_params,
         )
-        return TypeAdapter(DisableOutscaleLoginResponse).validate_python(response)
+        return _validate_response(DisableOutscaleLoginResponse, response)
 
     async def disable_outscale_login_for_users(
         self,
         request: DisableOutscaleLoginRequest | None = None,
     ) -> DisableOutscaleLoginResponse:
-        if request is None:
-            request = DisableOutscaleLoginRequest()
+        request = _validate_request(DisableOutscaleLoginRequest, request)
 
         path_params = {
         }
@@ -3132,14 +3053,13 @@ class AsyncOscTypedMixin:
             ),
             path_params=path_params,
         )
-        return TypeAdapter(DisableOutscaleLoginResponse).validate_python(response)
+        return _validate_response(DisableOutscaleLoginResponse, response)
 
     async def disable_outscale_login_per_users(
         self,
         request: DisableOutscaleLoginPerUsersRequest | None = None,
     ) -> DisableOutscaleLoginPerUsersResponse:
-        if request is None:
-            request = DisableOutscaleLoginPerUsersRequest()
+        request = _validate_request(DisableOutscaleLoginPerUsersRequest, request)
 
         path_params = {
         }
@@ -3159,14 +3079,13 @@ class AsyncOscTypedMixin:
             ),
             path_params=path_params,
         )
-        return TypeAdapter(DisableOutscaleLoginPerUsersResponse).validate_python(response)
+        return _validate_response(DisableOutscaleLoginPerUsersResponse, response)
 
     async def enable_outscale_login(
         self,
         request: EnableOutscaleLoginRequest | None = None,
     ) -> EnableOutscaleLoginResponse:
-        if request is None:
-            request = EnableOutscaleLoginRequest()
+        request = _validate_request(EnableOutscaleLoginRequest, request)
 
         path_params = {
         }
@@ -3186,14 +3105,13 @@ class AsyncOscTypedMixin:
             ),
             path_params=path_params,
         )
-        return TypeAdapter(EnableOutscaleLoginResponse).validate_python(response)
+        return _validate_response(EnableOutscaleLoginResponse, response)
 
     async def enable_outscale_login_for_users(
         self,
         request: EnableOutscaleLoginForUsersRequest | None = None,
     ) -> EnableOutscaleLoginForUsersResponse:
-        if request is None:
-            request = EnableOutscaleLoginForUsersRequest()
+        request = _validate_request(EnableOutscaleLoginForUsersRequest, request)
 
         path_params = {
         }
@@ -3213,14 +3131,13 @@ class AsyncOscTypedMixin:
             ),
             path_params=path_params,
         )
-        return TypeAdapter(EnableOutscaleLoginForUsersResponse).validate_python(response)
+        return _validate_response(EnableOutscaleLoginForUsersResponse, response)
 
     async def enable_outscale_login_per_users(
         self,
         request: EnableOutscaleLoginPerUsersRequest | None = None,
     ) -> EnableOutscaleLoginPerUsersResponse:
-        if request is None:
-            request = EnableOutscaleLoginPerUsersRequest()
+        request = _validate_request(EnableOutscaleLoginPerUsersRequest, request)
 
         path_params = {
         }
@@ -3240,14 +3157,13 @@ class AsyncOscTypedMixin:
             ),
             path_params=path_params,
         )
-        return TypeAdapter(EnableOutscaleLoginPerUsersResponse).validate_python(response)
+        return _validate_response(EnableOutscaleLoginPerUsersResponse, response)
 
     async def link_flexible_gpu(
         self,
         request: LinkFlexibleGpuRequest | None = None,
     ) -> LinkFlexibleGpuResponse:
-        if request is None:
-            request = LinkFlexibleGpuRequest()
+        request = _validate_request(LinkFlexibleGpuRequest, request)
 
         path_params = {
         }
@@ -3267,14 +3183,13 @@ class AsyncOscTypedMixin:
             ),
             path_params=path_params,
         )
-        return TypeAdapter(LinkFlexibleGpuResponse).validate_python(response)
+        return _validate_response(LinkFlexibleGpuResponse, response)
 
     async def link_internet_service(
         self,
         request: LinkInternetServiceRequest | None = None,
     ) -> LinkInternetServiceResponse:
-        if request is None:
-            request = LinkInternetServiceRequest()
+        request = _validate_request(LinkInternetServiceRequest, request)
 
         path_params = {
         }
@@ -3294,14 +3209,13 @@ class AsyncOscTypedMixin:
             ),
             path_params=path_params,
         )
-        return TypeAdapter(LinkInternetServiceResponse).validate_python(response)
+        return _validate_response(LinkInternetServiceResponse, response)
 
     async def link_load_balancer_backend_machines(
         self,
         request: LinkLoadBalancerBackendMachinesRequest | None = None,
     ) -> LinkLoadBalancerBackendMachinesResponse:
-        if request is None:
-            request = LinkLoadBalancerBackendMachinesRequest()
+        request = _validate_request(LinkLoadBalancerBackendMachinesRequest, request)
 
         path_params = {
         }
@@ -3321,14 +3235,13 @@ class AsyncOscTypedMixin:
             ),
             path_params=path_params,
         )
-        return TypeAdapter(LinkLoadBalancerBackendMachinesResponse).validate_python(response)
+        return _validate_response(LinkLoadBalancerBackendMachinesResponse, response)
 
     async def link_managed_policy_to_user_group(
         self,
         request: LinkManagedPolicyToUserGroupRequest | None = None,
     ) -> LinkManagedPolicyToUserGroupResponse:
-        if request is None:
-            request = LinkManagedPolicyToUserGroupRequest()
+        request = _validate_request(LinkManagedPolicyToUserGroupRequest, request)
 
         path_params = {
         }
@@ -3348,14 +3261,13 @@ class AsyncOscTypedMixin:
             ),
             path_params=path_params,
         )
-        return TypeAdapter(LinkManagedPolicyToUserGroupResponse).validate_python(response)
+        return _validate_response(LinkManagedPolicyToUserGroupResponse, response)
 
     async def link_nic(
         self,
         request: LinkNicRequest | None = None,
     ) -> LinkNicResponse:
-        if request is None:
-            request = LinkNicRequest()
+        request = _validate_request(LinkNicRequest, request)
 
         path_params = {
         }
@@ -3375,14 +3287,13 @@ class AsyncOscTypedMixin:
             ),
             path_params=path_params,
         )
-        return TypeAdapter(LinkNicResponse).validate_python(response)
+        return _validate_response(LinkNicResponse, response)
 
     async def link_policy(
         self,
         request: LinkPolicyRequest | None = None,
     ) -> LinkPolicyResponse:
-        if request is None:
-            request = LinkPolicyRequest()
+        request = _validate_request(LinkPolicyRequest, request)
 
         path_params = {
         }
@@ -3402,14 +3313,13 @@ class AsyncOscTypedMixin:
             ),
             path_params=path_params,
         )
-        return TypeAdapter(LinkPolicyResponse).validate_python(response)
+        return _validate_response(LinkPolicyResponse, response)
 
     async def link_private_ips(
         self,
         request: LinkPrivateIpsRequest | None = None,
     ) -> LinkPrivateIpsResponse:
-        if request is None:
-            request = LinkPrivateIpsRequest()
+        request = _validate_request(LinkPrivateIpsRequest, request)
 
         path_params = {
         }
@@ -3429,14 +3339,13 @@ class AsyncOscTypedMixin:
             ),
             path_params=path_params,
         )
-        return TypeAdapter(LinkPrivateIpsResponse).validate_python(response)
+        return _validate_response(LinkPrivateIpsResponse, response)
 
     async def link_public_ip(
         self,
         request: LinkPublicIpRequest | None = None,
     ) -> LinkPublicIpResponse:
-        if request is None:
-            request = LinkPublicIpRequest()
+        request = _validate_request(LinkPublicIpRequest, request)
 
         path_params = {
         }
@@ -3456,14 +3365,13 @@ class AsyncOscTypedMixin:
             ),
             path_params=path_params,
         )
-        return TypeAdapter(LinkPublicIpResponse).validate_python(response)
+        return _validate_response(LinkPublicIpResponse, response)
 
     async def link_route_table(
         self,
         request: LinkRouteTableRequest | None = None,
     ) -> LinkRouteTableResponse:
-        if request is None:
-            request = LinkRouteTableRequest()
+        request = _validate_request(LinkRouteTableRequest, request)
 
         path_params = {
         }
@@ -3483,14 +3391,13 @@ class AsyncOscTypedMixin:
             ),
             path_params=path_params,
         )
-        return TypeAdapter(LinkRouteTableResponse).validate_python(response)
+        return _validate_response(LinkRouteTableResponse, response)
 
     async def link_virtual_gateway(
         self,
         request: LinkVirtualGatewayRequest | None = None,
     ) -> LinkVirtualGatewayResponse:
-        if request is None:
-            request = LinkVirtualGatewayRequest()
+        request = _validate_request(LinkVirtualGatewayRequest, request)
 
         path_params = {
         }
@@ -3510,14 +3417,13 @@ class AsyncOscTypedMixin:
             ),
             path_params=path_params,
         )
-        return TypeAdapter(LinkVirtualGatewayResponse).validate_python(response)
+        return _validate_response(LinkVirtualGatewayResponse, response)
 
     async def link_volume(
         self,
         request: LinkVolumeRequest | None = None,
     ) -> LinkVolumeResponse:
-        if request is None:
-            request = LinkVolumeRequest()
+        request = _validate_request(LinkVolumeRequest, request)
 
         path_params = {
         }
@@ -3537,14 +3443,13 @@ class AsyncOscTypedMixin:
             ),
             path_params=path_params,
         )
-        return TypeAdapter(LinkVolumeResponse).validate_python(response)
+        return _validate_response(LinkVolumeResponse, response)
 
     async def put_user_group_policy(
         self,
         request: PutUserGroupPolicyRequest | None = None,
     ) -> PutUserGroupPolicyResponse:
-        if request is None:
-            request = PutUserGroupPolicyRequest()
+        request = _validate_request(PutUserGroupPolicyRequest, request)
 
         path_params = {
         }
@@ -3564,14 +3469,13 @@ class AsyncOscTypedMixin:
             ),
             path_params=path_params,
         )
-        return TypeAdapter(PutUserGroupPolicyResponse).validate_python(response)
+        return _validate_response(PutUserGroupPolicyResponse, response)
 
     async def put_user_policy(
         self,
         request: PutUserPolicyRequest | None = None,
     ) -> PutUserPolicyResponse:
-        if request is None:
-            request = PutUserPolicyRequest()
+        request = _validate_request(PutUserPolicyRequest, request)
 
         path_params = {
         }
@@ -3591,14 +3495,13 @@ class AsyncOscTypedMixin:
             ),
             path_params=path_params,
         )
-        return TypeAdapter(PutUserPolicyResponse).validate_python(response)
+        return _validate_response(PutUserPolicyResponse, response)
 
     async def read_access_keys(
         self,
         request: ReadAccessKeysRequest | None = None,
     ) -> ReadAccessKeysResponse:
-        if request is None:
-            request = ReadAccessKeysRequest()
+        request = _validate_request(ReadAccessKeysRequest, request)
 
         path_params = {
         }
@@ -3618,14 +3521,13 @@ class AsyncOscTypedMixin:
             ),
             path_params=path_params,
         )
-        return TypeAdapter(ReadAccessKeysResponse).validate_python(response)
+        return _validate_response(ReadAccessKeysResponse, response)
 
     async def read_accounts(
         self,
         request: ReadAccountsRequest | None = None,
     ) -> ReadAccountsResponse:
-        if request is None:
-            request = ReadAccountsRequest()
+        request = _validate_request(ReadAccountsRequest, request)
 
         path_params = {
         }
@@ -3645,14 +3547,13 @@ class AsyncOscTypedMixin:
             ),
             path_params=path_params,
         )
-        return TypeAdapter(ReadAccountsResponse).validate_python(response)
+        return _validate_response(ReadAccountsResponse, response)
 
     async def read_admin_password(
         self,
         request: ReadAdminPasswordRequest | None = None,
     ) -> ReadAdminPasswordResponse:
-        if request is None:
-            request = ReadAdminPasswordRequest()
+        request = _validate_request(ReadAdminPasswordRequest, request)
 
         path_params = {
         }
@@ -3672,14 +3573,13 @@ class AsyncOscTypedMixin:
             ),
             path_params=path_params,
         )
-        return TypeAdapter(ReadAdminPasswordResponse).validate_python(response)
+        return _validate_response(ReadAdminPasswordResponse, response)
 
     async def read_api_access_policy(
         self,
         request: ReadApiAccessPolicyRequest | None = None,
     ) -> ReadApiAccessPolicyResponse:
-        if request is None:
-            request = ReadApiAccessPolicyRequest()
+        request = _validate_request(ReadApiAccessPolicyRequest, request)
 
         path_params = {
         }
@@ -3699,14 +3599,13 @@ class AsyncOscTypedMixin:
             ),
             path_params=path_params,
         )
-        return TypeAdapter(ReadApiAccessPolicyResponse).validate_python(response)
+        return _validate_response(ReadApiAccessPolicyResponse, response)
 
     async def read_api_access_rules(
         self,
         request: ReadApiAccessRulesRequest | None = None,
     ) -> ReadApiAccessRulesResponse:
-        if request is None:
-            request = ReadApiAccessRulesRequest()
+        request = _validate_request(ReadApiAccessRulesRequest, request)
 
         path_params = {
         }
@@ -3726,14 +3625,13 @@ class AsyncOscTypedMixin:
             ),
             path_params=path_params,
         )
-        return TypeAdapter(ReadApiAccessRulesResponse).validate_python(response)
+        return _validate_response(ReadApiAccessRulesResponse, response)
 
     async def read_api_logs(
         self,
         request: ReadApiLogsRequest | None = None,
     ) -> ReadApiLogsResponse:
-        if request is None:
-            request = ReadApiLogsRequest()
+        request = _validate_request(ReadApiLogsRequest, request)
 
         path_params = {
         }
@@ -3753,14 +3651,13 @@ class AsyncOscTypedMixin:
             ),
             path_params=path_params,
         )
-        return TypeAdapter(ReadApiLogsResponse).validate_python(response)
+        return _validate_response(ReadApiLogsResponse, response)
 
     async def read_co2_emission_account(
         self,
         request: ReadCO2EmissionAccountRequest | None = None,
     ) -> ReadCO2EmissionAccountResponse:
-        if request is None:
-            request = ReadCO2EmissionAccountRequest()
+        request = _validate_request(ReadCO2EmissionAccountRequest, request)
 
         path_params = {
         }
@@ -3780,14 +3677,13 @@ class AsyncOscTypedMixin:
             ),
             path_params=path_params,
         )
-        return TypeAdapter(ReadCO2EmissionAccountResponse).validate_python(response)
+        return _validate_response(ReadCO2EmissionAccountResponse, response)
 
     async def read_cas(
         self,
         request: ReadCasRequest | None = None,
     ) -> ReadCasResponse:
-        if request is None:
-            request = ReadCasRequest()
+        request = _validate_request(ReadCasRequest, request)
 
         path_params = {
         }
@@ -3807,14 +3703,13 @@ class AsyncOscTypedMixin:
             ),
             path_params=path_params,
         )
-        return TypeAdapter(ReadCasResponse).validate_python(response)
+        return _validate_response(ReadCasResponse, response)
 
     async def read_catalog(
         self,
         request: ReadCatalogRequest | None = None,
     ) -> ReadCatalogResponse:
-        if request is None:
-            request = ReadCatalogRequest()
+        request = _validate_request(ReadCatalogRequest, request)
 
         path_params = {
         }
@@ -3834,14 +3729,13 @@ class AsyncOscTypedMixin:
             ),
             path_params=path_params,
         )
-        return TypeAdapter(ReadCatalogResponse).validate_python(response)
+        return _validate_response(ReadCatalogResponse, response)
 
     async def read_catalogs(
         self,
         request: ReadCatalogsRequest | None = None,
     ) -> ReadCatalogsResponse:
-        if request is None:
-            request = ReadCatalogsRequest()
+        request = _validate_request(ReadCatalogsRequest, request)
 
         path_params = {
         }
@@ -3861,14 +3755,13 @@ class AsyncOscTypedMixin:
             ),
             path_params=path_params,
         )
-        return TypeAdapter(ReadCatalogsResponse).validate_python(response)
+        return _validate_response(ReadCatalogsResponse, response)
 
     async def read_client_gateways(
         self,
         request: ReadClientGatewaysRequest | None = None,
     ) -> ReadClientGatewaysResponse:
-        if request is None:
-            request = ReadClientGatewaysRequest()
+        request = _validate_request(ReadClientGatewaysRequest, request)
 
         path_params = {
         }
@@ -3888,14 +3781,13 @@ class AsyncOscTypedMixin:
             ),
             path_params=path_params,
         )
-        return TypeAdapter(ReadClientGatewaysResponse).validate_python(response)
+        return _validate_response(ReadClientGatewaysResponse, response)
 
     async def read_console_output(
         self,
         request: ReadConsoleOutputRequest | None = None,
     ) -> ReadConsoleOutputResponse:
-        if request is None:
-            request = ReadConsoleOutputRequest()
+        request = _validate_request(ReadConsoleOutputRequest, request)
 
         path_params = {
         }
@@ -3915,14 +3807,13 @@ class AsyncOscTypedMixin:
             ),
             path_params=path_params,
         )
-        return TypeAdapter(ReadConsoleOutputResponse).validate_python(response)
+        return _validate_response(ReadConsoleOutputResponse, response)
 
     async def read_consumption_account(
         self,
         request: ReadConsumptionAccountRequest | None = None,
     ) -> ReadConsumptionAccountResponse:
-        if request is None:
-            request = ReadConsumptionAccountRequest()
+        request = _validate_request(ReadConsumptionAccountRequest, request)
 
         path_params = {
         }
@@ -3942,14 +3833,13 @@ class AsyncOscTypedMixin:
             ),
             path_params=path_params,
         )
-        return TypeAdapter(ReadConsumptionAccountResponse).validate_python(response)
+        return _validate_response(ReadConsumptionAccountResponse, response)
 
     async def read_dedicated_groups(
         self,
         request: ReadDedicatedGroupsRequest | None = None,
     ) -> ReadDedicatedGroupsResponse:
-        if request is None:
-            request = ReadDedicatedGroupsRequest()
+        request = _validate_request(ReadDedicatedGroupsRequest, request)
 
         path_params = {
         }
@@ -3969,14 +3859,13 @@ class AsyncOscTypedMixin:
             ),
             path_params=path_params,
         )
-        return TypeAdapter(ReadDedicatedGroupsResponse).validate_python(response)
+        return _validate_response(ReadDedicatedGroupsResponse, response)
 
     async def read_dhcp_options(
         self,
         request: ReadDhcpOptionsRequest | None = None,
     ) -> ReadDhcpOptionsResponse:
-        if request is None:
-            request = ReadDhcpOptionsRequest()
+        request = _validate_request(ReadDhcpOptionsRequest, request)
 
         path_params = {
         }
@@ -3996,14 +3885,13 @@ class AsyncOscTypedMixin:
             ),
             path_params=path_params,
         )
-        return TypeAdapter(ReadDhcpOptionsResponse).validate_python(response)
+        return _validate_response(ReadDhcpOptionsResponse, response)
 
     async def read_direct_link_interfaces(
         self,
         request: ReadDirectLinkInterfacesRequest | None = None,
     ) -> ReadDirectLinkInterfacesResponse:
-        if request is None:
-            request = ReadDirectLinkInterfacesRequest()
+        request = _validate_request(ReadDirectLinkInterfacesRequest, request)
 
         path_params = {
         }
@@ -4023,14 +3911,13 @@ class AsyncOscTypedMixin:
             ),
             path_params=path_params,
         )
-        return TypeAdapter(ReadDirectLinkInterfacesResponse).validate_python(response)
+        return _validate_response(ReadDirectLinkInterfacesResponse, response)
 
     async def read_direct_links(
         self,
         request: ReadDirectLinksRequest | None = None,
     ) -> ReadDirectLinksResponse:
-        if request is None:
-            request = ReadDirectLinksRequest()
+        request = _validate_request(ReadDirectLinksRequest, request)
 
         path_params = {
         }
@@ -4050,14 +3937,13 @@ class AsyncOscTypedMixin:
             ),
             path_params=path_params,
         )
-        return TypeAdapter(ReadDirectLinksResponse).validate_python(response)
+        return _validate_response(ReadDirectLinksResponse, response)
 
     async def read_entities_linked_to_policy(
         self,
         request: ReadEntitiesLinkedToPolicyRequest | None = None,
     ) -> ReadEntitiesLinkedToPolicyResponse:
-        if request is None:
-            request = ReadEntitiesLinkedToPolicyRequest()
+        request = _validate_request(ReadEntitiesLinkedToPolicyRequest, request)
 
         path_params = {
         }
@@ -4077,14 +3963,13 @@ class AsyncOscTypedMixin:
             ),
             path_params=path_params,
         )
-        return TypeAdapter(ReadEntitiesLinkedToPolicyResponse).validate_python(response)
+        return _validate_response(ReadEntitiesLinkedToPolicyResponse, response)
 
     async def read_flexible_gpu_catalog(
         self,
         request: ReadFlexibleGpuCatalogRequest | None = None,
     ) -> ReadFlexibleGpuCatalogResponse:
-        if request is None:
-            request = ReadFlexibleGpuCatalogRequest()
+        request = _validate_request(ReadFlexibleGpuCatalogRequest, request)
 
         path_params = {
         }
@@ -4104,14 +3989,13 @@ class AsyncOscTypedMixin:
             ),
             path_params=path_params,
         )
-        return TypeAdapter(ReadFlexibleGpuCatalogResponse).validate_python(response)
+        return _validate_response(ReadFlexibleGpuCatalogResponse, response)
 
     async def read_flexible_gpus(
         self,
         request: ReadFlexibleGpusRequest | None = None,
     ) -> ReadFlexibleGpusResponse:
-        if request is None:
-            request = ReadFlexibleGpusRequest()
+        request = _validate_request(ReadFlexibleGpusRequest, request)
 
         path_params = {
         }
@@ -4131,14 +4015,13 @@ class AsyncOscTypedMixin:
             ),
             path_params=path_params,
         )
-        return TypeAdapter(ReadFlexibleGpusResponse).validate_python(response)
+        return _validate_response(ReadFlexibleGpusResponse, response)
 
     async def read_image_export_tasks(
         self,
         request: ReadImageExportTasksRequest | None = None,
     ) -> ReadImageExportTasksResponse:
-        if request is None:
-            request = ReadImageExportTasksRequest()
+        request = _validate_request(ReadImageExportTasksRequest, request)
 
         path_params = {
         }
@@ -4158,14 +4041,13 @@ class AsyncOscTypedMixin:
             ),
             path_params=path_params,
         )
-        return TypeAdapter(ReadImageExportTasksResponse).validate_python(response)
+        return _validate_response(ReadImageExportTasksResponse, response)
 
     async def read_images(
         self,
         request: ReadImagesRequest | None = None,
     ) -> ReadImagesResponse:
-        if request is None:
-            request = ReadImagesRequest()
+        request = _validate_request(ReadImagesRequest, request)
 
         path_params = {
         }
@@ -4185,14 +4067,13 @@ class AsyncOscTypedMixin:
             ),
             path_params=path_params,
         )
-        return TypeAdapter(ReadImagesResponse).validate_python(response)
+        return _validate_response(ReadImagesResponse, response)
 
     async def read_internet_services(
         self,
         request: ReadInternetServicesRequest | None = None,
     ) -> ReadInternetServicesResponse:
-        if request is None:
-            request = ReadInternetServicesRequest()
+        request = _validate_request(ReadInternetServicesRequest, request)
 
         path_params = {
         }
@@ -4212,14 +4093,13 @@ class AsyncOscTypedMixin:
             ),
             path_params=path_params,
         )
-        return TypeAdapter(ReadInternetServicesResponse).validate_python(response)
+        return _validate_response(ReadInternetServicesResponse, response)
 
     async def read_keypairs(
         self,
         request: ReadKeypairsRequest | None = None,
     ) -> ReadKeypairsResponse:
-        if request is None:
-            request = ReadKeypairsRequest()
+        request = _validate_request(ReadKeypairsRequest, request)
 
         path_params = {
         }
@@ -4239,14 +4119,13 @@ class AsyncOscTypedMixin:
             ),
             path_params=path_params,
         )
-        return TypeAdapter(ReadKeypairsResponse).validate_python(response)
+        return _validate_response(ReadKeypairsResponse, response)
 
     async def read_linked_policies(
         self,
         request: ReadLinkedPoliciesRequest | None = None,
     ) -> ReadLinkedPoliciesResponse:
-        if request is None:
-            request = ReadLinkedPoliciesRequest()
+        request = _validate_request(ReadLinkedPoliciesRequest, request)
 
         path_params = {
         }
@@ -4266,14 +4145,13 @@ class AsyncOscTypedMixin:
             ),
             path_params=path_params,
         )
-        return TypeAdapter(ReadLinkedPoliciesResponse).validate_python(response)
+        return _validate_response(ReadLinkedPoliciesResponse, response)
 
     async def read_listener_rules(
         self,
         request: ReadListenerRulesRequest | None = None,
     ) -> ReadListenerRulesResponse:
-        if request is None:
-            request = ReadListenerRulesRequest()
+        request = _validate_request(ReadListenerRulesRequest, request)
 
         path_params = {
         }
@@ -4293,14 +4171,13 @@ class AsyncOscTypedMixin:
             ),
             path_params=path_params,
         )
-        return TypeAdapter(ReadListenerRulesResponse).validate_python(response)
+        return _validate_response(ReadListenerRulesResponse, response)
 
     async def read_load_balancer_tags(
         self,
         request: ReadLoadBalancerTagsRequest | None = None,
     ) -> ReadLoadBalancerTagsResponse:
-        if request is None:
-            request = ReadLoadBalancerTagsRequest()
+        request = _validate_request(ReadLoadBalancerTagsRequest, request)
 
         path_params = {
         }
@@ -4320,14 +4197,13 @@ class AsyncOscTypedMixin:
             ),
             path_params=path_params,
         )
-        return TypeAdapter(ReadLoadBalancerTagsResponse).validate_python(response)
+        return _validate_response(ReadLoadBalancerTagsResponse, response)
 
     async def read_load_balancers(
         self,
         request: ReadLoadBalancersRequest | None = None,
     ) -> ReadLoadBalancersResponse:
-        if request is None:
-            request = ReadLoadBalancersRequest()
+        request = _validate_request(ReadLoadBalancersRequest, request)
 
         path_params = {
         }
@@ -4347,14 +4223,13 @@ class AsyncOscTypedMixin:
             ),
             path_params=path_params,
         )
-        return TypeAdapter(ReadLoadBalancersResponse).validate_python(response)
+        return _validate_response(ReadLoadBalancersResponse, response)
 
     async def read_locations(
         self,
         request: ReadLocationsRequest | None = None,
     ) -> ReadLocationsResponse:
-        if request is None:
-            request = ReadLocationsRequest()
+        request = _validate_request(ReadLocationsRequest, request)
 
         path_params = {
         }
@@ -4374,14 +4249,13 @@ class AsyncOscTypedMixin:
             ),
             path_params=path_params,
         )
-        return TypeAdapter(ReadLocationsResponse).validate_python(response)
+        return _validate_response(ReadLocationsResponse, response)
 
     async def read_managed_policies_linked_to_user_group(
         self,
         request: ReadManagedPoliciesLinkedToUserGroupRequest | None = None,
     ) -> ReadManagedPoliciesLinkedToUserGroupResponse:
-        if request is None:
-            request = ReadManagedPoliciesLinkedToUserGroupRequest()
+        request = _validate_request(ReadManagedPoliciesLinkedToUserGroupRequest, request)
 
         path_params = {
         }
@@ -4401,14 +4275,13 @@ class AsyncOscTypedMixin:
             ),
             path_params=path_params,
         )
-        return TypeAdapter(ReadManagedPoliciesLinkedToUserGroupResponse).validate_python(response)
+        return _validate_response(ReadManagedPoliciesLinkedToUserGroupResponse, response)
 
     async def read_nat_services(
         self,
         request: ReadNatServicesRequest | None = None,
     ) -> ReadNatServicesResponse:
-        if request is None:
-            request = ReadNatServicesRequest()
+        request = _validate_request(ReadNatServicesRequest, request)
 
         path_params = {
         }
@@ -4428,14 +4301,13 @@ class AsyncOscTypedMixin:
             ),
             path_params=path_params,
         )
-        return TypeAdapter(ReadNatServicesResponse).validate_python(response)
+        return _validate_response(ReadNatServicesResponse, response)
 
     async def read_net_access_point_services(
         self,
         request: ReadNetAccessPointServicesRequest | None = None,
     ) -> ReadNetAccessPointServicesResponse:
-        if request is None:
-            request = ReadNetAccessPointServicesRequest()
+        request = _validate_request(ReadNetAccessPointServicesRequest, request)
 
         path_params = {
         }
@@ -4455,14 +4327,13 @@ class AsyncOscTypedMixin:
             ),
             path_params=path_params,
         )
-        return TypeAdapter(ReadNetAccessPointServicesResponse).validate_python(response)
+        return _validate_response(ReadNetAccessPointServicesResponse, response)
 
     async def read_net_access_points(
         self,
         request: ReadNetAccessPointsRequest | None = None,
     ) -> ReadNetAccessPointsResponse:
-        if request is None:
-            request = ReadNetAccessPointsRequest()
+        request = _validate_request(ReadNetAccessPointsRequest, request)
 
         path_params = {
         }
@@ -4482,14 +4353,13 @@ class AsyncOscTypedMixin:
             ),
             path_params=path_params,
         )
-        return TypeAdapter(ReadNetAccessPointsResponse).validate_python(response)
+        return _validate_response(ReadNetAccessPointsResponse, response)
 
     async def read_net_peerings(
         self,
         request: ReadNetPeeringsRequest | None = None,
     ) -> ReadNetPeeringsResponse:
-        if request is None:
-            request = ReadNetPeeringsRequest()
+        request = _validate_request(ReadNetPeeringsRequest, request)
 
         path_params = {
         }
@@ -4509,14 +4379,13 @@ class AsyncOscTypedMixin:
             ),
             path_params=path_params,
         )
-        return TypeAdapter(ReadNetPeeringsResponse).validate_python(response)
+        return _validate_response(ReadNetPeeringsResponse, response)
 
     async def read_nets(
         self,
         request: ReadNetsRequest | None = None,
     ) -> ReadNetsResponse:
-        if request is None:
-            request = ReadNetsRequest()
+        request = _validate_request(ReadNetsRequest, request)
 
         path_params = {
         }
@@ -4536,14 +4405,13 @@ class AsyncOscTypedMixin:
             ),
             path_params=path_params,
         )
-        return TypeAdapter(ReadNetsResponse).validate_python(response)
+        return _validate_response(ReadNetsResponse, response)
 
     async def read_nics(
         self,
         request: ReadNicsRequest | None = None,
     ) -> ReadNicsResponse:
-        if request is None:
-            request = ReadNicsRequest()
+        request = _validate_request(ReadNicsRequest, request)
 
         path_params = {
         }
@@ -4563,14 +4431,13 @@ class AsyncOscTypedMixin:
             ),
             path_params=path_params,
         )
-        return TypeAdapter(ReadNicsResponse).validate_python(response)
+        return _validate_response(ReadNicsResponse, response)
 
     async def read_policies(
         self,
         request: ReadPoliciesRequest | None = None,
     ) -> ReadPoliciesResponse:
-        if request is None:
-            request = ReadPoliciesRequest()
+        request = _validate_request(ReadPoliciesRequest, request)
 
         path_params = {
         }
@@ -4590,14 +4457,13 @@ class AsyncOscTypedMixin:
             ),
             path_params=path_params,
         )
-        return TypeAdapter(ReadPoliciesResponse).validate_python(response)
+        return _validate_response(ReadPoliciesResponse, response)
 
     async def read_policy(
         self,
         request: ReadPolicyRequest | None = None,
     ) -> ReadPolicyResponse:
-        if request is None:
-            request = ReadPolicyRequest()
+        request = _validate_request(ReadPolicyRequest, request)
 
         path_params = {
         }
@@ -4617,14 +4483,13 @@ class AsyncOscTypedMixin:
             ),
             path_params=path_params,
         )
-        return TypeAdapter(ReadPolicyResponse).validate_python(response)
+        return _validate_response(ReadPolicyResponse, response)
 
     async def read_policy_version(
         self,
         request: ReadPolicyVersionRequest | None = None,
     ) -> ReadPolicyVersionResponse:
-        if request is None:
-            request = ReadPolicyVersionRequest()
+        request = _validate_request(ReadPolicyVersionRequest, request)
 
         path_params = {
         }
@@ -4644,14 +4509,13 @@ class AsyncOscTypedMixin:
             ),
             path_params=path_params,
         )
-        return TypeAdapter(ReadPolicyVersionResponse).validate_python(response)
+        return _validate_response(ReadPolicyVersionResponse, response)
 
     async def read_policy_versions(
         self,
         request: ReadPolicyVersionsRequest | None = None,
     ) -> ReadPolicyVersionsResponse:
-        if request is None:
-            request = ReadPolicyVersionsRequest()
+        request = _validate_request(ReadPolicyVersionsRequest, request)
 
         path_params = {
         }
@@ -4671,14 +4535,13 @@ class AsyncOscTypedMixin:
             ),
             path_params=path_params,
         )
-        return TypeAdapter(ReadPolicyVersionsResponse).validate_python(response)
+        return _validate_response(ReadPolicyVersionsResponse, response)
 
     async def read_product_types(
         self,
         request: ReadProductTypesRequest | None = None,
     ) -> ReadProductTypesResponse:
-        if request is None:
-            request = ReadProductTypesRequest()
+        request = _validate_request(ReadProductTypesRequest, request)
 
         path_params = {
         }
@@ -4698,14 +4561,13 @@ class AsyncOscTypedMixin:
             ),
             path_params=path_params,
         )
-        return TypeAdapter(ReadProductTypesResponse).validate_python(response)
+        return _validate_response(ReadProductTypesResponse, response)
 
     async def read_public_catalog(
         self,
         request: ReadPublicCatalogRequest | None = None,
     ) -> ReadPublicCatalogResponse:
-        if request is None:
-            request = ReadPublicCatalogRequest()
+        request = _validate_request(ReadPublicCatalogRequest, request)
 
         path_params = {
         }
@@ -4725,14 +4587,13 @@ class AsyncOscTypedMixin:
             ),
             path_params=path_params,
         )
-        return TypeAdapter(ReadPublicCatalogResponse).validate_python(response)
+        return _validate_response(ReadPublicCatalogResponse, response)
 
     async def read_public_ip_ranges(
         self,
         request: ReadPublicIpRangesRequest | None = None,
     ) -> ReadPublicIpRangesResponse:
-        if request is None:
-            request = ReadPublicIpRangesRequest()
+        request = _validate_request(ReadPublicIpRangesRequest, request)
 
         path_params = {
         }
@@ -4752,14 +4613,13 @@ class AsyncOscTypedMixin:
             ),
             path_params=path_params,
         )
-        return TypeAdapter(ReadPublicIpRangesResponse).validate_python(response)
+        return _validate_response(ReadPublicIpRangesResponse, response)
 
     async def read_public_ips(
         self,
         request: ReadPublicIpsRequest | None = None,
     ) -> ReadPublicIpsResponse:
-        if request is None:
-            request = ReadPublicIpsRequest()
+        request = _validate_request(ReadPublicIpsRequest, request)
 
         path_params = {
         }
@@ -4779,14 +4639,13 @@ class AsyncOscTypedMixin:
             ),
             path_params=path_params,
         )
-        return TypeAdapter(ReadPublicIpsResponse).validate_python(response)
+        return _validate_response(ReadPublicIpsResponse, response)
 
     async def read_quotas(
         self,
         request: ReadQuotasRequest | None = None,
     ) -> ReadQuotasResponse:
-        if request is None:
-            request = ReadQuotasRequest()
+        request = _validate_request(ReadQuotasRequest, request)
 
         path_params = {
         }
@@ -4806,14 +4665,13 @@ class AsyncOscTypedMixin:
             ),
             path_params=path_params,
         )
-        return TypeAdapter(ReadQuotasResponse).validate_python(response)
+        return _validate_response(ReadQuotasResponse, response)
 
     async def read_regions(
         self,
         request: ReadRegionsRequest | None = None,
     ) -> ReadRegionsResponse:
-        if request is None:
-            request = ReadRegionsRequest()
+        request = _validate_request(ReadRegionsRequest, request)
 
         path_params = {
         }
@@ -4833,14 +4691,13 @@ class AsyncOscTypedMixin:
             ),
             path_params=path_params,
         )
-        return TypeAdapter(ReadRegionsResponse).validate_python(response)
+        return _validate_response(ReadRegionsResponse, response)
 
     async def read_route_tables(
         self,
         request: ReadRouteTablesRequest | None = None,
     ) -> ReadRouteTablesResponse:
-        if request is None:
-            request = ReadRouteTablesRequest()
+        request = _validate_request(ReadRouteTablesRequest, request)
 
         path_params = {
         }
@@ -4860,14 +4717,13 @@ class AsyncOscTypedMixin:
             ),
             path_params=path_params,
         )
-        return TypeAdapter(ReadRouteTablesResponse).validate_python(response)
+        return _validate_response(ReadRouteTablesResponse, response)
 
     async def read_security_groups(
         self,
         request: ReadSecurityGroupsRequest | None = None,
     ) -> ReadSecurityGroupsResponse:
-        if request is None:
-            request = ReadSecurityGroupsRequest()
+        request = _validate_request(ReadSecurityGroupsRequest, request)
 
         path_params = {
         }
@@ -4887,14 +4743,13 @@ class AsyncOscTypedMixin:
             ),
             path_params=path_params,
         )
-        return TypeAdapter(ReadSecurityGroupsResponse).validate_python(response)
+        return _validate_response(ReadSecurityGroupsResponse, response)
 
     async def read_server_certificates(
         self,
         request: ReadServerCertificatesRequest | None = None,
     ) -> ReadServerCertificatesResponse:
-        if request is None:
-            request = ReadServerCertificatesRequest()
+        request = _validate_request(ReadServerCertificatesRequest, request)
 
         path_params = {
         }
@@ -4914,14 +4769,13 @@ class AsyncOscTypedMixin:
             ),
             path_params=path_params,
         )
-        return TypeAdapter(ReadServerCertificatesResponse).validate_python(response)
+        return _validate_response(ReadServerCertificatesResponse, response)
 
     async def read_snapshot_export_tasks(
         self,
         request: ReadSnapshotExportTasksRequest | None = None,
     ) -> ReadSnapshotExportTasksResponse:
-        if request is None:
-            request = ReadSnapshotExportTasksRequest()
+        request = _validate_request(ReadSnapshotExportTasksRequest, request)
 
         path_params = {
         }
@@ -4941,14 +4795,13 @@ class AsyncOscTypedMixin:
             ),
             path_params=path_params,
         )
-        return TypeAdapter(ReadSnapshotExportTasksResponse).validate_python(response)
+        return _validate_response(ReadSnapshotExportTasksResponse, response)
 
     async def read_snapshots(
         self,
         request: ReadSnapshotsRequest | None = None,
     ) -> ReadSnapshotsResponse:
-        if request is None:
-            request = ReadSnapshotsRequest()
+        request = _validate_request(ReadSnapshotsRequest, request)
 
         path_params = {
         }
@@ -4968,14 +4821,13 @@ class AsyncOscTypedMixin:
             ),
             path_params=path_params,
         )
-        return TypeAdapter(ReadSnapshotsResponse).validate_python(response)
+        return _validate_response(ReadSnapshotsResponse, response)
 
     async def read_subnets(
         self,
         request: ReadSubnetsRequest | None = None,
     ) -> ReadSubnetsResponse:
-        if request is None:
-            request = ReadSubnetsRequest()
+        request = _validate_request(ReadSubnetsRequest, request)
 
         path_params = {
         }
@@ -4995,14 +4847,13 @@ class AsyncOscTypedMixin:
             ),
             path_params=path_params,
         )
-        return TypeAdapter(ReadSubnetsResponse).validate_python(response)
+        return _validate_response(ReadSubnetsResponse, response)
 
     async def read_subregions(
         self,
         request: ReadSubregionsRequest | None = None,
     ) -> ReadSubregionsResponse:
-        if request is None:
-            request = ReadSubregionsRequest()
+        request = _validate_request(ReadSubregionsRequest, request)
 
         path_params = {
         }
@@ -5022,14 +4873,13 @@ class AsyncOscTypedMixin:
             ),
             path_params=path_params,
         )
-        return TypeAdapter(ReadSubregionsResponse).validate_python(response)
+        return _validate_response(ReadSubregionsResponse, response)
 
     async def read_tags(
         self,
         request: ReadTagsRequest | None = None,
     ) -> ReadTagsResponse:
-        if request is None:
-            request = ReadTagsRequest()
+        request = _validate_request(ReadTagsRequest, request)
 
         path_params = {
         }
@@ -5049,14 +4899,13 @@ class AsyncOscTypedMixin:
             ),
             path_params=path_params,
         )
-        return TypeAdapter(ReadTagsResponse).validate_python(response)
+        return _validate_response(ReadTagsResponse, response)
 
     async def read_unit_price(
         self,
         request: ReadUnitPriceRequest | None = None,
     ) -> ReadUnitPriceResponse:
-        if request is None:
-            request = ReadUnitPriceRequest()
+        request = _validate_request(ReadUnitPriceRequest, request)
 
         path_params = {
         }
@@ -5076,14 +4925,13 @@ class AsyncOscTypedMixin:
             ),
             path_params=path_params,
         )
-        return TypeAdapter(ReadUnitPriceResponse).validate_python(response)
+        return _validate_response(ReadUnitPriceResponse, response)
 
     async def read_user_group(
         self,
         request: ReadUserGroupRequest | None = None,
     ) -> ReadUserGroupResponse:
-        if request is None:
-            request = ReadUserGroupRequest()
+        request = _validate_request(ReadUserGroupRequest, request)
 
         path_params = {
         }
@@ -5103,14 +4951,13 @@ class AsyncOscTypedMixin:
             ),
             path_params=path_params,
         )
-        return TypeAdapter(ReadUserGroupResponse).validate_python(response)
+        return _validate_response(ReadUserGroupResponse, response)
 
     async def read_user_group_policies(
         self,
         request: ReadUserGroupPoliciesRequest | None = None,
     ) -> ReadUserGroupPoliciesResponse:
-        if request is None:
-            request = ReadUserGroupPoliciesRequest()
+        request = _validate_request(ReadUserGroupPoliciesRequest, request)
 
         path_params = {
         }
@@ -5130,14 +4977,13 @@ class AsyncOscTypedMixin:
             ),
             path_params=path_params,
         )
-        return TypeAdapter(ReadUserGroupPoliciesResponse).validate_python(response)
+        return _validate_response(ReadUserGroupPoliciesResponse, response)
 
     async def read_user_group_policy(
         self,
         request: ReadUserGroupPolicyRequest | None = None,
     ) -> ReadUserGroupPolicyResponse:
-        if request is None:
-            request = ReadUserGroupPolicyRequest()
+        request = _validate_request(ReadUserGroupPolicyRequest, request)
 
         path_params = {
         }
@@ -5157,14 +5003,13 @@ class AsyncOscTypedMixin:
             ),
             path_params=path_params,
         )
-        return TypeAdapter(ReadUserGroupPolicyResponse).validate_python(response)
+        return _validate_response(ReadUserGroupPolicyResponse, response)
 
     async def read_user_groups(
         self,
         request: ReadUserGroupsRequest | None = None,
     ) -> ReadUserGroupsResponse:
-        if request is None:
-            request = ReadUserGroupsRequest()
+        request = _validate_request(ReadUserGroupsRequest, request)
 
         path_params = {
         }
@@ -5184,14 +5029,13 @@ class AsyncOscTypedMixin:
             ),
             path_params=path_params,
         )
-        return TypeAdapter(ReadUserGroupsResponse).validate_python(response)
+        return _validate_response(ReadUserGroupsResponse, response)
 
     async def read_user_groups_per_user(
         self,
         request: ReadUserGroupsPerUserRequest | None = None,
     ) -> ReadUserGroupsPerUserResponse:
-        if request is None:
-            request = ReadUserGroupsPerUserRequest()
+        request = _validate_request(ReadUserGroupsPerUserRequest, request)
 
         path_params = {
         }
@@ -5211,14 +5055,13 @@ class AsyncOscTypedMixin:
             ),
             path_params=path_params,
         )
-        return TypeAdapter(ReadUserGroupsPerUserResponse).validate_python(response)
+        return _validate_response(ReadUserGroupsPerUserResponse, response)
 
     async def read_user_policies(
         self,
         request: ReadUserPoliciesRequest | None = None,
     ) -> ReadUserPoliciesResponse:
-        if request is None:
-            request = ReadUserPoliciesRequest()
+        request = _validate_request(ReadUserPoliciesRequest, request)
 
         path_params = {
         }
@@ -5238,14 +5081,13 @@ class AsyncOscTypedMixin:
             ),
             path_params=path_params,
         )
-        return TypeAdapter(ReadUserPoliciesResponse).validate_python(response)
+        return _validate_response(ReadUserPoliciesResponse, response)
 
     async def read_user_policy(
         self,
         request: ReadUserPolicyRequest | None = None,
     ) -> ReadUserPolicyResponse:
-        if request is None:
-            request = ReadUserPolicyRequest()
+        request = _validate_request(ReadUserPolicyRequest, request)
 
         path_params = {
         }
@@ -5265,14 +5107,13 @@ class AsyncOscTypedMixin:
             ),
             path_params=path_params,
         )
-        return TypeAdapter(ReadUserPolicyResponse).validate_python(response)
+        return _validate_response(ReadUserPolicyResponse, response)
 
     async def read_users(
         self,
         request: ReadUsersRequest | None = None,
     ) -> ReadUsersResponse:
-        if request is None:
-            request = ReadUsersRequest()
+        request = _validate_request(ReadUsersRequest, request)
 
         path_params = {
         }
@@ -5292,14 +5133,13 @@ class AsyncOscTypedMixin:
             ),
             path_params=path_params,
         )
-        return TypeAdapter(ReadUsersResponse).validate_python(response)
+        return _validate_response(ReadUsersResponse, response)
 
     async def read_virtual_gateways(
         self,
         request: ReadVirtualGatewaysRequest | None = None,
     ) -> ReadVirtualGatewaysResponse:
-        if request is None:
-            request = ReadVirtualGatewaysRequest()
+        request = _validate_request(ReadVirtualGatewaysRequest, request)
 
         path_params = {
         }
@@ -5319,14 +5159,13 @@ class AsyncOscTypedMixin:
             ),
             path_params=path_params,
         )
-        return TypeAdapter(ReadVirtualGatewaysResponse).validate_python(response)
+        return _validate_response(ReadVirtualGatewaysResponse, response)
 
     async def read_vm_groups(
         self,
         request: ReadVmGroupsRequest | None = None,
     ) -> ReadVmGroupsResponse:
-        if request is None:
-            request = ReadVmGroupsRequest()
+        request = _validate_request(ReadVmGroupsRequest, request)
 
         path_params = {
         }
@@ -5346,14 +5185,13 @@ class AsyncOscTypedMixin:
             ),
             path_params=path_params,
         )
-        return TypeAdapter(ReadVmGroupsResponse).validate_python(response)
+        return _validate_response(ReadVmGroupsResponse, response)
 
     async def read_vm_templates(
         self,
         request: ReadVmTemplatesRequest | None = None,
     ) -> ReadVmTemplatesResponse:
-        if request is None:
-            request = ReadVmTemplatesRequest()
+        request = _validate_request(ReadVmTemplatesRequest, request)
 
         path_params = {
         }
@@ -5373,14 +5211,13 @@ class AsyncOscTypedMixin:
             ),
             path_params=path_params,
         )
-        return TypeAdapter(ReadVmTemplatesResponse).validate_python(response)
+        return _validate_response(ReadVmTemplatesResponse, response)
 
     async def read_vm_types(
         self,
         request: ReadVmTypesRequest | None = None,
     ) -> ReadVmTypesResponse:
-        if request is None:
-            request = ReadVmTypesRequest()
+        request = _validate_request(ReadVmTypesRequest, request)
 
         path_params = {
         }
@@ -5400,14 +5237,13 @@ class AsyncOscTypedMixin:
             ),
             path_params=path_params,
         )
-        return TypeAdapter(ReadVmTypesResponse).validate_python(response)
+        return _validate_response(ReadVmTypesResponse, response)
 
     async def read_vms(
         self,
         request: ReadVmsRequest | None = None,
     ) -> ReadVmsResponse:
-        if request is None:
-            request = ReadVmsRequest()
+        request = _validate_request(ReadVmsRequest, request)
 
         path_params = {
         }
@@ -5427,14 +5263,13 @@ class AsyncOscTypedMixin:
             ),
             path_params=path_params,
         )
-        return TypeAdapter(ReadVmsResponse).validate_python(response)
+        return _validate_response(ReadVmsResponse, response)
 
     async def read_vms_health(
         self,
         request: ReadVmsHealthRequest | None = None,
     ) -> ReadVmsHealthResponse:
-        if request is None:
-            request = ReadVmsHealthRequest()
+        request = _validate_request(ReadVmsHealthRequest, request)
 
         path_params = {
         }
@@ -5454,14 +5289,13 @@ class AsyncOscTypedMixin:
             ),
             path_params=path_params,
         )
-        return TypeAdapter(ReadVmsHealthResponse).validate_python(response)
+        return _validate_response(ReadVmsHealthResponse, response)
 
     async def read_vms_state(
         self,
         request: ReadVmsStateRequest | None = None,
     ) -> ReadVmsStateResponse:
-        if request is None:
-            request = ReadVmsStateRequest()
+        request = _validate_request(ReadVmsStateRequest, request)
 
         path_params = {
         }
@@ -5481,14 +5315,13 @@ class AsyncOscTypedMixin:
             ),
             path_params=path_params,
         )
-        return TypeAdapter(ReadVmsStateResponse).validate_python(response)
+        return _validate_response(ReadVmsStateResponse, response)
 
     async def read_volume_update_tasks(
         self,
         request: ReadVolumeUpdateTasksRequest | None = None,
     ) -> ReadVolumeUpdateTasksResponse:
-        if request is None:
-            request = ReadVolumeUpdateTasksRequest()
+        request = _validate_request(ReadVolumeUpdateTasksRequest, request)
 
         path_params = {
         }
@@ -5508,14 +5341,13 @@ class AsyncOscTypedMixin:
             ),
             path_params=path_params,
         )
-        return TypeAdapter(ReadVolumeUpdateTasksResponse).validate_python(response)
+        return _validate_response(ReadVolumeUpdateTasksResponse, response)
 
     async def read_volumes(
         self,
         request: ReadVolumesRequest | None = None,
     ) -> ReadVolumesResponse:
-        if request is None:
-            request = ReadVolumesRequest()
+        request = _validate_request(ReadVolumesRequest, request)
 
         path_params = {
         }
@@ -5535,14 +5367,13 @@ class AsyncOscTypedMixin:
             ),
             path_params=path_params,
         )
-        return TypeAdapter(ReadVolumesResponse).validate_python(response)
+        return _validate_response(ReadVolumesResponse, response)
 
     async def read_vpn_connections(
         self,
         request: ReadVpnConnectionsRequest | None = None,
     ) -> ReadVpnConnectionsResponse:
-        if request is None:
-            request = ReadVpnConnectionsRequest()
+        request = _validate_request(ReadVpnConnectionsRequest, request)
 
         path_params = {
         }
@@ -5562,14 +5393,13 @@ class AsyncOscTypedMixin:
             ),
             path_params=path_params,
         )
-        return TypeAdapter(ReadVpnConnectionsResponse).validate_python(response)
+        return _validate_response(ReadVpnConnectionsResponse, response)
 
     async def reboot_vms(
         self,
         request: RebootVmsRequest | None = None,
     ) -> RebootVmsResponse:
-        if request is None:
-            request = RebootVmsRequest()
+        request = _validate_request(RebootVmsRequest, request)
 
         path_params = {
         }
@@ -5589,14 +5419,13 @@ class AsyncOscTypedMixin:
             ),
             path_params=path_params,
         )
-        return TypeAdapter(RebootVmsResponse).validate_python(response)
+        return _validate_response(RebootVmsResponse, response)
 
     async def register_vms_in_load_balancer(
         self,
         request: RegisterVmsInLoadBalancerRequest | None = None,
     ) -> RegisterVmsInLoadBalancerResponse:
-        if request is None:
-            request = RegisterVmsInLoadBalancerRequest()
+        request = _validate_request(RegisterVmsInLoadBalancerRequest, request)
 
         path_params = {
         }
@@ -5616,14 +5445,13 @@ class AsyncOscTypedMixin:
             ),
             path_params=path_params,
         )
-        return TypeAdapter(RegisterVmsInLoadBalancerResponse).validate_python(response)
+        return _validate_response(RegisterVmsInLoadBalancerResponse, response)
 
     async def reject_net_peering(
         self,
         request: RejectNetPeeringRequest | None = None,
     ) -> RejectNetPeeringResponse:
-        if request is None:
-            request = RejectNetPeeringRequest()
+        request = _validate_request(RejectNetPeeringRequest, request)
 
         path_params = {
         }
@@ -5643,14 +5471,13 @@ class AsyncOscTypedMixin:
             ),
             path_params=path_params,
         )
-        return TypeAdapter(RejectNetPeeringResponse).validate_python(response)
+        return _validate_response(RejectNetPeeringResponse, response)
 
     async def remove_user_from_user_group(
         self,
         request: RemoveUserFromUserGroupRequest | None = None,
     ) -> RemoveUserFromUserGroupResponse:
-        if request is None:
-            request = RemoveUserFromUserGroupRequest()
+        request = _validate_request(RemoveUserFromUserGroupRequest, request)
 
         path_params = {
         }
@@ -5670,14 +5497,13 @@ class AsyncOscTypedMixin:
             ),
             path_params=path_params,
         )
-        return TypeAdapter(RemoveUserFromUserGroupResponse).validate_python(response)
+        return _validate_response(RemoveUserFromUserGroupResponse, response)
 
     async def scale_down_vm_group(
         self,
         request: ScaleDownVmGroupRequest | None = None,
     ) -> ScaleDownVmGroupResponse:
-        if request is None:
-            request = ScaleDownVmGroupRequest()
+        request = _validate_request(ScaleDownVmGroupRequest, request)
 
         path_params = {
         }
@@ -5697,14 +5523,13 @@ class AsyncOscTypedMixin:
             ),
             path_params=path_params,
         )
-        return TypeAdapter(ScaleDownVmGroupResponse).validate_python(response)
+        return _validate_response(ScaleDownVmGroupResponse, response)
 
     async def scale_up_vm_group(
         self,
         request: ScaleUpVmGroupRequest | None = None,
     ) -> ScaleUpVmGroupResponse:
-        if request is None:
-            request = ScaleUpVmGroupRequest()
+        request = _validate_request(ScaleUpVmGroupRequest, request)
 
         path_params = {
         }
@@ -5724,14 +5549,13 @@ class AsyncOscTypedMixin:
             ),
             path_params=path_params,
         )
-        return TypeAdapter(ScaleUpVmGroupResponse).validate_python(response)
+        return _validate_response(ScaleUpVmGroupResponse, response)
 
     async def set_default_policy_version(
         self,
         request: SetDefaultPolicyVersionRequest | None = None,
     ) -> SetDefaultPolicyVersionResponse:
-        if request is None:
-            request = SetDefaultPolicyVersionRequest()
+        request = _validate_request(SetDefaultPolicyVersionRequest, request)
 
         path_params = {
         }
@@ -5751,14 +5575,13 @@ class AsyncOscTypedMixin:
             ),
             path_params=path_params,
         )
-        return TypeAdapter(SetDefaultPolicyVersionResponse).validate_python(response)
+        return _validate_response(SetDefaultPolicyVersionResponse, response)
 
     async def start_vms(
         self,
         request: StartVmsRequest | None = None,
     ) -> StartVmsResponse:
-        if request is None:
-            request = StartVmsRequest()
+        request = _validate_request(StartVmsRequest, request)
 
         path_params = {
         }
@@ -5778,14 +5601,13 @@ class AsyncOscTypedMixin:
             ),
             path_params=path_params,
         )
-        return TypeAdapter(StartVmsResponse).validate_python(response)
+        return _validate_response(StartVmsResponse, response)
 
     async def stop_vms(
         self,
         request: StopVmsRequest | None = None,
     ) -> StopVmsResponse:
-        if request is None:
-            request = StopVmsRequest()
+        request = _validate_request(StopVmsRequest, request)
 
         path_params = {
         }
@@ -5805,14 +5627,13 @@ class AsyncOscTypedMixin:
             ),
             path_params=path_params,
         )
-        return TypeAdapter(StopVmsResponse).validate_python(response)
+        return _validate_response(StopVmsResponse, response)
 
     async def unlink_flexible_gpu(
         self,
         request: UnlinkFlexibleGpuRequest | None = None,
     ) -> UnlinkFlexibleGpuResponse:
-        if request is None:
-            request = UnlinkFlexibleGpuRequest()
+        request = _validate_request(UnlinkFlexibleGpuRequest, request)
 
         path_params = {
         }
@@ -5832,14 +5653,13 @@ class AsyncOscTypedMixin:
             ),
             path_params=path_params,
         )
-        return TypeAdapter(UnlinkFlexibleGpuResponse).validate_python(response)
+        return _validate_response(UnlinkFlexibleGpuResponse, response)
 
     async def unlink_internet_service(
         self,
         request: UnlinkInternetServiceRequest | None = None,
     ) -> UnlinkInternetServiceResponse:
-        if request is None:
-            request = UnlinkInternetServiceRequest()
+        request = _validate_request(UnlinkInternetServiceRequest, request)
 
         path_params = {
         }
@@ -5859,14 +5679,13 @@ class AsyncOscTypedMixin:
             ),
             path_params=path_params,
         )
-        return TypeAdapter(UnlinkInternetServiceResponse).validate_python(response)
+        return _validate_response(UnlinkInternetServiceResponse, response)
 
     async def unlink_load_balancer_backend_machines(
         self,
         request: UnlinkLoadBalancerBackendMachinesRequest | None = None,
     ) -> UnlinkLoadBalancerBackendMachinesResponse:
-        if request is None:
-            request = UnlinkLoadBalancerBackendMachinesRequest()
+        request = _validate_request(UnlinkLoadBalancerBackendMachinesRequest, request)
 
         path_params = {
         }
@@ -5886,14 +5705,13 @@ class AsyncOscTypedMixin:
             ),
             path_params=path_params,
         )
-        return TypeAdapter(UnlinkLoadBalancerBackendMachinesResponse).validate_python(response)
+        return _validate_response(UnlinkLoadBalancerBackendMachinesResponse, response)
 
     async def unlink_managed_policy_from_user_group(
         self,
         request: UnlinkManagedPolicyFromUserGroupRequest | None = None,
     ) -> UnlinkManagedPolicyFromUserGroupResponse:
-        if request is None:
-            request = UnlinkManagedPolicyFromUserGroupRequest()
+        request = _validate_request(UnlinkManagedPolicyFromUserGroupRequest, request)
 
         path_params = {
         }
@@ -5913,14 +5731,13 @@ class AsyncOscTypedMixin:
             ),
             path_params=path_params,
         )
-        return TypeAdapter(UnlinkManagedPolicyFromUserGroupResponse).validate_python(response)
+        return _validate_response(UnlinkManagedPolicyFromUserGroupResponse, response)
 
     async def unlink_nic(
         self,
         request: UnlinkNicRequest | None = None,
     ) -> UnlinkNicResponse:
-        if request is None:
-            request = UnlinkNicRequest()
+        request = _validate_request(UnlinkNicRequest, request)
 
         path_params = {
         }
@@ -5940,14 +5757,13 @@ class AsyncOscTypedMixin:
             ),
             path_params=path_params,
         )
-        return TypeAdapter(UnlinkNicResponse).validate_python(response)
+        return _validate_response(UnlinkNicResponse, response)
 
     async def unlink_policy(
         self,
         request: UnlinkPolicyRequest | None = None,
     ) -> UnlinkPolicyResponse:
-        if request is None:
-            request = UnlinkPolicyRequest()
+        request = _validate_request(UnlinkPolicyRequest, request)
 
         path_params = {
         }
@@ -5967,14 +5783,13 @@ class AsyncOscTypedMixin:
             ),
             path_params=path_params,
         )
-        return TypeAdapter(UnlinkPolicyResponse).validate_python(response)
+        return _validate_response(UnlinkPolicyResponse, response)
 
     async def unlink_private_ips(
         self,
         request: UnlinkPrivateIpsRequest | None = None,
     ) -> UnlinkPrivateIpsResponse:
-        if request is None:
-            request = UnlinkPrivateIpsRequest()
+        request = _validate_request(UnlinkPrivateIpsRequest, request)
 
         path_params = {
         }
@@ -5994,14 +5809,13 @@ class AsyncOscTypedMixin:
             ),
             path_params=path_params,
         )
-        return TypeAdapter(UnlinkPrivateIpsResponse).validate_python(response)
+        return _validate_response(UnlinkPrivateIpsResponse, response)
 
     async def unlink_public_ip(
         self,
         request: UnlinkPublicIpRequest | None = None,
     ) -> UnlinkPublicIpResponse:
-        if request is None:
-            request = UnlinkPublicIpRequest()
+        request = _validate_request(UnlinkPublicIpRequest, request)
 
         path_params = {
         }
@@ -6021,14 +5835,13 @@ class AsyncOscTypedMixin:
             ),
             path_params=path_params,
         )
-        return TypeAdapter(UnlinkPublicIpResponse).validate_python(response)
+        return _validate_response(UnlinkPublicIpResponse, response)
 
     async def unlink_route_table(
         self,
         request: UnlinkRouteTableRequest | None = None,
     ) -> UnlinkRouteTableResponse:
-        if request is None:
-            request = UnlinkRouteTableRequest()
+        request = _validate_request(UnlinkRouteTableRequest, request)
 
         path_params = {
         }
@@ -6048,14 +5861,13 @@ class AsyncOscTypedMixin:
             ),
             path_params=path_params,
         )
-        return TypeAdapter(UnlinkRouteTableResponse).validate_python(response)
+        return _validate_response(UnlinkRouteTableResponse, response)
 
     async def unlink_virtual_gateway(
         self,
         request: UnlinkVirtualGatewayRequest | None = None,
     ) -> UnlinkVirtualGatewayResponse:
-        if request is None:
-            request = UnlinkVirtualGatewayRequest()
+        request = _validate_request(UnlinkVirtualGatewayRequest, request)
 
         path_params = {
         }
@@ -6075,14 +5887,13 @@ class AsyncOscTypedMixin:
             ),
             path_params=path_params,
         )
-        return TypeAdapter(UnlinkVirtualGatewayResponse).validate_python(response)
+        return _validate_response(UnlinkVirtualGatewayResponse, response)
 
     async def unlink_volume(
         self,
         request: UnlinkVolumeRequest | None = None,
     ) -> UnlinkVolumeResponse:
-        if request is None:
-            request = UnlinkVolumeRequest()
+        request = _validate_request(UnlinkVolumeRequest, request)
 
         path_params = {
         }
@@ -6102,14 +5913,13 @@ class AsyncOscTypedMixin:
             ),
             path_params=path_params,
         )
-        return TypeAdapter(UnlinkVolumeResponse).validate_python(response)
+        return _validate_response(UnlinkVolumeResponse, response)
 
     async def update_access_key(
         self,
         request: UpdateAccessKeyRequest | None = None,
     ) -> UpdateAccessKeyResponse:
-        if request is None:
-            request = UpdateAccessKeyRequest()
+        request = _validate_request(UpdateAccessKeyRequest, request)
 
         path_params = {
         }
@@ -6129,14 +5939,13 @@ class AsyncOscTypedMixin:
             ),
             path_params=path_params,
         )
-        return TypeAdapter(UpdateAccessKeyResponse).validate_python(response)
+        return _validate_response(UpdateAccessKeyResponse, response)
 
     async def update_account(
         self,
         request: UpdateAccountRequest | None = None,
     ) -> UpdateAccountResponse:
-        if request is None:
-            request = UpdateAccountRequest()
+        request = _validate_request(UpdateAccountRequest, request)
 
         path_params = {
         }
@@ -6156,14 +5965,13 @@ class AsyncOscTypedMixin:
             ),
             path_params=path_params,
         )
-        return TypeAdapter(UpdateAccountResponse).validate_python(response)
+        return _validate_response(UpdateAccountResponse, response)
 
     async def update_api_access_policy(
         self,
         request: UpdateApiAccessPolicyRequest | None = None,
     ) -> UpdateApiAccessPolicyResponse:
-        if request is None:
-            request = UpdateApiAccessPolicyRequest()
+        request = _validate_request(UpdateApiAccessPolicyRequest, request)
 
         path_params = {
         }
@@ -6183,14 +5991,13 @@ class AsyncOscTypedMixin:
             ),
             path_params=path_params,
         )
-        return TypeAdapter(UpdateApiAccessPolicyResponse).validate_python(response)
+        return _validate_response(UpdateApiAccessPolicyResponse, response)
 
     async def update_api_access_rule(
         self,
         request: UpdateApiAccessRuleRequest | None = None,
     ) -> UpdateApiAccessRuleResponse:
-        if request is None:
-            request = UpdateApiAccessRuleRequest()
+        request = _validate_request(UpdateApiAccessRuleRequest, request)
 
         path_params = {
         }
@@ -6210,14 +6017,13 @@ class AsyncOscTypedMixin:
             ),
             path_params=path_params,
         )
-        return TypeAdapter(UpdateApiAccessRuleResponse).validate_python(response)
+        return _validate_response(UpdateApiAccessRuleResponse, response)
 
     async def update_ca(
         self,
         request: UpdateCaRequest | None = None,
     ) -> UpdateCaResponse:
-        if request is None:
-            request = UpdateCaRequest()
+        request = _validate_request(UpdateCaRequest, request)
 
         path_params = {
         }
@@ -6237,14 +6043,13 @@ class AsyncOscTypedMixin:
             ),
             path_params=path_params,
         )
-        return TypeAdapter(UpdateCaResponse).validate_python(response)
+        return _validate_response(UpdateCaResponse, response)
 
     async def update_dedicated_group(
         self,
         request: UpdateDedicatedGroupRequest | None = None,
     ) -> UpdateDedicatedGroupResponse:
-        if request is None:
-            request = UpdateDedicatedGroupRequest()
+        request = _validate_request(UpdateDedicatedGroupRequest, request)
 
         path_params = {
         }
@@ -6264,14 +6069,13 @@ class AsyncOscTypedMixin:
             ),
             path_params=path_params,
         )
-        return TypeAdapter(UpdateDedicatedGroupResponse).validate_python(response)
+        return _validate_response(UpdateDedicatedGroupResponse, response)
 
     async def update_direct_link_interface(
         self,
         request: UpdateDirectLinkInterfaceRequest | None = None,
     ) -> UpdateDirectLinkInterfaceResponse:
-        if request is None:
-            request = UpdateDirectLinkInterfaceRequest()
+        request = _validate_request(UpdateDirectLinkInterfaceRequest, request)
 
         path_params = {
         }
@@ -6291,14 +6095,13 @@ class AsyncOscTypedMixin:
             ),
             path_params=path_params,
         )
-        return TypeAdapter(UpdateDirectLinkInterfaceResponse).validate_python(response)
+        return _validate_response(UpdateDirectLinkInterfaceResponse, response)
 
     async def update_flexible_gpu(
         self,
         request: UpdateFlexibleGpuRequest | None = None,
     ) -> UpdateFlexibleGpuResponse:
-        if request is None:
-            request = UpdateFlexibleGpuRequest()
+        request = _validate_request(UpdateFlexibleGpuRequest, request)
 
         path_params = {
         }
@@ -6318,14 +6121,13 @@ class AsyncOscTypedMixin:
             ),
             path_params=path_params,
         )
-        return TypeAdapter(UpdateFlexibleGpuResponse).validate_python(response)
+        return _validate_response(UpdateFlexibleGpuResponse, response)
 
     async def update_image(
         self,
         request: UpdateImageRequest | None = None,
     ) -> UpdateImageResponse:
-        if request is None:
-            request = UpdateImageRequest()
+        request = _validate_request(UpdateImageRequest, request)
 
         path_params = {
         }
@@ -6345,14 +6147,13 @@ class AsyncOscTypedMixin:
             ),
             path_params=path_params,
         )
-        return TypeAdapter(UpdateImageResponse).validate_python(response)
+        return _validate_response(UpdateImageResponse, response)
 
     async def update_listener_rule(
         self,
         request: UpdateListenerRuleRequest | None = None,
     ) -> UpdateListenerRuleResponse:
-        if request is None:
-            request = UpdateListenerRuleRequest()
+        request = _validate_request(UpdateListenerRuleRequest, request)
 
         path_params = {
         }
@@ -6372,14 +6173,13 @@ class AsyncOscTypedMixin:
             ),
             path_params=path_params,
         )
-        return TypeAdapter(UpdateListenerRuleResponse).validate_python(response)
+        return _validate_response(UpdateListenerRuleResponse, response)
 
     async def update_load_balancer(
         self,
         request: UpdateLoadBalancerRequest | None = None,
     ) -> UpdateLoadBalancerResponse:
-        if request is None:
-            request = UpdateLoadBalancerRequest()
+        request = _validate_request(UpdateLoadBalancerRequest, request)
 
         path_params = {
         }
@@ -6399,14 +6199,13 @@ class AsyncOscTypedMixin:
             ),
             path_params=path_params,
         )
-        return TypeAdapter(UpdateLoadBalancerResponse).validate_python(response)
+        return _validate_response(UpdateLoadBalancerResponse, response)
 
     async def update_net(
         self,
         request: UpdateNetRequest | None = None,
     ) -> UpdateNetResponse:
-        if request is None:
-            request = UpdateNetRequest()
+        request = _validate_request(UpdateNetRequest, request)
 
         path_params = {
         }
@@ -6426,14 +6225,13 @@ class AsyncOscTypedMixin:
             ),
             path_params=path_params,
         )
-        return TypeAdapter(UpdateNetResponse).validate_python(response)
+        return _validate_response(UpdateNetResponse, response)
 
     async def update_net_access_point(
         self,
         request: UpdateNetAccessPointRequest | None = None,
     ) -> UpdateNetAccessPointResponse:
-        if request is None:
-            request = UpdateNetAccessPointRequest()
+        request = _validate_request(UpdateNetAccessPointRequest, request)
 
         path_params = {
         }
@@ -6453,14 +6251,13 @@ class AsyncOscTypedMixin:
             ),
             path_params=path_params,
         )
-        return TypeAdapter(UpdateNetAccessPointResponse).validate_python(response)
+        return _validate_response(UpdateNetAccessPointResponse, response)
 
     async def update_nic(
         self,
         request: UpdateNicRequest | None = None,
     ) -> UpdateNicResponse:
-        if request is None:
-            request = UpdateNicRequest()
+        request = _validate_request(UpdateNicRequest, request)
 
         path_params = {
         }
@@ -6480,14 +6277,13 @@ class AsyncOscTypedMixin:
             ),
             path_params=path_params,
         )
-        return TypeAdapter(UpdateNicResponse).validate_python(response)
+        return _validate_response(UpdateNicResponse, response)
 
     async def update_route(
         self,
         request: UpdateRouteRequest | None = None,
     ) -> UpdateRouteResponse:
-        if request is None:
-            request = UpdateRouteRequest()
+        request = _validate_request(UpdateRouteRequest, request)
 
         path_params = {
         }
@@ -6507,14 +6303,13 @@ class AsyncOscTypedMixin:
             ),
             path_params=path_params,
         )
-        return TypeAdapter(UpdateRouteResponse).validate_python(response)
+        return _validate_response(UpdateRouteResponse, response)
 
     async def update_route_propagation(
         self,
         request: UpdateRoutePropagationRequest | None = None,
     ) -> UpdateRoutePropagationResponse:
-        if request is None:
-            request = UpdateRoutePropagationRequest()
+        request = _validate_request(UpdateRoutePropagationRequest, request)
 
         path_params = {
         }
@@ -6534,14 +6329,13 @@ class AsyncOscTypedMixin:
             ),
             path_params=path_params,
         )
-        return TypeAdapter(UpdateRoutePropagationResponse).validate_python(response)
+        return _validate_response(UpdateRoutePropagationResponse, response)
 
     async def update_route_table_link(
         self,
         request: UpdateRouteTableLinkRequest | None = None,
     ) -> UpdateRouteTableLinkResponse:
-        if request is None:
-            request = UpdateRouteTableLinkRequest()
+        request = _validate_request(UpdateRouteTableLinkRequest, request)
 
         path_params = {
         }
@@ -6561,14 +6355,13 @@ class AsyncOscTypedMixin:
             ),
             path_params=path_params,
         )
-        return TypeAdapter(UpdateRouteTableLinkResponse).validate_python(response)
+        return _validate_response(UpdateRouteTableLinkResponse, response)
 
     async def update_server_certificate(
         self,
         request: UpdateServerCertificateRequest | None = None,
     ) -> UpdateServerCertificateResponse:
-        if request is None:
-            request = UpdateServerCertificateRequest()
+        request = _validate_request(UpdateServerCertificateRequest, request)
 
         path_params = {
         }
@@ -6588,14 +6381,13 @@ class AsyncOscTypedMixin:
             ),
             path_params=path_params,
         )
-        return TypeAdapter(UpdateServerCertificateResponse).validate_python(response)
+        return _validate_response(UpdateServerCertificateResponse, response)
 
     async def update_snapshot(
         self,
         request: UpdateSnapshotRequest | None = None,
     ) -> UpdateSnapshotResponse:
-        if request is None:
-            request = UpdateSnapshotRequest()
+        request = _validate_request(UpdateSnapshotRequest, request)
 
         path_params = {
         }
@@ -6615,14 +6407,13 @@ class AsyncOscTypedMixin:
             ),
             path_params=path_params,
         )
-        return TypeAdapter(UpdateSnapshotResponse).validate_python(response)
+        return _validate_response(UpdateSnapshotResponse, response)
 
     async def update_subnet(
         self,
         request: UpdateSubnetRequest | None = None,
     ) -> UpdateSubnetResponse:
-        if request is None:
-            request = UpdateSubnetRequest()
+        request = _validate_request(UpdateSubnetRequest, request)
 
         path_params = {
         }
@@ -6642,14 +6433,13 @@ class AsyncOscTypedMixin:
             ),
             path_params=path_params,
         )
-        return TypeAdapter(UpdateSubnetResponse).validate_python(response)
+        return _validate_response(UpdateSubnetResponse, response)
 
     async def update_user(
         self,
         request: UpdateUserRequest | None = None,
     ) -> UpdateUserResponse:
-        if request is None:
-            request = UpdateUserRequest()
+        request = _validate_request(UpdateUserRequest, request)
 
         path_params = {
         }
@@ -6669,14 +6459,13 @@ class AsyncOscTypedMixin:
             ),
             path_params=path_params,
         )
-        return TypeAdapter(UpdateUserResponse).validate_python(response)
+        return _validate_response(UpdateUserResponse, response)
 
     async def update_user_group(
         self,
         request: UpdateUserGroupRequest | None = None,
     ) -> UpdateUserGroupResponse:
-        if request is None:
-            request = UpdateUserGroupRequest()
+        request = _validate_request(UpdateUserGroupRequest, request)
 
         path_params = {
         }
@@ -6696,14 +6485,13 @@ class AsyncOscTypedMixin:
             ),
             path_params=path_params,
         )
-        return TypeAdapter(UpdateUserGroupResponse).validate_python(response)
+        return _validate_response(UpdateUserGroupResponse, response)
 
     async def update_vm(
         self,
         request: UpdateVmRequest | None = None,
     ) -> UpdateVmResponse:
-        if request is None:
-            request = UpdateVmRequest()
+        request = _validate_request(UpdateVmRequest, request)
 
         path_params = {
         }
@@ -6723,14 +6511,13 @@ class AsyncOscTypedMixin:
             ),
             path_params=path_params,
         )
-        return TypeAdapter(UpdateVmResponse).validate_python(response)
+        return _validate_response(UpdateVmResponse, response)
 
     async def update_vm_group(
         self,
         request: UpdateVmGroupRequest | None = None,
     ) -> UpdateVmGroupResponse:
-        if request is None:
-            request = UpdateVmGroupRequest()
+        request = _validate_request(UpdateVmGroupRequest, request)
 
         path_params = {
         }
@@ -6750,14 +6537,13 @@ class AsyncOscTypedMixin:
             ),
             path_params=path_params,
         )
-        return TypeAdapter(UpdateVmGroupResponse).validate_python(response)
+        return _validate_response(UpdateVmGroupResponse, response)
 
     async def update_vm_template(
         self,
         request: UpdateVmTemplateRequest | None = None,
     ) -> UpdateVmTemplateResponse:
-        if request is None:
-            request = UpdateVmTemplateRequest()
+        request = _validate_request(UpdateVmTemplateRequest, request)
 
         path_params = {
         }
@@ -6777,14 +6563,13 @@ class AsyncOscTypedMixin:
             ),
             path_params=path_params,
         )
-        return TypeAdapter(UpdateVmTemplateResponse).validate_python(response)
+        return _validate_response(UpdateVmTemplateResponse, response)
 
     async def update_volume(
         self,
         request: UpdateVolumeRequest | None = None,
     ) -> UpdateVolumeResponse:
-        if request is None:
-            request = UpdateVolumeRequest()
+        request = _validate_request(UpdateVolumeRequest, request)
 
         path_params = {
         }
@@ -6804,14 +6589,13 @@ class AsyncOscTypedMixin:
             ),
             path_params=path_params,
         )
-        return TypeAdapter(UpdateVolumeResponse).validate_python(response)
+        return _validate_response(UpdateVolumeResponse, response)
 
     async def update_vpn_connection(
         self,
         request: UpdateVpnConnectionRequest | None = None,
     ) -> UpdateVpnConnectionResponse:
-        if request is None:
-            request = UpdateVpnConnectionRequest()
+        request = _validate_request(UpdateVpnConnectionRequest, request)
 
         path_params = {
         }
@@ -6831,4 +6615,4 @@ class AsyncOscTypedMixin:
             ),
             path_params=path_params,
         )
-        return TypeAdapter(UpdateVpnConnectionResponse).validate_python(response)
+        return _validate_response(UpdateVpnConnectionResponse, response)

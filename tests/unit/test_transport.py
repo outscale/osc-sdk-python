@@ -4,6 +4,12 @@ import httpx
 import pytest
 
 from osc_sdk_python.credentials import Profile
+from osc_sdk_python.exceptions import (
+    SdkClientError,
+    SdkConfigurationError,
+    SdkServerError,
+    SdkTransportError,
+)
 from osc_sdk_python.runtime.transport import (
     AsyncSdkTransport,
     RetryPolicy,
@@ -86,6 +92,18 @@ def test_sdk_auth_adds_signed_headers():
     )
 
 
+def test_sdk_auth_requires_signed_credentials():
+    auth = FixedDateSdkAuth(Profile(region="eu-west-2"), service="api")
+    request = httpx.Request(
+        "POST",
+        "https://api.eu-west-2.outscale.com/ReadVms",
+        content="{}",
+    )
+
+    with pytest.raises(SdkConfigurationError):
+        next(auth.auth_flow(request))
+
+
 def test_sdk_auth_adds_basic_auth_headers():
     auth = FixedDateSdkAuth(
         Profile(login="user@example.com", password="secret", region="eu-west-2"),
@@ -166,11 +184,12 @@ def test_transport_retries_connection_error_until_max_retries():
     )
 
     with patch("time.sleep") as sleep:
-        with pytest.raises(httpx.ConnectError):
+        with pytest.raises(SdkTransportError) as exc_info:
             transport.handle_request(request)
 
     assert len(transport._transport.requests) == 3
     assert sleep.call_count == 2
+    assert isinstance(exc_info.value.__cause__, httpx.ConnectError)
 
 
 def test_transport_retries_timeout_until_max_retries():
@@ -185,11 +204,25 @@ def test_transport_retries_timeout_until_max_retries():
     )
 
     with patch("time.sleep") as sleep:
-        with pytest.raises(httpx.TimeoutException):
+        with pytest.raises(SdkTransportError) as exc_info:
             transport.handle_request(request)
 
     assert len(transport._transport.requests) == 3
     assert sleep.call_count == 2
+    assert isinstance(exc_info.value.__cause__, httpx.TimeoutException)
+
+
+def test_transport_wraps_httpx_error_without_request():
+    transport = SdkTransport(retry_policy=RetryPolicy(max_retries=0))
+    request = httpx.Request("POST", "https://example.test/ReadVms")
+    transport._transport = SequenceTransport([httpx.ReadTimeout("timed out")])
+
+    with pytest.raises(SdkTransportError) as exc_info:
+        transport.handle_request(request)
+
+    assert exc_info.value.request is None
+    assert exc_info.value.response is None
+    assert isinstance(exc_info.value.__cause__, httpx.ReadTimeout)
 
 
 def test_transport_uses_backoff_when_retry_after_missing():
@@ -261,7 +294,7 @@ def test_transport_error_uses_original_request_when_response_has_none():
         [text_response(500, text="upstream failure")]
     )
 
-    with pytest.raises(httpx.HTTPStatusError) as exc_info:
+    with pytest.raises(SdkServerError) as exc_info:
         transport.handle_request(request)
 
     assert exc_info.value.request is request
@@ -273,7 +306,7 @@ def test_transport_does_not_retry_400():
     transport = SdkTransport(retry_policy=RetryPolicy(max_retries=3))
     transport._transport = SequenceTransport([response(400, request)])
 
-    with pytest.raises(httpx.HTTPStatusError):
+    with pytest.raises(SdkClientError):
         transport.handle_request(request)
 
     assert len(transport._transport.requests) == 1
@@ -335,11 +368,30 @@ def test_async_transport_retries_connection_error_until_max_retries():
         )
 
         with patch("asyncio.sleep", new_callable=AsyncMock) as sleep:
-            with pytest.raises(httpx.ConnectError):
+            with pytest.raises(SdkTransportError) as exc_info:
                 await transport.handle_async_request(request)
 
         assert len(transport._transport.requests) == 3
         assert sleep.call_count == 2
+        assert isinstance(exc_info.value.__cause__, httpx.ConnectError)
+
+    import asyncio
+
+    asyncio.run(run())
+
+
+def test_async_transport_wraps_httpx_error_without_request():
+    async def run():
+        transport = AsyncSdkTransport(retry_policy=RetryPolicy(max_retries=0))
+        request = httpx.Request("POST", "https://example.test/ReadVms")
+        transport._transport = AsyncSequenceTransport([httpx.ReadTimeout("timed out")])
+
+        with pytest.raises(SdkTransportError) as exc_info:
+            await transport.handle_async_request(request)
+
+        assert exc_info.value.request is None
+        assert exc_info.value.response is None
+        assert isinstance(exc_info.value.__cause__, httpx.ReadTimeout)
 
     import asyncio
 
@@ -359,11 +411,12 @@ def test_async_transport_retries_timeout_until_max_retries():
         )
 
         with patch("asyncio.sleep", new_callable=AsyncMock) as sleep:
-            with pytest.raises(httpx.TimeoutException):
+            with pytest.raises(SdkTransportError) as exc_info:
                 await transport.handle_async_request(request)
 
         assert len(transport._transport.requests) == 3
         assert sleep.call_count == 2
+        assert isinstance(exc_info.value.__cause__, httpx.TimeoutException)
 
     import asyncio
 

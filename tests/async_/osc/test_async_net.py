@@ -1,9 +1,7 @@
 import asyncio
 import unittest
 
-import httpx
-
-from osc_sdk_python import AsyncClient
+from osc_sdk_python import AsyncClient, SdkClientError
 from osc_sdk_python.generated.osc import CreateNetRequest
 
 
@@ -11,7 +9,7 @@ class TestAsyncNet(unittest.TestCase):
     def test_creation_error(self):
         async def run():
             async with AsyncClient() as client:
-                with self.assertRaises(httpx.HTTPStatusError) as cm:
+                with self.assertRaises(SdkClientError) as cm:
                     await client.osc.create_net(
                         CreateNetRequest(ip_range="142.42.42.42/32")
                     )

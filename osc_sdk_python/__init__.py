@@ -5,6 +5,18 @@ from .outscale_gateway import AsyncClient
 from .version import get_version
 from .problem import Problem, ProblemDecoder
 from .runtime.transport import RateLimiter
+from .exceptions import (
+    SdkClientError,
+    SdkConfigurationError,
+    SdkError,
+    SdkHttpError,
+    SdkOperationError,
+    SdkResponseError,
+    SdkServerError,
+    SdkTransportError,
+    SdkUsageError,
+    SdkValidationError,
+)
 
 __author__ = "Outscale SAS"
 __version__ = get_version()
@@ -18,4 +30,14 @@ __all__ = [
     "Problem",
     "ProblemDecoder",
     "RateLimiter",
+    "SdkError",
+    "SdkUsageError",
+    "SdkConfigurationError",
+    "SdkValidationError",
+    "SdkOperationError",
+    "SdkTransportError",
+    "SdkHttpError",
+    "SdkClientError",
+    "SdkServerError",
+    "SdkResponseError",
 ]

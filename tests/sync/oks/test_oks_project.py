@@ -1,9 +1,7 @@
 import time
 import unittest
 
-import httpx
-
-from osc_sdk_python import Client
+from osc_sdk_python import Client, SdkHttpError
 from tests.integration_utils import get_tagged_name, log_test_step
 
 
@@ -29,7 +27,7 @@ def delete_project_when_ready(client, project_id):
             delete_response = client.oks.DeleteProject(project_id=project_id)
             log_test_step("Deleted OKS project {}".format(project_id))
             return delete_response
-        except httpx.HTTPStatusError as err:
+        except SdkHttpError as err:
             if err.response is None or err.response.status_code != 503:
                 raise
             log_test_step(
@@ -92,7 +90,9 @@ class TestOksProject(unittest.TestCase):
                 self.assertIsInstance(updated_project, dict)
                 self.assertEqual(updated_project.get("id"), project_id)
                 self.assertEqual(updated_project.get("name"), project_name)
-                self.assertEqual(updated_project.get("description"), updated_description)
+                self.assertEqual(
+                    updated_project.get("description"), updated_description
+                )
             finally:
                 if project_id:
                     log_test_step("Deleting OKS project {}".format(project_id))

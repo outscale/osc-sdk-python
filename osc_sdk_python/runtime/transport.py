@@ -13,6 +13,14 @@ from urllib.parse import urlencode
 import httpx
 
 from ..problem import LegacyProblem, LegacyProblemDecoder, Problem, ProblemDecoder
+from ..exceptions import (
+    SdkClientError,
+    SdkConfigurationError,
+    SdkHttpError,
+    SdkServerError,
+    SdkTransportError,
+    SdkUsageError,
+)
 from ..version import get_version
 
 MAX_RETRIES = 3
@@ -106,7 +114,12 @@ class SdkAuth(httpx.Auth):
             request.headers.update(self.forge_headers_signed(request))
         yield request
 
+    def ensure_signed_auth_configured(self):
+        if self.access_key is None or self.secret_key is None:
+            raise SdkConfigurationError("access key and secret key must be set")
+
     def forge_headers_signed(self, request: httpx.Request):
+        self.ensure_signed_auth_configured()
         date_iso, date = self.build_dates()
         credential_scope = f"{date}/{self.region}/{self.service}/osc4_request"
         canonical_request = self.build_canonical_request(request, date_iso)
@@ -195,7 +208,7 @@ class SdkAuth(httpx.Auth):
 
     def get_basic_auth_header(self):
         if not self.is_basic_auth_configured():
-            raise Exception("email or password not set")
+            raise SdkUsageError("email or password not set")
         creds = f"{self.login}:{self.password}"
         b64_creds = base64.b64encode(creds.encode("utf-8")).decode("utf-8")
         date_iso, _ = self.build_dates()
@@ -276,10 +289,17 @@ def get_default_reason(response: httpx.Response) -> str:
 def _response_url(response: httpx.Response, request: httpx.Request | None) -> str:
     try:
         return str(response.url)
-    except RuntimeError:
+    except (AttributeError, RuntimeError):
         if request is not None:
             return str(request.url)
         return ""
+
+
+def _error_attr(error: Exception, name: str):
+    try:
+        return getattr(error, name)
+    except (AttributeError, RuntimeError):
+        return None
 
 
 def raise_for_status(
@@ -308,23 +328,27 @@ def raise_for_status(
             http_error_msg = f"Client Error --> {problem.msg()}"
         else:
             http_error_msg = (
-                f"{response.status_code} Client Error: {reason} "
-                f"for url: {url}"
+                f"{response.status_code} Client Error: {reason} for url: {url}"
             )
     elif 500 <= response.status_code < 600:
         if isinstance(problem, (LegacyProblem, Problem)):
             http_error_msg = f"Server Error --> {problem.msg()}"
         else:
             http_error_msg = (
-                f"{response.status_code} Server Error: {reason} "
-                f"for url: {url}"
+                f"{response.status_code} Server Error: {reason} for url: {url}"
             )
 
     if http_error_msg:
-        raise httpx.HTTPStatusError(
+        error_cls = (
+            SdkClientError if 400 <= response.status_code < 500 else SdkServerError
+        )
+        raise error_cls(
             http_error_msg,
+            status_code=response.status_code,
             request=request or response.request,
             response=response,
+            problem=problem,
+            url=url,
         )
 
 
@@ -345,9 +369,15 @@ class SdkTransport(httpx.BaseTransport):
                 response.read()
                 raise_for_status(response, request)
                 return response
-            except httpx.HTTPError as error:
+            except (httpx.HTTPError, SdkHttpError) as error:
                 if not self.retry_policy.should_retry(error, attempt):
-                    raise
+                    if isinstance(error, SdkHttpError):
+                        raise
+                    raise SdkTransportError(
+                        str(error),
+                        request=_error_attr(error, "request"),
+                        response=_error_attr(error, "response"),
+                    ) from error
                 sleep_time = self.retry_policy.retry_after_time(error)
                 if sleep_time is None:
                     sleep_time = self.retry_policy.backoff_time(attempt)
@@ -375,9 +405,15 @@ class AsyncSdkTransport(httpx.AsyncBaseTransport):
                 await response.aread()
                 raise_for_status(response, request)
                 return response
-            except httpx.HTTPError as error:
+            except (httpx.HTTPError, SdkHttpError) as error:
                 if not self.retry_policy.should_retry(error, attempt):
-                    raise
+                    if isinstance(error, SdkHttpError):
+                        raise
+                    raise SdkTransportError(
+                        str(error),
+                        request=_error_attr(error, "request"),
+                        response=_error_attr(error, "response"),
+                    ) from error
                 sleep_time = self.retry_policy.retry_after_time(error)
                 if sleep_time is None:
                     sleep_time = self.retry_policy.backoff_time(attempt)

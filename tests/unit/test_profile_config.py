@@ -3,6 +3,7 @@ import json
 import pytest
 
 from osc_sdk_python.credentials import Profile
+from osc_sdk_python.exceptions import SdkConfigurationError
 
 
 def test_default_region_and_protocol_are_used(monkeypatch):
@@ -81,7 +82,7 @@ def test_missing_explicit_profile_raises(tmp_path):
     config = tmp_path / "config.json"
     config.write_text(json.dumps({"default": {"access_key": "ak"}}))
 
-    with pytest.raises(AttributeError):
+    with pytest.raises(SdkConfigurationError):
         Profile.from_standard_configuration(str(config), "missing")
 
 
@@ -90,7 +91,7 @@ def test_malformed_config_raises(tmp_path):
     config = tmp_path / "config.json"
     config.write_text("{bad-json")
 
-    with pytest.raises(json.JSONDecodeError):
+    with pytest.raises(SdkConfigurationError):
         Profile.from_standard_configuration(str(config), "default")
 
 
@@ -99,4 +100,6 @@ def test_osc_and_oks_default_endpoints_are_separated():
     profile = Profile(region="eu-west-2", protocol="https")
 
     assert profile.get_endpoint("api") == "https://api.eu-west-2.outscale.com/api/v1"
-    assert profile.get_endpoint("oks") == "https://api.eu-west-2.oks.outscale.com/api/v2"
+    assert (
+        profile.get_endpoint("oks") == "https://api.eu-west-2.oks.outscale.com/api/v2"
+    )

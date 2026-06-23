@@ -2,6 +2,8 @@ from dataclasses import dataclass, field
 import re
 from urllib.parse import quote
 
+from ..exceptions import SdkValidationError
+
 
 PATH_PLACEHOLDER_RE = re.compile(r"{([^{}]+)}")
 
@@ -20,7 +22,7 @@ class RequestSpec:
             path = path.replace("{" + name + "}", quote(str(value), safe=""))
         missing = PATH_PLACEHOLDER_RE.findall(path)
         if missing:
-            raise ValueError(
+            raise SdkValidationError(
                 "Missing path parameter(s): {}".format(", ".join(sorted(set(missing))))
             )
         return path

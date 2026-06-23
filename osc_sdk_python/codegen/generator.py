@@ -26,7 +26,9 @@ def _service_label(package_name: str) -> str:
 
 
 def _service_class_name(package_name: str) -> str:
-    return "".join(part.capitalize() for part in re.split(r"[_\W]+", package_name) if part)
+    return "".join(
+        part.capitalize() for part in re.split(r"[_\W]+", package_name) if part
+    )
 
 
 def _mixin_name(package_name: str) -> str:
@@ -84,7 +86,7 @@ def render_models(
         + "from typing import Any, Literal\n\n"
         + "from pydantic import BaseModel, ConfigDict, Field\n\n\n"
         + "class GeneratedModel(BaseModel):\n"
-        + "    model_config = ConfigDict(populate_by_name=True, extra=\"allow\")\n\n\n"
+        + '    model_config = ConfigDict(populate_by_name=True, extra="allow")\n\n\n'
         + "\n\n".join(models)
         + "\n"
     )
@@ -115,8 +117,9 @@ def render_async_client(
         _header(package_name),
         "from typing import Any",
         "",
-        "from pydantic import TypeAdapter",
+        "from pydantic import TypeAdapter, ValidationError",
         "",
+        "from osc_sdk_python.exceptions import SdkResponseError, SdkValidationError",
         "from osc_sdk_python.runtime.request import RequestSpec",
         "from .models import (",
         model_imports,
@@ -124,9 +127,27 @@ def render_async_client(
         "",
         "",
         "def _dump_json_body(value: Any) -> Any:",
-        "    if hasattr(value, \"model_dump\"):",
+        '    if hasattr(value, "model_dump"):',
         "        return value.model_dump(exclude_none=True, by_alias=True)",
         "    return value",
+        "",
+        "",
+        "def _validate_request(model: type, value: Any) -> Any:",
+        "    try:",
+        "        if value is None:",
+        "            return model()",
+        "        if isinstance(value, model):",
+        "            return value",
+        "        return TypeAdapter(model).validate_python(value)",
+        "    except ValidationError as error:",
+        "        raise SdkValidationError(str(error)) from error",
+        "",
+        "",
+        "def _validate_response(model: type, value: Any) -> Any:",
+        "    try:",
+        "        return TypeAdapter(model).validate_python(value)",
+        "    except ValidationError as error:",
+        "        raise SdkResponseError(str(error)) from error",
         "",
         "",
         f"class {_mixin_name(package_name)}:",
@@ -155,8 +176,7 @@ def render_async_client(
         if request_is_used:
             lines.extend(
                 [
-                    "        if request is None:",
-                    f"            request = {operation.request_model.name}()",
+                    f"        request = _validate_request({operation.request_model.name}, request)",
                     "",
                 ]
             )
@@ -168,22 +188,26 @@ def render_async_client(
                 ]
             )
         lines.append("        path_params = {")
-        lines.extend(f"            {_field_dump(field)}," for field in operation.path_fields)
+        lines.extend(
+            f"            {_field_dump(field)}," for field in operation.path_fields
+        )
         lines.extend(
             [
                 "        }",
                 "        query_params = {",
             ]
         )
-        lines.extend(f"            {_field_dump(field)}," for field in operation.query_fields)
+        lines.extend(
+            f"            {_field_dump(field)}," for field in operation.query_fields
+        )
         lines.extend(
             [
                 "        }",
                 "        response = await self.call.request(",
                 "            RequestSpec(",
-                f"                service=\"{service}\",",
-                f"                method=\"{operation.http_method}\",",
-                f"                path=\"{operation.path}\",",
+                f'                service="{service}",',
+                f'                method="{operation.http_method}",',
+                f'                path="{operation.path}",',
                 f"                json_body={json_body},",
                 "                query_params={",
                 "                    key: value",
@@ -193,7 +217,7 @@ def render_async_client(
                 "            ),",
                 "            path_params=path_params,",
                 "        )",
-                f"        return TypeAdapter({operation.response_model}).validate_python(response)",
+                f"        return _validate_response({operation.response_model}, response)",
                 "",
             ]
         )
@@ -220,7 +244,7 @@ def render_init(
             ")",
             "",
             "__all__ = [",
-            f"    \"{mixin_name}\",",
+            f'    "{mixin_name}",',
         ]
     )
     lines.extend(f"    {name!r}," for name in model_names)
@@ -242,11 +266,15 @@ def generate(
     schema_models = adapter.schema_models()
 
     output_dir.mkdir(parents=True, exist_ok=True)
-    (output_dir / "models.py").write_text(render_models(operations, schema_models, package_name))
+    (output_dir / "models.py").write_text(
+        render_models(operations, schema_models, package_name)
+    )
     (output_dir / "async_client.py").write_text(
         render_async_client(operations, service, package_name)
     )
-    (output_dir / "__init__.py").write_text(render_init(operations, schema_models, package_name))
+    (output_dir / "__init__.py").write_text(
+        render_init(operations, schema_models, package_name)
+    )
 
 
 def generate_all(
@@ -266,7 +294,9 @@ def generate_all(
         if selected and package_name not in selected:
             continue
         generate(
-            service_dir / "cfg.yaml" if (service_dir / "cfg.yaml").exists() else service_dir / "api.yaml",
+            service_dir / "cfg.yaml"
+            if (service_dir / "cfg.yaml").exists()
+            else service_dir / "api.yaml",
             root / "generated" / package_name,
             DEFAULT_SERVICE_NAMES.get(package_name, package_name),
             package_name,

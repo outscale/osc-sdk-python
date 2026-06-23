@@ -1,5 +1,7 @@
 import json
 
+from .exceptions import SdkHttpError, SdkValidationError
+
 
 class ProblemDecoder(json.JSONDecoder):
     def decode(self, s):
@@ -17,8 +19,11 @@ class ProblemDecoder(json.JSONDecoder):
         return Problem(type_, status, title, detail, instance, **data)
 
 
-class Problem(Exception):
+class Problem(SdkHttpError):
     def __init__(self, type_, status, title, detail, instance, **kwargs):
+        super().__init__(
+            title or detail or "API problem", status_code=status, problem=self
+        )
         self._type = type_ or "about:blank"
         self.status = status
         self.title = title
@@ -28,7 +33,9 @@ class Problem(Exception):
 
         for k in self.extras:
             if k in ["type", "status", "title", "detail", "instance"]:
-                raise ValueError(f"Reserved key '{k}' used in Problem extra arguments.")
+                raise SdkValidationError(
+                    f"Reserved key '{k}' used in Problem extra arguments."
+                )
 
     def __str__(self):
         return self.title
@@ -80,8 +87,14 @@ class LegacyProblemDecoder(json.JSONDecoder):
         return LegacyProblem(None, error_code, code_type, request_id, None)
 
 
-class LegacyProblem(Exception):
+class LegacyProblem(SdkHttpError):
     def __init__(self, status, error_code, code_type, request_id, url):
+        super().__init__(
+            error_code or "API problem",
+            status_code=status,
+            problem=self,
+            url=url,
+        )
         self.status = status
         self.error_code = error_code
         self.code_type = code_type

@@ -3,7 +3,7 @@ from unittest.mock import Mock
 
 import pytest
 
-from osc_sdk_python import AsyncClient, Client
+from osc_sdk_python import AsyncClient, Client, SdkUsageError
 
 
 def test_client_close_closes_service_sessions():
@@ -32,6 +32,7 @@ def test_client_context_manager_closes_service_sessions():
 
 def test_async_client_close_closes_service_clients():
     """Test AsyncClient.close closes OSC and OKS async clients"""
+
     async def run():
         client = AsyncClient()
 
@@ -45,6 +46,7 @@ def test_async_client_close_closes_service_clients():
 
 def test_async_client_context_manager_closes_service_clients():
     """Test AsyncClient context manager closes OSC and OKS async clients"""
+
     async def run():
         async with AsyncClient() as client:
             osc_client = client.osc.call.client
@@ -58,6 +60,6 @@ def test_async_client_context_manager_closes_service_clients():
 
 def test_async_client_rejects_sync_context_manager():
     """Test AsyncClient cannot be used with a sync context manager"""
-    with pytest.raises(TypeError):
+    with pytest.raises(SdkUsageError):
         with AsyncClient():
             pass

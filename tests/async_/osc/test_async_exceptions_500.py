@@ -7,9 +7,7 @@ import unittest
 from http.server import BaseHTTPRequestHandler
 from socketserver import TCPServer
 
-import httpx
-
-from osc_sdk_python import AsyncClient
+from osc_sdk_python import AsyncClient, SdkServerError
 from osc_sdk_python.generated.osc import ReadVmsRequest
 
 
@@ -60,7 +58,7 @@ class TestAsyncServerError(unittest.TestCase):
             with EnvironManager():
                 os.environ["OSC_ENDPOINT_API"] = "http://127.0.0.1:8000"
                 async with AsyncClient() as client:
-                    with self.assertRaises(httpx.HTTPStatusError):
+                    with self.assertRaises(SdkServerError):
                         await client.osc.read_vms(ReadVmsRequest())
 
         asyncio.run(run())

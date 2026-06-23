@@ -1,9 +1,7 @@
 import asyncio
 import unittest
 
-import httpx
-
-from osc_sdk_python import AsyncClient
+from osc_sdk_python import AsyncClient, SdkHttpError
 from osc_sdk_python.generated.oks import (
     CreateProjectRequest,
     DeleteProjectRequest,
@@ -25,7 +23,9 @@ PROJECT_READY_STATUS = "ready"
 
 async def wait_project_ready(client, project_id):
     for _ in range(36):
-        response = await client.oks.get_project(GetProjectRequest(project_id=project_id))
+        response = await client.oks.get_project(
+            GetProjectRequest(project_id=project_id)
+        )
         project = response.project
         log_test_step(
             "OKS project {} status={} (async)".format(project_id, project.status)
@@ -45,7 +45,7 @@ async def delete_project_when_ready(client, project_id):
             )
             log_test_step("Deleted OKS project {} (async)".format(project_id))
             return delete_response
-        except httpx.HTTPStatusError as err:
+        except SdkHttpError as err:
             if err.response is None or err.response.status_code != 503:
                 raise
             log_test_step(
@@ -71,7 +71,9 @@ class TestAsyncOksProject(unittest.TestCase):
                     template_response = await client.oks.get_project_template(
                         GetProjectTemplateRequest()
                     )
-                    self.assertIsInstance(template_response, TemplateResponse_ProjectInput)
+                    self.assertIsInstance(
+                        template_response, TemplateResponse_ProjectInput
+                    )
                     project_input = template_response.template.model_copy(
                         update={
                             "name": project_name,
@@ -81,7 +83,9 @@ class TestAsyncOksProject(unittest.TestCase):
                     )
                     self.assertIsInstance(project_input, ProjectInput)
 
-                    log_test_step("Creating OKS project {} (async)".format(project_name))
+                    log_test_step(
+                        "Creating OKS project {} (async)".format(project_name)
+                    )
                     create_response = await client.oks.create_project(
                         CreateProjectRequest(body=project_input)
                     )
@@ -125,7 +129,9 @@ class TestAsyncOksProject(unittest.TestCase):
                     self.assertEqual(updated_project.description, updated_description)
                 finally:
                     if project_id:
-                        log_test_step("Deleting OKS project {} (async)".format(project_id))
+                        log_test_step(
+                            "Deleting OKS project {} (async)".format(project_id)
+                        )
                         delete_response = await delete_project_when_ready(
                             client, project_id
                         )

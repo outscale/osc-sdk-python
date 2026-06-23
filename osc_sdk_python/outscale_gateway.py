@@ -1,28 +1,29 @@
 import os
-from .runtime.call import (
-    Call,
-    AsyncCall
-)
+from .runtime.call import Call, AsyncCall
 from .runtime.request import RequestSpec
 
-# Bootstrap logic for generated mixins. 
+# Bootstrap logic for generated mixins.
 # This allows the SDK to load even if specific service code isn't generated yet.
 try:
     from .generated.oks import AsyncOksTypedMixin
 except (ImportError, ModuleNotFoundError):
+
     class AsyncOksTypedMixin:
         pass
+
 
 try:
     from .generated.osc import AsyncOscTypedMixin
 except (ImportError, ModuleNotFoundError):
+
     class AsyncOscTypedMixin:
         pass
 
-# Replicate this pattern here for future services (e.g., EIM, FCU) 
+# Replicate this pattern here for future services (e.g., EIM, FCU)
 # if they are generated into separate mixins.
 
 from .runtime.transport import RateLimiter
+from .exceptions import SdkOperationError, SdkValidationError, SdkUsageError
 import ruamel.yaml
 from .version import get_version
 import warnings
@@ -40,19 +41,19 @@ OKS_SPEC = os.path.join(RESOURCE_DIR, "oks/api.yaml")
 # if they are generated into separate mixins.
 
 
-class ActionNotExists(NotImplementedError):
+class ActionNotExists(SdkOperationError):
     pass
 
 
-class ParameterNotValid(NotImplementedError):
+class ParameterNotValid(SdkValidationError):
     pass
 
 
-class ParameterIsRequired(NotImplementedError):
+class ParameterIsRequired(SdkValidationError):
     pass
 
 
-class ParameterHasWrongType(NotImplementedError):
+class ParameterHasWrongType(SdkValidationError):
     pass
 
 
@@ -256,7 +257,7 @@ class AsyncOpenAPIActionAPI(OpenAPIActionAPI):
         await self.call.close()
 
     def __enter__(self):
-        raise TypeError("AsyncGateway must be used with 'async with'")
+        raise SdkUsageError("AsyncGateway must be used with 'async with'")
 
     def __exit__(self, type, value, traceback):
         return None
@@ -386,7 +387,7 @@ class AsyncOpenAPIPathAPI(OpenAPIPathAPI):
         await self.close()
 
     def __enter__(self):
-        raise TypeError("Async service client must be used with 'async with'")
+        raise SdkUsageError("Async service client must be used with 'async with'")
 
     def __exit__(self, type, value, traceback):
         return None
@@ -452,7 +453,7 @@ class AsyncClient:
         await self.close()
 
     def __enter__(self):
-        raise TypeError("AsyncClient must be used with 'async with'")
+        raise SdkUsageError("AsyncClient must be used with 'async with'")
 
     def __exit__(self, type, value, traceback):
         return None

@@ -6,8 +6,9 @@ Do not edit by hand. Regenerate with:
 
 from typing import Any
 
-from pydantic import TypeAdapter
+from pydantic import TypeAdapter, ValidationError
 
+from osc_sdk_python.exceptions import SdkResponseError, SdkValidationError
 from osc_sdk_python.runtime.request import RequestSpec
 from .models import (
     CPSubregionsResponse,
@@ -67,13 +68,30 @@ def _dump_json_body(value: Any) -> Any:
     return value
 
 
+def _validate_request(model: type, value: Any) -> Any:
+    try:
+        if value is None:
+            return model()
+        if isinstance(value, model):
+            return value
+        return TypeAdapter(model).validate_python(value)
+    except ValidationError as error:
+        raise SdkValidationError(str(error)) from error
+
+
+def _validate_response(model: type, value: Any) -> Any:
+    try:
+        return TypeAdapter(model).validate_python(value)
+    except ValidationError as error:
+        raise SdkResponseError(str(error)) from error
+
+
 class AsyncOksTypedMixin:
     async def list_projects(
         self,
         request: ListProjectsRequest | None = None,
     ) -> ProjectResponseList:
-        if request is None:
-            request = ListProjectsRequest()
+        request = _validate_request(ListProjectsRequest, request)
 
         path_params = {
         }
@@ -100,14 +118,13 @@ class AsyncOksTypedMixin:
             ),
             path_params=path_params,
         )
-        return TypeAdapter(ProjectResponseList).validate_python(response)
+        return _validate_response(ProjectResponseList, response)
 
     async def create_project(
         self,
         request: CreateProjectRequest | None = None,
     ) -> ProjectResponse:
-        if request is None:
-            request = CreateProjectRequest()
+        request = _validate_request(CreateProjectRequest, request)
 
         path_params = {
         }
@@ -127,14 +144,13 @@ class AsyncOksTypedMixin:
             ),
             path_params=path_params,
         )
-        return TypeAdapter(ProjectResponse).validate_python(response)
+        return _validate_response(ProjectResponse, response)
 
     async def get_project(
         self,
         request: GetProjectRequest | None = None,
     ) -> ProjectResponse:
-        if request is None:
-            request = GetProjectRequest()
+        request = _validate_request(GetProjectRequest, request)
 
         path_params = {
             'project_id': request.project_id,
@@ -155,14 +171,13 @@ class AsyncOksTypedMixin:
             ),
             path_params=path_params,
         )
-        return TypeAdapter(ProjectResponse).validate_python(response)
+        return _validate_response(ProjectResponse, response)
 
     async def update_project(
         self,
         request: UpdateProjectRequest | None = None,
     ) -> ProjectResponse:
-        if request is None:
-            request = UpdateProjectRequest()
+        request = _validate_request(UpdateProjectRequest, request)
 
         path_params = {
             'project_id': request.project_id,
@@ -183,14 +198,13 @@ class AsyncOksTypedMixin:
             ),
             path_params=path_params,
         )
-        return TypeAdapter(ProjectResponse).validate_python(response)
+        return _validate_response(ProjectResponse, response)
 
     async def delete_project(
         self,
         request: DeleteProjectRequest | None = None,
     ) -> DetailResponse:
-        if request is None:
-            request = DeleteProjectRequest()
+        request = _validate_request(DeleteProjectRequest, request)
 
         path_params = {
             'project_id': request.project_id,
@@ -211,14 +225,13 @@ class AsyncOksTypedMixin:
             ),
             path_params=path_params,
         )
-        return TypeAdapter(DetailResponse).validate_python(response)
+        return _validate_response(DetailResponse, response)
 
     async def get_project_quotas(
         self,
         request: GetProjectQuotasRequest | None = None,
     ) -> projects__project_schema__QuotasResponse:
-        if request is None:
-            request = GetProjectQuotasRequest()
+        request = _validate_request(GetProjectQuotasRequest, request)
 
         path_params = {
             'project_id': request.project_id,
@@ -239,14 +252,13 @@ class AsyncOksTypedMixin:
             ),
             path_params=path_params,
         )
-        return TypeAdapter(projects__project_schema__QuotasResponse).validate_python(response)
+        return _validate_response(projects__project_schema__QuotasResponse, response)
 
     async def get_project_snapshots(
         self,
         request: GetProjectSnapshotsRequest | None = None,
     ) -> SnapshotsResponse:
-        if request is None:
-            request = GetProjectSnapshotsRequest()
+        request = _validate_request(GetProjectSnapshotsRequest, request)
 
         path_params = {
             'project_id': request.project_id,
@@ -267,14 +279,13 @@ class AsyncOksTypedMixin:
             ),
             path_params=path_params,
         )
-        return TypeAdapter(SnapshotsResponse).validate_python(response)
+        return _validate_response(SnapshotsResponse, response)
 
     async def get_project_public_ips(
         self,
         request: GetProjectPublicIpsRequest | None = None,
     ) -> PublicIpsResponse:
-        if request is None:
-            request = GetProjectPublicIpsRequest()
+        request = _validate_request(GetProjectPublicIpsRequest, request)
 
         path_params = {
             'project_id': request.project_id,
@@ -295,14 +306,13 @@ class AsyncOksTypedMixin:
             ),
             path_params=path_params,
         )
-        return TypeAdapter(PublicIpsResponse).validate_python(response)
+        return _validate_response(PublicIpsResponse, response)
 
     async def get_project_nets(
         self,
         request: GetProjectNetsRequest | None = None,
     ) -> NetsResponse:
-        if request is None:
-            request = GetProjectNetsRequest()
+        request = _validate_request(GetProjectNetsRequest, request)
 
         path_params = {
             'project_id': request.project_id,
@@ -323,14 +333,13 @@ class AsyncOksTypedMixin:
             ),
             path_params=path_params,
         )
-        return TypeAdapter(NetsResponse).validate_python(response)
+        return _validate_response(NetsResponse, response)
 
     async def list_clusters_by_project_id(
         self,
         request: ListClustersByProjectIDRequest | None = None,
     ) -> ClusterResponseList:
-        if request is None:
-            request = ListClustersByProjectIDRequest()
+        request = _validate_request(ListClustersByProjectIDRequest, request)
 
         path_params = {
         }
@@ -358,14 +367,13 @@ class AsyncOksTypedMixin:
             ),
             path_params=path_params,
         )
-        return TypeAdapter(ClusterResponseList).validate_python(response)
+        return _validate_response(ClusterResponseList, response)
 
     async def create_cluster(
         self,
         request: CreateClusterRequest | None = None,
     ) -> ClusterResponse:
-        if request is None:
-            request = CreateClusterRequest()
+        request = _validate_request(CreateClusterRequest, request)
 
         path_params = {
         }
@@ -385,14 +393,13 @@ class AsyncOksTypedMixin:
             ),
             path_params=path_params,
         )
-        return TypeAdapter(ClusterResponse).validate_python(response)
+        return _validate_response(ClusterResponse, response)
 
     async def list_all_clusters(
         self,
         request: ListAllClustersRequest | None = None,
     ) -> ClusterResponseList:
-        if request is None:
-            request = ListAllClustersRequest()
+        request = _validate_request(ListAllClustersRequest, request)
 
         path_params = {
         }
@@ -419,14 +426,13 @@ class AsyncOksTypedMixin:
             ),
             path_params=path_params,
         )
-        return TypeAdapter(ClusterResponseList).validate_python(response)
+        return _validate_response(ClusterResponseList, response)
 
     async def get_cluster(
         self,
         request: GetClusterRequest | None = None,
     ) -> ClusterResponse:
-        if request is None:
-            request = GetClusterRequest()
+        request = _validate_request(GetClusterRequest, request)
 
         path_params = {
             'cluster_id': request.cluster_id,
@@ -447,14 +453,13 @@ class AsyncOksTypedMixin:
             ),
             path_params=path_params,
         )
-        return TypeAdapter(ClusterResponse).validate_python(response)
+        return _validate_response(ClusterResponse, response)
 
     async def update_cluster(
         self,
         request: UpdateClusterRequest | None = None,
     ) -> ClusterResponse:
-        if request is None:
-            request = UpdateClusterRequest()
+        request = _validate_request(UpdateClusterRequest, request)
 
         path_params = {
             'cluster_id': request.cluster_id,
@@ -475,14 +480,13 @@ class AsyncOksTypedMixin:
             ),
             path_params=path_params,
         )
-        return TypeAdapter(ClusterResponse).validate_python(response)
+        return _validate_response(ClusterResponse, response)
 
     async def delete_cluster(
         self,
         request: DeleteClusterRequest | None = None,
     ) -> DetailResponse:
-        if request is None:
-            request = DeleteClusterRequest()
+        request = _validate_request(DeleteClusterRequest, request)
 
         path_params = {
             'cluster_id': request.cluster_id,
@@ -503,14 +507,13 @@ class AsyncOksTypedMixin:
             ),
             path_params=path_params,
         )
-        return TypeAdapter(DetailResponse).validate_python(response)
+        return _validate_response(DetailResponse, response)
 
     async def get_kubeconfig(
         self,
         request: GetKubeconfigRequest | None = None,
     ) -> KubeconfigResponse:
-        if request is None:
-            request = GetKubeconfigRequest()
+        request = _validate_request(GetKubeconfigRequest, request)
 
         path_params = {
             'cluster_id': request.cluster_id,
@@ -534,14 +537,13 @@ class AsyncOksTypedMixin:
             ),
             path_params=path_params,
         )
-        return TypeAdapter(KubeconfigResponse).validate_python(response)
+        return _validate_response(KubeconfigResponse, response)
 
     async def get_kubeconfig_with_pubkey_nacl(
         self,
         request: GetKubeconfigWithPubkeyNACLRequest | None = None,
     ) -> KubeconfigResponse:
-        if request is None:
-            request = GetKubeconfigWithPubkeyNACLRequest()
+        request = _validate_request(GetKubeconfigWithPubkeyNACLRequest, request)
 
         path_params = {
             'cluster_id': request.cluster_id,
@@ -565,14 +567,13 @@ class AsyncOksTypedMixin:
             ),
             path_params=path_params,
         )
-        return TypeAdapter(KubeconfigResponse).validate_python(response)
+        return _validate_response(KubeconfigResponse, response)
 
     async def upgrade_cluster(
         self,
         request: UpgradeClusterRequest | None = None,
     ) -> ClusterResponse:
-        if request is None:
-            request = UpgradeClusterRequest()
+        request = _validate_request(UpgradeClusterRequest, request)
 
         path_params = {
             'cluster_id': request.cluster_id,
@@ -593,7 +594,7 @@ class AsyncOksTypedMixin:
             ),
             path_params=path_params,
         )
-        return TypeAdapter(ClusterResponse).validate_python(response)
+        return _validate_response(ClusterResponse, response)
 
     async def get_kubernetes_versions(
         self,
@@ -619,7 +620,7 @@ class AsyncOksTypedMixin:
             ),
             path_params=path_params,
         )
-        return TypeAdapter(KubernetesVersionsResponse).validate_python(response)
+        return _validate_response(KubernetesVersionsResponse, response)
 
     async def get_cp_subregions(
         self,
@@ -645,7 +646,7 @@ class AsyncOksTypedMixin:
             ),
             path_params=path_params,
         )
-        return TypeAdapter(CPSubregionsResponse).validate_python(response)
+        return _validate_response(CPSubregionsResponse, response)
 
     async def get_control_plane_plans(
         self,
@@ -671,7 +672,7 @@ class AsyncOksTypedMixin:
             ),
             path_params=path_params,
         )
-        return TypeAdapter(ControlPlanesResponse).validate_python(response)
+        return _validate_response(ControlPlanesResponse, response)
 
     async def get_project_template(
         self,
@@ -697,7 +698,7 @@ class AsyncOksTypedMixin:
             ),
             path_params=path_params,
         )
-        return TypeAdapter(TemplateResponse_ProjectInput).validate_python(response)
+        return _validate_response(TemplateResponse_ProjectInput, response)
 
     async def get_cluster_template(
         self,
@@ -723,7 +724,7 @@ class AsyncOksTypedMixin:
             ),
             path_params=path_params,
         )
-        return TypeAdapter(TemplateResponse_ClusterInputTemplate).validate_python(response)
+        return _validate_response(TemplateResponse_ClusterInputTemplate, response)
 
     async def get_nodepool_template(
         self,
@@ -749,7 +750,7 @@ class AsyncOksTypedMixin:
             ),
             path_params=path_params,
         )
-        return TypeAdapter(TemplateResponse_Nodepool).validate_python(response)
+        return _validate_response(TemplateResponse_Nodepool, response)
 
     async def get_net_peering_request_template(
         self,
@@ -775,7 +776,7 @@ class AsyncOksTypedMixin:
             ),
             path_params=path_params,
         )
-        return TypeAdapter(TemplateResponse_NetPeeringRequest).validate_python(response)
+        return _validate_response(TemplateResponse_NetPeeringRequest, response)
 
     async def get_net_peering_acceptance_template(
         self,
@@ -801,7 +802,7 @@ class AsyncOksTypedMixin:
             ),
             path_params=path_params,
         )
-        return TypeAdapter(TemplateResponse_NetPeeringAcceptance).validate_python(response)
+        return _validate_response(TemplateResponse_NetPeeringAcceptance, response)
 
     async def get_quotas(
         self,
@@ -827,7 +828,7 @@ class AsyncOksTypedMixin:
             ),
             path_params=path_params,
         )
-        return TypeAdapter(quotas__quota_schema__QuotasResponse).validate_python(response)
+        return _validate_response(quotas__quota_schema__QuotasResponse, response)
 
     async def get_client_ip(
         self,
@@ -853,4 +854,4 @@ class AsyncOksTypedMixin:
             ),
             path_params=path_params,
         )
-        return TypeAdapter(IPResponse).validate_python(response)
+        return _validate_response(IPResponse, response)

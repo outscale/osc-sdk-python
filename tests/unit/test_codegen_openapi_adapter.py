@@ -61,7 +61,7 @@ def test_action_body_schema_reuses_component_request_model():
     assert 'service="api"' in rendered_client
     assert "json_body=_dump_json_body(request)," in rendered_client
     assert "from pydantic import TypeAdapter" in rendered_client
-    assert "return TypeAdapter(CreateVmsResponse).validate_python(response)" in rendered_client
+    assert "return _validate_response(CreateVmsResponse, response)" in rendered_client
 
     rendered_init = render_init(operations, models, "osc")
     assert "AsyncOscTypedMixin" in rendered_init
@@ -269,7 +269,7 @@ def test_non_model_response_uses_type_adapter():
 
     assert "async def list_names(" in rendered_client
     assert "    ) -> list[str]:" in rendered_client
-    assert "return TypeAdapter(list[str]).validate_python(response)" in rendered_client
+    assert "return _validate_response(list[str], response)" in rendered_client
 
 
 def test_requestless_operation_does_not_create_unused_request_variable():

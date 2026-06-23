@@ -4,20 +4,40 @@ import warnings
 from datetime import timedelta
 
 import httpx
+from urllib3.util import parse_url
 
 from ..credentials import Profile
+from ..exceptions import (
+    SdkError,
+    SdkResponseError,
+    SdkTransportError,
+    SdkValidationError,
+)
 from .request import RequestSpec
 from .transport import (
+    AsyncSdkTransport,
     DEFAULT_USER_AGENT,
     RateLimiter,
     RetryPolicy,
     SdkAuth,
     SdkTransport,
-    AsyncSdkTransport
 )
-from urllib3.util import parse_url
 
 logger = logging.getLogger("osc_sdk_python")
+
+
+def _json_payload(value):
+    try:
+        return "" if value is None else json.dumps(value)
+    except (TypeError, ValueError) as error:
+        raise SdkValidationError("Request body is not JSON serializable") from error
+
+
+def _decode_json_response(response):
+    try:
+        return response.json()
+    except ValueError as error:
+        raise SdkResponseError("Response body is not valid JSON") from error
 
 
 class Call(object):
@@ -87,12 +107,10 @@ class Call(object):
     def request(self, spec: RequestSpec, path_params=None):
         path = spec.resolved_path(path_params)
         endpoint = (
-            self.profile.get_endpoint(spec.service).rstrip("/")
-            + "/"
-            + path.lstrip("/")
+            self.profile.get_endpoint(spec.service).rstrip("/") + "/" + path.lstrip("/")
         )
         uri = parse_url(endpoint).path
-        payload = "" if spec.json_body is None else json.dumps(spec.json_body)
+        payload = _json_payload(spec.json_body)
 
         logger.info(
             "mode: sync\nservice: %s\nmethod: %s\nuri: %s\npayload:\n%s",
@@ -102,18 +120,27 @@ class Call(object):
             json.dumps(spec.json_body, indent=2),
         )
 
-        response = self.session.request(
-            spec.method.upper(),
-            endpoint,
-            content=payload,
-            params=spec.query_params,
-            auth=SdkAuth(
-                self.profile,
-                service=spec.service,
-                user_agent=self.user_agent,
-            ),
-        )
-        return response.json()
+        try:
+            response = self.session.request(
+                spec.method.upper(),
+                endpoint,
+                content=payload,
+                params=spec.query_params,
+                auth=SdkAuth(
+                    self.profile,
+                    service=spec.service,
+                    user_agent=self.user_agent,
+                ),
+            )
+        except SdkError:
+            raise
+        except httpx.HTTPError as error:
+            raise SdkTransportError(
+                str(error),
+                request=getattr(error, "request", None),
+                response=getattr(error, "response", None),
+            ) from error
+        return _decode_json_response(response)
 
     def api(self, action, service="api", **data):
         return self.request(
@@ -201,7 +228,7 @@ class AsyncCall(object):
             self.profile.get_endpoint(spec.service).rstrip("/") + "/" + path.lstrip("/")
         )
         uri = parse_url(endpoint).path
-        payload = "" if spec.json_body is None else json.dumps(spec.json_body)
+        payload = _json_payload(spec.json_body)
 
         logger.info(
             "mode: async\nservice: %s\nmethod: %s\nuri: %s\npayload:\n%s",
@@ -211,18 +238,27 @@ class AsyncCall(object):
             json.dumps(spec.json_body, indent=2),
         )
 
-        response = await self.client.request(
-            spec.method.upper(),
-            endpoint,
-            content=payload,
-            params=spec.query_params,
-            auth=SdkAuth(
-                self.profile,
-                service=spec.service,
-                user_agent=self.user_agent,
-            ),
-        )
-        return response.json()
+        try:
+            response = await self.client.request(
+                spec.method.upper(),
+                endpoint,
+                content=payload,
+                params=spec.query_params,
+                auth=SdkAuth(
+                    self.profile,
+                    service=spec.service,
+                    user_agent=self.user_agent,
+                ),
+            )
+        except SdkError:
+            raise
+        except httpx.HTTPError as error:
+            raise SdkTransportError(
+                str(error),
+                request=getattr(error, "request", None),
+                response=getattr(error, "response", None),
+            ) from error
+        return _decode_json_response(response)
 
     async def api(self, action, service="api", **data):
         return await self.request(

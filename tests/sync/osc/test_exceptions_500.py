@@ -7,9 +7,7 @@ import os
 import time
 
 sys.path.append("..")
-import httpx
-
-from osc_sdk_python import Client
+from osc_sdk_python import Client, SdkServerError, SdkTransportError
 import copy
 
 
@@ -63,7 +61,7 @@ class TestServerError(unittest.TestCase):
         client = Client()
         osc = client.osc
         # a is not a valide argument
-        with self.assertRaises(httpx.HTTPError):
+        with self.assertRaises(SdkTransportError):
             osc.ReadVms()
             os.environ.pop("OSC_ENDPOINT_API", None)
             os.environ["OSC_ENDPOINT_API"] = "http://127.0.0.1:8000"
@@ -71,7 +69,7 @@ class TestServerError(unittest.TestCase):
             client = Client()
             osc = client.osc
             # a is not a valide argument
-            with self.assertRaises(httpx.HTTPStatusError):
+            with self.assertRaises(SdkServerError):
                 osc.ReadVms()
         client.close()
 

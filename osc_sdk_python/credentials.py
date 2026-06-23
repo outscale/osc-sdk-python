@@ -2,6 +2,8 @@ import json
 import os
 import warnings
 
+from .exceptions import SdkConfigurationError
+
 STD_PATH = os.path.join(os.path.expanduser("~"), ".osc/config.json")
 DEFAULT_REGION = "eu-west-2"
 DEFAULT_PROFILE = "default"
@@ -19,8 +21,8 @@ class Endpoint:
 
         if kwargs:
             unexpected = ", ".join(f"'{k}'" for k in kwargs.keys())
-            raise TypeError(
-                f"Endpoint() got unexpected keyword arguments: {unexpected}"
+            raise SdkConfigurationError(
+                "Endpoint() got unexpected keyword arguments: {}".format(unexpected)
             )
 
 
@@ -46,7 +48,9 @@ class Profile:
 
         if kwargs:
             unexpected = ", ".join(f"'{k}'" for k in kwargs.keys())
-            raise TypeError(f"Profile() got unexpected keyword arguments: {unexpected}")
+            raise SdkConfigurationError(
+                "Profile() got unexpected keyword arguments: {}".format(unexpected)
+            )
 
     @property
     def email(self) -> str:
@@ -76,7 +80,7 @@ class Profile:
         elif service == "directlink":
             return f"{self.protocol}://directlink.{self.region}.outscale.com"
         else:
-            raise ValueError("Unknown service")
+            raise SdkConfigurationError("Unknown service")
 
     @staticmethod
     def from_env() -> "Profile":
@@ -118,12 +122,28 @@ class Profile:
 
     @staticmethod
     def __from_file(path: str, profile: str) -> "Profile":
-        with open(path) as f:
-            config = json.load(f)
-            kwargs_profile = config.get(profile)
+        try:
+            with open(path) as f:
+                config = json.load(f)
+        except Exception as error:
+            raise SdkConfigurationError(
+                "Could not load configuration file: {}".format(path)
+            ) from error
+
+        kwargs_profile = config.get(profile)
+        if kwargs_profile is None:
+            raise SdkConfigurationError("Profile '{}' not found".format(profile))
+
+        try:
             kwargs_endpoints = kwargs_profile.get("endpoints", {})
             kwargs_profile["endpoints"] = Endpoint(**kwargs_endpoints)
             return Profile(**kwargs_profile)
+        except SdkConfigurationError:
+            raise
+        except Exception as error:
+            raise SdkConfigurationError(
+                "Invalid profile '{}' in configuration file: {}".format(profile, path)
+            ) from error
 
     def merge(self, other: "Profile"):
         self.__dict__.update(
