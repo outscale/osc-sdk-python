@@ -2,6 +2,8 @@
 
 Do not edit by hand. Regenerate with:
     python -m osc_sdk_python.codegen.generator
+
+    python -m osc_sdk_python.codegen.generator oks osc
 """
 
 from typing import Any

@@ -2,10 +2,12 @@
 
 Do not edit by hand. Regenerate with:
     python -m osc_sdk_python.codegen.generator
+
+    python -m osc_sdk_python.codegen.generator oks osc
 """
 from __future__ import annotations
 
-from typing import Any, Literal
+from typing import Literal
 
 from pydantic import BaseModel, ConfigDict, Field
 

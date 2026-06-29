@@ -12,6 +12,8 @@ GENERATED_HEADER = '''"""Generated typed {service_label} client slice.
 
 Do not edit by hand. Regenerate with:
     python -m osc_sdk_python.codegen.generator
+
+    python -m osc_sdk_python.codegen.generator oks osc
 """
 '''
 
@@ -80,10 +82,16 @@ def render_models(
         for operation in operations
         if operation.request_model.name not in schema_model_names
     )
+    typing_imports = ["Literal"]
+    if any(re.search(r"\bAny\b", model) for model in models):
+        typing_imports.insert(0, "Any")
+
     return (
         _header(package_name)
         + "from __future__ import annotations\n\n"
-        + "from typing import Any, Literal\n\n"
+        + "from typing import "
+        + ", ".join(typing_imports)
+        + "\n\n"
         + "from pydantic import BaseModel, ConfigDict, Field\n\n\n"
         + "class GeneratedModel(BaseModel):\n"
         + '    model_config = ConfigDict(populate_by_name=True, extra="allow")\n\n\n'

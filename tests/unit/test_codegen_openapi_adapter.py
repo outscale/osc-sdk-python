@@ -209,7 +209,7 @@ def test_scalar_enums_render_as_literals():
     adapter = PathOperationAdapter(spec, service="api")
     rendered_models = render_models([], adapter.schema_models(), "osc")
 
-    assert "from typing import Any, Literal" in rendered_models
+    assert "from typing import Literal" in rendered_models
     assert "BootMode = Literal['uefi', 'legacy']" in rendered_models
     assert "boot_mode: BootMode | None" in rendered_models
     assert "state: Literal['pending', 'running'] | None" in rendered_models
