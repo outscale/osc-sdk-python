@@ -1,5 +1,8 @@
 """Generated typed OSC client slice.
 
+Typed request and response models are async-first. Generated typed methods are
+exposed on AsyncClient; synchronous clients use dynamic action methods.
+
 Do not edit by hand. Regenerate with:
     python -m osc_sdk_python.codegen.generator
 

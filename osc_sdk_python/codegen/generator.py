@@ -10,6 +10,9 @@ from .overlay import load_spec
 
 GENERATED_HEADER = '''"""Generated typed {service_label} client slice.
 
+Typed request and response models are async-first. Generated typed methods are
+exposed on AsyncClient; synchronous clients use dynamic action methods.
+
 Do not edit by hand. Regenerate with:
     python -m osc_sdk_python.codegen.generator
 
@@ -243,6 +246,12 @@ def render_init(
     )
     mixin_name = _mixin_name(package_name)
     lines = [
+        "\"\"\"Generated typed SDK exports.",
+        "",
+        "Typed request and response models are async-first. Generated typed methods are",
+        "exposed on AsyncClient; synchronous clients use dynamic action methods.",
+        "\"\"\"",
+        "",
         f"from .async_client import {mixin_name}",
         "from .models import (",
     ]

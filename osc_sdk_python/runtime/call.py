@@ -2,9 +2,9 @@ import json
 import logging
 import warnings
 from datetime import timedelta
+from urllib.parse import urlsplit
 
 import httpx
-from urllib3.util import parse_url
 
 from ..credentials import Profile
 from ..exceptions import (
@@ -109,7 +109,7 @@ class Call(object):
         endpoint = (
             self.profile.get_endpoint(spec.service).rstrip("/") + "/" + path.lstrip("/")
         )
-        uri = parse_url(endpoint).path
+        uri = urlsplit(endpoint).path
         payload = _json_payload(spec.json_body)
 
         logger.info(
@@ -227,7 +227,7 @@ class AsyncCall(object):
         endpoint = (
             self.profile.get_endpoint(spec.service).rstrip("/") + "/" + path.lstrip("/")
         )
-        uri = parse_url(endpoint).path
+        uri = urlsplit(endpoint).path
         payload = _json_payload(spec.json_body)
 
         logger.info(

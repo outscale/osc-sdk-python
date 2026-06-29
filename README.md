@@ -174,6 +174,8 @@ if __name__ == "__main__":
     asyncio.run(main())
 ```
 
+Typed request and response models under `osc_sdk_python.generated.*` are async-first: generated typed methods are available on `AsyncClient` with snake_case names such as `await client.osc.read_vms(...)`. Synchronous callers should use dynamic action methods such as `client.osc.ReadVms(...)` or `client.osc.raw("ReadVms", **params)`.
+
 ### Multi-Service Client
 
 Use `Client` or `AsyncClient` to access multiple services from one SDK object:

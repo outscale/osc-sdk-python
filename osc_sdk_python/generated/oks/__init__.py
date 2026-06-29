@@ -1,3 +1,9 @@
+"""Generated typed SDK exports.
+
+Typed request and response models are async-first. Generated typed methods are
+exposed on AsyncClient; synchronous clients use dynamic action methods.
+"""
+
 from .async_client import AsyncOksTypedMixin
 from .models import (
     AdmissionFlags,

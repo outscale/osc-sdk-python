@@ -81,6 +81,8 @@ Calling actions:
 * **Async typed methods**: `await client.osc.read_vms(...)`, `await client.osc.create_vms(...)`, etc.
 * **Async raw calls**: `await client.osc.raw("ActionName", **params)`
 
+Typed request and response models under `osc_sdk_python.generated.*` are async-first today: generated typed methods are exposed on `AsyncClient` and use snake_case operation names. Synchronous callers should continue to use dynamic action methods such as `client.osc.ReadVms(...)` or raw calls such as `client.osc.raw("ReadVms", **params)`.
+
 Example:
 
 ```python
