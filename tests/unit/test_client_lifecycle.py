@@ -3,7 +3,8 @@ from unittest.mock import Mock
 
 import pytest
 
-from osc_sdk_python import AsyncClient, Client, SdkUsageError
+from osc_sdk_python import AsyncClient, Client, SdkConfigurationError, SdkUsageError
+from osc_sdk_python.outscale_gateway import OpenAPIActionAPI
 
 
 def test_client_close_closes_service_sessions():
@@ -63,3 +64,8 @@ def test_async_client_rejects_sync_context_manager():
     with pytest.raises(SdkUsageError):
         with AsyncClient():
             pass
+
+
+def test_openapi_action_api_raises_configuration_error_for_unreadable_spec():
+    with pytest.raises(SdkConfigurationError, match="Problem reading OpenAPI spec"):
+        OpenAPIActionAPI("missing-spec.yaml")

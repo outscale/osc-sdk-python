@@ -23,7 +23,12 @@ except (ImportError, ModuleNotFoundError):
 # if they are generated into separate mixins.
 
 from .runtime.transport import RateLimiter
-from .exceptions import SdkOperationError, SdkValidationError, SdkUsageError
+from .exceptions import (
+    SdkConfigurationError,
+    SdkOperationError,
+    SdkValidationError,
+    SdkUsageError,
+)
 import ruamel.yaml
 from .version import get_version
 import warnings
@@ -70,7 +75,7 @@ class OpenAPIActionAPI:
 
     def update_credentials(self, **kwargs):
         warnings.warn(
-            "update_credentials in deprecated. Use update_profile instead.",
+            "update_credentials is deprecated. Use update_profile instead.",
             DeprecationWarning,
             stacklevel=2,
         )
@@ -96,7 +101,7 @@ class OpenAPIActionAPI:
 
     def email(self):
         warnings.warn(
-            "email in deprecated. Use login instead.",
+            "email is deprecated. Use login instead.",
             DeprecationWarning,
             stacklevel=2,
         )
@@ -115,7 +120,9 @@ class OpenAPIActionAPI:
                 yaml = ruamel.yaml.YAML(typ="safe")
                 content = yaml.load(fi.read())
         except Exception as err:
-            print("Problem reading {}:{}".format(input_file, str(err)))
+            raise SdkConfigurationError(
+                "Problem reading OpenAPI spec {}: {}".format(input_file, err)
+            ) from err
         self.api_version = content["info"]["version"]
         self.endpoint_api_version = content["servers"][0]["url"].split("/")[-1]
         for action, params in content["components"]["schemas"].items():
@@ -190,7 +197,7 @@ class OpenAPIActionAPI:
     def _check(self, action_name, **params):
         if action_name not in self.gateway_structure:
             raise ActionNotExists(
-                "Action {} does not exists for python sdk: {} with api: {}".format(
+                "Action {} does not exist for python sdk: {} with api: {}".format(
                     action_name, get_version(), self.api_version
                 )
             )
@@ -301,7 +308,7 @@ class OpenAPIPathAPI:
     def _build_request(self, operation_name, kwargs):
         if operation_name not in self.operations:
             raise ActionNotExists(
-                "Operation {} does not exists for python sdk: {} with api: {}".format(
+                "Operation {} does not exist for python sdk: {} with api: {}".format(
                     operation_name, get_version(), self.api_version
                 )
             )
@@ -458,65 +465,3 @@ class AsyncClient:
     def __exit__(self, type, value, traceback):
         return None
 
-
-def test():
-    a = OutscaleGateway()
-    a.CreateVms(
-        ImageId="ami-xx",
-        BlockDeviceMappings=[{"/dev/sda1": {"Size": 10}}],
-        SecurityGroupIds=["sg-aaa", "sg-bbb"],
-    )
-    try:
-        a.CreateVms(
-            ImageId="ami-xx",
-            BlockDeviceMappings=[{"/dev/sda1": {"Size": 10}}],
-            SecurityGroupIds=["sg-aaa", "sg-bbb"],
-            Wrong="wrong",
-        )
-    except ParameterNotValid:
-        pass
-    else:
-        raise AssertionError()
-    try:
-        a.CreateVms(
-            BlockDeviceMappings=[{"/dev/sda1": {"Size": 10}}],
-            SecurityGroupIds=["sg-aaa", "sg-bbb"],
-        )
-    except ParameterIsRequired:
-        pass
-    else:
-        raise AssertionError()
-    try:
-        a.CreateVms(
-            ImageId=["ami-xxx"],
-            BlockDeviceMappings=[{"/dev/sda1": {"Size": 10}}],
-            SecurityGroupIds=["sg-aaa", "sg-bbb"],
-        )
-    except ParameterHasWrongType:
-        pass
-    else:
-        raise AssertionError()
-    try:
-        a.CreateVms(
-            ImageId="ami-xxx",
-            BlockDeviceMappings=[{"/dev/sda1": {"Size": 10}}],
-            SecurityGroupIds="wrong",
-        )
-    except ParameterHasWrongType:
-        pass
-    else:
-        raise AssertionError()
-    try:
-        a.CreateVms(
-            ImageId=["ami-wrong"],
-            BlockDeviceMappings=[{"/dev/sda1": {"Size": 10}}],
-            SecurityGroupIds="wrong",
-        )
-    except ParameterHasWrongType:
-        pass
-    else:
-        raise AssertionError()
-
-
-if __name__ == "__main__":
-    test()
