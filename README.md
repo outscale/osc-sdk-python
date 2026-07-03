@@ -161,7 +161,7 @@ The following options can be provided when initializing the `Gateway` to customi
 * `retry_backoff_jitter` (float, default `3.0`)
 * `retry_backoff_max` (float, default `30`)
 
-These correspond to their counterparts in [`urllib3.util.Retry`](https://urllib3.readthedocs.io/en/stable/reference/urllib3.util.html#urllib3.util.Retry).
+These options follow the same behavior as their counterparts in [`urllib3.util.Retry`](https://urllib3.readthedocs.io/en/stable/reference/urllib3.util.html#urllib3.util.Retry), but are implemented by the SDK retry logic.
 
 Example:
 
