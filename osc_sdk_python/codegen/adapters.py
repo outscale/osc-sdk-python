@@ -33,7 +33,9 @@ def class_name(value: str) -> str:
 def schema_type(schema: dict[str, Any], ref_resolver=class_name) -> str:
     if schema.get("nullable"):
         return (
-            schema_type({k: v for k, v in schema.items() if k != "nullable"}, ref_resolver)
+            schema_type(
+                {k: v for k, v in schema.items() if k != "nullable"}, ref_resolver
+            )
             + " | None"
         )
 
@@ -50,6 +52,29 @@ def schema_type(schema: dict[str, Any], ref_resolver=class_name) -> str:
             continue
         if len(options) == 1:
             return schema_type(options[0], ref_resolver)
+        if composed in {"oneOf", "anyOf"}:
+            option_types = [schema_type(option, ref_resolver) for option in options]
+            if "Any" not in option_types:
+                if composed == "oneOf":
+                    logger.warning(
+                        "OpenAPI oneOf with %d schemas represented as a union; "
+                        "exclusivity is not enforced",
+                        len(options),
+                    )
+                return " | ".join(dict.fromkeys(option_types))
+        if composed == "allOf":
+            refs = [option for option in options if "$ref" in option]
+            inline_options = [option for option in options if "$ref" not in option]
+            if len(refs) == 1 and all(
+                not option or set(option).issubset({"description", "title"})
+                for option in inline_options
+            ):
+                return schema_type(refs[0], ref_resolver)
+        logger.warning(
+            "OpenAPI %s with %d schemas cannot be represented precisely; using Any",
+            composed,
+            len(options),
+        )
         return "Any"
 
     typ = schema.get("type")
@@ -101,7 +126,9 @@ class PathOperationAdapter:
 
                 path_fields = []
                 query_fields = []
-                for parameter in path_item.get("parameters", []) + operation.get("parameters", []):
+                for parameter in path_item.get("parameters", []) + operation.get(
+                    "parameters", []
+                ):
                     location = parameter.get("in")
                     if location not in {"path", "query"}:
                         continue
@@ -168,7 +195,12 @@ class PathOperationAdapter:
             if "properties" not in schema and (
                 schema.get("enum") or schema.get("type") not in {None, "object"}
             ):
-                models.append(Model(class_name(schema_name), alias=schema_type(schema)))
+                models.append(
+                    Model(
+                        class_name(schema_name),
+                        alias=schema_type(schema),
+                    )
+                )
                 continue
 
             for property_name, property_schema in schema.get("properties", {}).items():
@@ -183,7 +215,9 @@ class PathOperationAdapter:
             models.append(Model(class_name(schema_name), fields))
         return models
 
-    def _body_schema(self, operation: dict[str, Any]) -> tuple[dict[str, Any] | None, bool]:
+    def _body_schema(
+        self, operation: dict[str, Any]
+    ) -> tuple[dict[str, Any] | None, bool]:
         request_body = operation.get("requestBody")
         if request_body is None:
             return None, False

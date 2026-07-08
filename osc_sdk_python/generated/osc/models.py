@@ -10,6 +10,8 @@ Do not edit by hand. Regenerate with:
 """
 from __future__ import annotations
 
+import datetime
+
 from typing import Literal
 
 from pydantic import BaseModel, ConfigDict, Field
@@ -34,17 +36,17 @@ class AccepterNet(GeneratedModel):
 
 class AccessKey(GeneratedModel):
     access_key_id: str | None = Field(default=None, alias='AccessKeyId')
-    creation_date: str | None = Field(default=None, alias='CreationDate')
-    expiration_date: str | None = Field(default=None, alias='ExpirationDate')
-    last_modification_date: str | None = Field(default=None, alias='LastModificationDate')
+    creation_date: datetime.datetime | None = Field(default=None, alias='CreationDate')
+    expiration_date: datetime.datetime | None = Field(default=None, alias='ExpirationDate')
+    last_modification_date: datetime.datetime | None = Field(default=None, alias='LastModificationDate')
     state: str | None = Field(default=None, alias='State')
     tag: str | None = Field(default=None, alias='Tag')
 
 class AccessKeySecretKey(GeneratedModel):
     access_key_id: str | None = Field(default=None, alias='AccessKeyId')
-    creation_date: str | None = Field(default=None, alias='CreationDate')
-    expiration_date: str | None = Field(default=None, alias='ExpirationDate')
-    last_modification_date: str | None = Field(default=None, alias='LastModificationDate')
+    creation_date: datetime.datetime | None = Field(default=None, alias='CreationDate')
+    expiration_date: datetime.datetime | None = Field(default=None, alias='ExpirationDate')
+    last_modification_date: datetime.datetime | None = Field(default=None, alias='LastModificationDate')
     secret_key: str | None = Field(default=None, alias='SecretKey')
     state: str | None = Field(default=None, alias='State')
     tag: str | None = Field(default=None, alias='Tag')
@@ -183,9 +185,9 @@ class CatalogEntry(GeneratedModel):
 
 class Catalogs(GeneratedModel):
     entries: list[CatalogEntry] | None = Field(default=None, alias='Entries')
-    from_date: str | None = Field(default=None, alias='FromDate')
+    from_date: datetime.datetime | None = Field(default=None, alias='FromDate')
     state: Literal['CURRENT', 'OBSOLETE'] | None = Field(default=None, alias='State')
-    to_date: str | None = Field(default=None, alias='ToDate')
+    to_date: datetime.datetime | None = Field(default=None, alias='ToDate')
 
 class CheckAuthenticationRequest(GeneratedModel):
     dry_run: bool | None = Field(default=None, alias='DryRun')
@@ -206,7 +208,7 @@ class ClientGateway(GeneratedModel):
 class ConsumptionEntry(GeneratedModel):
     account_id: str | None = Field(default=None, alias='AccountId')
     category: str | None = Field(default=None, alias='Category')
-    from_date: str | None = Field(default=None, alias='FromDate')
+    from_date: datetime.datetime | None = Field(default=None, alias='FromDate')
     operation: str | None = Field(default=None, alias='Operation')
     paying_account_id: str | None = Field(default=None, alias='PayingAccountId')
     price: float | None = Field(default=None, alias='Price')
@@ -214,14 +216,14 @@ class ConsumptionEntry(GeneratedModel):
     service: str | None = Field(default=None, alias='Service')
     subregion_name: str | None = Field(default=None, alias='SubregionName')
     title: str | None = Field(default=None, alias='Title')
-    to_date: str | None = Field(default=None, alias='ToDate')
+    to_date: datetime.datetime | None = Field(default=None, alias='ToDate')
     type: str | None = Field(default=None, alias='Type')
     unit_price: float | None = Field(default=None, alias='UnitPrice')
     value: float | None = Field(default=None, alias='Value')
 
 class CreateAccessKeyRequest(GeneratedModel):
     dry_run: bool | None = Field(default=None, alias='DryRun')
-    expiration_date: str | None = Field(default=None, alias='ExpirationDate')
+    expiration_date: datetime.datetime | None = Field(default=None, alias='ExpirationDate')
     tag: str | None = Field(default=None, alias='Tag')
     user_name: str | None = Field(default=None, alias='UserName')
 
@@ -1359,7 +1361,7 @@ class FiltersNetPeering(GeneratedModel):
     accepter_net_account_ids: list[str] | None = Field(default=None, alias='AccepterNetAccountIds')
     accepter_net_ip_ranges: list[str] | None = Field(default=None, alias='AccepterNetIpRanges')
     accepter_net_net_ids: list[str] | None = Field(default=None, alias='AccepterNetNetIds')
-    expiration_dates: list[str] | None = Field(default=None, alias='ExpirationDates')
+    expiration_dates: list[datetime.datetime] | None = Field(default=None, alias='ExpirationDates')
     net_peering_ids: list[str] | None = Field(default=None, alias='NetPeeringIds')
     source_net_account_ids: list[str] | None = Field(default=None, alias='SourceNetAccountIds')
     source_net_ip_ranges: list[str] | None = Field(default=None, alias='SourceNetIpRanges')
@@ -1485,7 +1487,7 @@ class FiltersSnapshot(GeneratedModel):
     account_ids: list[str] | None = Field(default=None, alias='AccountIds')
     client_tokens: list[str] | None = Field(default=None, alias='ClientTokens')
     descriptions: list[str] | None = Field(default=None, alias='Descriptions')
-    from_creation_date: str | None = Field(default=None, alias='FromCreationDate')
+    from_creation_date: datetime.datetime | None = Field(default=None, alias='FromCreationDate')
     permissions_to_create_volume_account_ids: list[str] | None = Field(default=None, alias='PermissionsToCreateVolumeAccountIds')
     permissions_to_create_volume_global_permission: bool | None = Field(default=None, alias='PermissionsToCreateVolumeGlobalPermission')
     progresses: list[int] | None = Field(default=None, alias='Progresses')
@@ -1494,7 +1496,7 @@ class FiltersSnapshot(GeneratedModel):
     tag_keys: list[str] | None = Field(default=None, alias='TagKeys')
     tag_values: list[str] | None = Field(default=None, alias='TagValues')
     tags: list[str] | None = Field(default=None, alias='Tags')
-    to_creation_date: str | None = Field(default=None, alias='ToCreationDate')
+    to_creation_date: datetime.datetime | None = Field(default=None, alias='ToCreationDate')
     volume_ids: list[str] | None = Field(default=None, alias='VolumeIds')
     volume_sizes: list[int] | None = Field(default=None, alias='VolumeSizes')
 
@@ -1657,10 +1659,10 @@ class FiltersVmsState(GeneratedModel):
 
 class FiltersVolume(GeneratedModel):
     client_tokens: list[str] | None = Field(default=None, alias='ClientTokens')
-    creation_dates: list[str] | None = Field(default=None, alias='CreationDates')
+    creation_dates: list[datetime.datetime] | None = Field(default=None, alias='CreationDates')
     link_volume_delete_on_vm_deletion: bool | None = Field(default=None, alias='LinkVolumeDeleteOnVmDeletion')
     link_volume_device_names: list[str] | None = Field(default=None, alias='LinkVolumeDeviceNames')
-    link_volume_link_dates: list[str] | None = Field(default=None, alias='LinkVolumeLinkDates')
+    link_volume_link_dates: list[datetime.datetime] | None = Field(default=None, alias='LinkVolumeLinkDates')
     link_volume_link_states: list[str] | None = Field(default=None, alias='LinkVolumeLinkStates')
     link_volume_vm_ids: list[str] | None = Field(default=None, alias='LinkVolumeVmIds')
     snapshot_ids: list[str] | None = Field(default=None, alias='SnapshotIds')
@@ -1907,8 +1909,8 @@ class LinkVolumeResponse(GeneratedModel):
     response_context: ResponseContext | None = Field(default=None, alias='ResponseContext')
 
 class LinkedPolicy(GeneratedModel):
-    creation_date: str | None = Field(default=None, alias='CreationDate')
-    last_modification_date: str | None = Field(default=None, alias='LastModificationDate')
+    creation_date: datetime.datetime | None = Field(default=None, alias='CreationDate')
+    last_modification_date: datetime.datetime | None = Field(default=None, alias='LastModificationDate')
     orn: str | None = Field(default=None, alias='Orn')
     policy_id: str | None = Field(default=None, alias='PolicyId')
     policy_name: str | None = Field(default=None, alias='PolicyName')
@@ -2011,8 +2013,8 @@ class Log(GeneratedModel):
 class MaintenanceEvent(GeneratedModel):
     code: str | None = Field(default=None, alias='Code')
     description: str | None = Field(default=None, alias='Description')
-    not_after: str | None = Field(default=None, alias='NotAfter')
-    not_before: str | None = Field(default=None, alias='NotBefore')
+    not_after: datetime.datetime | None = Field(default=None, alias='NotAfter')
+    not_before: datetime.datetime | None = Field(default=None, alias='NotBefore')
 
 class MinimalPolicy(GeneratedModel):
     id: str | None = Field(default=None, alias='Id')
@@ -2046,7 +2048,7 @@ class NetAccessPoint(GeneratedModel):
 
 class NetPeering(GeneratedModel):
     accepter_net: AccepterNet | None = Field(default=None, alias='AccepterNet')
-    expiration_date: str | None = Field(default=None, alias='ExpirationDate')
+    expiration_date: datetime.datetime | None = Field(default=None, alias='ExpirationDate')
     net_peering_id: str | None = Field(default=None, alias='NetPeeringId')
     source_net: SourceNet | None = Field(default=None, alias='SourceNet')
     state: NetPeeringState | None = Field(default=None, alias='State')
@@ -2155,10 +2157,10 @@ class Placement(GeneratedModel):
     tenancy: str | None = Field(default=None, alias='Tenancy')
 
 class Policy(GeneratedModel):
-    creation_date: str | None = Field(default=None, alias='CreationDate')
+    creation_date: datetime.datetime | None = Field(default=None, alias='CreationDate')
     description: str | None = Field(default=None, alias='Description')
     is_linkable: bool | None = Field(default=None, alias='IsLinkable')
-    last_modification_date: str | None = Field(default=None, alias='LastModificationDate')
+    last_modification_date: datetime.datetime | None = Field(default=None, alias='LastModificationDate')
     orn: str | None = Field(default=None, alias='Orn')
     path: str | None = Field(default=None, alias='Path')
     policy_default_version_id: str | None = Field(default=None, alias='PolicyDefaultVersionId')
@@ -2177,7 +2179,7 @@ class PolicyEntities(GeneratedModel):
 
 class PolicyVersion(GeneratedModel):
     body: str | None = Field(default=None, alias='Body')
-    creation_date: str | None = Field(default=None, alias='CreationDate')
+    creation_date: datetime.datetime | None = Field(default=None, alias='CreationDate')
     default_version: bool | None = Field(default=None, alias='DefaultVersion')
     version_id: str | None = Field(default=None, alias='VersionId')
 
@@ -2357,11 +2359,11 @@ class ReadConsoleOutputResponse(GeneratedModel):
 
 class ReadConsumptionAccountRequest(GeneratedModel):
     dry_run: bool | None = Field(default=None, alias='DryRun')
-    from_date: str = Field(alias='FromDate')
+    from_date: datetime.datetime = Field(alias='FromDate')
     overall: bool | None = Field(default=None, alias='Overall')
     show_price: bool | None = Field(default=None, alias='ShowPrice')
     show_resource_details: bool | None = Field(default=None, alias='ShowResourceDetails')
-    to_date: str = Field(alias='ToDate')
+    to_date: datetime.datetime = Field(alias='ToDate')
 
 class ReadConsumptionAccountResponse(GeneratedModel):
     consumption_entries: list[ConsumptionEntry] | None = Field(default=None, alias='ConsumptionEntries')
@@ -3120,12 +3122,12 @@ class SecurityGroupsMember(GeneratedModel):
     security_group_name: str | None = Field(default=None, alias='SecurityGroupName')
 
 class ServerCertificate(GeneratedModel):
-    expiration_date: str | None = Field(default=None, alias='ExpirationDate')
+    expiration_date: datetime.datetime | None = Field(default=None, alias='ExpirationDate')
     id: str | None = Field(default=None, alias='Id')
     name: str | None = Field(default=None, alias='Name')
     orn: str | None = Field(default=None, alias='Orn')
     path: str | None = Field(default=None, alias='Path')
-    upload_date: str | None = Field(default=None, alias='UploadDate')
+    upload_date: datetime.datetime | None = Field(default=None, alias='UploadDate')
 
 class Service(GeneratedModel):
     ip_ranges: list[str] | None = Field(default=None, alias='IpRanges')
@@ -3143,7 +3145,7 @@ class Snapshot(GeneratedModel):
     account_alias: str | None = Field(default=None, alias='AccountAlias')
     account_id: str | None = Field(default=None, alias='AccountId')
     client_token: str | None = Field(default=None, alias='ClientToken')
-    creation_date: str | None = Field(default=None, alias='CreationDate')
+    creation_date: datetime.datetime | None = Field(default=None, alias='CreationDate')
     description: str | None = Field(default=None, alias='Description')
     permissions_to_create_volume: PermissionsOnResource | None = Field(default=None, alias='PermissionsToCreateVolume')
     progress: int | None = Field(default=None, alias='Progress')
@@ -3313,7 +3315,7 @@ class UpdateAccessKeyRequest(GeneratedModel):
     clear_expiration_date: bool | None = Field(default=None, alias='ClearExpirationDate')
     clear_tag: bool | None = Field(default=None, alias='ClearTag')
     dry_run: bool | None = Field(default=None, alias='DryRun')
-    expiration_date: str | None = Field(default=None, alias='ExpirationDate')
+    expiration_date: datetime.datetime | None = Field(default=None, alias='ExpirationDate')
     state: str | None = Field(default=None, alias='State')
     tag: str | None = Field(default=None, alias='Tag')
     user_name: str | None = Field(default=None, alias='UserName')
@@ -3616,8 +3618,8 @@ class UpdateVpnConnectionResponse(GeneratedModel):
     vpn_connection: VpnConnection | None = Field(default=None, alias='VpnConnection')
 
 class User(GeneratedModel):
-    creation_date: str | None = Field(default=None, alias='CreationDate')
-    last_modification_date: str | None = Field(default=None, alias='LastModificationDate')
+    creation_date: datetime.datetime | None = Field(default=None, alias='CreationDate')
+    last_modification_date: datetime.datetime | None = Field(default=None, alias='LastModificationDate')
     outscale_login_allowed: bool | None = Field(default=None, alias='OutscaleLoginAllowed')
     path: str | None = Field(default=None, alias='Path')
     user_email: str | None = Field(default=None, alias='UserEmail')
@@ -3625,8 +3627,8 @@ class User(GeneratedModel):
     user_name: str | None = Field(default=None, alias='UserName')
 
 class UserGroup(GeneratedModel):
-    creation_date: str | None = Field(default=None, alias='CreationDate')
-    last_modification_date: str | None = Field(default=None, alias='LastModificationDate')
+    creation_date: datetime.datetime | None = Field(default=None, alias='CreationDate')
+    last_modification_date: datetime.datetime | None = Field(default=None, alias='LastModificationDate')
     name: str | None = Field(default=None, alias='Name')
     orn: str | None = Field(default=None, alias='Orn')
     path: str | None = Field(default=None, alias='Path')
@@ -3634,7 +3636,7 @@ class UserGroup(GeneratedModel):
 
 class VgwTelemetry(GeneratedModel):
     accepted_route_count: int | None = Field(default=None, alias='AcceptedRouteCount')
-    last_state_change_date: str | None = Field(default=None, alias='LastStateChangeDate')
+    last_state_change_date: datetime.datetime | None = Field(default=None, alias='LastStateChangeDate')
     outside_ip_address: str | None = Field(default=None, alias='OutsideIpAddress')
     state: str | None = Field(default=None, alias='State')
     state_description: str | None = Field(default=None, alias='StateDescription')
@@ -3653,7 +3655,7 @@ class Vm(GeneratedModel):
     boot_mode: BootMode | None = Field(default=None, alias='BootMode')
     bsu_optimized: bool | None = Field(default=None, alias='BsuOptimized')
     client_token: str | None = Field(default=None, alias='ClientToken')
-    creation_date: str | None = Field(default=None, alias='CreationDate')
+    creation_date: datetime.datetime | None = Field(default=None, alias='CreationDate')
     deletion_protection: bool | None = Field(default=None, alias='DeletionProtection')
     hypervisor: str | None = Field(default=None, alias='Hypervisor')
     image_id: str | None = Field(default=None, alias='ImageId')
@@ -3686,7 +3688,7 @@ class Vm(GeneratedModel):
     vm_type: str | None = Field(default=None, alias='VmType')
 
 class VmGroup(GeneratedModel):
-    creation_date: str | None = Field(default=None, alias='CreationDate')
+    creation_date: datetime.datetime | None = Field(default=None, alias='CreationDate')
     description: str | None = Field(default=None, alias='Description')
     positioning_strategy: Literal['attract', 'no-strategy', 'repulse'] | None = Field(default=None, alias='PositioningStrategy')
     security_group_ids: list[str] | None = Field(default=None, alias='SecurityGroupIds')
@@ -3714,7 +3716,7 @@ class VmTemplate(GeneratedModel):
     cpu_cores: int = Field(alias='CpuCores')
     cpu_generation: str = Field(alias='CpuGeneration')
     cpu_performance: Literal['medium', 'high', 'highest'] | None = Field(default=None, alias='CpuPerformance')
-    creation_date: str | None = Field(default=None, alias='CreationDate')
+    creation_date: datetime.datetime | None = Field(default=None, alias='CreationDate')
     description: str | None = Field(default=None, alias='Description')
     image_id: str = Field(alias='ImageId')
     keypair_name: str | None = Field(default=None, alias='KeypairName')
@@ -3737,7 +3739,7 @@ class VmType(GeneratedModel):
 
 class Volume(GeneratedModel):
     client_token: str | None = Field(default=None, alias='ClientToken')
-    creation_date: str | None = Field(default=None, alias='CreationDate')
+    creation_date: datetime.datetime | None = Field(default=None, alias='CreationDate')
     iops: int | None = Field(default=None, alias='Iops')
     linked_volumes: list[LinkedVolume] | None = Field(default=None, alias='LinkedVolumes')
     size: int | None = Field(default=None, alias='Size')
@@ -3760,9 +3762,9 @@ class VolumeUpdateParameters(GeneratedModel):
 
 class VolumeUpdateTask(GeneratedModel):
     comment: str | None = Field(default=None, alias='Comment')
-    completion_date: str | None = Field(default=None, alias='CompletionDate')
+    completion_date: datetime.datetime | None = Field(default=None, alias='CompletionDate')
     progress: int | None = Field(default=None, alias='Progress')
-    start_date: str | None = Field(default=None, alias='StartDate')
+    start_date: datetime.datetime | None = Field(default=None, alias='StartDate')
     state: str | None = Field(default=None, alias='State')
     tags: list[ResourceTag] | None = Field(default=None, alias='Tags')
     task_id: str | None = Field(default=None, alias='TaskId')

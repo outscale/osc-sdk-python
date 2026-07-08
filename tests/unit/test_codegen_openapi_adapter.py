@@ -1,5 +1,9 @@
 from osc_sdk_python.codegen.adapters import PathOperationAdapter
-from osc_sdk_python.codegen.generator import render_async_client, render_init, render_models
+from osc_sdk_python.codegen.generator import (
+    render_async_client,
+    render_init,
+    render_models,
+)
 
 
 def test_action_body_schema_reuses_component_request_model():
@@ -40,7 +44,9 @@ def test_action_body_schema_reuses_component_request_model():
                 },
                 "CreateVmsResponse": {
                     "type": "object",
-                    "properties": {"Vms": {"type": "array", "items": {"type": "object"}}},
+                    "properties": {
+                        "Vms": {"type": "array", "items": {"type": "object"}}
+                    },
                 },
             }
         },
@@ -136,9 +142,7 @@ def test_rest_body_schema_keeps_operation_request_wrapper():
                     "requestBody": {
                         "content": {
                             "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/ProjectInput"
-                                }
+                                "schema": {"$ref": "#/components/schemas/ProjectInput"}
                             }
                         }
                     },
@@ -237,7 +241,9 @@ def test_required_schema_fields_render_without_default_none():
     rendered_models = render_models([], adapter.schema_models(), "osc")
 
     assert "image_id: str = Field(alias='ImageId')" in rendered_models
-    assert "dry_run: bool | None = Field(default=None, alias='DryRun')" in rendered_models
+    assert (
+        "dry_run: bool | None = Field(default=None, alias='DryRun')" in rendered_models
+    )
 
 
 def test_datetime_format_renders_datetime_annotation():
@@ -283,6 +289,138 @@ def test_unknown_schema_type_warns_and_uses_any(caplog):
 
     assert "value: Any | None" in rendered_models
     assert "OpenAPI schema without a supported type" in caplog.text
+
+
+def test_multi_schema_composition_warns_and_uses_any(caplog):
+    spec = {
+        "paths": {},
+        "components": {
+            "schemas": {
+                "Thing": {
+                    "type": "object",
+                    "properties": {
+                        "Value": {
+                            "oneOf": [
+                                {},
+                                {"type": "integer"},
+                            ]
+                        }
+                    },
+                }
+            }
+        },
+    }
+
+    adapter = PathOperationAdapter(spec, service="api")
+    with caplog.at_level("WARNING", logger="osc_sdk_python.codegen"):
+        rendered_models = render_models([], adapter.schema_models(), "osc")
+
+    assert "value: Any | None" in rendered_models
+    assert "OpenAPI oneOf with 2 schemas" in caplog.text
+
+
+def test_oneof_composition_renders_union_with_exclusivity_warning(caplog):
+    spec = {
+        "paths": {},
+        "components": {
+            "schemas": {
+                "Thing": {
+                    "type": "object",
+                    "properties": {
+                        "Value": {
+                            "oneOf": [
+                                {"type": "string"},
+                                {"type": "integer"},
+                            ]
+                        }
+                    },
+                }
+            }
+        },
+    }
+
+    adapter = PathOperationAdapter(spec, service="api")
+    with caplog.at_level("WARNING", logger="osc_sdk_python.codegen"):
+        rendered_models = render_models([], adapter.schema_models(), "osc")
+
+    assert "value: str | int | None" in rendered_models
+    assert "OpenAPI oneOf with 2 schemas represented as a union" in caplog.text
+    assert "exclusivity is not enforced" in caplog.text
+
+
+def test_anyof_composition_renders_union_for_supported_schemas():
+    spec = {
+        "paths": {},
+        "components": {
+            "schemas": {
+                "ValidationDetail": {
+                    "type": "object",
+                    "properties": {"Msg": {"type": "string"}},
+                },
+                "ErrorItem": {
+                    "type": "object",
+                    "properties": {
+                        "Details": {
+                            "anyOf": [
+                                {"type": "string"},
+                                {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/ValidationDetail"
+                                    },
+                                },
+                            ]
+                        },
+                        "Loc": {
+                            "type": "array",
+                            "items": {
+                                "anyOf": [
+                                    {"type": "string"},
+                                    {"type": "integer"},
+                                ]
+                            },
+                        },
+                    },
+                },
+            }
+        },
+    }
+
+    adapter = PathOperationAdapter(spec, service="api")
+    rendered_models = render_models([], adapter.schema_models(), "osc")
+
+    assert "details: str | list[ValidationDetail] | None" in rendered_models
+    assert "loc: list[str | int] | None" in rendered_models
+
+
+def test_single_ref_allof_with_metadata_keeps_ref_type():
+    spec = {
+        "paths": {},
+        "components": {
+            "schemas": {
+                "BaseThing": {
+                    "type": "object",
+                    "properties": {"Id": {"type": "string"}},
+                },
+                "Thing": {
+                    "type": "object",
+                    "properties": {
+                        "Value": {
+                            "allOf": [
+                                {"$ref": "#/components/schemas/BaseThing"},
+                                {"description": "same schema with docs"},
+                            ]
+                        }
+                    },
+                },
+            }
+        },
+    }
+
+    adapter = PathOperationAdapter(spec, service="api")
+    rendered_models = render_models([], adapter.schema_models(), "osc")
+
+    assert "value: BaseThing | None" in rendered_models
 
 
 def test_non_model_response_uses_type_adapter():
@@ -342,7 +480,9 @@ def test_requestless_operation_does_not_create_unused_request_variable():
             "schemas": {
                 "KubernetesVersionsResponse": {
                     "type": "object",
-                    "properties": {"versions": {"type": "array", "items": {"type": "string"}}},
+                    "properties": {
+                        "versions": {"type": "array", "items": {"type": "string"}}
+                    },
                 }
             }
         },
@@ -354,4 +494,4 @@ def test_requestless_operation_does_not_create_unused_request_variable():
     assert "request: GetKubernetesVersionsRequest | None = None" in rendered_client
     assert "request = GetKubernetesVersionsRequest()" not in rendered_client
     assert "_ = request" in rendered_client
-    assert "path=\"/clusters/limits/kubernetes_versions\"" in rendered_client
+    assert 'path="/clusters/limits/kubernetes_versions"' in rendered_client

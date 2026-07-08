@@ -10,7 +10,9 @@ Do not edit by hand. Regenerate with:
 """
 from __future__ import annotations
 
-from typing import Any, Literal
+import datetime
+
+from typing import Literal
 
 from pydantic import BaseModel, ConfigDict, Field
 
@@ -142,7 +144,7 @@ class DetailResponse(GeneratedModel):
 
 class ErrorItem(GeneratedModel):
     type: str = Field(alias='Type')
-    details: Any = Field(alias='Details')
+    details: str | list[ValidationDetail] = Field(alias='Details')
     code: str = Field(alias='Code')
 
 class ErrorResponse(GeneratedModel):
@@ -246,9 +248,9 @@ class Project(GeneratedModel):
     status: str = Field(alias='status')
     tags: dict[str, str] = Field(alias='tags')
     disable_api_termination: bool | None = Field(default=None, alias='disable_api_termination')
-    created_at: str = Field(alias='created_at')
-    updated_at: str = Field(alias='updated_at')
-    deleted_at: str | None = Field(default=None, alias='deleted_at')
+    created_at: datetime.datetime = Field(alias='created_at')
+    updated_at: datetime.datetime = Field(alias='updated_at')
+    deleted_at: datetime.datetime | None = Field(default=None, alias='deleted_at')
 
 class ProjectInput(GeneratedModel):
     name: str = Field(alias='name')
@@ -335,9 +337,9 @@ class SpecNetPeeringRequest(GeneratedModel):
     accepter_owner_id: str = Field(alias='accepterOwnerId')
 
 class Statuses(GeneratedModel):
-    created_at: str = Field(alias='created_at')
-    deleted_at: str | None = Field(default=None, alias='deleted_at')
-    updated_at: str | None = Field(default=None, alias='updated_at')
+    created_at: datetime.datetime = Field(alias='created_at')
+    deleted_at: datetime.datetime | None = Field(default=None, alias='deleted_at')
+    updated_at: datetime.datetime | None = Field(default=None, alias='updated_at')
     status: str | None = Field(default=None, alias='status')
     available_upgrade: str | None = Field(default=None, alias='available_upgrade')
 
@@ -374,7 +376,7 @@ class UpgradeStrategy(GeneratedModel):
     auto_upgrade_maintenance: AutoUpgradeMaintenance = Field(alias='autoUpgradeMaintenance')
 
 class ValidationDetail(GeneratedModel):
-    loc: list[Any] = Field(alias='loc')
+    loc: list[str | int] = Field(alias='loc')
     msg: str = Field(alias='msg')
     type: str = Field(alias='type')
 
