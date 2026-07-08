@@ -5,6 +5,7 @@ import pytest
 
 from osc_sdk_python import AsyncClient, Client, SdkConfigurationError, SdkUsageError
 from osc_sdk_python.outscale_gateway import OpenAPIActionAPI
+from osc_sdk_python.runtime.call import AsyncCall, Call
 
 
 def test_client_close_closes_service_sessions():
@@ -64,6 +65,73 @@ def test_async_client_rejects_sync_context_manager():
     with pytest.raises(SdkUsageError):
         with AsyncClient():
             pass
+
+
+class FakeSyncClient:
+    def __init__(self, tls_skip_verify, cert):
+        self.tls_skip_verify = tls_skip_verify
+        self.cert = cert
+        self.closed = False
+
+    def close(self):
+        self.closed = True
+
+
+class FakeAsyncClient:
+    def __init__(self, tls_skip_verify, cert):
+        self.tls_skip_verify = tls_skip_verify
+        self.cert = cert
+
+
+class RecordingCall(Call):
+    def __init__(self, **kwargs):
+        self.created_clients = []
+        super().__init__(**kwargs)
+
+    def _make_client(self):
+        client = FakeSyncClient(
+            self.profile.tls_skip_verify,
+            self.profile.x509_client_cert,
+        )
+        self.created_clients.append(client)
+        return client
+
+
+class RecordingAsyncCall(AsyncCall):
+    def __init__(self, **kwargs):
+        self.created_clients = []
+        super().__init__(**kwargs)
+
+    def _make_client(self):
+        client = FakeAsyncClient(
+            self.profile.tls_skip_verify,
+            self.profile.x509_client_cert,
+        )
+        self.created_clients.append(client)
+        return client
+
+
+def test_update_profile_recreates_sync_client_for_tls_settings():
+    call = RecordingCall(tls_skip_verify=False, x509_client_cert="old.pem")
+    old_session = call.session
+
+    call.update_profile(tls_skip_verify=True, x509_client_cert="new.pem")
+
+    assert old_session.closed is True
+    assert call.session.tls_skip_verify is True
+    assert call.session.cert == "new.pem"
+    assert call.session is not old_session
+
+
+def test_update_profile_recreates_async_client_for_tls_settings():
+    call = RecordingAsyncCall(tls_skip_verify=False, x509_client_cert="old.pem")
+    old_client = call.client
+
+    call.update_profile(tls_skip_verify=True, x509_client_cert="new.pem")
+
+    assert call.client.tls_skip_verify is True
+    assert call.client.cert == "new.pem"
+    assert call.client is not old_client
 
 
 def test_openapi_action_api_raises_configuration_error_for_unreadable_spec():

@@ -80,6 +80,10 @@ class Call(object):
             kwargs.pop("path", None), kwargs.pop("profile", None)
         )
         self.profile.merge(Profile(**kwargs))
+        if hasattr(self, "session"):
+            old_session = self.session
+            self.session = self._make_client()
+            old_session.close()
         return kwargs
 
     def update_limiter(self, **kwargs):
@@ -198,6 +202,8 @@ class AsyncCall(object):
             kwargs.pop("path", None), kwargs.pop("profile", None)
         )
         self.profile.merge(Profile(**kwargs))
+        if hasattr(self, "client"):
+            self.client = self._make_client()
         return kwargs
 
     def update_limiter(self, **kwargs):
