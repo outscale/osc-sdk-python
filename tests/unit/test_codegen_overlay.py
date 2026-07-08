@@ -63,6 +63,32 @@ def test_overlay_removes_targeted_key():
     ]["NextPageToken"]
 
 
+def test_overlay_removes_list_matches_in_reverse_index_order():
+    spec = {
+        "parameters": [
+            {"name": "keep", "deprecated": False},
+            {"name": "first", "deprecated": True},
+            {"name": "second", "deprecated": True},
+            {"name": "keep2", "deprecated": False},
+        ]
+    }
+    overlay = {
+        "actions": [
+            {
+                "target": "$.parameters[?(@.deprecated == 'True')]",
+                "remove": True,
+            }
+        ]
+    }
+
+    patched = apply_overlay(spec, overlay)
+
+    assert [parameter["name"] for parameter in patched["parameters"]] == [
+        "keep",
+        "keep2",
+    ]
+
+
 def test_overlay_updates_quoted_path_key():
     spec = {
         "paths": {

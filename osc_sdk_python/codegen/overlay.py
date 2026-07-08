@@ -92,16 +92,23 @@ def apply_overlay(spec: dict[str, Any], overlay: dict[str, Any]) -> dict[str, An
             continue
 
         matches = iter_matches(patched, parse_target(target))
-        for parent, key in matches:
-            if parent is None or key is None:
-                continue
-            if action.get("remove"):
+        if action.get("remove"):
+            for parent, key in sorted(
+                matches,
+                key=lambda match: match[1] if isinstance(match[1], int) else -1,
+                reverse=True,
+            ):
+                if parent is None or key is None:
+                    continue
                 if isinstance(parent, dict):
                     parent.pop(key, None)
                 elif isinstance(parent, list) and isinstance(key, int):
                     parent.pop(key)
-                continue
+            continue
 
+        for parent, key in matches:
+            if parent is None or key is None:
+                continue
             update = action.get("update")
             if update is None:
                 continue
