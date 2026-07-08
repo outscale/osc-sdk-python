@@ -68,6 +68,7 @@ def test_async_slow(monkeypatch):
 
 def test_async_refill_after_window():
     """Test old requests are removed once the async limiter window has passed"""
+
     async def run():
         class MockDateTime(datetime.datetime):
             @classmethod
@@ -91,8 +92,30 @@ def test_async_refill_after_window():
     asyncio.run(run())
 
 
+def test_async_acquire_uses_shared_sync_lock():
+    """Test async and sync limiter paths protect the same request history."""
+
+    async def run():
+        rl = RateLimiter(datetime.timedelta(seconds=1), 5)
+        rl._lock.acquire()
+        try:
+            task = asyncio.create_task(rl.async_acquire())
+            await asyncio.sleep(0.01)
+
+            assert not task.done()
+            assert rl.requests == []
+        finally:
+            rl._lock.release()
+
+        await asyncio.wait_for(task, timeout=1)
+        assert len(rl.requests) == 1
+
+    asyncio.run(run())
+
+
 def test_async_concurrent_acquire_completes_without_deadlock(monkeypatch):
     """Test concurrent async callers complete without deadlocking"""
+
     async def run():
         with monkeypatch.context() as m:
             sleep_calls = []

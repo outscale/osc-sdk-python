@@ -37,7 +37,6 @@ class RateLimiter:
         self.max_requests: int = max_requests
         self.requests = []
         self._lock = Lock()
-        self._async_lock = None
 
     def acquire(self):
         with self._lock:
@@ -56,10 +55,8 @@ class RateLimiter:
             self.requests.append(now)
 
     async def async_acquire(self):
-        if self._async_lock is None:
-            self._async_lock = asyncio.Lock()
-
-        async with self._async_lock:
+        await asyncio.to_thread(self._lock.acquire)
+        try:
             now = self.datetime_cls.now(timezone.utc)
 
             self.clean_old_requests(now)
@@ -73,6 +70,8 @@ class RateLimiter:
                 self.clean_old_requests(now)
 
             self.requests.append(now)
+        finally:
+            self._lock.release()
 
     def clean_old_requests(self, now):
         while len(self.requests) > 0 and self.requests[0] <= now - self.window:
