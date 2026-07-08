@@ -88,10 +88,14 @@ def render_models(
     typing_imports = ["Literal"]
     if any(re.search(r"\bAny\b", model) for model in models):
         typing_imports.insert(0, "Any")
+    datetime_import = ""
+    if any("datetime.datetime" in model for model in models):
+        datetime_import = "import datetime\n\n"
 
     return (
         _header(package_name)
         + "from __future__ import annotations\n\n"
+        + datetime_import
         + "from typing import "
         + ", ".join(typing_imports)
         + "\n\n"

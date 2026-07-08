@@ -240,6 +240,51 @@ def test_required_schema_fields_render_without_default_none():
     assert "dry_run: bool | None = Field(default=None, alias='DryRun')" in rendered_models
 
 
+def test_datetime_format_renders_datetime_annotation():
+    spec = {
+        "paths": {},
+        "components": {
+            "schemas": {
+                "Event": {
+                    "type": "object",
+                    "properties": {
+                        "CreatedAt": {"type": "string", "format": "date-time"},
+                    },
+                }
+            }
+        },
+    }
+
+    adapter = PathOperationAdapter(spec, service="api")
+    rendered_models = render_models([], adapter.schema_models(), "osc")
+
+    assert "import datetime" in rendered_models
+    assert "created_at: datetime.datetime | None" in rendered_models
+
+
+def test_unknown_schema_type_warns_and_uses_any(caplog):
+    spec = {
+        "paths": {},
+        "components": {
+            "schemas": {
+                "Thing": {
+                    "type": "object",
+                    "properties": {
+                        "Value": {},
+                    },
+                }
+            }
+        },
+    }
+
+    adapter = PathOperationAdapter(spec, service="api")
+    with caplog.at_level("WARNING", logger="osc_sdk_python.codegen"):
+        rendered_models = render_models([], adapter.schema_models(), "osc")
+
+    assert "value: Any | None" in rendered_models
+    assert "OpenAPI schema without a supported type" in caplog.text
+
+
 def test_non_model_response_uses_type_adapter():
     """Ensure primitive or collection responses are validated through TypeAdapter."""
     spec = {

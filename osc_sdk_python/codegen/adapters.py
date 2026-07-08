@@ -1,8 +1,11 @@
 import keyword
+import logging
 import re
 from typing import Any
 
 from .ir import Field, Model, Operation
+
+logger = logging.getLogger("osc_sdk_python.codegen")
 
 
 def snake_case(value: str) -> str:
@@ -50,12 +53,17 @@ def schema_type(schema: dict[str, Any], ref_resolver=class_name) -> str:
         return "Any"
 
     typ = schema.get("type")
+    fmt = schema.get("format")
     if typ == "boolean":
         return "bool"
     if typ == "integer":
         return "int"
     if typ == "number":
         return "float"
+    if typ == "string":
+        if fmt in {"date-time", "datetime"}:
+            return "datetime.datetime"
+        return "str"
     if typ == "array":
         item_type = schema_type(schema.get("items", {}), ref_resolver)
         return f"list[{item_type}]"
@@ -64,7 +72,8 @@ def schema_type(schema: dict[str, Any], ref_resolver=class_name) -> str:
         if isinstance(additional, dict):
             return f"dict[str, {schema_type(additional, ref_resolver)}]"
         return "dict[str, Any]"
-    return "str"
+    logger.warning("OpenAPI schema without a supported type; using Any")
+    return "Any"
 
 
 def ref_name(ref: str) -> str:
