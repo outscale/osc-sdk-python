@@ -233,7 +233,7 @@ class RetryPolicy:
         self.backoff_jitter = float(backoff_jitter)
         self.backoff_max = float(backoff_max)
 
-    def should_retry(self, error: httpx.HTTPError, attempt: int) -> bool:
+    def should_retry(self, error: httpx.HTTPError | SdkHttpError, attempt: int) -> bool:
         if isinstance(error, httpx.TooManyRedirects):
             return False
         if isinstance(error, httpx.InvalidURL | httpx.UnsupportedProtocol):
@@ -250,7 +250,7 @@ class RetryPolicy:
         backoff += random.uniform(0, self.backoff_jitter)
         return min(backoff, self.backoff_max)
 
-    def retry_after_time(self, error: httpx.HTTPError):
+    def retry_after_time(self, error: httpx.HTTPError | SdkHttpError):
         response = getattr(error, "response", None)
         if response is None:
             return None
