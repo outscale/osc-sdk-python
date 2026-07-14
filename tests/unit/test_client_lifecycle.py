@@ -68,9 +68,8 @@ def test_async_client_rejects_sync_context_manager():
 
 
 class FakeSyncClient:
-    def __init__(self, tls_skip_verify, cert):
+    def __init__(self, tls_skip_verify):
         self.tls_skip_verify = tls_skip_verify
-        self.cert = cert
         self.closed = False
 
     def close(self):
@@ -78,9 +77,8 @@ class FakeSyncClient:
 
 
 class FakeAsyncClient:
-    def __init__(self, tls_skip_verify, cert):
+    def __init__(self, tls_skip_verify):
         self.tls_skip_verify = tls_skip_verify
-        self.cert = cert
 
 
 class RecordingCall(Call):
@@ -89,10 +87,7 @@ class RecordingCall(Call):
         super().__init__(**kwargs)
 
     def _make_client(self):
-        client = FakeSyncClient(
-            self.profile.tls_skip_verify,
-            self.profile.x509_client_cert,
-        )
+        client = FakeSyncClient(self.profile.tls_skip_verify)
         self.created_clients.append(client)
         return client
 
@@ -103,34 +98,29 @@ class RecordingAsyncCall(AsyncCall):
         super().__init__(**kwargs)
 
     def _make_client(self):
-        client = FakeAsyncClient(
-            self.profile.tls_skip_verify,
-            self.profile.x509_client_cert,
-        )
+        client = FakeAsyncClient(self.profile.tls_skip_verify)
         self.created_clients.append(client)
         return client
 
 
 def test_update_profile_recreates_sync_client_for_tls_settings():
-    call = RecordingCall(tls_skip_verify=False, x509_client_cert="old.pem")
+    call = RecordingCall(tls_skip_verify=False)
     old_session = call.session
 
-    call.update_profile(tls_skip_verify=True, x509_client_cert="new.pem")
+    call.update_profile(tls_skip_verify=True)
 
     assert old_session.closed is True
     assert call.session.tls_skip_verify is True
-    assert call.session.cert == "new.pem"
     assert call.session is not old_session
 
 
 def test_update_profile_recreates_async_client_for_tls_settings():
-    call = RecordingAsyncCall(tls_skip_verify=False, x509_client_cert="old.pem")
+    call = RecordingAsyncCall(tls_skip_verify=False)
     old_client = call.client
 
-    call.update_profile(tls_skip_verify=True, x509_client_cert="new.pem")
+    call.update_profile(tls_skip_verify=True)
 
     assert call.client.tls_skip_verify is True
-    assert call.client.cert == "new.pem"
     assert call.client is not old_client
 
 

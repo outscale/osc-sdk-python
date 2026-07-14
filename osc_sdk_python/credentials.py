@@ -33,10 +33,6 @@ class Profile:
         self.access_key_v2: str = kwargs.pop("access_key_v2", None)
         self.secret_key_v2: str = kwargs.pop("secret_key_v2", None)
         self.iam_v2_services: list[str] = kwargs.pop("iam_v2_services", [])
-        self.x509_client_cert: str = kwargs.pop("x509_client_cert", None)
-        self.x509_client_cert_b64: str = kwargs.pop("x509_client_cert_b64", None)
-        self.x509_client_key: str = kwargs.pop("x509_client_key", None)
-        self.x509_client_key_b64: str = kwargs.pop("x509_client_key_b64", None)
         self.tls_skip_verify: bool = kwargs.pop("tls_skip_verify", False)
         self.login: str = kwargs.pop("login", None) or kwargs.pop("email", None)
         self.password: str = kwargs.pop("password", None)
@@ -99,10 +95,6 @@ class Profile:
             "secret_key": os.environ.get("OSC_SECRET_KEY"),
             "access_key_v2": os.environ.get("OSC_ACCESS_KEY_V2"),
             "secret_key_v2": os.environ.get("OSC_SECRET_KEY_V2"),
-            "x509_client_cert": os.environ.get("OSC_X509_CLIENT_CERT"),
-            "x509_client_cert_b64": os.environ.get("OSC_X509_CLIENT_CERT_B64"),
-            "x509_client_key": os.environ.get("OSC_X509_CLIENT_KEY"),
-            "x509_client_key_b64": os.environ.get("OSC_X509_CLIENT_KEY_B64"),
             "tls_skip_verify": os.environ.get("OSC_TLS_SKIP_VERIFY", "False").lower()
             in ("true"),
             "login": os.environ.get("OSC_LOGIN"),

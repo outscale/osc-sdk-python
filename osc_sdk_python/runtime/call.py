@@ -58,12 +58,10 @@ class Call(object):
         return httpx.Client(
             trust_env=False,
             verify=not self.profile.tls_skip_verify,
-            cert=self.profile.x509_client_cert,
             transport=SdkTransport(
                 limiter=self.limiter,
                 retry_policy=RetryPolicy(**self.retry_kwargs),
                 verify=not self.profile.tls_skip_verify,
-                cert=self.profile.x509_client_cert,
             ),
         )
 
@@ -176,16 +174,13 @@ class AsyncCall(object):
         self.client = self._make_client()
 
     def _make_client(self):
-        cert_file = self.profile.x509_client_cert
         return httpx.AsyncClient(
             trust_env=False,
             verify=not self.profile.tls_skip_verify,
-            cert=cert_file,
             transport=AsyncSdkTransport(
                 limiter=self.limiter,
                 retry_policy=RetryPolicy(**self.retry_kwargs),
                 verify=not self.profile.tls_skip_verify,
-                cert=cert_file,
             ),
         )
 
