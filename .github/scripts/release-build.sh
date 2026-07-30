@@ -51,7 +51,11 @@ fi
 # Setup new SDK version
 for f in "$root/README.md" "$root/osc_sdk_python/VERSION"; do
     sed -i "s/$local_sdk_version_major\.$local_sdk_version_minor\.$local_sdk_version_patch/$local_sdk_version_major\.$new_sdk_version_minor\.0/g" "$f"
-    git add "$f"
 done
 
 uv version "$(cat osc_sdk_python/VERSION)"
+
+git add "$root/README.md" "$root/osc_sdk_python/VERSION" "$root/pyproject.toml"
+if [ -f "$root/uv.lock" ]; then
+    git add "$root/uv.lock"
+fi
