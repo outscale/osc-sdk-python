@@ -83,10 +83,11 @@ class OpenAPIActionAPI:
 
     def update_profile(self, **kwargs):
         """
-        destroy and create a new credential map use for each call.
-        so you can change your ak/sk, region without having to recreate the whole Gateway
-        as the object is recreate, you can't expect to keep parameter from the old configuration
-        example: just updating the password, without renter the login will fail
+        Rebuild the service client profile so credentials, region, and endpoints
+        can be changed without recreating the parent SDK client.
+
+        Profile updates replace the previous configuration. For example, updating
+        only the password without also providing the login will fail.
         """
         self.call.update_profile(**kwargs)
 
