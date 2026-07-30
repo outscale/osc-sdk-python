@@ -581,7 +581,8 @@ Compatibility rules:
 ## 21. Notes
 
 - Release generation currently uses `--skip-overlay` for OSC and OKS until overlays are redesigned and validated.
-- Async profile or credential updates could be improved: `AsyncCall.update_profile()` recreates the underlying httpx.AsyncClient without explicitly closing the previous instance. Since AsyncClient requires await client.aclose(), consider introducing an async update_profile() method or another lifecycle mechanism to ensure the previous client is cleaned up safely.
+- Async profile or credential updates could be improved: `AsyncCall.update_profile()` recreates the underlying httpx.AsyncClient without explicitly closing the previous instance. Since AsyncClient requires await client.aclose(), consider introducing an async update_profile() method or another lifecycle mechanism to ensure the previous client is cleaned up safely. Also add test for it.
+- Retry environment variables such as `OSC_MAX_RETRIES`, `OSC_RETRY_BACKOFF_FACTOR`, `OSC_RETRY_BACKOFF_JITTER`, and `OSC_RETRY_BACKOFF_MAX` are documented in the README but are not currently wired into the SDK runtime. Retry configuration currently works through constructor arguments only, so environment variable support should be fixed or the documentation should be corrected.
 
 ## 22. Summary
 

@@ -228,6 +228,8 @@ class OpenAPIActionAPI:
         return action
 
     def __getattr__(self, attr):
+        if attr not in self.gateway_structure:
+            raise AttributeError(attr)
         return self._get_action(attr)
 
     def __dir__(self):
@@ -367,6 +369,8 @@ class OpenAPIPathAPI:
         return operation
 
     def __getattr__(self, attr):
+        if attr not in self.operations:
+            raise AttributeError(attr)
         return self._get_operation(attr)
 
     def __dir__(self):

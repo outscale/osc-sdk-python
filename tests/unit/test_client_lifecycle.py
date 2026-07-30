@@ -127,3 +127,23 @@ def test_update_profile_recreates_async_client_for_tls_settings():
 def test_openapi_action_api_raises_configuration_error_for_unreadable_spec():
     with pytest.raises(SdkConfigurationError, match="Problem reading OpenAPI spec"):
         OpenAPIActionAPI("missing-spec.yaml")
+
+
+def test_dynamic_service_hasattr_reflects_available_operations():
+    with Client() as client:
+        assert hasattr(client.osc, "ReadVms")
+        assert not hasattr(client.osc, "TotallyWrongAction")
+        assert "ReadVms" in dir(client.osc)
+
+        assert hasattr(client.oks, "ListProjects")
+        assert not hasattr(client.oks, "TotallyWrongOperation")
+        assert "ListProjects" in dir(client.oks)
+
+
+def test_unknown_dynamic_service_attribute_raises_attribute_error():
+    with Client() as client:
+        with pytest.raises(AttributeError):
+            _ = client.osc.TotallyWrongAction
+
+        with pytest.raises(AttributeError):
+            _ = client.oks.TotallyWrongOperation
