@@ -47,7 +47,7 @@ You will need an Outscale account and API credentials. If you do not have one ye
 
 ## ✅ Requirements
 
-- Python 3.x
+- Python 3.10+
 - `pip` (Python package manager)
 - Access to the OUTSCALE API (valid access key / secret key or basic auth)
 - Network access to the Outscale API endpoints
