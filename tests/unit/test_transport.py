@@ -137,6 +137,17 @@ def test_sdk_auth_adds_oks_headers():
     assert signed.headers["SecretKey"] == "sk"
 
 
+def test_sdk_auth_requires_oks_credentials():
+    auth = FixedDateSdkAuth(Profile(region="eu-west-2"), service="oks")
+    request = httpx.Request(
+        "GET",
+        "https://api.eu-west-2.oks.outscale.com/projects",
+    )
+
+    with pytest.raises(SdkConfigurationError):
+        next(auth.auth_flow(request))
+
+
 def test_transport_retries_429_with_retry_after():
     request = httpx.Request("POST", "https://example.test/ReadVms")
     transport = SdkTransport(retry_policy=RetryPolicy(max_retries=1))

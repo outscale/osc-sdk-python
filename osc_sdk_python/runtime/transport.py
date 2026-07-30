@@ -139,6 +139,7 @@ class SdkAuth(httpx.Auth):
         }
 
     def forge_headers_oks(self):
+        self.ensure_signed_auth_configured()
         return {
             "AccessKey": self.access_key,
             "SecretKey": self.secret_key,
