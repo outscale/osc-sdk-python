@@ -3,7 +3,7 @@ name = "osc_sdk_python"
 version = "0.41.0"
 description = "Outscale Gateway python SDK"
 authors = [
-  { name = "Outscal SAS", email = "opensource@outscale.com" }
+  { name = "Outscale SAS", email = "opensource@outscale.com" }
 ]
 readme = "README.md"
 requires-python = ">=3.10"
