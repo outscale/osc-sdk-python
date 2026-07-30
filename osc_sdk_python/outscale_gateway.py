@@ -90,6 +90,10 @@ class OpenAPIActionAPI:
         """
         self.call.update_profile(**kwargs)
 
+    @property
+    def profile(self):
+        return self.call.profile
+
     def access_key(self):
         return self.call.profile.access_key
 
@@ -280,6 +284,10 @@ class OpenAPIPathAPI:
         self.limiter = RateLimiter(DEFAULT_LIMITER_WINDOW, DEFAULT_LIMITER_MAX_REQUESTS)
         self.call = _call_cls(limiter=self.limiter, **kwargs)
 
+    @property
+    def profile(self):
+        return self.call.profile
+
     def _load_operations(self, spec):
         with open(spec, "r") as fi:
             yaml = ruamel.yaml.YAML(typ="safe")
@@ -464,4 +472,3 @@ class AsyncClient:
 
     def __exit__(self, type, value, traceback):
         return None
-

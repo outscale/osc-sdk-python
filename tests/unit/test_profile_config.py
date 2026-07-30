@@ -134,12 +134,12 @@ def test_constructor_values_override_environment_and_profile_file(
         region="arg-region",
     )
     try:
-        assert client.osc.call.profile.access_key == "arg-ak"
-        assert client.osc.call.profile.secret_key == "arg-sk"
-        assert client.osc.call.profile.region == "arg-region"
-        assert client.oks.call.profile.access_key == "arg-ak"
-        assert client.oks.call.profile.secret_key == "arg-sk"
-        assert client.oks.call.profile.region == "arg-region"
+        assert client.osc.profile.access_key == "arg-ak"
+        assert client.osc.profile.secret_key == "arg-sk"
+        assert client.osc.profile.region == "arg-region"
+        assert client.oks.profile.access_key == "arg-ak"
+        assert client.oks.profile.secret_key == "arg-sk"
+        assert client.oks.profile.region == "arg-region"
     finally:
         client.close()
 
