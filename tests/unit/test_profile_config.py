@@ -2,6 +2,7 @@ import json
 
 import pytest
 
+from osc_sdk_python import Client
 from osc_sdk_python.credentials import Profile
 from osc_sdk_python.exceptions import SdkConfigurationError
 
@@ -44,6 +45,9 @@ def test_profile_file_loading(tmp_path, monkeypatch):
     """Test profile values can be loaded from a config file"""
     monkeypatch.delenv("OSC_ACCESS_KEY", raising=False)
     monkeypatch.delenv("OSC_SECRET_KEY", raising=False)
+    monkeypatch.delenv("OSC_REGION", raising=False)
+    monkeypatch.delenv("OSC_PROTOCOL", raising=False)
+    monkeypatch.delenv("OSC_ENDPOINT_API", raising=False)
 
     config = tmp_path / "config.json"
     config.write_text(
@@ -64,6 +68,80 @@ def test_profile_file_loading(tmp_path, monkeypatch):
     assert profile.access_key == "file-ak"
     assert profile.secret_key == "file-sk"
     assert profile.region == "eu-west-2"
+
+
+def test_environment_values_override_profile_file(tmp_path, monkeypatch):
+    """Test environment variables take priority over config file values"""
+    config = tmp_path / "config.json"
+    config.write_text(
+        json.dumps(
+            {
+                "default": {
+                    "access_key": "file-ak",
+                    "secret_key": "file-sk",
+                    "region": "file-region",
+                    "protocol": "https",
+                    "endpoints": {
+                        "api": "https://file-osc.example.test",
+                    },
+                }
+            }
+        )
+    )
+
+    monkeypatch.setenv("OSC_ACCESS_KEY", "env-ak")
+    monkeypatch.setenv("OSC_SECRET_KEY", "env-sk")
+    monkeypatch.setenv("OSC_REGION", "env-region")
+    monkeypatch.setenv("OSC_PROTOCOL", "http")
+    monkeypatch.setenv("OSC_ENDPOINT_API", "https://env-osc.example.test")
+
+    profile = Profile.from_standard_configuration(str(config), "default")
+
+    assert profile.access_key == "env-ak"
+    assert profile.secret_key == "env-sk"
+    assert profile.region == "env-region"
+    assert profile.protocol == "http"
+    assert profile.get_endpoint("api") == "https://env-osc.example.test"
+
+
+def test_constructor_values_override_environment_and_profile_file(
+    tmp_path, monkeypatch
+):
+    """Test explicit constructor values have the highest priority"""
+    config = tmp_path / "config.json"
+    config.write_text(
+        json.dumps(
+            {
+                "default": {
+                    "access_key": "file-ak",
+                    "secret_key": "file-sk",
+                    "region": "file-region",
+                    "protocol": "https",
+                }
+            }
+        )
+    )
+
+    monkeypatch.setenv("OSC_ACCESS_KEY", "env-ak")
+    monkeypatch.setenv("OSC_SECRET_KEY", "env-sk")
+    monkeypatch.setenv("OSC_REGION", "env-region")
+
+    client = Client(
+        path=str(config),
+        profile="default",
+        access_key="arg-ak",
+        secret_key="arg-sk",
+        region="arg-region",
+    )
+    try:
+        assert client.osc.call.profile.access_key == "arg-ak"
+        assert client.osc.call.profile.secret_key == "arg-sk"
+        assert client.osc.call.profile.region == "arg-region"
+        assert client.oks.call.profile.access_key == "arg-ak"
+        assert client.oks.call.profile.secret_key == "arg-sk"
+        assert client.oks.call.profile.region == "arg-region"
+    finally:
+        client.close()
 
 
 def test_missing_default_config_is_ignored(monkeypatch):

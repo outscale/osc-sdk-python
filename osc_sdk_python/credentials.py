@@ -151,10 +151,7 @@ class Profile:
 
     @staticmethod
     def from_standard_configuration(path: str, profile: str) -> "Profile":
-        # 1. Load profile from environmental
-        merged_profile = Profile.from_env()
-
-        # 2. Load additional config from environment
+        # 1. Resolve config path and profile name.
         if not profile:
             value = os.environ.get("OSC_PROFILE")
             if value:
@@ -169,7 +166,8 @@ class Profile:
             else:
                 path = STD_PATH
 
-        # 3. Load profile for config file
+        # 2. Load profile from config file.
+        merged_profile = Profile()
         try:
             file_profile = Profile.__from_file(path, profile)
             merged_profile.merge(file_profile)
@@ -177,7 +175,10 @@ class Profile:
             if path != STD_PATH or profile != "default":
                 raise e
 
-        # 4. Load default
+        # 3. Environment variables override config file values.
+        merged_profile.merge(Profile.from_env())
+
+        # 4. Apply SDK defaults for missing values.
         if not merged_profile.protocol:
             merged_profile.protocol = "https"
 

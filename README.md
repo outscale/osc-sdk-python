@@ -136,9 +136,12 @@ Example:
 }
 ```
 
-Notes:
+Precedence order:
 
-* Environment variables have priority over credentials files.
+1. Explicit constructor arguments
+2. Environment variables
+3. Credentials file
+4. SDK defaults
 
 ### Basic Authentication
 

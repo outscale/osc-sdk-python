@@ -447,12 +447,12 @@ Services can choose the right authentication behavior through the `service` valu
 
 The SDK uses profiles for credentials, regions, endpoints, and runtime options.
 
-Configuration sources include:
+Configuration precedence is:
 
-- Environment variables.
-- `~/.osc/config.json` or a configured credentials file.
-- Explicit client constructor arguments.
-- SDK defaults.
+1. Explicit client constructor arguments.
+2. Environment variables.
+3. `~/.osc/config.json` or a configured credentials file.
+4. SDK defaults.
 
 Important profile fields include:
 
@@ -578,9 +578,10 @@ Compatibility rules:
 - Generated code should be reproducible from the intended release inputs, generator flags, templates, and generator code.
 - Generated files should not be manually edited.
 
-## 21. Notes and Upcoming Updates
+## 21. Notes
 
 - Release generation currently uses `--skip-overlay` for OSC and OKS until overlays are redesigned and validated.
+- Async profile or credential updates could be improved: `AsyncCall.update_profile()` recreates the underlying httpx.AsyncClient without explicitly closing the previous instance. Since AsyncClient requires await client.aclose(), consider introducing an async update_profile() method or another lifecycle mechanism to ensure the previous client is cleaned up safely.
 
 ## 22. Summary
 
@@ -589,6 +590,4 @@ The OUTSCALE Python SDK V2 is an async-first, generated, typed, multi-service SD
 `AsyncClient` is the primary interface and exposes typed snake_case operations generated from OpenAPI, such as `client.osc.read_vms(...)` and `client.oks.list_projects(...)`. `Client` keeps synchronous compatibility through service namespaces and dynamic operation methods such as `client.osc.ReadVms(...)`.
 
 The generator supports both OSC action-style OpenAPI and REST/path-style OpenAPI by normalizing them into a shared intermediate representation. The runtime then applies common configuration, endpoint resolution, authentication, retries, rate limiting, logging, error handling, and httpx transport behavior across all services.
-
-
 
