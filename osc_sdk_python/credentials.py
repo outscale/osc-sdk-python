@@ -95,8 +95,11 @@ class Profile:
             "secret_key": os.environ.get("OSC_SECRET_KEY"),
             "access_key_v2": os.environ.get("OSC_ACCESS_KEY_V2"),
             "secret_key_v2": os.environ.get("OSC_SECRET_KEY_V2"),
-            "tls_skip_verify": os.environ.get("OSC_TLS_SKIP_VERIFY", "False").lower()
-            in ("true"),
+            "tls_skip_verify": (
+                os.environ["OSC_TLS_SKIP_VERIFY"].lower() in ("true")
+                if "OSC_TLS_SKIP_VERIFY" in os.environ
+                else None
+            ),
             "login": os.environ.get("OSC_LOGIN"),
             "password": os.environ.get("OSC_PASSWORD"),
             "protocol": os.environ.get("OSC_PROTOCOL"),
