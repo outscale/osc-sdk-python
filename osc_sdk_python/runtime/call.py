@@ -56,7 +56,6 @@ class Call(object):
 
     def _make_client(self):
         return httpx.Client(
-            trust_env=False,
             verify=not self.profile.tls_skip_verify,
             transport=SdkTransport(
                 limiter=self.limiter,
@@ -175,7 +174,6 @@ class AsyncCall(object):
 
     def _make_client(self):
         return httpx.AsyncClient(
-            trust_env=False,
             verify=not self.profile.tls_skip_verify,
             transport=AsyncSdkTransport(
                 limiter=self.limiter,
