@@ -99,8 +99,11 @@ class Profile:
             "x509_client_cert_b64": os.environ.get("OSC_X509_CLIENT_CERT_B64"),
             "x509_client_key": os.environ.get("OSC_X509_CLIENT_KEY"),
             "x509_client_key_b64": os.environ.get("OSC_X509_CLIENT_KEY_B64"),
-            "tls_skip_verify": os.environ.get("OSC_TLS_SKIP_VERIFY", "False").lower()
-            in ("true"),
+            "tls_skip_verify": (
+                os.environ["OSC_TLS_SKIP_VERIFY"].lower() in ("true")
+                if "OSC_TLS_SKIP_VERIFY" in os.environ
+                else None
+            ),
             "login": os.environ.get("OSC_LOGIN"),
             "password": os.environ.get("OSC_PASSWORD"),
             "protocol": os.environ.get("OSC_PROTOCOL"),
