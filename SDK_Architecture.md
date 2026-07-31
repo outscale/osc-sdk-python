@@ -1,4 +1,4 @@
-﻿# OUTSCALE Python SDK Architecture
+# OUTSCALE Python SDK Architecture
 
 ## 1. Purpose
 
@@ -580,6 +580,13 @@ Compatibility rules:
 
 ## 21. Notes
 
+- Configuration precedence should remain explicit and predictable:
+  1. Direct constructor args, for example `Gateway(access_key="...", secret_key="...", region="...")`.
+  2. Explicit file profile, for example `Gateway(profile="prod")`.
+  3. Environment direct values, for example `OSC_ACCESS_KEY`, `OSC_SECRET_KEY`, and `OSC_REGION`.
+  4. Environment-selected profile, for example `OSC_PROFILE=prod`.
+  5. File default profile, for example the `default` profile in the credentials file.
+  6. SDK defaults, for example `protocol="https"` and `region="eu-west-2"`.
 - Release generation currently uses `--skip-overlay` for OSC and OKS until overlays are redesigned and validated.
 - Async profile or credential updates could be improved: `AsyncCall.update_profile()` recreates the underlying httpx.AsyncClient without explicitly closing the previous instance. Since AsyncClient requires await client.aclose(), consider introducing an async update_profile() method or another lifecycle mechanism to ensure the previous client is cleaned up safely. Also add test for it.
 - Retry environment variables such as `OSC_MAX_RETRIES`, `OSC_RETRY_BACKOFF_FACTOR`, `OSC_RETRY_BACKOFF_JITTER`, and `OSC_RETRY_BACKOFF_MAX` are documented in the README but are not currently wired into the SDK runtime. Retry configuration currently works through constructor arguments only, so environment variable support should be fixed or the documentation should be corrected.
