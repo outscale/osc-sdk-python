@@ -51,13 +51,15 @@ jobs:
       with:
         committer: "Outscale Bot <opensource+bot@outscale.com>"
         author: "Outscale Bot <opensource+bot@outscale.com>"
-        commit-message: "🔖 release: osc-sdk-python v${{ env.sdk_version }}"
+        commit-message: "🔖 release: osc-sdk-python SDK-V2 v${{ env.sdk_version }}"
         body: |
-          Automatic ${{ env.service }} build of SDK v${{ env.sdk_version }}.
+          Automatic ${{ env.service }} build of SDK-V2 v${{ env.sdk_version }}.
 
           Outscale API version: ${{ env.api_version }}
           OKS API URL: ${{ env.oks_api_url }}
-        title: "SDK v${{ env.sdk_version }} (${{ env.service }})"
+        title: "SDK-V2 v${{ env.sdk_version }} (${{ env.service }})"
+        base: feat/async-typed-sdk
+        branch: auto-build/async-typed-sdk-${{ env.service }}-${{ env.sdk_version }}
         token: "${{ env.token }}"
         labels: "kind/feature"
       env:
