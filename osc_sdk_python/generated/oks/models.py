@@ -12,7 +12,7 @@ from __future__ import annotations
 
 import datetime
 
-from typing import Literal
+from typing import Any, Literal
 
 from pydantic import BaseModel, ConfigDict, Field
 
@@ -20,6 +20,13 @@ from pydantic import BaseModel, ConfigDict, Field
 class GeneratedModel(BaseModel):
     model_config = ConfigDict(populate_by_name=True, extra="allow")
 
+
+class AccessKey(GeneratedModel):
+    state: Literal['ACTIVE', 'INACTIVE'] = Field(alias='State')
+    access_key_id: str = Field(alias='AccessKeyId')
+    creation_date: str = Field(alias='CreationDate')
+    expiration_date: Any | None = Field(default=None, alias='ExpirationDate')
+    secret_key: Any | None = Field(default=None, alias='SecretKey')
 
 class AdmissionFlags(GeneratedModel):
     disable_admission_plugins: list[str] | None = Field(default=None, alias='disable_admission_plugins')
@@ -30,8 +37,17 @@ class AdmissionFlagsInput(GeneratedModel):
     disable_admission_plugins: list[str] | None = Field(default=None, alias='disable_admission_plugins')
     enable_admission_plugins: list[str] | None = Field(default=None, alias='enable_admission_plugins')
 
+class AdmissionPlugins(GeneratedModel):
+    enable_admission_plugins: list[str] = Field(alias='EnableAdmissionPlugins')
+    disable_admission_plugins: list[str] = Field(alias='DisableAdmissionPlugins')
+    default_admission_plugins: list[str] = Field(alias='DefaultAdmissionPlugins')
+
+class AdmissionPluginsResponse(GeneratedModel):
+    response_context: clusters__cluster_schema__ResponseContext = Field(alias='ResponseContext')
+    admission_plugins: AdmissionPlugins = Field(alias='AdmissionPlugins')
+
 class AuthStrategy(GeneratedModel):
-    oidc: OpenIdConnectConfig = Field(alias='oidc')
+    oidc: Any | None = Field(default=None, alias='oidc')
 
 class AutoMaintenances(GeneratedModel):
     minor_upgrade_maintenance: MaintenanceWindow = Field(alias='minor_upgrade_maintenance')
@@ -54,7 +70,7 @@ class Cluster(GeneratedModel):
     cp_multi_az: bool = Field(alias='cp_multi_az')
     cp_subregions: list[str] = Field(alias='cp_subregions')
     version: str = Field(alias='version')
-    expected_version: str | None = Field(default=None, alias='expected_version')
+    expected_version: Any | None = Field(default=None, alias='expected_version')
     cni: str = Field(alias='cni')
     admin_lbu: bool = Field(alias='admin_lbu')
     admission_flags: AdmissionFlags = Field(alias='admission_flags')
@@ -62,39 +78,40 @@ class Cluster(GeneratedModel):
     cidr_service: str = Field(alias='cidr_service')
     cluster_dns: str = Field(alias='cluster_dns')
     tags: dict[str, str] = Field(alias='tags')
-    auto_maintenances: AutoMaintenances | None = Field(default=None, alias='auto_maintenances')
-    maintenance_window: Maintenance | None = Field(default=None, alias='maintenance_window')
+    auto_maintenances: Any | None = Field(default=None, alias='auto_maintenances')
+    maintenance_window: Any | None = Field(default=None, alias='maintenance_window')
     control_planes: str = Field(alias='control_planes')
-    expected_control_planes: str | None = Field(default=None, alias='expected_control_planes')
+    expected_control_planes: Any | None = Field(default=None, alias='expected_control_planes')
     admin_whitelist: list[str] = Field(alias='admin_whitelist')
     statuses: Statuses = Field(alias='statuses')
     disable_api_termination: bool | None = Field(default=None, alias='disable_api_termination')
-    auth: AuthStrategy | None = Field(default=None, alias='auth')
+    auth: Any | None = Field(default=None, alias='auth')
 
 class ClusterInput(GeneratedModel):
     name: str = Field(alias='name')
     project_id: str = Field(alias='project_id')
-    description: str | None = Field(default=None, alias='description')
+    description: Any | None = Field(default=None, alias='description')
     cp_multi_az: bool | None = Field(default=None, alias='cp_multi_az')
     cp_subregions: list[str] | None = Field(default=None, alias='cp_subregions')
     version: str = Field(alias='version')
     admin_lbu: bool | None = Field(default=None, alias='admin_lbu')
     admission_flags: AdmissionFlagsInput | None = Field(default=None, alias='admission_flags')
+    cni: Any | None = Field(default=None, alias='cni')
     cidr_pods: str = Field(alias='cidr_pods')
     cidr_service: str = Field(alias='cidr_service')
     cluster_dns: str | None = Field(default=None, alias='cluster_dns')
-    tags: dict[str, str] | None = Field(default=None, alias='tags')
+    tags: Any | None = Field(default=None, alias='tags')
     auto_maintenances: AutoMaintenances | None = Field(default=None, alias='auto_maintenances')
     maintenance_window: Maintenance | None = Field(default=None, alias='maintenance_window')
     control_planes: str | None = Field(default=None, alias='control_planes')
     admin_whitelist: list[str] = Field(alias='admin_whitelist')
-    quirks: list[str] | None = Field(default=None, alias='quirks')
+    quirks: Any | None = Field(default=None, alias='quirks')
     disable_api_termination: bool | None = Field(default=None, alias='disable_api_termination')
-    auth: AuthStrategy | None = Field(default=None, alias='auth')
+    auth: Any | None = Field(default=None, alias='auth')
 
 class ClusterInputTemplate(GeneratedModel):
     project_id: str = Field(alias='project_id')
-    description: str | None = Field(default=None, alias='description')
+    description: Any | None = Field(default=None, alias='description')
     version: str = Field(alias='version')
     admin_lbu: bool | None = Field(default=None, alias='admin_lbu')
     admission_flags: AdmissionFlagsInput | None = Field(default=None, alias='admission_flags')
@@ -102,11 +119,11 @@ class ClusterInputTemplate(GeneratedModel):
     cidr_service: str | None = Field(default=None, alias='cidr_service')
     cluster_dns: str | None = Field(default=None, alias='cluster_dns')
     tags: dict[str, str] | None = Field(default=None, alias='tags')
-    auto_maintenances: AutoMaintenances | None = Field(default=None, alias='auto_maintenances')
-    maintenance_window: Maintenance | None = Field(default=None, alias='maintenance_window')
+    auto_maintenances: Any | None = Field(default=None, alias='auto_maintenances')
+    maintenance_window: Any | None = Field(default=None, alias='maintenance_window')
     control_planes: str | None = Field(default=None, alias='control_planes')
     admin_whitelist: list[str] = Field(alias='admin_whitelist')
-    quirks: list[str] | None = Field(default=None, alias='quirks')
+    quirks: Any | None = Field(default=None, alias='quirks')
     disable_api_termination: bool | None = Field(default=None, alias='disable_api_termination')
 
 class ClusterResponse(GeneratedModel):
@@ -119,28 +136,56 @@ class ClusterResponseList(GeneratedModel):
     clusters: list[Cluster] = Field(alias='Clusters')
 
 class ClusterUpdate(GeneratedModel):
-    description: str | None = Field(default=None, alias='description')
-    admission_flags: AdmissionFlagsInput | None = Field(default=None, alias='admission_flags')
-    tags: dict[str, str] | None = Field(default=None, alias='tags')
-    auto_maintenances: AutoMaintenances | None = Field(default=None, alias='auto_maintenances')
-    maintenance_window: Maintenance | None = Field(default=None, alias='maintenance_window')
-    admin_whitelist: list[str] | None = Field(default=None, alias='admin_whitelist')
-    quirks: list[str] | None = Field(default=None, alias='quirks')
-    disable_api_termination: bool | None = Field(default=None, alias='disable_api_termination')
-    version: str | None = Field(default=None, alias='version')
+    description: Any | None = Field(default=None, alias='description')
+    admission_flags: Any | None = Field(default=None, alias='admission_flags')
+    tags: Any | None = Field(default=None, alias='tags')
+    auto_maintenances: Any | None = Field(default=None, alias='auto_maintenances')
+    maintenance_window: Any | None = Field(default=None, alias='maintenance_window')
+    admin_whitelist: Any | None = Field(default=None, alias='admin_whitelist')
+    quirks: Any | None = Field(default=None, alias='quirks')
+    disable_api_termination: Any | None = Field(default=None, alias='disable_api_termination')
+    version: Any | None = Field(default=None, alias='version')
     control_planes: str | None = Field(default=None, alias='control_planes')
-    auth: AuthStrategy | None = Field(default=None, alias='auth')
+    auth: Any | None = Field(default=None, alias='auth')
 
 class ControlPlanesResponse(GeneratedModel):
     response_context: clusters__cluster_schema__ResponseContext = Field(alias='ResponseContext')
     control_planes: list[str] = Field(alias='ControlPlanes')
 
 class Cursor(GeneratedModel):
-    next_cursor: str | None = Field(default=None, alias='next_cursor')
+    next_cursor: Any | None = Field(default=None, alias='next_cursor')
 
 class DetailResponse(GeneratedModel):
     response_context: projects__project_schema__ResponseContext = Field(alias='ResponseContext')
     detail: str = Field(alias='detail')
+
+class DetailsResponse(GeneratedModel):
+    response_context: projects__project_schema__ResponseContext = Field(alias='ResponseContext')
+    details: str = Field(alias='Details')
+
+class EimUser(GeneratedModel):
+    user_name: str = Field(alias='UserName')
+    access_keys: list[AccessKey] | None = Field(default=None, alias='AccessKeys')
+
+class EimUserResponse(GeneratedModel):
+    response_context: projects__project_schema__ResponseContext = Field(alias='ResponseContext')
+    eim_user: EimUser = Field(alias='EimUser')
+
+class EimUserType(GeneratedModel):
+    user_type: str = Field(alias='UserType')
+    description: Any = Field(alias='Description')
+
+class EimUserTypesResponse(GeneratedModel):
+    response_context: projects__project_schema__ResponseContext = Field(alias='ResponseContext')
+    eim_user_types: list[EimUserType] = Field(alias='EimUserTypes')
+
+class EimUsersResponse(GeneratedModel):
+    response_context: projects__project_schema__ResponseContext = Field(alias='ResponseContext')
+    eim_users: list[EimUser] | None = Field(default=None, alias='EimUsers')
+
+class EnryptedResponse(GeneratedModel):
+    response_context: projects__project_schema__ResponseContext = Field(alias='ResponseContext')
+    data: str = Field(alias='Data')
 
 class ErrorItem(GeneratedModel):
     type: str = Field(alias='Type')
@@ -152,7 +197,7 @@ class ErrorResponse(GeneratedModel):
     response_context: ResponseContext_Input = Field(alias='ResponseContext')
 
 class IPDetails(GeneratedModel):
-    x_real_ip: str | None = Field(default=None, alias='x_real_ip')
+    x_real_ip: Any | None = Field(default=None, alias='x_real_ip')
 
 class IPResponse(GeneratedModel):
     response_context: myip__myip_schema__ResponseContext = Field(alias='ResponseContext')
@@ -201,6 +246,9 @@ class NetPeeringRequest(GeneratedModel):
     metadata: netpeerings__netpeering_schema__Metadata = Field(alias='metadata')
     spec: SpecNetPeeringRequest = Field(alias='spec')
 
+class NetSpecific(GeneratedModel):
+    disable_lan_security_groups: bool = Field(alias='disable_lan_security_groups')
+
 class NetsResponse(GeneratedModel):
     response_context: projects__project_schema__ResponseContext = Field(alias='ResponseContext')
     nets: list[Net] = Field(alias='Nets')
@@ -218,22 +266,22 @@ class OKSQuotas(GeneratedModel):
     cp_subregions: list[str] = Field(alias='CPSubregions')
 
 class Offset(GeneratedModel):
-    page: int | None = Field(default=None, alias='page')
-    limit: int | None = Field(default=None, alias='limit')
-    total: int | None = Field(default=None, alias='total')
+    page: Any | None = Field(default=None, alias='page')
+    limit: Any | None = Field(default=None, alias='limit')
+    total: Any | None = Field(default=None, alias='total')
 
 class OpenIdConnectConfig(GeneratedModel):
     issuer_url: str = Field(alias='issuer-url')
     client_id: str = Field(alias='client-id')
-    username_claim: str | None = Field(default=None, alias='username-claim')
-    username_prefix: str | None = Field(default=None, alias='username-prefix')
-    groups_claim: list[str] | None = Field(default=None, alias='groups-claim')
-    groups_prefix: str | None = Field(default=None, alias='groups-prefix')
-    required_claim: dict[str, str] | None = Field(default=None, alias='required-claim')
+    username_claim: Any | None = Field(default=None, alias='username-claim')
+    username_prefix: Any | None = Field(default=None, alias='username-prefix')
+    groups_claim: Any | None = Field(default=None, alias='groups-claim')
+    groups_prefix: Any | None = Field(default=None, alias='groups-prefix')
+    required_claim: Any | None = Field(default=None, alias='required-claim')
 
 class Pagination(GeneratedModel):
-    cursor: Cursor | None = Field(default=None, alias='cursor')
-    offset: Offset | None = Field(default=None, alias='offset')
+    cursor: Any | None = Field(default=None, alias='cursor')
+    offset: Any | None = Field(default=None, alias='offset')
 
 class PermissionsOnResource(GeneratedModel):
     global_permission: int = Field(alias='GlobalPermission')
@@ -247,18 +295,20 @@ class Project(GeneratedModel):
     region: str = Field(alias='region')
     status: str = Field(alias='status')
     tags: dict[str, str] = Field(alias='tags')
+    net_specific: Any | None = Field(default=None, alias='net_specific')
     disable_api_termination: bool | None = Field(default=None, alias='disable_api_termination')
     created_at: datetime.datetime = Field(alias='created_at')
     updated_at: datetime.datetime = Field(alias='updated_at')
-    deleted_at: datetime.datetime | None = Field(default=None, alias='deleted_at')
+    deleted_at: Any | None = Field(default=None, alias='deleted_at')
 
 class ProjectInput(GeneratedModel):
     name: str = Field(alias='name')
     description: str | None = Field(default=None, alias='description')
     cidr: str = Field(alias='cidr')
     region: str = Field(alias='region')
-    tags: dict[str, str] | None = Field(default=None, alias='tags')
-    quirks: list[str] | None = Field(default=None, alias='quirks')
+    tags: Any | None = Field(default=None, alias='tags')
+    net_specific: Any | None = Field(default=None, alias='net_specific')
+    quirks: Any | None = Field(default=None, alias='quirks')
     disable_api_termination: bool | None = Field(default=None, alias='disable_api_termination')
 
 class ProjectResponse(GeneratedModel):
@@ -271,10 +321,10 @@ class ProjectResponseList(GeneratedModel):
     projects: list[Project] = Field(alias='Projects')
 
 class ProjectUpdate(GeneratedModel):
-    description: str | None = Field(default=None, alias='description')
-    tags: dict[str, str] | None = Field(default=None, alias='tags')
-    quirks: list[str] | None = Field(default=None, alias='quirks')
-    disable_api_termination: bool | None = Field(default=None, alias='disable_api_termination')
+    description: Any | None = Field(default=None, alias='description')
+    tags: Any | None = Field(default=None, alias='tags')
+    quirks: Any | None = Field(default=None, alias='quirks')
+    disable_api_termination: Any | None = Field(default=None, alias='disable_api_termination')
 
 class PublicIp(GeneratedModel):
     tags: list[ResourceTag] = Field(alias='Tags')
@@ -338,9 +388,9 @@ class SpecNetPeeringRequest(GeneratedModel):
 
 class Statuses(GeneratedModel):
     created_at: datetime.datetime = Field(alias='created_at')
-    deleted_at: datetime.datetime | None = Field(default=None, alias='deleted_at')
-    updated_at: datetime.datetime | None = Field(default=None, alias='updated_at')
-    status: str | None = Field(default=None, alias='status')
+    deleted_at: Any | None = Field(default=None, alias='deleted_at')
+    updated_at: Any | None = Field(default=None, alias='updated_at')
+    status: Any | None = Field(default=None, alias='status')
     available_upgrade: str | None = Field(default=None, alias='available_upgrade')
 
 class Subregion(GeneratedModel):
@@ -424,13 +474,13 @@ class templates__template_schema__ResponseContext(GeneratedModel):
     request_id: str = Field(alias='RequestId')
 
 class ListProjectsRequest(GeneratedModel):
-    name: str | None = Field(default=None, alias='name')
-    status: str | None = Field(default=None, alias='status')
-    cidr: str | None = Field(default=None, alias='cidr')
-    deleted: bool | None = Field(default=None, alias='deleted')
-    cursor: str | None = Field(default=None, alias='cursor')
-    page: int | None = Field(default=None, alias='page')
-    limit: int | None = Field(default=None, alias='limit')
+    name: Any | None = Field(default=None, alias='name')
+    status: Any | None = Field(default=None, alias='status')
+    cidr: Any | None = Field(default=None, alias='cidr')
+    deleted: Any | None = Field(default=None, alias='deleted')
+    cursor: Any | None = Field(default=None, alias='cursor')
+    page: Any | None = Field(default=None, alias='page')
+    limit: Any | None = Field(default=None, alias='limit')
 
 class CreateProjectRequest(GeneratedModel):
     body: ProjectInput = Field(alias='body')
@@ -457,27 +507,42 @@ class GetProjectPublicIpsRequest(GeneratedModel):
 class GetProjectNetsRequest(GeneratedModel):
     project_id: str = Field(alias='project_id')
 
+class GetEimUsersRequest(GeneratedModel):
+    project_id: str = Field(alias='project_id')
+
+class CreateEimUserRequest(GeneratedModel):
+    project_id: str = Field(alias='project_id')
+    user: str = Field(alias='user')
+    ttl: Any | None = Field(default=None, alias='ttl')
+
+class GetEimUserTypesRequest(GeneratedModel):
+    project_id: str = Field(alias='project_id')
+
+class DeleteEimUserRequest(GeneratedModel):
+    project_id: str = Field(alias='project_id')
+    user: str = Field(alias='user')
+
 class ListClustersByProjectIDRequest(GeneratedModel):
-    project_id: str | None = Field(default=None, alias='project_id')
-    name: str | None = Field(default=None, alias='name')
-    status: str | None = Field(default=None, alias='status')
-    version: str | None = Field(default=None, alias='version')
-    deleted: bool | None = Field(default=None, alias='deleted')
-    cursor: str | None = Field(default=None, alias='cursor')
-    page: int | None = Field(default=None, alias='page')
-    limit: int | None = Field(default=None, alias='limit')
+    project_id: Any | None = Field(default=None, alias='project_id')
+    name: Any | None = Field(default=None, alias='name')
+    status: Any | None = Field(default=None, alias='status')
+    version: Any | None = Field(default=None, alias='version')
+    deleted: Any | None = Field(default=None, alias='deleted')
+    cursor: Any | None = Field(default=None, alias='cursor')
+    page: Any | None = Field(default=None, alias='page')
+    limit: Any | None = Field(default=None, alias='limit')
 
 class CreateClusterRequest(GeneratedModel):
     body: ClusterInput = Field(alias='body')
 
 class ListAllClustersRequest(GeneratedModel):
-    name: str | None = Field(default=None, alias='name')
-    status: str | None = Field(default=None, alias='status')
-    version: str | None = Field(default=None, alias='version')
-    deleted: bool | None = Field(default=None, alias='deleted')
-    cursor: str | None = Field(default=None, alias='cursor')
-    page: int | None = Field(default=None, alias='page')
-    limit: int | None = Field(default=None, alias='limit')
+    name: Any | None = Field(default=None, alias='name')
+    status: Any | None = Field(default=None, alias='status')
+    version: Any | None = Field(default=None, alias='version')
+    deleted: Any | None = Field(default=None, alias='deleted')
+    cursor: Any | None = Field(default=None, alias='cursor')
+    page: Any | None = Field(default=None, alias='page')
+    limit: Any | None = Field(default=None, alias='limit')
 
 class GetClusterRequest(GeneratedModel):
     cluster_id: str = Field(alias='cluster_id')
@@ -491,15 +556,15 @@ class DeleteClusterRequest(GeneratedModel):
 
 class GetKubeconfigRequest(GeneratedModel):
     cluster_id: str = Field(alias='cluster_id')
-    user: str | None = Field(default=None, alias='user')
-    group: str | None = Field(default=None, alias='group')
-    ttl: str | None = Field(default=None, alias='ttl')
+    user: Any | None = Field(default=None, alias='user')
+    group: Any | None = Field(default=None, alias='group')
+    ttl: Any | None = Field(default=None, alias='ttl')
 
 class GetKubeconfigWithPubkeyNACLRequest(GeneratedModel):
     cluster_id: str = Field(alias='cluster_id')
-    user: str | None = Field(default=None, alias='user')
-    group: str | None = Field(default=None, alias='group')
-    ttl: str | None = Field(default=None, alias='ttl')
+    user: Any | None = Field(default=None, alias='user')
+    group: Any | None = Field(default=None, alias='group')
+    ttl: Any | None = Field(default=None, alias='ttl')
 
 class UpgradeClusterRequest(GeneratedModel):
     cluster_id: str = Field(alias='cluster_id')
@@ -512,6 +577,9 @@ class GetCPSubregionsRequest(GeneratedModel):
 
 class GetControlPlanePlansRequest(GeneratedModel):
     pass
+
+class GetAdmissionPluginsRequest(GeneratedModel):
+    version: str = Field(alias='version')
 
 class GetProjectTemplateRequest(GeneratedModel):
     pass

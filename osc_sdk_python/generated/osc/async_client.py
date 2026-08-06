@@ -384,6 +384,8 @@ from .models import (
     ReadVmsResponse,
     ReadVmsStateRequest,
     ReadVmsStateResponse,
+    ReadVmsStopHistoryRequest,
+    ReadVmsStopHistoryResponse,
     ReadVolumeUpdateTasksRequest,
     ReadVolumeUpdateTasksResponse,
     ReadVolumesRequest,
@@ -5321,6 +5323,32 @@ class AsyncOscTypedMixin:
             path_params=path_params,
         )
         return _validate_response(ReadVmsStateResponse, response)
+
+    async def read_vms_stop_history(
+        self,
+        request: ReadVmsStopHistoryRequest | None = None,
+    ) -> ReadVmsStopHistoryResponse:
+        request = _validate_request(ReadVmsStopHistoryRequest, request)
+
+        path_params = {
+        }
+        query_params = {
+        }
+        response = await self.call.request(
+            RequestSpec(
+                service="api",
+                method="POST",
+                path="/ReadVmsStopHistory",
+                json_body=_dump_json_body(request),
+                query_params={
+                    key: value
+                    for key, value in query_params.items()
+                    if value is not None
+                },
+            ),
+            path_params=path_params,
+        )
+        return _validate_response(ReadVmsStopHistoryResponse, response)
 
     async def read_volume_update_tasks(
         self,

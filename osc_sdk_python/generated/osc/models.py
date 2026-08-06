@@ -134,7 +134,7 @@ BootMode = Literal['uefi', 'legacy']
 
 class BsuCreated(GeneratedModel):
     delete_on_vm_deletion: bool | None = Field(default=None, alias='DeleteOnVmDeletion')
-    link_date: str | None = Field(default=None, alias='LinkDate')
+    link_date: datetime.datetime | None = Field(default=None, alias='LinkDate')
     state: str | None = Field(default=None, alias='State')
     volume_id: str | None = Field(default=None, alias='VolumeId')
 
@@ -223,7 +223,7 @@ class ConsumptionEntry(GeneratedModel):
 
 class CreateAccessKeyRequest(GeneratedModel):
     dry_run: bool | None = Field(default=None, alias='DryRun')
-    expiration_date: datetime.datetime | None = Field(default=None, alias='ExpirationDate')
+    expiration_date: datetime.datetime | str | None = Field(default=None, alias='ExpirationDate')
     tag: str | None = Field(default=None, alias='Tag')
     user_name: str | None = Field(default=None, alias='UserName')
 
@@ -697,6 +697,7 @@ class CreateVmsRequest(GeneratedModel):
     private_ips: list[str] | None = Field(default=None, alias='PrivateIps')
     security_group_ids: list[str] | None = Field(default=None, alias='SecurityGroupIds')
     security_groups: list[str] | None = Field(default=None, alias='SecurityGroups')
+    shutdown_behavior_configuration: ShutdownBehaviorConfiguration | None = Field(default=None, alias='ShutdownBehaviorConfiguration')
     subnet_id: str | None = Field(default=None, alias='SubnetId')
     tpm_enabled: bool | None = Field(default=None, alias='TpmEnabled')
     user_data: str | None = Field(default=None, alias='UserData')
@@ -1214,8 +1215,8 @@ class FiltersApiLog(GeneratedModel):
     query_access_keys: list[str] | None = Field(default=None, alias='QueryAccessKeys')
     query_api_names: list[str] | None = Field(default=None, alias='QueryApiNames')
     query_call_names: list[str] | None = Field(default=None, alias='QueryCallNames')
-    query_date_after: str | None = Field(default=None, alias='QueryDateAfter')
-    query_date_before: str | None = Field(default=None, alias='QueryDateBefore')
+    query_date_after: datetime.datetime | str | None = Field(default=None, alias='QueryDateAfter')
+    query_date_before: datetime.datetime | str | None = Field(default=None, alias='QueryDateBefore')
     query_ip_addresses: list[str] | None = Field(default=None, alias='QueryIpAddresses')
     query_user_agents: list[str] | None = Field(default=None, alias='QueryUserAgents')
     request_ids: list[str] | None = Field(default=None, alias='RequestIds')
@@ -1547,12 +1548,12 @@ class FiltersVm(GeneratedModel):
     architectures: list[str] | None = Field(default=None, alias='Architectures')
     block_device_mapping_delete_on_vm_deletion: bool | None = Field(default=None, alias='BlockDeviceMappingDeleteOnVmDeletion')
     block_device_mapping_device_names: list[str] | None = Field(default=None, alias='BlockDeviceMappingDeviceNames')
-    block_device_mapping_link_dates: list[str] | None = Field(default=None, alias='BlockDeviceMappingLinkDates')
+    block_device_mapping_link_dates: list[str | datetime.datetime] | None = Field(default=None, alias='BlockDeviceMappingLinkDates')
     block_device_mapping_states: list[str] | None = Field(default=None, alias='BlockDeviceMappingStates')
     block_device_mapping_volume_ids: list[str] | None = Field(default=None, alias='BlockDeviceMappingVolumeIds')
     boot_modes: list[BootMode] | None = Field(default=None, alias='BootModes')
     client_tokens: list[str] | None = Field(default=None, alias='ClientTokens')
-    creation_dates: list[str] | None = Field(default=None, alias='CreationDates')
+    creation_dates: list[str | datetime.datetime] | None = Field(default=None, alias='CreationDates')
     image_ids: list[str] | None = Field(default=None, alias='ImageIds')
     is_source_dest_checked: bool | None = Field(default=None, alias='IsSourceDestChecked')
     keypair_names: list[str] | None = Field(default=None, alias='KeypairNames')
@@ -1564,7 +1565,7 @@ class FiltersVm(GeneratedModel):
     nic_is_source_dest_checked: bool | None = Field(default=None, alias='NicIsSourceDestChecked')
     nic_link_nic_delete_on_vm_deletion: bool | None = Field(default=None, alias='NicLinkNicDeleteOnVmDeletion')
     nic_link_nic_device_numbers: list[int] | None = Field(default=None, alias='NicLinkNicDeviceNumbers')
-    nic_link_nic_link_nic_dates: list[str] | None = Field(default=None, alias='NicLinkNicLinkNicDates')
+    nic_link_nic_link_nic_dates: list[str | datetime.datetime] | None = Field(default=None, alias='NicLinkNicLinkNicDates')
     nic_link_nic_link_nic_ids: list[str] | None = Field(default=None, alias='NicLinkNicLinkNicIds')
     nic_link_nic_states: list[str] | None = Field(default=None, alias='NicLinkNicStates')
     nic_link_nic_vm_account_ids: list[str] | None = Field(default=None, alias='NicLinkNicVmAccountIds')
@@ -1651,11 +1652,17 @@ class FiltersVmType(GeneratedModel):
 class FiltersVmsState(GeneratedModel):
     maintenance_event_codes: list[str] | None = Field(default=None, alias='MaintenanceEventCodes')
     maintenance_event_descriptions: list[str] | None = Field(default=None, alias='MaintenanceEventDescriptions')
-    maintenance_events_not_after: list[str] | None = Field(default=None, alias='MaintenanceEventsNotAfter')
-    maintenance_events_not_before: list[str] | None = Field(default=None, alias='MaintenanceEventsNotBefore')
+    maintenance_events_not_after: list[str | datetime.datetime] | None = Field(default=None, alias='MaintenanceEventsNotAfter')
+    maintenance_events_not_before: list[str | datetime.datetime] | None = Field(default=None, alias='MaintenanceEventsNotBefore')
     subregion_names: list[str] | None = Field(default=None, alias='SubregionNames')
     vm_ids: list[str] | None = Field(default=None, alias='VmIds')
     vm_states: list[str] | None = Field(default=None, alias='VmStates')
+
+class FiltersVmsStopHistory(GeneratedModel):
+    state_reasons: list[str] | None = Field(default=None, alias='StateReasons')
+    stop_date_after: str | datetime.datetime | None = Field(default=None, alias='StopDateAfter')
+    stop_date_before: str | datetime.datetime | None = Field(default=None, alias='StopDateBefore')
+    vm_ids: list[str] | None = Field(default=None, alias='VmIds')
 
 class FiltersVolume(GeneratedModel):
     client_tokens: list[str] | None = Field(default=None, alias='ClientTokens')
@@ -1720,7 +1727,7 @@ class Image(GeneratedModel):
     architecture: str | None = Field(default=None, alias='Architecture')
     block_device_mappings: list[BlockDeviceMappingImage] | None = Field(default=None, alias='BlockDeviceMappings')
     boot_modes: list[BootMode] | None = Field(default=None, alias='BootModes')
-    creation_date: str | None = Field(default=None, alias='CreationDate')
+    creation_date: datetime.datetime | None = Field(default=None, alias='CreationDate')
     description: str | None = Field(default=None, alias='Description')
     file_location: str | None = Field(default=None, alias='FileLocation')
     image_id: str | None = Field(default=None, alias='ImageId')
@@ -1966,6 +1973,7 @@ class LoadBalancer(GeneratedModel):
     load_balancer_sticky_cookie_policies: list[LoadBalancerStickyCookiePolicy] | None = Field(default=None, alias='LoadBalancerStickyCookiePolicies')
     load_balancer_type: str | None = Field(default=None, alias='LoadBalancerType')
     net_id: str | None = Field(default=None, alias='NetId')
+    private_ip: str | None = Field(default=None, alias='PrivateIp')
     public_ip: str | None = Field(default=None, alias='PublicIp')
     secured_cookies: bool | None = Field(default=None, alias='SecuredCookies')
     security_groups: list[str] | None = Field(default=None, alias='SecurityGroups')
@@ -1999,7 +2007,7 @@ class Log(GeneratedModel):
     query_api_name: str | None = Field(default=None, alias='QueryApiName')
     query_api_version: str | None = Field(default=None, alias='QueryApiVersion')
     query_call_name: str | None = Field(default=None, alias='QueryCallName')
-    query_date: str | None = Field(default=None, alias='QueryDate')
+    query_date: datetime.datetime | None = Field(default=None, alias='QueryDate')
     query_header_raw: str | None = Field(default=None, alias='QueryHeaderRaw')
     query_header_size: int | None = Field(default=None, alias='QueryHeaderSize')
     query_ip_address: str | None = Field(default=None, alias='QueryIpAddress')
@@ -2206,6 +2214,8 @@ class ProductType(GeneratedModel):
 
 class PublicIp(GeneratedModel):
     link_public_ip_id: str | None = Field(default=None, alias='LinkPublicIpId')
+    nat_service_id: str | None = Field(default=None, alias='NatServiceId')
+    net_access_point_ids: list[str] | None = Field(default=None, alias='NetAccessPointIds')
     nic_account_id: str | None = Field(default=None, alias='NicAccountId')
     nic_id: str | None = Field(default=None, alias='NicId')
     private_ip: str | None = Field(default=None, alias='PrivateIp')
@@ -2304,9 +2314,9 @@ class ReadApiLogsResponse(GeneratedModel):
     response_context: ResponseContext | None = Field(default=None, alias='ResponseContext')
 
 class ReadCO2EmissionAccountRequest(GeneratedModel):
-    from_month: str = Field(alias='FromMonth')
+    from_month: str | datetime.datetime = Field(alias='FromMonth')
     overall: bool | None = Field(default=None, alias='Overall')
-    to_month: str = Field(alias='ToMonth')
+    to_month: str | datetime.datetime = Field(alias='ToMonth')
 
 class ReadCO2EmissionAccountResponse(GeneratedModel):
     co2_emission_entries: list[CO2EmissionEntry] | None = Field(default=None, alias='CO2EmissionEntries')
@@ -2359,11 +2369,11 @@ class ReadConsoleOutputResponse(GeneratedModel):
 
 class ReadConsumptionAccountRequest(GeneratedModel):
     dry_run: bool | None = Field(default=None, alias='DryRun')
-    from_date: datetime.datetime = Field(alias='FromDate')
+    from_date: str | datetime.datetime = Field(alias='FromDate')
     overall: bool | None = Field(default=None, alias='Overall')
     show_price: bool | None = Field(default=None, alias='ShowPrice')
     show_resource_details: bool | None = Field(default=None, alias='ShowResourceDetails')
-    to_date: datetime.datetime = Field(alias='ToDate')
+    to_date: str | datetime.datetime = Field(alias='ToDate')
 
 class ReadConsumptionAccountResponse(GeneratedModel):
     consumption_entries: list[ConsumptionEntry] | None = Field(default=None, alias='ConsumptionEntries')
@@ -2967,6 +2977,16 @@ class ReadVmsStateResponse(GeneratedModel):
     response_context: ResponseContext | None = Field(default=None, alias='ResponseContext')
     vm_states: list[VmStates] | None = Field(default=None, alias='VmStates')
 
+class ReadVmsStopHistoryRequest(GeneratedModel):
+    filters: FiltersVmsStopHistory | None = Field(default=None, alias='Filters')
+    next_page_token: str | None = Field(default=None, alias='NextPageToken')
+    results_per_page: int | None = Field(default=None, alias='ResultsPerPage')
+
+class ReadVmsStopHistoryResponse(GeneratedModel):
+    next_page_token: str | None = Field(default=None, alias='NextPageToken')
+    response_context: ResponseContext | None = Field(default=None, alias='ResponseContext')
+    vms_stop_history: list[VmsStopHistory] | None = Field(default=None, alias='VmsStopHistory')
+
 class ReadVolumeUpdateTasksRequest(GeneratedModel):
     dry_run: bool | None = Field(default=None, alias='DryRun')
     filters: FiltersReadVolumeUpdateTask | None = Field(default=None, alias='Filters')
@@ -3140,6 +3160,10 @@ class SetDefaultPolicyVersionRequest(GeneratedModel):
 
 class SetDefaultPolicyVersionResponse(GeneratedModel):
     response_context: ResponseContext | None = Field(default=None, alias='ResponseContext')
+
+class ShutdownBehaviorConfiguration(GeneratedModel):
+    guest_action: Literal['stop', 'terminate'] | None = Field(default=None, alias='GuestAction')
+    host_action: Literal['restart', 'stop'] | None = Field(default=None, alias='HostAction')
 
 class Snapshot(GeneratedModel):
     account_alias: str | None = Field(default=None, alias='AccountAlias')
@@ -3315,7 +3339,7 @@ class UpdateAccessKeyRequest(GeneratedModel):
     clear_expiration_date: bool | None = Field(default=None, alias='ClearExpirationDate')
     clear_tag: bool | None = Field(default=None, alias='ClearTag')
     dry_run: bool | None = Field(default=None, alias='DryRun')
-    expiration_date: datetime.datetime | None = Field(default=None, alias='ExpirationDate')
+    expiration_date: datetime.datetime | str | None = Field(default=None, alias='ExpirationDate')
     state: str | None = Field(default=None, alias='State')
     tag: str | None = Field(default=None, alias='Tag')
     user_name: str | None = Field(default=None, alias='UserName')
@@ -3575,6 +3599,7 @@ class UpdateVmRequest(GeneratedModel):
     nested_virtualization: bool | None = Field(default=None, alias='NestedVirtualization')
     performance: Literal['medium', 'high', 'highest'] | None = Field(default=None, alias='Performance')
     security_group_ids: list[str] | None = Field(default=None, alias='SecurityGroupIds')
+    shutdown_behavior_configuration: ShutdownBehaviorConfiguration | None = Field(default=None, alias='ShutdownBehaviorConfiguration')
     user_data: str | None = Field(default=None, alias='UserData')
     vm_id: str = Field(alias='VmId')
     vm_initiated_shutdown_behavior: str | None = Field(default=None, alias='VmInitiatedShutdownBehavior')
@@ -3677,6 +3702,7 @@ class Vm(GeneratedModel):
     root_device_name: str | None = Field(default=None, alias='RootDeviceName')
     root_device_type: str | None = Field(default=None, alias='RootDeviceType')
     security_groups: list[SecurityGroupLight] | None = Field(default=None, alias='SecurityGroups')
+    shutdown_behavior_configuration: ShutdownBehaviorConfiguration | None = Field(default=None, alias='ShutdownBehaviorConfiguration')
     state: str | None = Field(default=None, alias='State')
     state_reason: str | None = Field(default=None, alias='StateReason')
     subnet_id: str | None = Field(default=None, alias='SubnetId')
@@ -3736,6 +3762,11 @@ class VmType(GeneratedModel):
     vm_type_name: str | None = Field(default=None, alias='VmTypeName')
     volume_count: int | None = Field(default=None, alias='VolumeCount')
     volume_size: int | None = Field(default=None, alias='VolumeSize')
+
+class VmsStopHistory(GeneratedModel):
+    state_reason: str | None = Field(default=None, alias='StateReason')
+    stop_date: datetime.datetime | None = Field(default=None, alias='StopDate')
+    vm_id: str | None = Field(default=None, alias='VmId')
 
 class Volume(GeneratedModel):
     client_token: str | None = Field(default=None, alias='ClientToken')

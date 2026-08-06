@@ -16,20 +16,29 @@ from pydantic import TypeAdapter, ValidationError
 from osc_sdk_python.exceptions import SdkResponseError, SdkValidationError
 from osc_sdk_python.runtime.request import RequestSpec
 from .models import (
+    AdmissionPluginsResponse,
     CPSubregionsResponse,
     ClusterResponse,
     ClusterResponseList,
     ControlPlanesResponse,
     CreateClusterRequest,
+    CreateEimUserRequest,
     CreateProjectRequest,
     DeleteClusterRequest,
+    DeleteEimUserRequest,
     DeleteProjectRequest,
     DetailResponse,
+    DetailsResponse,
+    EimUserTypesResponse,
+    EimUsersResponse,
+    GetAdmissionPluginsRequest,
     GetCPSubregionsRequest,
     GetClientIPRequest,
     GetClusterRequest,
     GetClusterTemplateRequest,
     GetControlPlanePlansRequest,
+    GetEimUserTypesRequest,
+    GetEimUsersRequest,
     GetKubeconfigRequest,
     GetKubeconfigWithPubkeyNACLRequest,
     GetKubernetesVersionsRequest,
@@ -339,6 +348,117 @@ class AsyncOksTypedMixin:
             path_params=path_params,
         )
         return _validate_response(NetsResponse, response)
+
+    async def get_eim_users(
+        self,
+        request: GetEimUsersRequest | None = None,
+    ) -> EimUsersResponse:
+        request = _validate_request(GetEimUsersRequest, request)
+
+        path_params = {
+            'project_id': request.project_id,
+        }
+        query_params = {
+        }
+        response = await self.call.request(
+            RequestSpec(
+                service="oks",
+                method="GET",
+                path="/projects/{project_id}/eim_users",
+                json_body=None,
+                query_params={
+                    key: value
+                    for key, value in query_params.items()
+                    if value is not None
+                },
+            ),
+            path_params=path_params,
+        )
+        return _validate_response(EimUsersResponse, response)
+
+    async def create_eim_user(
+        self,
+        request: CreateEimUserRequest | None = None,
+    ) -> EimUserResponse | EnryptedResponse:
+        request = _validate_request(CreateEimUserRequest, request)
+
+        path_params = {
+            'project_id': request.project_id,
+        }
+        query_params = {
+            'user': request.user,
+            'ttl': request.ttl,
+        }
+        response = await self.call.request(
+            RequestSpec(
+                service="oks",
+                method="POST",
+                path="/projects/{project_id}/eim_users",
+                json_body=None,
+                query_params={
+                    key: value
+                    for key, value in query_params.items()
+                    if value is not None
+                },
+            ),
+            path_params=path_params,
+        )
+        return _validate_response(EimUserResponse | EnryptedResponse, response)
+
+    async def get_eim_user_types(
+        self,
+        request: GetEimUserTypesRequest | None = None,
+    ) -> EimUserTypesResponse:
+        request = _validate_request(GetEimUserTypesRequest, request)
+
+        path_params = {
+            'project_id': request.project_id,
+        }
+        query_params = {
+        }
+        response = await self.call.request(
+            RequestSpec(
+                service="oks",
+                method="GET",
+                path="/projects/{project_id}/eim_users/types",
+                json_body=None,
+                query_params={
+                    key: value
+                    for key, value in query_params.items()
+                    if value is not None
+                },
+            ),
+            path_params=path_params,
+        )
+        return _validate_response(EimUserTypesResponse, response)
+
+    async def delete_eim_user(
+        self,
+        request: DeleteEimUserRequest | None = None,
+    ) -> DetailsResponse:
+        request = _validate_request(DeleteEimUserRequest, request)
+
+        path_params = {
+            'project_id': request.project_id,
+            'user': request.user,
+        }
+        query_params = {
+        }
+        response = await self.call.request(
+            RequestSpec(
+                service="oks",
+                method="DELETE",
+                path="/projects/{project_id}/eim_users/{user}",
+                json_body=None,
+                query_params={
+                    key: value
+                    for key, value in query_params.items()
+                    if value is not None
+                },
+            ),
+            path_params=path_params,
+        )
+        return _validate_response(DetailsResponse, response)
 
     async def list_clusters_by_project_id(
         self,
@@ -678,6 +798,33 @@ class AsyncOksTypedMixin:
             path_params=path_params,
         )
         return _validate_response(ControlPlanesResponse, response)
+
+    async def get_admission_plugins(
+        self,
+        request: GetAdmissionPluginsRequest | None = None,
+    ) -> AdmissionPluginsResponse:
+        request = _validate_request(GetAdmissionPluginsRequest, request)
+
+        path_params = {
+        }
+        query_params = {
+            'version': request.version,
+        }
+        response = await self.call.request(
+            RequestSpec(
+                service="oks",
+                method="GET",
+                path="/clusters/limits/admission_plugins",
+                json_body=None,
+                query_params={
+                    key: value
+                    for key, value in query_params.items()
+                    if value is not None
+                },
+            ),
+            path_params=path_params,
+        )
+        return _validate_response(AdmissionPluginsResponse, response)
 
     async def get_project_template(
         self,

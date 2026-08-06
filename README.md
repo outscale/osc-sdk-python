@@ -79,7 +79,7 @@ make package
 Then install the built wheel:
 
 ```bash
-pip install dist/osc_sdk_python-0.41.0-py3-none-any.whl
+pip install dist/osc_sdk_python-0.42.0-py3-none-any.whl
 ```
 
 ---
