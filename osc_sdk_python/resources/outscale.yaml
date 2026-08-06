@@ -260,6 +260,10 @@ components:
           type: string
         State:
           description: The state of the backend VM (`UP` \| `DOWN` \| `UNKNOWN`).
+          enum:
+          - UP
+          - DOWN
+          - UNKNOWN
           type: string
         StateReason:
           description: |-
@@ -10347,6 +10351,14 @@ components:
           type: string
         State:
           description: The state of the snapshot export task (`pending` \| `initializing` \| `preparing` \| `uploading` \| `completed` \| `cancelled` \| `failed`).
+          enum:
+          - pending
+          - initializing
+          - preparing
+          - uploading
+          - completed
+          - cancelled
+          - failed
           type: string
         Tags:
           description: One or more tags associated with the snapshot export task.
