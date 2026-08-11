@@ -31,6 +31,9 @@ def class_name(value: str) -> str:
 
 
 def schema_type(schema: dict[str, Any], ref_resolver=class_name) -> str:
+    if schema.get("type") == "null":
+        return "None"
+
     if schema.get("nullable"):
         return (
             schema_type(
@@ -55,6 +58,11 @@ def schema_type(schema: dict[str, Any], ref_resolver=class_name) -> str:
         if composed in {"oneOf", "anyOf"}:
             option_types = [schema_type(option, ref_resolver) for option in options]
             if "Any" not in option_types:
+                option_types = [
+                    option_type for option_type in option_types if option_type != "None"
+                ] + [
+                    option_type for option_type in option_types if option_type == "None"
+                ]
                 if composed == "oneOf":
                     logger.warning(
                         "OpenAPI oneOf with %d schemas represented as a union; "

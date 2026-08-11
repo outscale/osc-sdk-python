@@ -393,6 +393,97 @@ def test_anyof_composition_renders_union_for_supported_schemas():
     assert "loc: list[str | int] | None" in rendered_models
 
 
+def test_anyof_null_composition_renders_optional_concrete_types():
+    spec = {
+        "paths": {
+            "/projects": {
+                "get": {
+                    "operationId": "ListProjects",
+                    "parameters": [
+                        {
+                            "name": "name",
+                            "in": "query",
+                            "schema": {
+                                "anyOf": [
+                                    {"type": "string"},
+                                    {"type": "null"},
+                                ]
+                            },
+                        },
+                        {
+                            "name": "limit",
+                            "in": "query",
+                            "schema": {
+                                "anyOf": [
+                                    {"type": "integer"},
+                                    {"type": "null"},
+                                ]
+                            },
+                        },
+                    ],
+                    "responses": {
+                        "200": {
+                            "content": {
+                                "application/json": {
+                                    "schema": {
+                                        "$ref": "#/components/schemas/ProjectResponse"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                }
+            }
+        },
+        "components": {
+            "schemas": {
+                "Maintenance": {
+                    "type": "object",
+                    "properties": {"start_hour": {"type": "integer"}},
+                },
+                "Cluster": {
+                    "type": "object",
+                    "properties": {
+                        "maintenance_window": {
+                            "anyOf": [
+                                {"$ref": "#/components/schemas/Maintenance"},
+                                {"type": "null"},
+                            ]
+                        },
+                        "tags": {
+                            "anyOf": [
+                                {
+                                    "type": "object",
+                                    "additionalProperties": {"type": "string"},
+                                },
+                                {"type": "null"},
+                            ]
+                        },
+                        "quirks": {
+                            "anyOf": [
+                                {"type": "array", "items": {"type": "string"}},
+                                {"type": "null"},
+                            ]
+                        },
+                    },
+                },
+                "ProjectResponse": {
+                    "type": "object",
+                    "properties": {"id": {"type": "string"}},
+                },
+            }
+        },
+    }
+
+    adapter = PathOperationAdapter(spec, service="oks")
+    rendered_models = render_models(adapter.operations(), adapter.schema_models(), "oks")
+
+    assert "maintenance_window: Maintenance | None" in rendered_models
+    assert "tags: dict[str, str] | None" in rendered_models
+    assert "quirks: list[str] | None" in rendered_models
+    assert "name: str | None" in rendered_models
+    assert "limit: int | None" in rendered_models
+
 def test_single_ref_allof_with_metadata_keeps_ref_type():
     spec = {
         "paths": {},

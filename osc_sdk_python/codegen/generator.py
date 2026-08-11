@@ -113,11 +113,25 @@ def _field_dump(field: Field) -> str:
 
 def _model_imports(operations: list[Operation]) -> list[str]:
     names = {operation.request_model.name for operation in operations}
-    names.update(
-        operation.response_model
-        for operation in operations
-        if re.fullmatch(r"[A-Za-z_][A-Za-z0-9_]*", operation.response_model)
-    )
+    builtins = {
+        "Any",
+        "None",
+        "Literal",
+        "list",
+        "dict",
+        "str",
+        "int",
+        "float",
+        "bool",
+    }
+    for operation in operations:
+        names.update(
+            name
+            for name in re.findall(
+                r"\b[A-Za-z_][A-Za-z0-9_]*\b", operation.response_model
+            )
+            if name not in builtins
+        )
     return sorted(names)
 
 
