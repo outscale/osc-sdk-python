@@ -1,12 +1,11 @@
-from pathlib import Path
 import argparse
 import re
+from pathlib import Path
 from typing import Iterable
 
 from .adapters import PathOperationAdapter
 from .ir import Field, Model, Operation
 from .overlay import load_spec
-
 
 GENERATED_HEADER = '''"""Generated typed {service_label} client slice.
 
@@ -144,7 +143,7 @@ def render_async_client(
     model_imports = "\n".join(f"    {name}," for name in imports)
     lines = [
         _header(package_name),
-        "from typing import Any",
+        "from typing import Any, Protocol, TypeVar",
         "",
         "from pydantic import TypeAdapter, ValidationError",
         "",
@@ -171,13 +170,17 @@ def render_async_client(
         "    except ValidationError as error:",
         "        raise SdkValidationError(str(error)) from error",
         "",
+        'T = TypeVar("T")',
         "",
-        "def _validate_response(model: type, value: Any) -> Any:",
+        "def _validate_response(model: T, value: Any) -> Any:",
         "    try:",
         "        return TypeAdapter(model).validate_python(value)",
         "    except ValidationError as error:",
         "        raise SdkResponseError(str(error)) from error",
         "",
+        "class HasCallMethod(Protocol):",
+        "   @property",
+        "   def call(self): ...",
         "",
         f"class {_mixin_name(package_name)}:",
     ]
@@ -197,7 +200,7 @@ def render_async_client(
         lines.extend(
             [
                 f"    async def {operation.method_name}(",
-                "        self,",
+                "        self: HasCallMethod,",
                 f"        request: {operation.request_model.name} | None = None,",
                 f"    ) -> {operation.response_model}:",
             ]
@@ -264,11 +267,11 @@ def render_init(
     )
     mixin_name = _mixin_name(package_name)
     lines = [
-        "\"\"\"Generated typed SDK exports.",
+        '"""Generated typed SDK exports.',
         "",
         "Typed request and response models are async-first. Generated typed methods are",
         "exposed on AsyncClient; synchronous clients use dynamic action methods.",
-        "\"\"\"",
+        '"""',
         "",
         f"from .async_client import {mixin_name}",
         "from .models import (",

@@ -1,10 +1,3 @@
-from .outscale_gateway import OutscaleGateway as Gateway
-from .outscale_gateway import AsyncOutscaleGateway as AsyncGateway
-from .outscale_gateway import Client
-from .outscale_gateway import AsyncClient
-from .version import get_version
-from .problem import Problem, ProblemDecoder
-from .runtime.transport import RateLimiter
 from .exceptions import (
     SdkClientError,
     SdkConfigurationError,
@@ -17,6 +10,12 @@ from .exceptions import (
     SdkUsageError,
     SdkValidationError,
 )
+from .outscale_gateway import AsyncClient, Client
+from .outscale_gateway import AsyncOutscaleGateway as AsyncGateway
+from .outscale_gateway import OutscaleGateway as Gateway
+from .problem import Problem, ProblemDecoder
+from .runtime.transport import RateLimiter
+from .version import get_version
 
 __author__ = "Outscale SAS"
 __version__ = get_version()

@@ -2,6 +2,7 @@ import unittest
 
 from osc_sdk_python import Client
 
+
 class TestVm(unittest.TestCase):
     def test_listing(self):
         with Client() as client:
@@ -14,6 +15,7 @@ class TestVm(unittest.TestCase):
             vms = client.osc.ReadVms()
             self.assertEqual(type(vms), dict)
             self.assertEqual(type(vms.get("Vms")), list)
+
 
 if __name__ == "__main__":
     unittest.main()

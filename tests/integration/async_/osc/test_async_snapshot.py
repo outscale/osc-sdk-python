@@ -44,7 +44,9 @@ class TestAsyncSnapshot(unittest.TestCase):
                     self.assertTrue(volume_id)
                     log_test_step("Created volume {} (async)".format(volume_id))
 
-                    await client.osc.create_tags(build_name_tag_typed_request(volume_id))
+                    await client.osc.create_tags(
+                        build_name_tag_typed_request(volume_id)
+                    )
                     log_test_step("Tagged volume {} (async)".format(volume_id))
 
                     for _ in range(30):
@@ -58,9 +60,7 @@ class TestAsyncSnapshot(unittest.TestCase):
                         )
                         self.assertIsInstance(volume, Volume)
                         log_test_step(
-                            "Volume {} state={} (async)".format(
-                                volume_id, volume.state
-                            )
+                            "Volume {} state={} (async)".format(volume_id, volume.state)
                         )
                         if volume.state == "available":
                             break
@@ -88,7 +88,9 @@ class TestAsyncSnapshot(unittest.TestCase):
                     self.assertTrue(snapshot_id)
                     log_test_step("Created snapshot {} (async)".format(snapshot_id))
 
-                    await client.osc.create_tags(build_name_tag_typed_request(snapshot_id))
+                    await client.osc.create_tags(
+                        build_name_tag_typed_request(snapshot_id)
+                    )
                     log_test_step("Tagged snapshot {} (async)".format(snapshot_id))
 
                     snapshot = None
@@ -131,7 +133,9 @@ class TestAsyncSnapshot(unittest.TestCase):
                     )
                 finally:
                     if snapshot_id:
-                        log_test_step("Deleting snapshot {} (async)".format(snapshot_id))
+                        log_test_step(
+                            "Deleting snapshot {} (async)".format(snapshot_id)
+                        )
                         await client.osc.delete_snapshot(
                             DeleteSnapshotRequest(snapshot_id=snapshot_id)
                         )

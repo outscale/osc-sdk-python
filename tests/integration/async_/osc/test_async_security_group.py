@@ -13,7 +13,10 @@ from osc_sdk_python.generated.osc import (
     ReadSecurityGroupsResponse,
     SecurityGroup,
 )
-from tests.integration.async_.helpers.async_integration_utils import get_tagged_name, log_test_step
+from tests.integration.async_.helpers.async_integration_utils import (
+    get_tagged_name,
+    log_test_step,
+)
 
 
 class TestAsyncSecurityGroup(unittest.TestCase):
@@ -57,7 +60,9 @@ class TestAsyncSecurityGroup(unittest.TestCase):
                             ip_range=ip_range,
                         )
                     )
-                    self.assertIsInstance(rule_response, CreateSecurityGroupRuleResponse)
+                    self.assertIsInstance(
+                        rule_response, CreateSecurityGroupRuleResponse
+                    )
                     self.assertIsInstance(rule_response.security_group, SecurityGroup)
 
                     log_test_step(

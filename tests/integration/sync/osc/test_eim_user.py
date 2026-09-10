@@ -13,7 +13,9 @@ class TestEimUser(unittest.TestCase):
         user_id = None
         try:
             log_test_step("Creating EIM user {}".format(user_name))
-            response = osc.CreateUser(Path="/", UserEmail=user_email, UserName=user_name)
+            response = osc.CreateUser(
+                Path="/", UserEmail=user_email, UserName=user_name
+            )
             user = response.get("User")
             self.assertIsInstance(user, dict)
             user_id = user.get("UserId")

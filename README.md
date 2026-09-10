@@ -258,6 +258,7 @@ Public SDK methods raise SDK-owned exceptions. Catch `SdkError` for any SDK fail
 ```python
 from osc_sdk_python import AsyncClient, SdkError
 
+
 async def main():
     try:
         async with AsyncClient(profile="default") as client:

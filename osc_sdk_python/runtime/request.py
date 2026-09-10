@@ -1,9 +1,8 @@
-from dataclasses import dataclass, field
 import re
+from dataclasses import dataclass, field
 from urllib.parse import quote
 
 from ..exceptions import SdkValidationError
-
 
 PATH_PLACEHOLDER_RE = re.compile(r"{([^{}]+)}")
 

@@ -68,6 +68,7 @@ def test_slow(monkeypatch):
 
 def test_refill_after_window():
     """Test old requests are removed once the limiter window has passed"""
+
     class MockDateTime(datetime.datetime):
         @classmethod
         def now(cls, tz=None):

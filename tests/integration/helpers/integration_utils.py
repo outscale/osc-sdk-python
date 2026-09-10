@@ -2,6 +2,7 @@ import base64
 import random
 import string
 
+
 def get_random_string(length=10):
     alphabet = string.ascii_lowercase + string.digits
     return "".join(random.choice(alphabet) for _ in range(length))
@@ -13,6 +14,7 @@ def get_tagged_name(prefix="osc-sdk-python-test", length=10):
 
 def log_test_step(message):
     print("[tests] {}".format(message), flush=True)
+
 
 def get_first_item(items, message):
     if not items:

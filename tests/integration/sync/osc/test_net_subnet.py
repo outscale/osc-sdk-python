@@ -39,7 +39,9 @@ class TestNetAndSubnet(unittest.TestCase):
             time.sleep(2)
 
             log_test_step("Reading subnet {}".format(subnet_id))
-            subnet = read_single_resource(osc, "ReadSubnets", "Subnets", "SubnetIds", subnet_id)
+            subnet = read_single_resource(
+                osc, "ReadSubnets", "Subnets", "SubnetIds", subnet_id
+            )
             self.assertEqual(subnet.get("SubnetId"), subnet_id)
             self.assertTrue(
                 any(tag.get("Key") == "Name" for tag in subnet.get("Tags", [])),

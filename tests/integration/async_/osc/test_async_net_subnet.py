@@ -43,7 +43,9 @@ class TestAsyncNetAndSubnet(unittest.TestCase):
                     await client.osc.create_tags(build_name_tag_typed_request(net_id))
                     await asyncio.sleep(2)
 
-                    log_test_step("Creating subnet 10.0.1.0/24 in {} (async)".format(net_id))
+                    log_test_step(
+                        "Creating subnet 10.0.1.0/24 in {} (async)".format(net_id)
+                    )
                     subnet_response = await client.osc.create_subnet(
                         CreateSubnetRequest(net_id=net_id, ip_range="10.0.1.0/24")
                     )
@@ -54,7 +56,9 @@ class TestAsyncNetAndSubnet(unittest.TestCase):
                     self.assertTrue(subnet_id)
                     log_test_step("Created subnet {} (async)".format(subnet_id))
 
-                    await client.osc.create_tags(build_name_tag_typed_request(subnet_id))
+                    await client.osc.create_tags(
+                        build_name_tag_typed_request(subnet_id)
+                    )
                     await asyncio.sleep(2)
 
                     log_test_step("Reading subnet {} (async)".format(subnet_id))

@@ -1,10 +1,9 @@
+import re
 from copy import deepcopy
 from pathlib import Path
-import re
 from typing import Any
 
 import ruamel.yaml
-
 
 FILTER_RE = re.compile(r"^(?:\*)?\[\?\(@\.([A-Za-z0-9_]+) == ['\"]([^'\"]+)['\"]\)\]$")
 
@@ -30,11 +29,7 @@ def parse_target(target: str) -> list[str]:
         if target[i] == "[":
             end = target.index("]", i)
             value = target[i + 1 : end]
-            if (
-                len(value) >= 2
-                and value[0] in {"'", '"'}
-                and value[-1] == value[0]
-            ):
+            if len(value) >= 2 and value[0] in {"'", '"'} and value[-1] == value[0]:
                 value = value[1:-1]
             else:
                 value = "[" + value + "]"
@@ -63,7 +58,9 @@ def iter_matches(node: Any, tokens: list[str]) -> list[tuple[Any, str | int | No
         for _parent, _key, current in parents:
             if token == "*":
                 if isinstance(current, dict):
-                    next_parents.extend((current, key, value) for key, value in current.items())
+                    next_parents.extend(
+                        (current, key, value) for key, value in current.items()
+                    )
                 elif isinstance(current, list):
                     next_parents.extend(
                         (current, index, value) for index, value in enumerate(current)
@@ -72,11 +69,17 @@ def iter_matches(node: Any, tokens: list[str]) -> list[tuple[Any, str | int | No
                 field, expected = filter_match.groups()
                 if isinstance(current, dict):
                     for key, value in current.items():
-                        if isinstance(value, dict) and str(value.get(field)) == expected:
+                        if (
+                            isinstance(value, dict)
+                            and str(value.get(field)) == expected
+                        ):
                             next_parents.append((current, key, value))
                 elif isinstance(current, list):
                     for index, value in enumerate(current):
-                        if isinstance(value, dict) and str(value.get(field)) == expected:
+                        if (
+                            isinstance(value, dict)
+                            and str(value.get(field)) == expected
+                        ):
                             next_parents.append((current, index, value))
             elif isinstance(current, dict) and token in current:
                 next_parents.append((current, token, current[token]))

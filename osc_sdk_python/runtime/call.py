@@ -15,8 +15,8 @@ from ..exceptions import (
 )
 from .request import RequestSpec
 from .transport import (
-    AsyncSdkTransport,
     DEFAULT_USER_AGENT,
+    AsyncSdkTransport,
     RateLimiter,
     RetryPolicy,
     SdkAuth,
@@ -40,9 +40,8 @@ def _decode_json_response(response):
         raise SdkResponseError("Response body is not valid JSON") from error
 
 
-class Call(object):
+class Call:
     def __init__(self, limiter=None, **kwargs):
-        self.version = kwargs.pop("version", "latest")
         self.host = kwargs.pop("host", None)
         self.ssl = kwargs.pop("_ssl", True)
         self.user_agent = kwargs.pop("user_agent", DEFAULT_USER_AGENT)
@@ -160,7 +159,6 @@ class Call(object):
 
 class AsyncCall(object):
     def __init__(self, limiter=None, **kwargs):
-        self.version = kwargs.pop("version", "latest")
         self.host = kwargs.pop("host", None)
         self.ssl = kwargs.pop("_ssl", True)
         self.user_agent = kwargs.pop("user_agent", DEFAULT_USER_AGENT)

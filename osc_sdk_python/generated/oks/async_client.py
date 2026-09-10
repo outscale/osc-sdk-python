@@ -9,18 +9,19 @@ Do not edit by hand. Regenerate with:
     python -m osc_sdk_python.codegen.generator oks osc
 """
 
-from typing import Any
+from typing import Any, Protocol, TypeVar
 
 from pydantic import TypeAdapter, ValidationError
 
 from osc_sdk_python.exceptions import SdkResponseError, SdkValidationError
 from osc_sdk_python.runtime.request import RequestSpec
+
 from .models import (
     AdmissionPluginsResponse,
-    CPSubregionsResponse,
     ClusterResponse,
     ClusterResponseList,
     ControlPlanesResponse,
+    CPSubregionsResponse,
     CreateClusterRequest,
     CreateEimUserRequest,
     CreateProjectRequest,
@@ -30,17 +31,17 @@ from .models import (
     DetailResponse,
     DetailsResponse,
     EimUserResponse,
-    EimUserTypesResponse,
     EimUsersResponse,
+    EimUserTypesResponse,
     EnryptedResponse,
     GetAdmissionPluginsRequest,
-    GetCPSubregionsRequest,
     GetClientIPRequest,
     GetClusterRequest,
     GetClusterTemplateRequest,
     GetControlPlanePlansRequest,
-    GetEimUserTypesRequest,
+    GetCPSubregionsRequest,
     GetEimUsersRequest,
+    GetEimUserTypesRequest,
     GetKubeconfigRequest,
     GetKubeconfigWithPubkeyNACLRequest,
     GetKubernetesVersionsRequest,
@@ -95,30 +96,37 @@ def _validate_request(model: type, value: Any) -> Any:
         raise SdkValidationError(str(error)) from error
 
 
-def _validate_response(model: type, value: Any) -> Any:
+T = TypeVar("T")
+
+
+def _validate_response(model: T, value: Any) -> Any:
     try:
         return TypeAdapter(model).validate_python(value)
     except ValidationError as error:
         raise SdkResponseError(str(error)) from error
 
 
+class HasCallMethod(Protocol):
+    @property
+    def call(self): ...
+
+
 class AsyncOksTypedMixin:
     async def list_projects(
-        self,
+        self: HasCallMethod,
         request: ListProjectsRequest | None = None,
     ) -> ProjectResponseList:
         request = _validate_request(ListProjectsRequest, request)
 
-        path_params = {
-        }
+        path_params = {}
         query_params = {
-            'name': request.name,
-            'status': request.status,
-            'cidr': request.cidr,
-            'deleted': request.deleted,
-            'cursor': request.cursor,
-            'page': request.page,
-            'limit': request.limit,
+            "name": request.name,
+            "status": request.status,
+            "cidr": request.cidr,
+            "deleted": request.deleted,
+            "cursor": request.cursor,
+            "page": request.page,
+            "limit": request.limit,
         }
         response = await self.call.request(
             RequestSpec(
@@ -137,15 +145,13 @@ class AsyncOksTypedMixin:
         return _validate_response(ProjectResponseList, response)
 
     async def create_project(
-        self,
+        self: HasCallMethod,
         request: CreateProjectRequest | None = None,
     ) -> ProjectResponse:
         request = _validate_request(CreateProjectRequest, request)
 
-        path_params = {
-        }
-        query_params = {
-        }
+        path_params = {}
+        query_params = {}
         response = await self.call.request(
             RequestSpec(
                 service="oks",
@@ -163,16 +169,15 @@ class AsyncOksTypedMixin:
         return _validate_response(ProjectResponse, response)
 
     async def get_project(
-        self,
+        self: HasCallMethod,
         request: GetProjectRequest | None = None,
     ) -> ProjectResponse:
         request = _validate_request(GetProjectRequest, request)
 
         path_params = {
-            'project_id': request.project_id,
+            "project_id": request.project_id,
         }
-        query_params = {
-        }
+        query_params = {}
         response = await self.call.request(
             RequestSpec(
                 service="oks",
@@ -190,16 +195,15 @@ class AsyncOksTypedMixin:
         return _validate_response(ProjectResponse, response)
 
     async def update_project(
-        self,
+        self: HasCallMethod,
         request: UpdateProjectRequest | None = None,
     ) -> ProjectResponse:
         request = _validate_request(UpdateProjectRequest, request)
 
         path_params = {
-            'project_id': request.project_id,
+            "project_id": request.project_id,
         }
-        query_params = {
-        }
+        query_params = {}
         response = await self.call.request(
             RequestSpec(
                 service="oks",
@@ -217,16 +221,15 @@ class AsyncOksTypedMixin:
         return _validate_response(ProjectResponse, response)
 
     async def delete_project(
-        self,
+        self: HasCallMethod,
         request: DeleteProjectRequest | None = None,
     ) -> DetailResponse:
         request = _validate_request(DeleteProjectRequest, request)
 
         path_params = {
-            'project_id': request.project_id,
+            "project_id": request.project_id,
         }
-        query_params = {
-        }
+        query_params = {}
         response = await self.call.request(
             RequestSpec(
                 service="oks",
@@ -244,16 +247,15 @@ class AsyncOksTypedMixin:
         return _validate_response(DetailResponse, response)
 
     async def get_project_quotas(
-        self,
+        self: HasCallMethod,
         request: GetProjectQuotasRequest | None = None,
     ) -> projects__project_schema__QuotasResponse:
         request = _validate_request(GetProjectQuotasRequest, request)
 
         path_params = {
-            'project_id': request.project_id,
+            "project_id": request.project_id,
         }
-        query_params = {
-        }
+        query_params = {}
         response = await self.call.request(
             RequestSpec(
                 service="oks",
@@ -271,16 +273,15 @@ class AsyncOksTypedMixin:
         return _validate_response(projects__project_schema__QuotasResponse, response)
 
     async def get_project_snapshots(
-        self,
+        self: HasCallMethod,
         request: GetProjectSnapshotsRequest | None = None,
     ) -> SnapshotsResponse:
         request = _validate_request(GetProjectSnapshotsRequest, request)
 
         path_params = {
-            'project_id': request.project_id,
+            "project_id": request.project_id,
         }
-        query_params = {
-        }
+        query_params = {}
         response = await self.call.request(
             RequestSpec(
                 service="oks",
@@ -298,16 +299,15 @@ class AsyncOksTypedMixin:
         return _validate_response(SnapshotsResponse, response)
 
     async def get_project_public_ips(
-        self,
+        self: HasCallMethod,
         request: GetProjectPublicIpsRequest | None = None,
     ) -> PublicIpsResponse:
         request = _validate_request(GetProjectPublicIpsRequest, request)
 
         path_params = {
-            'project_id': request.project_id,
+            "project_id": request.project_id,
         }
-        query_params = {
-        }
+        query_params = {}
         response = await self.call.request(
             RequestSpec(
                 service="oks",
@@ -325,16 +325,15 @@ class AsyncOksTypedMixin:
         return _validate_response(PublicIpsResponse, response)
 
     async def get_project_nets(
-        self,
+        self: HasCallMethod,
         request: GetProjectNetsRequest | None = None,
     ) -> NetsResponse:
         request = _validate_request(GetProjectNetsRequest, request)
 
         path_params = {
-            'project_id': request.project_id,
+            "project_id": request.project_id,
         }
-        query_params = {
-        }
+        query_params = {}
         response = await self.call.request(
             RequestSpec(
                 service="oks",
@@ -352,16 +351,15 @@ class AsyncOksTypedMixin:
         return _validate_response(NetsResponse, response)
 
     async def get_eim_users(
-        self,
+        self: HasCallMethod,
         request: GetEimUsersRequest | None = None,
     ) -> EimUsersResponse:
         request = _validate_request(GetEimUsersRequest, request)
 
         path_params = {
-            'project_id': request.project_id,
+            "project_id": request.project_id,
         }
-        query_params = {
-        }
+        query_params = {}
         response = await self.call.request(
             RequestSpec(
                 service="oks",
@@ -379,17 +377,17 @@ class AsyncOksTypedMixin:
         return _validate_response(EimUsersResponse, response)
 
     async def create_eim_user(
-        self,
+        self: HasCallMethod,
         request: CreateEimUserRequest | None = None,
     ) -> EimUserResponse | EnryptedResponse:
         request = _validate_request(CreateEimUserRequest, request)
 
         path_params = {
-            'project_id': request.project_id,
+            "project_id": request.project_id,
         }
         query_params = {
-            'user': request.user,
-            'ttl': request.ttl,
+            "user": request.user,
+            "ttl": request.ttl,
         }
         response = await self.call.request(
             RequestSpec(
@@ -408,16 +406,15 @@ class AsyncOksTypedMixin:
         return _validate_response(EimUserResponse | EnryptedResponse, response)
 
     async def get_eim_user_types(
-        self,
+        self: HasCallMethod,
         request: GetEimUserTypesRequest | None = None,
     ) -> EimUserTypesResponse:
         request = _validate_request(GetEimUserTypesRequest, request)
 
         path_params = {
-            'project_id': request.project_id,
+            "project_id": request.project_id,
         }
-        query_params = {
-        }
+        query_params = {}
         response = await self.call.request(
             RequestSpec(
                 service="oks",
@@ -435,17 +432,16 @@ class AsyncOksTypedMixin:
         return _validate_response(EimUserTypesResponse, response)
 
     async def delete_eim_user(
-        self,
+        self: HasCallMethod,
         request: DeleteEimUserRequest | None = None,
     ) -> DetailsResponse:
         request = _validate_request(DeleteEimUserRequest, request)
 
         path_params = {
-            'project_id': request.project_id,
-            'user': request.user,
+            "project_id": request.project_id,
+            "user": request.user,
         }
-        query_params = {
-        }
+        query_params = {}
         response = await self.call.request(
             RequestSpec(
                 service="oks",
@@ -463,22 +459,21 @@ class AsyncOksTypedMixin:
         return _validate_response(DetailsResponse, response)
 
     async def list_clusters_by_project_id(
-        self,
+        self: HasCallMethod,
         request: ListClustersByProjectIDRequest | None = None,
     ) -> ClusterResponseList:
         request = _validate_request(ListClustersByProjectIDRequest, request)
 
-        path_params = {
-        }
+        path_params = {}
         query_params = {
-            'project_id': request.project_id,
-            'name': request.name,
-            'status': request.status,
-            'version': request.version,
-            'deleted': request.deleted,
-            'cursor': request.cursor,
-            'page': request.page,
-            'limit': request.limit,
+            "project_id": request.project_id,
+            "name": request.name,
+            "status": request.status,
+            "version": request.version,
+            "deleted": request.deleted,
+            "cursor": request.cursor,
+            "page": request.page,
+            "limit": request.limit,
         }
         response = await self.call.request(
             RequestSpec(
@@ -497,15 +492,13 @@ class AsyncOksTypedMixin:
         return _validate_response(ClusterResponseList, response)
 
     async def create_cluster(
-        self,
+        self: HasCallMethod,
         request: CreateClusterRequest | None = None,
     ) -> ClusterResponse:
         request = _validate_request(CreateClusterRequest, request)
 
-        path_params = {
-        }
-        query_params = {
-        }
+        path_params = {}
+        query_params = {}
         response = await self.call.request(
             RequestSpec(
                 service="oks",
@@ -523,21 +516,20 @@ class AsyncOksTypedMixin:
         return _validate_response(ClusterResponse, response)
 
     async def list_all_clusters(
-        self,
+        self: HasCallMethod,
         request: ListAllClustersRequest | None = None,
     ) -> ClusterResponseList:
         request = _validate_request(ListAllClustersRequest, request)
 
-        path_params = {
-        }
+        path_params = {}
         query_params = {
-            'name': request.name,
-            'status': request.status,
-            'version': request.version,
-            'deleted': request.deleted,
-            'cursor': request.cursor,
-            'page': request.page,
-            'limit': request.limit,
+            "name": request.name,
+            "status": request.status,
+            "version": request.version,
+            "deleted": request.deleted,
+            "cursor": request.cursor,
+            "page": request.page,
+            "limit": request.limit,
         }
         response = await self.call.request(
             RequestSpec(
@@ -556,16 +548,15 @@ class AsyncOksTypedMixin:
         return _validate_response(ClusterResponseList, response)
 
     async def get_cluster(
-        self,
+        self: HasCallMethod,
         request: GetClusterRequest | None = None,
     ) -> ClusterResponse:
         request = _validate_request(GetClusterRequest, request)
 
         path_params = {
-            'cluster_id': request.cluster_id,
+            "cluster_id": request.cluster_id,
         }
-        query_params = {
-        }
+        query_params = {}
         response = await self.call.request(
             RequestSpec(
                 service="oks",
@@ -583,16 +574,15 @@ class AsyncOksTypedMixin:
         return _validate_response(ClusterResponse, response)
 
     async def update_cluster(
-        self,
+        self: HasCallMethod,
         request: UpdateClusterRequest | None = None,
     ) -> ClusterResponse:
         request = _validate_request(UpdateClusterRequest, request)
 
         path_params = {
-            'cluster_id': request.cluster_id,
+            "cluster_id": request.cluster_id,
         }
-        query_params = {
-        }
+        query_params = {}
         response = await self.call.request(
             RequestSpec(
                 service="oks",
@@ -610,16 +600,15 @@ class AsyncOksTypedMixin:
         return _validate_response(ClusterResponse, response)
 
     async def delete_cluster(
-        self,
+        self: HasCallMethod,
         request: DeleteClusterRequest | None = None,
     ) -> DetailResponse:
         request = _validate_request(DeleteClusterRequest, request)
 
         path_params = {
-            'cluster_id': request.cluster_id,
+            "cluster_id": request.cluster_id,
         }
-        query_params = {
-        }
+        query_params = {}
         response = await self.call.request(
             RequestSpec(
                 service="oks",
@@ -637,18 +626,18 @@ class AsyncOksTypedMixin:
         return _validate_response(DetailResponse, response)
 
     async def get_kubeconfig(
-        self,
+        self: HasCallMethod,
         request: GetKubeconfigRequest | None = None,
     ) -> KubeconfigResponse:
         request = _validate_request(GetKubeconfigRequest, request)
 
         path_params = {
-            'cluster_id': request.cluster_id,
+            "cluster_id": request.cluster_id,
         }
         query_params = {
-            'user': request.user,
-            'group': request.group,
-            'ttl': request.ttl,
+            "user": request.user,
+            "group": request.group,
+            "ttl": request.ttl,
         }
         response = await self.call.request(
             RequestSpec(
@@ -667,18 +656,18 @@ class AsyncOksTypedMixin:
         return _validate_response(KubeconfigResponse, response)
 
     async def get_kubeconfig_with_pubkey_nacl(
-        self,
+        self: HasCallMethod,
         request: GetKubeconfigWithPubkeyNACLRequest | None = None,
     ) -> KubeconfigResponse:
         request = _validate_request(GetKubeconfigWithPubkeyNACLRequest, request)
 
         path_params = {
-            'cluster_id': request.cluster_id,
+            "cluster_id": request.cluster_id,
         }
         query_params = {
-            'user': request.user,
-            'group': request.group,
-            'ttl': request.ttl,
+            "user": request.user,
+            "group": request.group,
+            "ttl": request.ttl,
         }
         response = await self.call.request(
             RequestSpec(
@@ -697,16 +686,15 @@ class AsyncOksTypedMixin:
         return _validate_response(KubeconfigResponse, response)
 
     async def upgrade_cluster(
-        self,
+        self: HasCallMethod,
         request: UpgradeClusterRequest | None = None,
     ) -> ClusterResponse:
         request = _validate_request(UpgradeClusterRequest, request)
 
         path_params = {
-            'cluster_id': request.cluster_id,
+            "cluster_id": request.cluster_id,
         }
-        query_params = {
-        }
+        query_params = {}
         response = await self.call.request(
             RequestSpec(
                 service="oks",
@@ -724,15 +712,13 @@ class AsyncOksTypedMixin:
         return _validate_response(ClusterResponse, response)
 
     async def get_kubernetes_versions(
-        self,
+        self: HasCallMethod,
         request: GetKubernetesVersionsRequest | None = None,
     ) -> KubernetesVersionsResponse:
         _ = request
 
-        path_params = {
-        }
-        query_params = {
-        }
+        path_params = {}
+        query_params = {}
         response = await self.call.request(
             RequestSpec(
                 service="oks",
@@ -750,15 +736,13 @@ class AsyncOksTypedMixin:
         return _validate_response(KubernetesVersionsResponse, response)
 
     async def get_cp_subregions(
-        self,
+        self: HasCallMethod,
         request: GetCPSubregionsRequest | None = None,
     ) -> CPSubregionsResponse:
         _ = request
 
-        path_params = {
-        }
-        query_params = {
-        }
+        path_params = {}
+        query_params = {}
         response = await self.call.request(
             RequestSpec(
                 service="oks",
@@ -776,15 +760,13 @@ class AsyncOksTypedMixin:
         return _validate_response(CPSubregionsResponse, response)
 
     async def get_control_plane_plans(
-        self,
+        self: HasCallMethod,
         request: GetControlPlanePlansRequest | None = None,
     ) -> ControlPlanesResponse:
         _ = request
 
-        path_params = {
-        }
-        query_params = {
-        }
+        path_params = {}
+        query_params = {}
         response = await self.call.request(
             RequestSpec(
                 service="oks",
@@ -802,15 +784,14 @@ class AsyncOksTypedMixin:
         return _validate_response(ControlPlanesResponse, response)
 
     async def get_admission_plugins(
-        self,
+        self: HasCallMethod,
         request: GetAdmissionPluginsRequest | None = None,
     ) -> AdmissionPluginsResponse:
         request = _validate_request(GetAdmissionPluginsRequest, request)
 
-        path_params = {
-        }
+        path_params = {}
         query_params = {
-            'version': request.version,
+            "version": request.version,
         }
         response = await self.call.request(
             RequestSpec(
@@ -829,15 +810,13 @@ class AsyncOksTypedMixin:
         return _validate_response(AdmissionPluginsResponse, response)
 
     async def get_project_template(
-        self,
+        self: HasCallMethod,
         request: GetProjectTemplateRequest | None = None,
     ) -> TemplateResponse_ProjectInput:
         _ = request
 
-        path_params = {
-        }
-        query_params = {
-        }
+        path_params = {}
+        query_params = {}
         response = await self.call.request(
             RequestSpec(
                 service="oks",
@@ -855,15 +834,13 @@ class AsyncOksTypedMixin:
         return _validate_response(TemplateResponse_ProjectInput, response)
 
     async def get_cluster_template(
-        self,
+        self: HasCallMethod,
         request: GetClusterTemplateRequest | None = None,
     ) -> TemplateResponse_ClusterInputTemplate:
         _ = request
 
-        path_params = {
-        }
-        query_params = {
-        }
+        path_params = {}
+        query_params = {}
         response = await self.call.request(
             RequestSpec(
                 service="oks",
@@ -881,15 +858,13 @@ class AsyncOksTypedMixin:
         return _validate_response(TemplateResponse_ClusterInputTemplate, response)
 
     async def get_nodepool_template(
-        self,
+        self: HasCallMethod,
         request: GetNodepoolTemplateRequest | None = None,
     ) -> TemplateResponse_Nodepool:
         _ = request
 
-        path_params = {
-        }
-        query_params = {
-        }
+        path_params = {}
+        query_params = {}
         response = await self.call.request(
             RequestSpec(
                 service="oks",
@@ -907,15 +882,13 @@ class AsyncOksTypedMixin:
         return _validate_response(TemplateResponse_Nodepool, response)
 
     async def get_net_peering_request_template(
-        self,
+        self: HasCallMethod,
         request: GetNetPeeringRequestTemplateRequest | None = None,
     ) -> TemplateResponse_NetPeeringRequest:
         _ = request
 
-        path_params = {
-        }
-        query_params = {
-        }
+        path_params = {}
+        query_params = {}
         response = await self.call.request(
             RequestSpec(
                 service="oks",
@@ -933,15 +906,13 @@ class AsyncOksTypedMixin:
         return _validate_response(TemplateResponse_NetPeeringRequest, response)
 
     async def get_net_peering_acceptance_template(
-        self,
+        self: HasCallMethod,
         request: GetNetPeeringAcceptanceTemplateRequest | None = None,
     ) -> TemplateResponse_NetPeeringAcceptance:
         _ = request
 
-        path_params = {
-        }
-        query_params = {
-        }
+        path_params = {}
+        query_params = {}
         response = await self.call.request(
             RequestSpec(
                 service="oks",
@@ -959,15 +930,13 @@ class AsyncOksTypedMixin:
         return _validate_response(TemplateResponse_NetPeeringAcceptance, response)
 
     async def get_quotas(
-        self,
+        self: HasCallMethod,
         request: GetQuotasRequest | None = None,
     ) -> quotas__quota_schema__QuotasResponse:
         _ = request
 
-        path_params = {
-        }
-        query_params = {
-        }
+        path_params = {}
+        query_params = {}
         response = await self.call.request(
             RequestSpec(
                 service="oks",
@@ -985,15 +954,13 @@ class AsyncOksTypedMixin:
         return _validate_response(quotas__quota_schema__QuotasResponse, response)
 
     async def get_client_ip(
-        self,
+        self: HasCallMethod,
         request: GetClientIPRequest | None = None,
     ) -> IPResponse:
         _ = request
 
-        path_params = {
-        }
-        query_params = {
-        }
+        path_params = {}
+        query_params = {}
         response = await self.call.request(
             RequestSpec(
                 service="oks",

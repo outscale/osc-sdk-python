@@ -81,9 +81,7 @@ class TestAsyncLoadBalancerBackend(unittest.TestCase):
                             vm_id,
                         )
                         self.assertIsInstance(vm, Vm)
-                        log_test_step(
-                            "VM {} state={} (async)".format(vm_id, vm.state)
-                        )
+                        log_test_step("VM {} state={} (async)".format(vm_id, vm.state))
                         if vm.state == "running":
                             break
                         if vm.state in ("stopped", "terminated", "shutting-down"):
@@ -94,7 +92,9 @@ class TestAsyncLoadBalancerBackend(unittest.TestCase):
                             )
                         await asyncio.sleep(10)
 
-                    log_test_step("Creating load balancer {} (async)".format(load_balancer_name))
+                    log_test_step(
+                        "Creating load balancer {} (async)".format(load_balancer_name)
+                    )
                     load_balancer_response = await client.osc.create_load_balancer(
                         CreateLoadBalancerRequest(
                             load_balancer_name=load_balancer_name,

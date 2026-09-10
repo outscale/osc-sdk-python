@@ -8,7 +8,10 @@ from osc_sdk_python.generated.osc import (
     DeleteKeypairRequest,
     KeypairCreated,
 )
-from tests.integration.async_.helpers.async_integration_utils import get_tagged_name, log_test_step
+from tests.integration.async_.helpers.async_integration_utils import (
+    get_tagged_name,
+    log_test_step,
+)
 
 
 class TestAsyncKeypair(unittest.TestCase):

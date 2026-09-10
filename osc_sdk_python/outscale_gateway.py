@@ -1,47 +1,47 @@
 import os
-from .runtime.call import Call, AsyncCall
-from .runtime.request import RequestSpec
+import typing as t
+
+from .runtime.call import AsyncCall, Call
 
 # Bootstrap logic for generated mixins.
 # This allows the SDK to load even if specific service code isn't generated yet.
-try:
+if t.TYPE_CHECKING:
     from .generated.oks import AsyncOksTypedMixin
-except (ImportError, ModuleNotFoundError):
+else:
+    try:
+        from .generated.oks import AsyncOksTypedMixin
+    except (ImportError, ModuleNotFoundError):
 
-    class AsyncOksTypedMixin:
-        pass
+        class AsyncOksTypedMixin:
+            pass
 
 
-try:
+if t.TYPE_CHECKING:
     from .generated.osc import AsyncOscTypedMixin
-except (ImportError, ModuleNotFoundError):
+else:
+    try:
+        from .generated.osc import AsyncOscTypedMixin
+    except (ImportError, ModuleNotFoundError):
 
-    class AsyncOscTypedMixin:
-        pass
+        class AsyncOscTypedMixin:
+            pass
 
 # Replicate this pattern here for future services (e.g., EIM, FCU)
 # if they are generated into separate mixins.
 
-from .runtime.transport import RateLimiter
-from .exceptions import (
-    SdkConfigurationError,
-    SdkOperationError,
-    SdkValidationError,
-    SdkUsageError,
-)
-import ruamel.yaml
-from .version import get_version
 import warnings
 from datetime import timedelta
 
-type_mapping = {"boolean": "bool", "string": "str", "integer": "int", "array": "list"}
+from .exceptions import (
+    SdkOperationError,
+    SdkUsageError,
+    SdkValidationError,
+)
+from .runtime.transport import RateLimiter
 
 # Default
 DEFAULT_LIMITER_WINDOW = timedelta(seconds=1)  # 1 second
 DEFAULT_LIMITER_MAX_REQUESTS = 5  # 5 requests / sec
-RESOURCE_DIR = os.path.join(os.path.dirname(__file__), "resources")
-OSC_SPEC = os.path.join(RESOURCE_DIR, "osc/api.yaml")
-OKS_SPEC = os.path.join(RESOURCE_DIR, "oks/api.yaml")
 # Replicate this pattern here for future services (e.g., EIM, FCU)
 # if they are generated into separate mixins.
 
@@ -63,12 +63,10 @@ class ParameterHasWrongType(SdkValidationError):
 
 
 class OpenAPIActionAPI:
-    def __init__(self, spec, service="api", *, _call_cls=Call, **kwargs):
+    def __init__(self, service="api", *, _call_cls=Call, **kwargs):
         self.service = service
-        self._load_gateway_structure(spec)
         self.limiter = RateLimiter(DEFAULT_LIMITER_WINDOW, DEFAULT_LIMITER_MAX_REQUESTS)
         self.call = _call_cls(
-            version=self.endpoint_api_version,
             limiter=self.limiter,
             **kwargs,
         )
@@ -118,126 +116,6 @@ class OpenAPIActionAPI:
     def password(self):
         return self.call.profile.password
 
-    def _convert(self, input_file):
-        structure = {}
-        try:
-            with open(input_file, "r") as fi:
-                yaml = ruamel.yaml.YAML(typ="safe")
-                content = yaml.load(fi.read())
-        except Exception as err:
-            raise SdkConfigurationError(
-                "Problem reading OpenAPI spec {}: {}".format(input_file, err)
-            ) from err
-        self.api_version = content["info"]["version"]
-        self.endpoint_api_version = content["servers"][0]["url"].split("/")[-1]
-        for action, params in content["components"]["schemas"].items():
-            if action.endswith("Request"):
-                action_name = action.split("Request")[0]
-                structure[action_name] = {}
-                for propertie_name, properties in params["properties"].items():
-                    if propertie_name == "DryRun":
-                        continue
-                    if "type" not in properties.keys():
-                        action_type = None
-                    else:
-                        action_type = type_mapping[properties["type"]]
-                    structure[action_name][propertie_name] = {
-                        "type": action_type,
-                        "required": False,
-                    }
-
-                if "required" in params.keys():
-                    for required in params["required"]:
-                        structure[action_name][required]["required"] = True
-        return structure
-
-    def _load_gateway_structure(self, spec):
-        self.gateway_structure = self._convert(spec)
-
-    def _check_parameters_type(self, action_structure, input_structure):
-        for i_param, i_value in input_structure.items():
-            if (
-                i_param != "Filters"
-                and action_structure[i_param]["type"] is not None
-                and action_structure[i_param]["type"] != i_value.__class__.__name__
-            ):
-                raise ParameterHasWrongType(
-                    "{} is <{}> instead of <{}>".format(
-                        i_param,
-                        i_value.__class__.__name__,
-                        action_structure[i_param]["type"],
-                    )
-                )
-
-    def _check_parameters_required(self, action_structure, input_structure):
-        action_mandatory_params = [
-            param for param in action_structure if action_structure[param]["required"]
-        ]
-        difference = set(action_mandatory_params).difference(
-            set(input_structure.keys())
-        )
-        if difference:
-            raise ParameterIsRequired(
-                "Missing {}. Required parameters are {}".format(
-                    ", ".join(list(difference)), ", ".join(action_mandatory_params)
-                )
-            )
-
-    def _check_parameters_valid(self, action_name, params):
-        structure_parameters = self.gateway_structure[action_name].keys()
-        input_parameters = set(params)
-        different_parameters = list(
-            input_parameters.difference(set(structure_parameters))
-        )
-        if different_parameters:
-            raise ParameterNotValid(
-                """{}. Available parameters on sdk: {} api: {} are: {}.""".format(
-                    ", ".join(different_parameters),
-                    get_version(),
-                    self.api_version,
-                    ", ".join(structure_parameters),
-                )
-            )
-
-    def _check(self, action_name, **params):
-        if action_name not in self.gateway_structure:
-            raise ActionNotExists(
-                "Action {} does not exist for python sdk: {} with api: {}".format(
-                    action_name, get_version(), self.api_version
-                )
-            )
-        self._check_parameters_valid(action_name, params)
-        self._check_parameters_required(self.gateway_structure[action_name], params)
-        self._check_parameters_type(self.gateway_structure[action_name], params)
-
-    @staticmethod
-    def _remove_none_parameters(**params):
-        """
-        Remove parameters having None as value
-        to perform CreateVolumes(Iops=None, Size=10)
-        """
-        return {key: value for key, value in params.items() if value is not None}
-
-    def _get_action(self, action_name):
-        def action(**kwargs):
-            kwargs = self._remove_none_parameters(**kwargs)
-            self._check(action_name, **kwargs)
-            result = self.call.api(action_name, service=self.service, **kwargs)
-            return result
-
-        return action
-
-    def __getattr__(self, attr):
-        if attr not in self.gateway_structure:
-            raise AttributeError(attr)
-        return self._get_action(attr)
-
-    def __dir__(self):
-        return self.gateway_structure.keys()
-
-    def raw(self, action_name, **kwargs):
-        return self.call.api(action_name, service=self.service, **kwargs)
-
     def __enter__(self):
         return self
 
@@ -249,17 +127,8 @@ class OpenAPIActionAPI:
 
 
 class AsyncOpenAPIActionAPI(OpenAPIActionAPI):
-    def __init__(self, spec, service="api", **kwargs):
-        super().__init__(spec, service=service, _call_cls=AsyncCall, **kwargs)
-
-    def _get_action(self, action_name):
-        async def action(**kwargs):
-            kwargs = self._remove_none_parameters(**kwargs)
-            self._check(action_name, **kwargs)
-            result = await self.call.api(action_name, service=self.service, **kwargs)
-            return result
-
-        return action
+    def __init__(self, service="api", **kwargs):
+        super().__init__(service=service, _call_cls=AsyncCall, **kwargs)
 
     async def raw(self, action_name, **kwargs):
         return await self.call.api(action_name, service=self.service, **kwargs)
@@ -281,92 +150,14 @@ class AsyncOpenAPIActionAPI(OpenAPIActionAPI):
 
 
 class OpenAPIPathAPI:
-    def __init__(self, spec, service, *, _call_cls=Call, **kwargs):
+    def __init__(self, service, *, _call_cls=Call, **kwargs):
         self.service = service
-        self.operations = self._load_operations(spec)
         self.limiter = RateLimiter(DEFAULT_LIMITER_WINDOW, DEFAULT_LIMITER_MAX_REQUESTS)
         self.call = _call_cls(limiter=self.limiter, **kwargs)
 
     @property
     def profile(self):
         return self.call.profile
-
-    def _load_operations(self, spec):
-        with open(spec, "r") as fi:
-            yaml = ruamel.yaml.YAML(typ="safe")
-            content = yaml.load(fi.read())
-
-        self.api_version = content["info"]["version"]
-        operations = {}
-        for path, path_item in content.get("paths", {}).items():
-            path_parameters = path_item.get("parameters", [])
-            for method in ["get", "post", "put", "patch", "delete"]:
-                operation = path_item.get(method)
-                if operation is None:
-                    continue
-
-                parameters = path_parameters + operation.get("parameters", [])
-                operation_id = operation.get("operationId")
-                if operation_id:
-                    operations[operation_id] = {
-                        "method": method.upper(),
-                        "path": path,
-                        "parameters": parameters,
-                        "request_body": operation.get("requestBody"),
-                    }
-        return operations
-
-    def _build_request(self, operation_name, kwargs):
-        if operation_name not in self.operations:
-            raise ActionNotExists(
-                "Operation {} does not exist for python sdk: {} with api: {}".format(
-                    operation_name, get_version(), self.api_version
-                )
-            )
-
-        operation = self.operations[operation_name]
-        kwargs = OpenAPIActionAPI._remove_none_parameters(**kwargs)
-        path_params = {}
-        query_params = {}
-
-        for parameter in operation["parameters"]:
-            name = parameter["name"]
-            location = parameter["in"]
-            if location == "path":
-                if name not in kwargs and parameter.get("required"):
-                    raise ParameterIsRequired("Missing {}.".format(name))
-                if name in kwargs:
-                    path_params[name] = kwargs.pop(name)
-            elif location == "query":
-                if name in kwargs:
-                    query_params[name] = kwargs.pop(name)
-
-        body = kwargs.pop("body", None)
-        if operation["request_body"] is not None and body is None:
-            body = kwargs
-            kwargs = {}
-
-        if kwargs:
-            raise ParameterNotValid(
-                "{}. Available parameters are path/query parameters or body.".format(
-                    ", ".join(kwargs.keys())
-                )
-            )
-
-        return RequestSpec(
-            service=self.service,
-            method=operation["method"],
-            path=operation["path"],
-            json_body=body,
-            query_params=query_params,
-        ), path_params
-
-    def _get_operation(self, operation_name):
-        def operation(**kwargs):
-            request, path_params = self._build_request(operation_name, kwargs)
-            return self.call.request(request, path_params=path_params)
-
-        return operation
 
     def __getattr__(self, attr):
         if attr not in self.operations:
@@ -387,15 +178,8 @@ class OpenAPIPathAPI:
 
 
 class AsyncOpenAPIPathAPI(OpenAPIPathAPI):
-    def __init__(self, spec, service, **kwargs):
-        super().__init__(spec, service, _call_cls=AsyncCall, **kwargs)
-
-    def _get_operation(self, operation_name):
-        async def operation(**kwargs):
-            request, path_params = self._build_request(operation_name, kwargs)
-            return await self.call.request(request, path_params=path_params)
-
-        return operation
+    def __init__(self, service, **kwargs):
+        super().__init__(service, _call_cls=AsyncCall, **kwargs)
 
     async def close(self):
         await self.call.close()
@@ -415,22 +199,22 @@ class AsyncOpenAPIPathAPI(OpenAPIPathAPI):
 
 class OutscaleGateway(OpenAPIActionAPI):
     def __init__(self, **kwargs):
-        super().__init__(OSC_SPEC, service="api", **kwargs)
+        super().__init__(service="api", **kwargs)
 
 
 class AsyncOutscaleGateway(AsyncOscTypedMixin, AsyncOpenAPIActionAPI):
     def __init__(self, **kwargs):
-        super().__init__(OSC_SPEC, service="api", **kwargs)
+        super().__init__(service="api", **kwargs)
 
 
 class OksGateway(OpenAPIPathAPI):
     def __init__(self, **kwargs):
-        super().__init__(OKS_SPEC, service="oks", **kwargs)
+        super().__init__(service="oks", **kwargs)
 
 
 class AsyncOksGateway(AsyncOksTypedMixin, AsyncOpenAPIPathAPI):
     def __init__(self, **kwargs):
-        super().__init__(OKS_SPEC, service="oks", **kwargs)
+        super().__init__(service="oks", **kwargs)
 
 
 # Replicate this pattern here for future services (e.g., EIM, FCU)
