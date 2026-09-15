@@ -240,9 +240,10 @@ class RetryPolicy:
             return False
 
         response = getattr(error, "response", None)
-        if response is not None:
-            if 400 <= response.status_code < 500 and response.status_code != 429:
-                return False
+        if response is None:
+            return isinstance(error, httpx.ConnectError) and attempt < self.max_retries
+        if 400 <= response.status_code < 500 and response.status_code != 429:
+            return False
         return attempt < self.max_retries
 
     def backoff_time(self, attempt: int) -> float:
