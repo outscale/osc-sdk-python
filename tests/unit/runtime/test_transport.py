@@ -9,6 +9,7 @@ from osc_sdk_python.exceptions import (
     SdkConfigurationError,
     SdkServerError,
     SdkTransportError,
+    extract_request_id,
 )
 from osc_sdk_python.runtime.transport import (
     AsyncSdkTransport,
@@ -432,3 +433,66 @@ def test_async_transport_retries_timeout_until_max_retries():
     import asyncio
 
     asyncio.run(run())
+
+
+def test_http_error_exposes_legacy_request_id():
+    request = httpx.Request("POST", "https://example.test/ReadVms")
+    body = {
+        "ResponseContext": {"RequestId": "req-legacy"},
+        "Errors": [{"Code": "InvalidParameter", "Type": "Sender"}],
+    }
+    transport = SdkTransport(retry_policy=RetryPolicy(max_retries=0))
+    transport._transport = SequenceTransport(
+        [
+            httpx.Response(
+                400,
+                json=body,
+                headers={"content-type": "application/json"},
+                request=request,
+            )
+        ]
+    )
+
+    with pytest.raises(SdkClientError) as exc_info:
+        transport.handle_request(request)
+
+    assert exc_info.value.request_id == "req-legacy"
+    assert "request_id = req-legacy" in str(exc_info.value)
+
+
+def test_http_error_exposes_problem_request_id_extra():
+    request = httpx.Request("GET", "https://example.test/projects")
+    transport = SdkTransport(retry_policy=RetryPolicy(max_retries=0))
+    transport._transport = SequenceTransport(
+        [
+            httpx.Response(
+                403,
+                json={"title": "Forbidden", "request_id": "req-problem"},
+                headers={"content-type": "application/problem+json"},
+                request=request,
+            )
+        ]
+    )
+
+    with pytest.raises(SdkClientError) as exc_info:
+        transport.handle_request(request)
+
+    assert exc_info.value.request_id == "req-problem"
+    assert "request_id=req-problem" in str(exc_info.value)
+    assert "request_id='req-problem'" in repr(exc_info.value)
+
+
+def test_extract_request_id_falls_back_to_response_header():
+    request = httpx.Request("POST", "https://example.test/ReadVms")
+    response = text_response(
+        500,
+        request,
+        "upstream failure",
+        headers={"x-osc-request-id": "req-header"},
+    )
+
+    error = SdkTransportError("boom", response=response)
+
+    assert extract_request_id(response=response) == "req-header"
+    assert error.request_id == "req-header"
+    assert str(error) == "boom (request_id=req-header)"

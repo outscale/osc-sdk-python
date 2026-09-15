@@ -155,6 +155,8 @@ async def main():
             print(await client.osc.read_vms())
     except SdkClientError as err:
         print("API rejected the request:", err)
+        if err.request_id is not None:
+            print("request_id:", err.request_id)
         if err.response is not None:
             print("status:", err.response.status_code)
     except SdkError as err:

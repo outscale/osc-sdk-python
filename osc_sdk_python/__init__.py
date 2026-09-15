@@ -6,6 +6,7 @@ from .version import get_version
 from .problem import Problem, ProblemDecoder
 from .runtime.transport import RateLimiter
 from .exceptions import (
+    extract_request_id,
     SdkClientError,
     SdkConfigurationError,
     SdkError,
@@ -30,6 +31,7 @@ __all__ = [
     "Problem",
     "ProblemDecoder",
     "RateLimiter",
+    "extract_request_id",
     "SdkError",
     "SdkUsageError",
     "SdkConfigurationError",
