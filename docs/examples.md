@@ -3,17 +3,6 @@
 Basic usage with the default profile:
 
 ```python
-from osc_sdk_python import Client
-
-with Client() as client:
-    # Example: list VMs
-    vms = client.osc.ReadVms()
-    print(vms)
-```
-
-Async usage with the default profile:
-
-```python
 import asyncio
 
 from osc_sdk_python import AsyncClient
@@ -33,30 +22,12 @@ if __name__ == "__main__":
 Using a specific profile:
 
 ```python
-from osc_sdk_python import Client
-
-client = Client(profile="profile_1")
-```
-
-Using a specific profile with the async client:
-
-```python
 from osc_sdk_python import AsyncClient
 
 client = AsyncClient(profile="profile_1")
 ```
 
 Using multiple services from one client:
-
-```python
-from osc_sdk_python import Client
-
-with Client(profile="profile_1") as client:
-    vms = client.osc.ReadVms()
-    projects = client.oks.ListProjects()
-```
-
-Using multiple services from one async client:
 
 ```python
 import asyncio
@@ -76,35 +47,13 @@ if __name__ == "__main__":
 
 Calling actions:
 
-* **Sync dynamic methods**: `client.osc.ReadVms(...)`, `client.osc.CreateVms(...)`, etc.
-* **Raw calls**: `client.osc.raw("ActionName", **params)`
-* **Async typed methods**: `await client.osc.read_vms(...)`, `await client.osc.create_vms(...)`, etc.
-* **Async raw calls**: `await client.osc.raw("ActionName", **params)`
+* **Typed methods**: `await client.osc.read_vms(...)`, `await client.osc.create_vms(...)`, etc.
+* **Dynamic methods**: `await client.osc.ReadVms(...)`, `await client.osc.CreateVms(...)`, etc.
+* **Raw calls**: `await client.osc.raw("ActionName", **params)`
 
-Typed request and response models under `osc_sdk_python.generated.*` are async-first today: generated typed methods are exposed on `AsyncClient` and use snake_case operation names. Synchronous callers should continue to use dynamic action methods such as `client.osc.ReadVms(...)` or raw calls such as `client.osc.raw("ReadVms", **params)`.
+Typed request and response models under `osc_sdk_python.generated.*` are exposed on `AsyncClient` with snake_case operation names. Dynamic action methods remain available for compatibility with action-style names.
 
 Example:
-
-```python
-from osc_sdk_python import Client
-
-with Client(profile="profile_1") as client:
-    # Calls with API action as method
-    result = client.osc.ReadSecurityGroups(Filters={"SecurityGroupNames": ["default"]})
-    result = client.osc.CreateVms(ImageId="ami-3e158364", VmType="tinav4.c2r4")
-
-    # Or raw calls:
-    result = client.osc.raw("ReadVms")
-    result = client.osc.raw(
-        "CreateVms",
-        ImageId="ami-xx",
-        BlockDeviceMappings=[{"/dev/sda1": {"Size": 10}}],
-        SecurityGroupIds=["sg-aaa", "sg-bbb"],
-        Wrong="wrong",
-    )
-```
-
-Async example:
 
 ```python
 import asyncio
@@ -123,7 +72,6 @@ async def main():
             CreateVmsRequest(image_id="ami-3e158364", vm_type="tinav4.c2r4")
         )
 
-        # Or raw calls:
         result = await client.osc.raw("ReadVms")
         result = await client.osc.raw(
             "CreateVms",
@@ -173,22 +121,6 @@ if __name__ == "__main__":
 ### List all VM and Volume IDs
 
 ```python
-from osc_sdk_python import Client
-
-if __name__ == "__main__":
-    with Client() as client:
-        print("Your virtual machines:")
-        for vm in client.osc.ReadVms()["Vms"]:
-            print(vm["VmId"])
-
-        print("\nYour volumes:")
-        for volume in client.osc.ReadVolumes()["Volumes"]:
-            print(volume["VolumeId"])
-```
-
-### List all VM and Volume IDs asynchronously
-
-```python
 import asyncio
 
 from osc_sdk_python import AsyncClient
@@ -212,9 +144,10 @@ if __name__ == "__main__":
 ### Enabling logs
 
 ```python
+import asyncio
 import logging
 
-from osc_sdk_python import Client
+from osc_sdk_python import AsyncClient
 
 if __name__ == "__main__":
     logging.basicConfig(
@@ -222,16 +155,18 @@ if __name__ == "__main__":
         format="%(asctime)s - %(levelname)s - %(message)s",
     )
 
-    with Client(profile="profile_1") as client:
-        result = client.osc.raw("ReadVms")
-        print(result)
+    async def main():
+        async with AsyncClient(profile="profile_1") as client:
+            result = await client.osc.raw("ReadVms")
+            print(result)
+
+    asyncio.run(main())
 ```
 
 This logs requests through Python's standard `logging` module using the `osc_sdk_python` logger:
 
 ```text
-2026-06-15 12:45:10,123 - INFO - mode: sync
-service: api
+2026-06-15 12:45:10,123 - INFO - service: api
 method: POST
 uri: /api/v1/ReadVms
 payload:

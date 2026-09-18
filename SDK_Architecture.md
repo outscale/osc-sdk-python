@@ -4,14 +4,13 @@
 
 This document describes the architecture of the OUTSCALE Python SDK V2.
 
-SDK V2 moves the Python SDK from a single-service gateway-style interface to a generated, typed, multi-service SDK. The SDK is designed to support OSC, OKS, and future OUTSCALE services from one Python package while keeping synchronous OSC usage available for compatibility.
+SDK V2 moves the Python SDK from a single-service gateway-style interface to a generated, typed, multi-service SDK. The SDK is designed to support OSC, OKS, and future OUTSCALE services from one Python package using an async-first client model.
 
 The main development focus areas are:
 
 - Make async usage the primary SDK experience.
 - Generate typed async methods for service operations.
-- Keep synchronous calls supported for compatibility with blocking Python applications.
-- Replace the single `Gateway` entry point with `Client` and `AsyncClient` service namespaces.
+- Replace the single `Gateway` entry point with `AsyncClient` service namespaces.
 - Support multiple services such as OSC and OKS from one SDK object.
 - Allow more services to be added later without redesigning the SDK.
 - Support both OSC action-style OpenAPI and REST/path-style OpenAPI.
@@ -22,15 +21,14 @@ The main development focus areas are:
 
 ## 2. Public API
 
-SDK V2 exposes two main client entry points:
+SDK V2 exposes one main client entry point:
 
-- `AsyncClient`: primary, typed, async-first API.
-- `Client`: synchronous compatibility API for blocking usage.
+- `AsyncClient`: typed, async-first API.
 
-Both clients expose service namespaces:
+The client exposes service namespaces:
 
 ```text
-Client / AsyncClient
+AsyncClient
   |- osc
   |- oks
   |- future services
@@ -86,38 +84,17 @@ async with AsyncClient(profile="default") as client:
     response = await client.osc.raw("ReadVms")
 ```
 
-### Sync Usage
-
-Sync usage is kept for compatibility. Sync service clients expose dynamic OpenAPI operation methods using the existing action-style names.
-
-```python
-from osc_sdk_python import Client
-
-with Client(profile="default") as client:
-    vms = client.osc.ReadVms()
-    projects = client.oks.ListProjects()
-```
-
-Raw sync calls are also supported:
-
-```python
-from osc_sdk_python import Client
-
-with Client(profile="default") as client:
-    response = client.osc.raw("ReadVms")
-```
-
 ### Gateway Compatibility
 
-The package may keep `Gateway` and `AsyncGateway` aliases for compatibility, but the SDK V2 architecture should use `Client` and `AsyncClient` as the preferred public entry points. `Client` gives the SDK a stable structure for multi-service support, while `Gateway` represents the older single-service OSC shape.
+The package exports `AsyncGateway` as an alias for the async OSC service client. `AsyncClient` is the preferred public entry point for multi-service support.
 
 ## 3. High-Level Architecture
 
 ```text
 User code
-  -> Client / AsyncClient
+  -> AsyncClient
   -> service namespace: osc, oks, ...
-  -> generated typed method or compatibility dynamic method
+  -> generated typed method or dynamic action method
   -> RequestSpec
   -> shared runtime call layer
   -> httpx transport
@@ -128,7 +105,7 @@ User code
 
 The SDK is split into three main areas:
 
-- Public client layer: `Client`, `AsyncClient`, service gateways, and compatibility aliases.
+- Public client layer: `AsyncClient`, service gateways, and compatibility aliases.
 - Generated service layer: async typed mixins and Pydantic models under `osc_sdk_python.generated.*`.
 - Runtime layer: request execution, authentication, transport, retries, rate limiting, logging, and errors.
 
@@ -173,21 +150,13 @@ osc_sdk_python/
 Key responsibilities:
 
 - `outscale_gateway.py` wires service clients and compatibility APIs.
-- `runtime.call` owns sync and async request execution.
+- `runtime.call` owns async request execution.
 - `runtime.request` defines `RequestSpec`, the common request description passed to the runtime.
 - `runtime.transport` owns httpx auth, retries, rate limiting, and HTTP error conversion.
 - `codegen` turns OpenAPI into generated models and async typed methods.
 - `generated.<service>` contains generated Pydantic models and async typed mixins.
 
 ## 5. Client Layer
-
-`Client` creates synchronous service namespaces:
-
-```text
-Client
-  |- osc: OutscaleGateway
-  |- oks: OksGateway
-```
 
 `AsyncClient` creates asynchronous service namespaces:
 
@@ -204,31 +173,29 @@ The async service clients inherit generated typed mixins:
 ```text
 AsyncOutscaleGateway
   -> AsyncOscTypedMixin
-  -> AsyncOpenAPIActionAPI
+  -> OpenAPIActionAPI
 
 AsyncOksGateway
   -> AsyncOksTypedMixin
-  -> AsyncOpenAPIPathAPI
+  -> OpenAPIPathAPI
 ```
 
 This is why async operations can expose typed snake_case methods such as `read_vms` and `list_projects`.
 
-## 6. Sync Compatibility Layer
+## 6. Dynamic Action Layer
 
-The sync API keeps dynamic operation dispatch. The service client reads the OpenAPI specification, builds a gateway structure, and resolves method calls dynamically.
+The async API also keeps dynamic operation dispatch. The service client reads the OpenAPI specification, builds a gateway structure, and resolves method calls dynamically.
 
 ```text
-client.osc.ReadVms(...)
+await client.osc.ReadVms(...)
   -> __getattr__("ReadVms")
   -> validate action and parameters from OpenAPI request schema
-  -> Call.api("ReadVms", service="api", ...)
+  -> AsyncCall.api("ReadVms", service="api", ...)
   -> POST /api/v1/ReadVms
   -> return decoded JSON dict
 ```
 
-For REST/path-style services, the sync layer can map an operation name to method, path, path parameters, query parameters, and request body.
-
-Sync is important, but it is not the primary typed SDK V2 surface. Its role is compatibility and blocking use cases.
+For REST/path-style services, the dynamic layer can map an operation name to method, path, path parameters, query parameters, and request body.
 
 ## 7. Async Typed Layer
 
@@ -320,15 +287,15 @@ client.osc.read_vms(ReadVmsRequest(...))
   -> typed ReadVmsResponse
 ```
 
-Sync compatibility behavior:
+Dynamic action behavior:
 
 ```text
-client.osc.ReadVms(...)
+await client.osc.ReadVms(...)
   -> POST /api/v1/ReadVms
   -> decoded dict
 ```
 
-The action-style support preserves compatibility while allowing the async SDK to provide typed Python methods.
+The action-style support preserves dynamic dispatch while allowing the async SDK to provide typed Python methods.
 
 ### 9.2 REST/Path-Style OpenAPI
 
@@ -392,7 +359,7 @@ The rule remains: fix the spec input, overlay, or generator. Do not manually edi
 
 ## 12. Runtime Request Flow
 
-Both sync and async calls use `RequestSpec` to describe the HTTP request.
+Both typed and dynamic async calls use `RequestSpec` to describe the HTTP request.
 
 ```text
 RequestSpec
@@ -410,15 +377,6 @@ profile.get_endpoint(service) + RequestSpec.path
 ```
 
 Then it sends the request through httpx using the SDK transport.
-
-Sync flow:
-
-```text
-Call.request
-  -> httpx.Client
-  -> SdkTransport
-  -> response JSON
-```
 
 Async flow:
 
@@ -469,7 +427,7 @@ The service endpoint model is important for multi-service support because each n
 
 ## 15. Retry, Rate Limiting, and Transport
 
-The runtime uses httpx transports for both sync and async clients.
+The runtime uses the async httpx transport.
 
 Shared transport behavior includes:
 
@@ -480,7 +438,7 @@ Shared transport behavior includes:
 - TLS verification settings from the profile.
 - `trust_env=False` to avoid implicit environment proxy behavior unless the SDK chooses to support it explicitly.
 
-Sync uses `SdkTransport`. Async uses `AsyncSdkTransport`.
+Async uses `AsyncSdkTransport`.
 
 ## 16. Error Model
 
@@ -505,7 +463,6 @@ SDK V2 uses Python's standard `logging` module with the `osc_sdk_python` logger.
 
 Request logs include:
 
-- Mode: sync or async.
 - Service name.
 - HTTP method.
 - URI.
@@ -522,9 +479,6 @@ tests/
   async_/
     osc/
     oks/
-  sync/
-    osc/
-    oks/
   unit/
 ```
 
@@ -532,8 +486,8 @@ Testing should cover:
 
 - Async typed OSC operations.
 - Async typed OKS operations.
-- Sync compatibility methods.
-- Raw sync and async calls.
+- Dynamic async action methods.
+- Raw async calls.
 - Client lifecycle and context managers.
 - Profile loading and endpoint resolution.
 - Authentication behavior.
@@ -558,9 +512,8 @@ Steps:
 4. Run the generator for that service.
 5. Add the generated service package under `osc_sdk_python.generated.<service>`.
 6. Add the async typed mixin to the async service gateway.
-7. Register the service namespace on `Client` and `AsyncClient`.
-8. Add sync compatibility behavior if the service needs blocking support.
-9. Add async, sync, and generator tests.
+7. Register the service namespace on `AsyncClient`.
+8. Add async and generator tests.
 10. Update README and examples.
 
 Future services should fit into the same client and runtime architecture rather than creating separate one-off SDK clients.
@@ -572,8 +525,7 @@ SDK V2 should follow semantic versioning.
 Compatibility rules:
 
 - Async typed APIs are the main SDK V2 direction.
-- Sync support remains available for compatibility.
-- `Gateway` compatibility can remain, but `Client` and `AsyncClient` should be the preferred V2 entry points.
+- `AsyncGateway` remains available as an OSC service alias.
 - Breaking changes require a major version bump or a migration path.
 - Generated code should be reproducible from the intended release inputs, generator flags, templates, and generator code.
 - Generated files should not be manually edited.
@@ -581,8 +533,8 @@ Compatibility rules:
 ## 21. Notes
 
 - Configuration precedence should remain explicit and predictable:
-  1. Direct constructor args, for example `Gateway(access_key="...", secret_key="...", region="...")`.
-  2. Explicit file profile, for example `Gateway(profile="prod")`.
+  1. Direct constructor args, for example `AsyncGateway(access_key="...", secret_key="...", region="...")`.
+  2. Explicit file profile, for example `AsyncGateway(profile="prod")`.
   3. Environment direct values, for example `OSC_ACCESS_KEY`, `OSC_SECRET_KEY`, and `OSC_REGION`.
   4. Environment-selected profile, for example `OSC_PROFILE=prod`.
   5. File default profile, for example the `default` profile in the credentials file.
@@ -595,7 +547,7 @@ Compatibility rules:
 
 The OUTSCALE Python SDK V2 is an async-first, generated, typed, multi-service SDK.
 
-`AsyncClient` is the primary interface and exposes typed snake_case operations generated from OpenAPI, such as `client.osc.read_vms(...)` and `client.oks.list_projects(...)`. `Client` keeps synchronous compatibility through service namespaces and dynamic operation methods such as `client.osc.ReadVms(...)`.
+`AsyncClient` is the primary interface and exposes typed snake_case operations generated from OpenAPI, such as `client.osc.read_vms(...)` and `client.oks.list_projects(...)`. Dynamic action methods such as `await client.osc.ReadVms(...)` remain available on service clients.
 
 The generator supports both OSC action-style OpenAPI and REST/path-style OpenAPI by normalizing them into a shared intermediate representation. The runtime then applies common configuration, endpoint resolution, authentication, retries, rate limiting, logging, error handling, and httpx transport behavior across all services.
 

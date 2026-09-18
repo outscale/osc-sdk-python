@@ -1,5 +1,5 @@
 import os
-from .runtime.call import Call, AsyncCall
+from .runtime.call import AsyncCall
 from .runtime.request import RequestSpec
 
 # Bootstrap logic for generated mixins.
@@ -63,11 +63,11 @@ class ParameterHasWrongType(SdkValidationError):
 
 
 class OpenAPIActionAPI:
-    def __init__(self, spec, service="api", *, _call_cls=Call, **kwargs):
+    def __init__(self, spec, service="api", **kwargs):
         self.service = service
         self._load_gateway_structure(spec)
         self.limiter = RateLimiter(DEFAULT_LIMITER_WINDOW, DEFAULT_LIMITER_MAX_REQUESTS)
-        self.call = _call_cls(
+        self.call = AsyncCall(
             version=self.endpoint_api_version,
             limiter=self.limiter,
             **kwargs,
@@ -219,10 +219,10 @@ class OpenAPIActionAPI:
         return {key: value for key, value in params.items() if value is not None}
 
     def _get_action(self, action_name):
-        def action(**kwargs):
+        async def action(**kwargs):
             kwargs = self._remove_none_parameters(**kwargs)
             self._check(action_name, **kwargs)
-            result = self.call.api(action_name, service=self.service, **kwargs)
+            result = await self.call.api(action_name, service=self.service, **kwargs)
             return result
 
         return action
@@ -234,32 +234,6 @@ class OpenAPIActionAPI:
 
     def __dir__(self):
         return self.gateway_structure.keys()
-
-    def raw(self, action_name, **kwargs):
-        return self.call.api(action_name, service=self.service, **kwargs)
-
-    def __enter__(self):
-        return self
-
-    def __exit__(self, type, value, traceback):
-        self.call.close()
-
-    def close(self):
-        self.call.close()
-
-
-class AsyncOpenAPIActionAPI(OpenAPIActionAPI):
-    def __init__(self, spec, service="api", **kwargs):
-        super().__init__(spec, service=service, _call_cls=AsyncCall, **kwargs)
-
-    def _get_action(self, action_name):
-        async def action(**kwargs):
-            kwargs = self._remove_none_parameters(**kwargs)
-            self._check(action_name, **kwargs)
-            result = await self.call.api(action_name, service=self.service, **kwargs)
-            return result
-
-        return action
 
     async def raw(self, action_name, **kwargs):
         return await self.call.api(action_name, service=self.service, **kwargs)
@@ -281,11 +255,11 @@ class AsyncOpenAPIActionAPI(OpenAPIActionAPI):
 
 
 class OpenAPIPathAPI:
-    def __init__(self, spec, service, *, _call_cls=Call, **kwargs):
+    def __init__(self, spec, service, **kwargs):
         self.service = service
         self.operations = self._load_operations(spec)
         self.limiter = RateLimiter(DEFAULT_LIMITER_WINDOW, DEFAULT_LIMITER_MAX_REQUESTS)
-        self.call = _call_cls(limiter=self.limiter, **kwargs)
+        self.call = AsyncCall(limiter=self.limiter, **kwargs)
 
     @property
     def profile(self):
@@ -362,9 +336,9 @@ class OpenAPIPathAPI:
         ), path_params
 
     def _get_operation(self, operation_name):
-        def operation(**kwargs):
+        async def operation(**kwargs):
             request, path_params = self._build_request(operation_name, kwargs)
-            return self.call.request(request, path_params=path_params)
+            return await self.call.request(request, path_params=path_params)
 
         return operation
 
@@ -375,27 +349,6 @@ class OpenAPIPathAPI:
 
     def __dir__(self):
         return self.operations.keys()
-
-    def close(self):
-        self.call.close()
-
-    def __enter__(self):
-        return self
-
-    def __exit__(self, type, value, traceback):
-        self.close()
-
-
-class AsyncOpenAPIPathAPI(OpenAPIPathAPI):
-    def __init__(self, spec, service, **kwargs):
-        super().__init__(spec, service, _call_cls=AsyncCall, **kwargs)
-
-    def _get_operation(self, operation_name):
-        async def operation(**kwargs):
-            request, path_params = self._build_request(operation_name, kwargs)
-            return await self.call.request(request, path_params=path_params)
-
-        return operation
 
     async def close(self):
         await self.call.close()
@@ -413,46 +366,18 @@ class AsyncOpenAPIPathAPI(OpenAPIPathAPI):
         return None
 
 
-class OutscaleGateway(OpenAPIActionAPI):
+class AsyncOutscaleGateway(AsyncOscTypedMixin, OpenAPIActionAPI):
     def __init__(self, **kwargs):
         super().__init__(OSC_SPEC, service="api", **kwargs)
 
 
-class AsyncOutscaleGateway(AsyncOscTypedMixin, AsyncOpenAPIActionAPI):
-    def __init__(self, **kwargs):
-        super().__init__(OSC_SPEC, service="api", **kwargs)
-
-
-class OksGateway(OpenAPIPathAPI):
-    def __init__(self, **kwargs):
-        super().__init__(OKS_SPEC, service="oks", **kwargs)
-
-
-class AsyncOksGateway(AsyncOksTypedMixin, AsyncOpenAPIPathAPI):
+class AsyncOksGateway(AsyncOksTypedMixin, OpenAPIPathAPI):
     def __init__(self, **kwargs):
         super().__init__(OKS_SPEC, service="oks", **kwargs)
 
 
 # Replicate this pattern here for future services (e.g., EIM, FCU)
 # if they are generated into separate mixins.
-
-
-class Client:
-    def __init__(self, **kwargs):
-        self.osc = OutscaleGateway(**kwargs)
-        self.oks = OksGateway(**kwargs)
-        # Replicate this pattern here for future services (e.g., EIM, FCU)
-        # if they are generated into separate mixins.
-
-    def close(self):
-        self.osc.close()
-        self.oks.close()
-
-    def __enter__(self):
-        return self
-
-    def __exit__(self, type, value, traceback):
-        self.close()
 
 
 class AsyncClient:

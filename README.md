@@ -38,7 +38,7 @@
 It allows you to:
 
 - Configure multiple profiles through environment variables or credential files.
-- Use either the synchronous `Client` or asynchronous `AsyncClient`.
+- Use the asynchronous `AsyncClient` for all SDK calls.
 - Customize retry and rate-limit behavior.
 - Use SDK-managed authentication, retry, and rate limiting through httpx.
 - Enable detailed request logging.
@@ -151,15 +151,26 @@ Note that some API calls may be blocked with this method. See the [authenticatio
 Example:
 
 ```python
-from osc_sdk_python import Client
+import asyncio
 
-with Client(email="your@email.com", password="yourAccountPassword") as client:
-    keys = client.osc.ReadAccessKeys()
+from osc_sdk_python import AsyncClient
+
+
+async def main():
+    async with AsyncClient(
+        email="your@email.com",
+        password="yourAccountPassword",
+    ) as client:
+        keys = await client.osc.read_access_keys()
+
+
+if __name__ == "__main__":
+    asyncio.run(main())
 ```
 
-### Async Usage
+### Usage
 
-Use `AsyncClient` when calling the SDK from async Python code:
+Use `AsyncClient` for all SDK calls:
 
 ```python
 import asyncio
@@ -177,21 +188,11 @@ if __name__ == "__main__":
     asyncio.run(main())
 ```
 
-Typed request and response models under `osc_sdk_python.generated.*` are async-first: generated typed methods are available on `AsyncClient` with snake_case names such as `await client.osc.read_vms(...)`. Synchronous callers should use dynamic action methods such as `client.osc.ReadVms(...)` or `client.osc.raw("ReadVms", **params)`.
+Typed request and response models under `osc_sdk_python.generated.*` are exposed on `AsyncClient` with snake_case names such as `await client.osc.read_vms(...)`. Dynamic action methods such as `await client.osc.ReadVms(...)` and raw calls such as `await client.osc.raw("ReadVms", **params)` are also available.
 
 ### Multi-Service Client
 
-Use `Client` or `AsyncClient` to access multiple services from one SDK object:
-
-```python
-from osc_sdk_python import Client
-
-with Client(profile="default") as client:
-    vms = client.osc.ReadVms()
-    projects = client.oks.ListProjects()
-```
-
-Async example:
+Use `AsyncClient` to access multiple services from one SDK object:
 
 ```python
 import asyncio
@@ -211,21 +212,21 @@ if __name__ == "__main__":
 
 ### Retry Options
 
-The following options can be provided when initializing the `Client` or `AsyncClient` to customize the retry behavior of the SDK:
+The following options can be provided when initializing `AsyncClient` to customize the retry behavior of the SDK:
 
 * `max_retries` (integer, default `3`)
 * `retry_backoff_factor` (float, default `1.0`)
 * `retry_backoff_jitter` (float, default `3.0`)
 * `retry_backoff_max` (float, default `30`)
 
-These configure the SDK retry policy used by the sync and async httpx transports.
+These configure the SDK retry policy used by the async httpx transport.
 
 Example:
 
 ```python
-from osc_sdk_python import Client
+from osc_sdk_python import AsyncClient
 
-client = Client(
+client = AsyncClient(
     max_retries=5,
     retry_backoff_factor=0.5,
     retry_backoff_jitter=1.0,
@@ -235,7 +236,7 @@ client = Client(
 
 ### Rate Limit Options
 
-You can also configure rate limiting when initializing the `Client` or `AsyncClient`:
+You can also configure rate limiting when initializing `AsyncClient`:
 
 * `limiter_max_requests` (integer, default `5`)
 * `limiter_window` (integer seconds, default `1`)
@@ -243,9 +244,9 @@ You can also configure rate limiting when initializing the `Client` or `AsyncCli
 Example:
 
 ```python
-from osc_sdk_python import Client
+from osc_sdk_python import AsyncClient
 
-client = Client(
+client = AsyncClient(
     limiter_max_requests=20,
     limiter_window=5,
 )
@@ -271,22 +272,29 @@ async def main():
 Authentication, retry, rate limiting, and API error handling are integrated into the SDK httpx layer:
 
 * `SdkAuth` signs outgoing requests and also supports OKS and basic authentication.
-* `SdkTransport` applies sync rate limiting, retries, and SDK error conversion.
-* `AsyncSdkTransport` provides the same behavior for `AsyncClient`.
+* `AsyncSdkTransport` applies rate limiting, retries, and SDK error conversion.
 
-Most users do not need to instantiate these classes directly. Configure behavior through `Client` or `AsyncClient` options:
+Most users do not need to instantiate these classes directly. Configure behavior through `AsyncClient` options:
 
 ```python
-from osc_sdk_python import Client
+import asyncio
 
-with Client(
-    profile="default",
-    max_retries=5,
-    retry_backoff_factor=0.5,
-    limiter_max_requests=20,
-    limiter_window=5,
-) as client:
-    vms = client.osc.ReadVms()
+from osc_sdk_python import AsyncClient
+
+
+async def main():
+    async with AsyncClient(
+        profile="default",
+        max_retries=5,
+        retry_backoff_factor=0.5,
+        limiter_max_requests=20,
+        limiter_window=5,
+    ) as client:
+        vms = await client.osc.read_vms()
+
+
+if __name__ == "__main__":
+    asyncio.run(main())
 ```
 
 For custom httpx integrations, the transport components are available from `osc_sdk_python.runtime.transport`.

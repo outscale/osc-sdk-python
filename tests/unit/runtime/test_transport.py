@@ -15,28 +15,12 @@ from osc_sdk_python.runtime.transport import (
     AsyncSdkTransport,
     RetryPolicy,
     SdkAuth,
-    SdkTransport,
 )
 
 
 class FixedDateSdkAuth(SdkAuth):
     def build_dates(self):
         return "20260102T030405Z", "20260102"
-
-
-class SequenceTransport:
-    def __init__(self, responses):
-        self.responses = list(responses)
-        self.requests = []
-
-    def handle_request(self, request):
-        self.requests.append(request)
-        if isinstance(self.responses[0], Exception):
-            raise self.responses.pop(0)
-        return self.responses.pop(0)
-
-    def close(self):
-        pass
 
 
 class AsyncSequenceTransport:
@@ -149,115 +133,6 @@ def test_sdk_auth_requires_oks_credentials():
         next(auth.auth_flow(request))
 
 
-def test_transport_retries_429_with_retry_after():
-    request = httpx.Request("POST", "https://example.test/ReadVms")
-    transport = SdkTransport(retry_policy=RetryPolicy(max_retries=1))
-    transport._transport = SequenceTransport(
-        [
-            response(429, request, {"Retry-After": "0"}),
-            response(200, request),
-        ]
-    )
-
-    with patch("time.sleep") as sleep:
-        result = transport.handle_request(request)
-
-    assert result.status_code == 200
-    assert len(transport._transport.requests) == 2
-    sleep.assert_called_once_with(0.0)
-
-
-def test_transport_retries_non_json_500():
-    request = httpx.Request("POST", "https://example.test/ReadVms")
-    transport = SdkTransport(retry_policy=RetryPolicy(max_retries=1))
-    transport._transport = SequenceTransport(
-        [
-            text_response(500, request, "upstream failure"),
-            response(200, request),
-        ]
-    )
-
-    with patch("time.sleep"):
-        result = transport.handle_request(request)
-
-    assert result.status_code == 200
-    assert len(transport._transport.requests) == 2
-
-
-def test_transport_retries_connection_error_without_response():
-    request = httpx.Request("POST", "https://example.test/ReadVms")
-    transport = SdkTransport(retry_policy=RetryPolicy(max_retries=2))
-    transport._transport = SequenceTransport(
-        [
-            httpx.ConnectError("connection failed", request=request),
-            httpx.ConnectError("connection failed", request=request),
-            httpx.ConnectError("connection failed", request=request),
-        ]
-    )
-
-    with patch("time.sleep") as sleep:
-        with pytest.raises(SdkTransportError) as exc_info:
-            transport.handle_request(request)
-
-    assert len(transport._transport.requests) == 3
-    assert sleep.call_count == 2
-    assert isinstance(exc_info.value.__cause__, httpx.ConnectError)
-
-
-def test_transport_does_not_retry_timeout_without_response():
-    request = httpx.Request("POST", "https://example.test/ReadVms")
-    transport = SdkTransport(retry_policy=RetryPolicy(max_retries=2))
-    transport._transport = SequenceTransport(
-        [httpx.TimeoutException("timed out", request=request)]
-    )
-
-    with patch("time.sleep") as sleep:
-        with pytest.raises(SdkTransportError) as exc_info:
-            transport.handle_request(request)
-
-    assert len(transport._transport.requests) == 1
-    sleep.assert_not_called()
-    assert isinstance(exc_info.value.__cause__, httpx.TimeoutException)
-
-
-def test_transport_wraps_httpx_error_without_request():
-    transport = SdkTransport(retry_policy=RetryPolicy(max_retries=0))
-    request = httpx.Request("POST", "https://example.test/ReadVms")
-    transport._transport = SequenceTransport([httpx.ReadTimeout("timed out")])
-
-    with pytest.raises(SdkTransportError) as exc_info:
-        transport.handle_request(request)
-
-    assert exc_info.value.request is None
-    assert exc_info.value.response is None
-    assert isinstance(exc_info.value.__cause__, httpx.ReadTimeout)
-
-
-def test_transport_uses_backoff_when_retry_after_missing():
-    request = httpx.Request("POST", "https://example.test/ReadVms")
-    transport = SdkTransport(
-        retry_policy=RetryPolicy(
-            max_retries=1,
-            backoff_factor=2.0,
-            backoff_jitter=3.0,
-        )
-    )
-    transport._transport = SequenceTransport(
-        [
-            text_response(500, request, "upstream failure"),
-            response(200, request),
-        ]
-    )
-
-    with patch("random.uniform", return_value=1.5) as random_uniform:
-        with patch("time.sleep") as sleep:
-            result = transport.handle_request(request)
-
-    assert result.status_code == 200
-    random_uniform.assert_called_once_with(0, 3.0)
-    sleep.assert_called_once_with(3.5)
-
-
 def test_retry_after_http_date_overrides_backoff():
     request = httpx.Request("POST", "https://example.test/ReadVms")
     retry_after = "Fri, 02 Jan 2026 03:04:06 GMT"
@@ -295,31 +170,6 @@ def test_retry_policy_does_not_retry_redirect_or_invalid_request_errors():
     )
 
 
-def test_transport_error_uses_original_request_when_response_has_none():
-    request = httpx.Request("POST", "https://example.test/ReadVms")
-    transport = SdkTransport(retry_policy=RetryPolicy(max_retries=0))
-    transport._transport = SequenceTransport(
-        [text_response(500, text="upstream failure")]
-    )
-
-    with pytest.raises(SdkServerError) as exc_info:
-        transport.handle_request(request)
-
-    assert exc_info.value.request is request
-    assert "https://example.test/ReadVms" in str(exc_info.value)
-
-
-def test_transport_does_not_retry_400():
-    request = httpx.Request("POST", "https://example.test/ReadVms")
-    transport = SdkTransport(retry_policy=RetryPolicy(max_retries=3))
-    transport._transport = SequenceTransport([response(400, request)])
-
-    with pytest.raises(SdkClientError):
-        transport.handle_request(request)
-
-    assert len(transport._transport.requests) == 1
-
-
 def test_async_transport_uses_async_limiter():
     async def run():
         request = httpx.Request("POST", "https://example.test/ReadVms")
@@ -335,6 +185,29 @@ def test_async_transport_uses_async_limiter():
 
         assert result.status_code == 200
         limiter.async_acquire.assert_called_once()
+
+    import asyncio
+
+    asyncio.run(run())
+
+
+def test_async_transport_retries_429_with_retry_after():
+    async def run():
+        request = httpx.Request("POST", "https://example.test/ReadVms")
+        transport = AsyncSdkTransport(retry_policy=RetryPolicy(max_retries=1))
+        transport._transport = AsyncSequenceTransport(
+            [
+                response(429, request, {"Retry-After": "0"}),
+                response(200, request),
+            ]
+        )
+
+        with patch("asyncio.sleep", new_callable=AsyncMock) as sleep:
+            result = await transport.handle_async_request(request)
+
+        assert result.status_code == 200
+        assert len(transport._transport.requests) == 2
+        sleep.assert_called_once_with(0.0)
 
     import asyncio
 
@@ -427,51 +300,125 @@ def test_async_transport_does_not_retry_timeout_without_response():
     asyncio.run(run())
 
 
-def test_http_error_exposes_legacy_request_id():
-    request = httpx.Request("POST", "https://example.test/ReadVms")
-    body = {
-        "ResponseContext": {"RequestId": "req-legacy"},
-        "Errors": [{"Code": "InvalidParameter", "Type": "Sender"}],
-    }
-    transport = SdkTransport(retry_policy=RetryPolicy(max_retries=0))
-    transport._transport = SequenceTransport(
-        [
-            httpx.Response(
-                400,
-                json=body,
-                headers={"content-type": "application/json"},
-                request=request,
+def test_async_transport_uses_backoff_when_retry_after_missing():
+    async def run():
+        request = httpx.Request("POST", "https://example.test/ReadVms")
+        transport = AsyncSdkTransport(
+            retry_policy=RetryPolicy(
+                max_retries=1,
+                backoff_factor=2.0,
+                backoff_jitter=3.0,
             )
-        ]
-    )
+        )
+        transport._transport = AsyncSequenceTransport(
+            [
+                text_response(500, request, "upstream failure"),
+                response(200, request),
+            ]
+        )
 
-    with pytest.raises(SdkClientError) as exc_info:
-        transport.handle_request(request)
+        with patch("random.uniform", return_value=1.5):
+            with patch("asyncio.sleep", new_callable=AsyncMock) as sleep:
+                result = await transport.handle_async_request(request)
 
-    assert exc_info.value.request_id == "req-legacy"
-    assert "request_id = req-legacy" in str(exc_info.value)
+        assert result.status_code == 200
+        sleep.assert_called_once_with(3.5)
+
+    import asyncio
+
+    asyncio.run(run())
 
 
-def test_http_error_exposes_problem_request_id_extra():
-    request = httpx.Request("GET", "https://example.test/projects")
-    transport = SdkTransport(retry_policy=RetryPolicy(max_retries=0))
-    transport._transport = SequenceTransport(
-        [
-            httpx.Response(
-                403,
-                json={"title": "Forbidden", "request_id": "req-problem"},
-                headers={"content-type": "application/problem+json"},
-                request=request,
-            )
-        ]
-    )
+def test_async_transport_error_uses_original_request_when_response_has_none():
+    async def run():
+        request = httpx.Request("POST", "https://example.test/ReadVms")
+        transport = AsyncSdkTransport(retry_policy=RetryPolicy(max_retries=0))
+        transport._transport = AsyncSequenceTransport(
+            [text_response(500, text="upstream failure")]
+        )
 
-    with pytest.raises(SdkClientError) as exc_info:
-        transport.handle_request(request)
+        with pytest.raises(SdkServerError) as exc_info:
+            await transport.handle_async_request(request)
 
-    assert exc_info.value.request_id == "req-problem"
-    assert "request_id=req-problem" in str(exc_info.value)
-    assert "request_id='req-problem'" in repr(exc_info.value)
+        assert exc_info.value.request is request
+        assert "https://example.test/ReadVms" in str(exc_info.value)
+
+    import asyncio
+
+    asyncio.run(run())
+
+
+def test_async_transport_does_not_retry_400():
+    async def run():
+        request = httpx.Request("POST", "https://example.test/ReadVms")
+        transport = AsyncSdkTransport(retry_policy=RetryPolicy(max_retries=3))
+        transport._transport = AsyncSequenceTransport([response(400, request)])
+
+        with pytest.raises(SdkClientError):
+            await transport.handle_async_request(request)
+
+        assert len(transport._transport.requests) == 1
+
+    import asyncio
+
+    asyncio.run(run())
+
+
+def test_async_http_error_exposes_legacy_request_id():
+    async def run():
+        request = httpx.Request("POST", "https://example.test/ReadVms")
+        body = {
+            "ResponseContext": {"RequestId": "req-legacy"},
+            "Errors": [{"Code": "InvalidParameter", "Type": "Sender"}],
+        }
+        transport = AsyncSdkTransport(retry_policy=RetryPolicy(max_retries=0))
+        transport._transport = AsyncSequenceTransport(
+            [
+                httpx.Response(
+                    400,
+                    json=body,
+                    headers={"content-type": "application/json"},
+                    request=request,
+                )
+            ]
+        )
+
+        with pytest.raises(SdkClientError) as exc_info:
+            await transport.handle_async_request(request)
+
+        assert exc_info.value.request_id == "req-legacy"
+        assert "request_id = req-legacy" in str(exc_info.value)
+
+    import asyncio
+
+    asyncio.run(run())
+
+
+def test_async_http_error_exposes_problem_request_id_extra():
+    async def run():
+        request = httpx.Request("GET", "https://example.test/projects")
+        transport = AsyncSdkTransport(retry_policy=RetryPolicy(max_retries=0))
+        transport._transport = AsyncSequenceTransport(
+            [
+                httpx.Response(
+                    403,
+                    json={"title": "Forbidden", "request_id": "req-problem"},
+                    headers={"content-type": "application/problem+json"},
+                    request=request,
+                )
+            ]
+        )
+
+        with pytest.raises(SdkClientError) as exc_info:
+            await transport.handle_async_request(request)
+
+        assert exc_info.value.request_id == "req-problem"
+        assert "request_id=req-problem" in str(exc_info.value)
+        assert "request_id='req-problem'" in repr(exc_info.value)
+
+    import asyncio
+
+    asyncio.run(run())
 
 
 def test_extract_request_id_falls_back_to_response_header():

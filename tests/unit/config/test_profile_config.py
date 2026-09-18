@@ -1,8 +1,9 @@
+import asyncio
 import json
 
 import pytest
 
-from osc_sdk_python import Client
+from osc_sdk_python import AsyncClient
 from osc_sdk_python.credentials import Profile
 from osc_sdk_python.exceptions import SdkConfigurationError
 
@@ -126,7 +127,7 @@ def test_constructor_values_override_environment_and_profile_file(
     monkeypatch.setenv("OSC_SECRET_KEY", "env-sk")
     monkeypatch.setenv("OSC_REGION", "env-region")
 
-    client = Client(
+    client = AsyncClient(
         path=str(config),
         profile="default",
         access_key="arg-ak",
@@ -141,7 +142,7 @@ def test_constructor_values_override_environment_and_profile_file(
         assert client.oks.profile.secret_key == "arg-sk"
         assert client.oks.profile.region == "arg-region"
     finally:
-        client.close()
+        asyncio.run(client.close())
 
 
 def test_missing_default_config_is_ignored(monkeypatch):

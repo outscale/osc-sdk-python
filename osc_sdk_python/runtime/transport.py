@@ -4,7 +4,6 @@ import hashlib
 import hmac
 import json
 import random
-import time
 from datetime import datetime, timedelta, timezone
 from email.utils import parsedate_to_datetime
 from threading import Lock
@@ -37,22 +36,6 @@ class RateLimiter:
         self.max_requests: int = max_requests
         self.requests = []
         self._lock = Lock()
-
-    def acquire(self):
-        with self._lock:
-            now = self.datetime_cls.now(timezone.utc)
-
-            self.clean_old_requests(now)
-
-            if len(self.requests) >= self.max_requests:
-                oldest = self.requests[0]
-                wait_time = self.window - (now - oldest)
-                time.sleep(wait_time.total_seconds())
-
-                now = self.datetime_cls.now(timezone.utc)
-                self.clean_old_requests(now)
-
-            self.requests.append(now)
 
     async def async_acquire(self):
         await asyncio.to_thread(self._lock.acquire)
@@ -351,42 +334,6 @@ def raise_for_status(
             problem=problem,
             url=url,
         )
-
-
-class SdkTransport(httpx.BaseTransport):
-    def __init__(self, *, limiter=None, retry_policy=None, **kwargs):
-        self.limiter = limiter
-        self.retry_policy = retry_policy or RetryPolicy()
-        self._transport = httpx.HTTPTransport(**kwargs)
-
-    def handle_request(self, request: httpx.Request) -> httpx.Response:
-        attempt = 0
-        request.read()
-        while True:
-            if self.limiter is not None:
-                self.limiter.acquire()
-            try:
-                response = self._transport.handle_request(request)
-                response.read()
-                raise_for_status(response, request)
-                return response
-            except (httpx.HTTPError, SdkHttpError) as error:
-                if not self.retry_policy.should_retry(error, attempt):
-                    if isinstance(error, SdkHttpError):
-                        raise
-                    raise SdkTransportError(
-                        str(error),
-                        request=_error_attr(error, "request"),
-                        response=_error_attr(error, "response"),
-                    ) from error
-                sleep_time = self.retry_policy.retry_after_time(error)
-                if sleep_time is None:
-                    sleep_time = self.retry_policy.backoff_time(attempt)
-                time.sleep(sleep_time)
-                attempt += 1
-
-    def close(self) -> None:
-        self._transport.close()
 
 
 class AsyncSdkTransport(httpx.AsyncBaseTransport):

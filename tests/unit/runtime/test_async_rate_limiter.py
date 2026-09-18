@@ -92,8 +92,8 @@ def test_async_refill_after_window():
     asyncio.run(run())
 
 
-def test_async_acquire_uses_shared_sync_lock():
-    """Test async and sync limiter paths protect the same request history."""
+def test_async_acquire_uses_shared_lock():
+    """Test concurrent async callers protect the same request history."""
 
     async def run():
         rl = RateLimiter(datetime.timedelta(seconds=1), 5)

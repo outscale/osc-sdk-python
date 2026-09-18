@@ -15,8 +15,7 @@ class TestAsyncLog(unittest.TestCase):
                 self.assertIsInstance(vms, ReadVmsResponse)
                 self.assertEqual(
                     logs.records[-1].getMessage(),
-                    """mode: async
-service: api
+                    """service: api
 method: POST
 uri: /api/v1/ReadVms
 payload:
@@ -30,8 +29,7 @@ payload:
                 self.assertIsInstance(vms, ReadVmsResponse)
                 self.assertEqual(
                     logs.records[-1].getMessage(),
-                    """mode: async
-service: api
+                    """service: api
 method: POST
 uri: /api/v1/ReadVms
 payload:
