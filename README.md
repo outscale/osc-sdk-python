@@ -188,7 +188,7 @@ if __name__ == "__main__":
     asyncio.run(main())
 ```
 
-Typed request and response models under `osc_sdk_python.generated.*` are exposed on `AsyncClient` with snake_case names such as `await client.osc.read_vms(...)`. Dynamic action methods such as `await client.osc.ReadVms(...)` and raw calls such as `await client.osc.raw("ReadVms", **params)` are also available.
+Typed request and response models under `osc_sdk_python.generated.*` are exposed on `AsyncClient` with snake_case names such as `await client.osc.read_vms(...)`. Raw calls such as `await client.osc.raw("ReadVms", **params)` are also available when you need an untyped escape hatch.
 
 ### Multi-Service Client
 

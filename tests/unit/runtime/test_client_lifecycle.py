@@ -3,8 +3,7 @@ from unittest.mock import Mock
 
 import pytest
 
-from osc_sdk_python import AsyncClient, SdkConfigurationError, SdkUsageError
-from osc_sdk_python.outscale_gateway import OpenAPIActionAPI
+from osc_sdk_python import AsyncClient, SdkUsageError
 from osc_sdk_python.runtime.call import AsyncCall
 
 
@@ -69,32 +68,27 @@ def test_update_profile_recreates_async_client_for_tls_settings():
     assert call.client is not old_client
 
 
-def test_openapi_action_api_raises_configuration_error_for_unreadable_spec():
-    with pytest.raises(SdkConfigurationError, match="Problem reading OpenAPI spec"):
-        OpenAPIActionAPI("missing-spec.yaml")
-
-
-def test_dynamic_service_hasattr_reflects_available_operations():
+def test_typed_service_methods_are_available():
     async def run():
         async with AsyncClient() as client:
-            assert hasattr(client.osc, "ReadVms")
-            assert not hasattr(client.osc, "TotallyWrongAction")
-            assert "ReadVms" in dir(client.osc)
+            assert hasattr(client.osc, "read_vms")
+            assert callable(getattr(client.osc, "read_vms"))
+            assert "read_vms" in dir(client.osc)
 
-            assert hasattr(client.oks, "ListProjects")
-            assert not hasattr(client.oks, "TotallyWrongOperation")
-            assert "ListProjects" in dir(client.oks)
+            assert hasattr(client.oks, "list_projects")
+            assert callable(getattr(client.oks, "list_projects"))
+            assert "list_projects" in dir(client.oks)
 
     asyncio.run(run())
 
 
-def test_unknown_dynamic_service_attribute_raises_attribute_error():
+def test_unknown_typed_service_attribute_raises_attribute_error():
     async def run():
         async with AsyncClient() as client:
             with pytest.raises(AttributeError):
-                _ = client.osc.TotallyWrongAction
+                _ = client.osc.totally_wrong_action
 
             with pytest.raises(AttributeError):
-                _ = client.oks.TotallyWrongOperation
+                _ = client.oks.totally_wrong_operation
 
     asyncio.run(run())

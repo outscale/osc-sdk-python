@@ -39,9 +39,8 @@ def _decode_json_response(response):
         raise SdkResponseError("Response body is not valid JSON") from error
 
 
-class AsyncCall(object):
+class AsyncCall:
     def __init__(self, limiter=None, **kwargs):
-        self.version = kwargs.pop("version", "latest")
         self.host = kwargs.pop("host", None)
         self.ssl = kwargs.pop("_ssl", True)
         self.user_agent = kwargs.pop("user_agent", DEFAULT_USER_AGENT)

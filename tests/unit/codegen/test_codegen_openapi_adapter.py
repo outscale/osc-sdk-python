@@ -64,6 +64,8 @@ def test_action_body_schema_reuses_component_request_model():
 
     rendered_client = render_async_client(operations, "api", "osc")
     assert "class AsyncOscTypedMixin:" in rendered_client
+    assert "class HasCallMethod(Protocol):" in rendered_client
+    assert "self: HasCallMethod," in rendered_client
     assert 'service="api"' in rendered_client
     assert "json_body=_dump_json_body(request)," in rendered_client
     assert "from pydantic import TypeAdapter" in rendered_client

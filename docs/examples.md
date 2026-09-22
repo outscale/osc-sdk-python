@@ -48,10 +48,9 @@ if __name__ == "__main__":
 Calling actions:
 
 * **Typed methods**: `await client.osc.read_vms(...)`, `await client.osc.create_vms(...)`, etc.
-* **Dynamic methods**: `await client.osc.ReadVms(...)`, `await client.osc.CreateVms(...)`, etc.
 * **Raw calls**: `await client.osc.raw("ActionName", **params)`
 
-Typed request and response models under `osc_sdk_python.generated.*` are exposed on `AsyncClient` with snake_case operation names. Dynamic action methods remain available for compatibility with action-style names.
+Typed request and response models under `osc_sdk_python.generated.*` are exposed on `AsyncClient` with snake_case operation names.
 
 Example:
 

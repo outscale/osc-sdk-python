@@ -1,7 +1,7 @@
 """Generated typed OSC client slice.
 
 Typed request and response models are async-first. Generated typed methods are
-exposed on AsyncClient; dynamic action methods are also available on service clients.
+exposed on AsyncClient.
 
 Do not edit by hand. Regenerate with:
     python -m osc_sdk_python.codegen.generator
@@ -9,7 +9,7 @@ Do not edit by hand. Regenerate with:
     python -m osc_sdk_python.codegen.generator oks osc
 """
 
-from typing import Any
+from typing import Any, Protocol, TypeVar
 
 from pydantic import TypeAdapter, ValidationError
 
@@ -506,16 +506,24 @@ def _validate_request(model: type, value: Any) -> Any:
         raise SdkValidationError(str(error)) from error
 
 
-def _validate_response(model: type, value: Any) -> Any:
+T = TypeVar("T")
+
+
+def _validate_response(model: T, value: Any) -> Any:
     try:
         return TypeAdapter(model).validate_python(value)
     except ValidationError as error:
         raise SdkResponseError(str(error)) from error
 
 
+class HasCallMethod(Protocol):
+    @property
+    def call(self): ...
+
+
 class AsyncOscTypedMixin:
     async def accept_net_peering(
-        self,
+        self: HasCallMethod,
         request: AcceptNetPeeringRequest | None = None,
     ) -> AcceptNetPeeringResponse:
         request = _validate_request(AcceptNetPeeringRequest, request)
@@ -541,7 +549,7 @@ class AsyncOscTypedMixin:
         return _validate_response(AcceptNetPeeringResponse, response)
 
     async def add_user_to_user_group(
-        self,
+        self: HasCallMethod,
         request: AddUserToUserGroupRequest | None = None,
     ) -> AddUserToUserGroupResponse:
         request = _validate_request(AddUserToUserGroupRequest, request)
@@ -567,7 +575,7 @@ class AsyncOscTypedMixin:
         return _validate_response(AddUserToUserGroupResponse, response)
 
     async def check_authentication(
-        self,
+        self: HasCallMethod,
         request: CheckAuthenticationRequest | None = None,
     ) -> CheckAuthenticationResponse:
         request = _validate_request(CheckAuthenticationRequest, request)
@@ -593,7 +601,7 @@ class AsyncOscTypedMixin:
         return _validate_response(CheckAuthenticationResponse, response)
 
     async def create_access_key(
-        self,
+        self: HasCallMethod,
         request: CreateAccessKeyRequest | None = None,
     ) -> CreateAccessKeyResponse:
         request = _validate_request(CreateAccessKeyRequest, request)
@@ -619,7 +627,7 @@ class AsyncOscTypedMixin:
         return _validate_response(CreateAccessKeyResponse, response)
 
     async def create_account(
-        self,
+        self: HasCallMethod,
         request: CreateAccountRequest | None = None,
     ) -> CreateAccountResponse:
         request = _validate_request(CreateAccountRequest, request)
@@ -645,7 +653,7 @@ class AsyncOscTypedMixin:
         return _validate_response(CreateAccountResponse, response)
 
     async def create_api_access_rule(
-        self,
+        self: HasCallMethod,
         request: CreateApiAccessRuleRequest | None = None,
     ) -> CreateApiAccessRuleResponse:
         request = _validate_request(CreateApiAccessRuleRequest, request)
@@ -671,7 +679,7 @@ class AsyncOscTypedMixin:
         return _validate_response(CreateApiAccessRuleResponse, response)
 
     async def create_ca(
-        self,
+        self: HasCallMethod,
         request: CreateCaRequest | None = None,
     ) -> CreateCaResponse:
         request = _validate_request(CreateCaRequest, request)
@@ -697,7 +705,7 @@ class AsyncOscTypedMixin:
         return _validate_response(CreateCaResponse, response)
 
     async def create_client_gateway(
-        self,
+        self: HasCallMethod,
         request: CreateClientGatewayRequest | None = None,
     ) -> CreateClientGatewayResponse:
         request = _validate_request(CreateClientGatewayRequest, request)
@@ -723,7 +731,7 @@ class AsyncOscTypedMixin:
         return _validate_response(CreateClientGatewayResponse, response)
 
     async def create_dedicated_group(
-        self,
+        self: HasCallMethod,
         request: CreateDedicatedGroupRequest | None = None,
     ) -> CreateDedicatedGroupResponse:
         request = _validate_request(CreateDedicatedGroupRequest, request)
@@ -749,7 +757,7 @@ class AsyncOscTypedMixin:
         return _validate_response(CreateDedicatedGroupResponse, response)
 
     async def create_dhcp_options(
-        self,
+        self: HasCallMethod,
         request: CreateDhcpOptionsRequest | None = None,
     ) -> CreateDhcpOptionsResponse:
         request = _validate_request(CreateDhcpOptionsRequest, request)
@@ -775,7 +783,7 @@ class AsyncOscTypedMixin:
         return _validate_response(CreateDhcpOptionsResponse, response)
 
     async def create_direct_link(
-        self,
+        self: HasCallMethod,
         request: CreateDirectLinkRequest | None = None,
     ) -> CreateDirectLinkResponse:
         request = _validate_request(CreateDirectLinkRequest, request)
@@ -801,7 +809,7 @@ class AsyncOscTypedMixin:
         return _validate_response(CreateDirectLinkResponse, response)
 
     async def create_direct_link_interface(
-        self,
+        self: HasCallMethod,
         request: CreateDirectLinkInterfaceRequest | None = None,
     ) -> CreateDirectLinkInterfaceResponse:
         request = _validate_request(CreateDirectLinkInterfaceRequest, request)
@@ -827,7 +835,7 @@ class AsyncOscTypedMixin:
         return _validate_response(CreateDirectLinkInterfaceResponse, response)
 
     async def create_flexible_gpu(
-        self,
+        self: HasCallMethod,
         request: CreateFlexibleGpuRequest | None = None,
     ) -> CreateFlexibleGpuResponse:
         request = _validate_request(CreateFlexibleGpuRequest, request)
@@ -853,7 +861,7 @@ class AsyncOscTypedMixin:
         return _validate_response(CreateFlexibleGpuResponse, response)
 
     async def create_image(
-        self,
+        self: HasCallMethod,
         request: CreateImageRequest | None = None,
     ) -> CreateImageResponse:
         request = _validate_request(CreateImageRequest, request)
@@ -879,7 +887,7 @@ class AsyncOscTypedMixin:
         return _validate_response(CreateImageResponse, response)
 
     async def create_image_export_task(
-        self,
+        self: HasCallMethod,
         request: CreateImageExportTaskRequest | None = None,
     ) -> CreateImageExportTaskResponse:
         request = _validate_request(CreateImageExportTaskRequest, request)
@@ -905,7 +913,7 @@ class AsyncOscTypedMixin:
         return _validate_response(CreateImageExportTaskResponse, response)
 
     async def create_internet_service(
-        self,
+        self: HasCallMethod,
         request: CreateInternetServiceRequest | None = None,
     ) -> CreateInternetServiceResponse:
         request = _validate_request(CreateInternetServiceRequest, request)
@@ -931,7 +939,7 @@ class AsyncOscTypedMixin:
         return _validate_response(CreateInternetServiceResponse, response)
 
     async def create_keypair(
-        self,
+        self: HasCallMethod,
         request: CreateKeypairRequest | None = None,
     ) -> CreateKeypairResponse:
         request = _validate_request(CreateKeypairRequest, request)
@@ -957,7 +965,7 @@ class AsyncOscTypedMixin:
         return _validate_response(CreateKeypairResponse, response)
 
     async def create_listener_rule(
-        self,
+        self: HasCallMethod,
         request: CreateListenerRuleRequest | None = None,
     ) -> CreateListenerRuleResponse:
         request = _validate_request(CreateListenerRuleRequest, request)
@@ -983,7 +991,7 @@ class AsyncOscTypedMixin:
         return _validate_response(CreateListenerRuleResponse, response)
 
     async def create_load_balancer(
-        self,
+        self: HasCallMethod,
         request: CreateLoadBalancerRequest | None = None,
     ) -> CreateLoadBalancerResponse:
         request = _validate_request(CreateLoadBalancerRequest, request)
@@ -1009,7 +1017,7 @@ class AsyncOscTypedMixin:
         return _validate_response(CreateLoadBalancerResponse, response)
 
     async def create_load_balancer_listeners(
-        self,
+        self: HasCallMethod,
         request: CreateLoadBalancerListenersRequest | None = None,
     ) -> CreateLoadBalancerListenersResponse:
         request = _validate_request(CreateLoadBalancerListenersRequest, request)
@@ -1035,7 +1043,7 @@ class AsyncOscTypedMixin:
         return _validate_response(CreateLoadBalancerListenersResponse, response)
 
     async def create_load_balancer_policy(
-        self,
+        self: HasCallMethod,
         request: CreateLoadBalancerPolicyRequest | None = None,
     ) -> CreateLoadBalancerPolicyResponse:
         request = _validate_request(CreateLoadBalancerPolicyRequest, request)
@@ -1061,7 +1069,7 @@ class AsyncOscTypedMixin:
         return _validate_response(CreateLoadBalancerPolicyResponse, response)
 
     async def create_load_balancer_tags(
-        self,
+        self: HasCallMethod,
         request: CreateLoadBalancerTagsRequest | None = None,
     ) -> CreateLoadBalancerTagsResponse:
         request = _validate_request(CreateLoadBalancerTagsRequest, request)
@@ -1087,7 +1095,7 @@ class AsyncOscTypedMixin:
         return _validate_response(CreateLoadBalancerTagsResponse, response)
 
     async def create_nat_service(
-        self,
+        self: HasCallMethod,
         request: CreateNatServiceRequest | None = None,
     ) -> CreateNatServiceResponse:
         request = _validate_request(CreateNatServiceRequest, request)
@@ -1113,7 +1121,7 @@ class AsyncOscTypedMixin:
         return _validate_response(CreateNatServiceResponse, response)
 
     async def create_net(
-        self,
+        self: HasCallMethod,
         request: CreateNetRequest | None = None,
     ) -> CreateNetResponse:
         request = _validate_request(CreateNetRequest, request)
@@ -1139,7 +1147,7 @@ class AsyncOscTypedMixin:
         return _validate_response(CreateNetResponse, response)
 
     async def create_net_access_point(
-        self,
+        self: HasCallMethod,
         request: CreateNetAccessPointRequest | None = None,
     ) -> CreateNetAccessPointResponse:
         request = _validate_request(CreateNetAccessPointRequest, request)
@@ -1165,7 +1173,7 @@ class AsyncOscTypedMixin:
         return _validate_response(CreateNetAccessPointResponse, response)
 
     async def create_net_peering(
-        self,
+        self: HasCallMethod,
         request: CreateNetPeeringRequest | None = None,
     ) -> CreateNetPeeringResponse:
         request = _validate_request(CreateNetPeeringRequest, request)
@@ -1191,7 +1199,7 @@ class AsyncOscTypedMixin:
         return _validate_response(CreateNetPeeringResponse, response)
 
     async def create_nic(
-        self,
+        self: HasCallMethod,
         request: CreateNicRequest | None = None,
     ) -> CreateNicResponse:
         request = _validate_request(CreateNicRequest, request)
@@ -1217,7 +1225,7 @@ class AsyncOscTypedMixin:
         return _validate_response(CreateNicResponse, response)
 
     async def create_policy(
-        self,
+        self: HasCallMethod,
         request: CreatePolicyRequest | None = None,
     ) -> CreatePolicyResponse:
         request = _validate_request(CreatePolicyRequest, request)
@@ -1243,7 +1251,7 @@ class AsyncOscTypedMixin:
         return _validate_response(CreatePolicyResponse, response)
 
     async def create_policy_version(
-        self,
+        self: HasCallMethod,
         request: CreatePolicyVersionRequest | None = None,
     ) -> CreatePolicyVersionResponse:
         request = _validate_request(CreatePolicyVersionRequest, request)
@@ -1269,7 +1277,7 @@ class AsyncOscTypedMixin:
         return _validate_response(CreatePolicyVersionResponse, response)
 
     async def create_product_type(
-        self,
+        self: HasCallMethod,
         request: CreateProductTypeRequest | None = None,
     ) -> CreateProductTypeResponse:
         request = _validate_request(CreateProductTypeRequest, request)
@@ -1295,7 +1303,7 @@ class AsyncOscTypedMixin:
         return _validate_response(CreateProductTypeResponse, response)
 
     async def create_public_ip(
-        self,
+        self: HasCallMethod,
         request: CreatePublicIpRequest | None = None,
     ) -> CreatePublicIpResponse:
         request = _validate_request(CreatePublicIpRequest, request)
@@ -1321,7 +1329,7 @@ class AsyncOscTypedMixin:
         return _validate_response(CreatePublicIpResponse, response)
 
     async def create_route(
-        self,
+        self: HasCallMethod,
         request: CreateRouteRequest | None = None,
     ) -> CreateRouteResponse:
         request = _validate_request(CreateRouteRequest, request)
@@ -1347,7 +1355,7 @@ class AsyncOscTypedMixin:
         return _validate_response(CreateRouteResponse, response)
 
     async def create_route_table(
-        self,
+        self: HasCallMethod,
         request: CreateRouteTableRequest | None = None,
     ) -> CreateRouteTableResponse:
         request = _validate_request(CreateRouteTableRequest, request)
@@ -1373,7 +1381,7 @@ class AsyncOscTypedMixin:
         return _validate_response(CreateRouteTableResponse, response)
 
     async def create_security_group(
-        self,
+        self: HasCallMethod,
         request: CreateSecurityGroupRequest | None = None,
     ) -> CreateSecurityGroupResponse:
         request = _validate_request(CreateSecurityGroupRequest, request)
@@ -1399,7 +1407,7 @@ class AsyncOscTypedMixin:
         return _validate_response(CreateSecurityGroupResponse, response)
 
     async def create_security_group_rule(
-        self,
+        self: HasCallMethod,
         request: CreateSecurityGroupRuleRequest | None = None,
     ) -> CreateSecurityGroupRuleResponse:
         request = _validate_request(CreateSecurityGroupRuleRequest, request)
@@ -1425,7 +1433,7 @@ class AsyncOscTypedMixin:
         return _validate_response(CreateSecurityGroupRuleResponse, response)
 
     async def create_server_certificate(
-        self,
+        self: HasCallMethod,
         request: CreateServerCertificateRequest | None = None,
     ) -> CreateServerCertificateResponse:
         request = _validate_request(CreateServerCertificateRequest, request)
@@ -1451,7 +1459,7 @@ class AsyncOscTypedMixin:
         return _validate_response(CreateServerCertificateResponse, response)
 
     async def create_snapshot(
-        self,
+        self: HasCallMethod,
         request: CreateSnapshotRequest | None = None,
     ) -> CreateSnapshotResponse:
         request = _validate_request(CreateSnapshotRequest, request)
@@ -1477,7 +1485,7 @@ class AsyncOscTypedMixin:
         return _validate_response(CreateSnapshotResponse, response)
 
     async def create_snapshot_export_task(
-        self,
+        self: HasCallMethod,
         request: CreateSnapshotExportTaskRequest | None = None,
     ) -> CreateSnapshotExportTaskResponse:
         request = _validate_request(CreateSnapshotExportTaskRequest, request)
@@ -1503,7 +1511,7 @@ class AsyncOscTypedMixin:
         return _validate_response(CreateSnapshotExportTaskResponse, response)
 
     async def create_subnet(
-        self,
+        self: HasCallMethod,
         request: CreateSubnetRequest | None = None,
     ) -> CreateSubnetResponse:
         request = _validate_request(CreateSubnetRequest, request)
@@ -1529,7 +1537,7 @@ class AsyncOscTypedMixin:
         return _validate_response(CreateSubnetResponse, response)
 
     async def create_tags(
-        self,
+        self: HasCallMethod,
         request: CreateTagsRequest | None = None,
     ) -> CreateTagsResponse:
         request = _validate_request(CreateTagsRequest, request)
@@ -1555,7 +1563,7 @@ class AsyncOscTypedMixin:
         return _validate_response(CreateTagsResponse, response)
 
     async def create_user(
-        self,
+        self: HasCallMethod,
         request: CreateUserRequest | None = None,
     ) -> CreateUserResponse:
         request = _validate_request(CreateUserRequest, request)
@@ -1581,7 +1589,7 @@ class AsyncOscTypedMixin:
         return _validate_response(CreateUserResponse, response)
 
     async def create_user_group(
-        self,
+        self: HasCallMethod,
         request: CreateUserGroupRequest | None = None,
     ) -> CreateUserGroupResponse:
         request = _validate_request(CreateUserGroupRequest, request)
@@ -1607,7 +1615,7 @@ class AsyncOscTypedMixin:
         return _validate_response(CreateUserGroupResponse, response)
 
     async def create_virtual_gateway(
-        self,
+        self: HasCallMethod,
         request: CreateVirtualGatewayRequest | None = None,
     ) -> CreateVirtualGatewayResponse:
         request = _validate_request(CreateVirtualGatewayRequest, request)
@@ -1633,7 +1641,7 @@ class AsyncOscTypedMixin:
         return _validate_response(CreateVirtualGatewayResponse, response)
 
     async def create_vm_group(
-        self,
+        self: HasCallMethod,
         request: CreateVmGroupRequest | None = None,
     ) -> CreateVmGroupResponse:
         request = _validate_request(CreateVmGroupRequest, request)
@@ -1659,7 +1667,7 @@ class AsyncOscTypedMixin:
         return _validate_response(CreateVmGroupResponse, response)
 
     async def create_vm_template(
-        self,
+        self: HasCallMethod,
         request: CreateVmTemplateRequest | None = None,
     ) -> CreateVmTemplateResponse:
         request = _validate_request(CreateVmTemplateRequest, request)
@@ -1685,7 +1693,7 @@ class AsyncOscTypedMixin:
         return _validate_response(CreateVmTemplateResponse, response)
 
     async def create_vms(
-        self,
+        self: HasCallMethod,
         request: CreateVmsRequest | None = None,
     ) -> CreateVmsResponse:
         request = _validate_request(CreateVmsRequest, request)
@@ -1711,7 +1719,7 @@ class AsyncOscTypedMixin:
         return _validate_response(CreateVmsResponse, response)
 
     async def create_volume(
-        self,
+        self: HasCallMethod,
         request: CreateVolumeRequest | None = None,
     ) -> CreateVolumeResponse:
         request = _validate_request(CreateVolumeRequest, request)
@@ -1737,7 +1745,7 @@ class AsyncOscTypedMixin:
         return _validate_response(CreateVolumeResponse, response)
 
     async def create_vpn_connection(
-        self,
+        self: HasCallMethod,
         request: CreateVpnConnectionRequest | None = None,
     ) -> CreateVpnConnectionResponse:
         request = _validate_request(CreateVpnConnectionRequest, request)
@@ -1763,7 +1771,7 @@ class AsyncOscTypedMixin:
         return _validate_response(CreateVpnConnectionResponse, response)
 
     async def create_vpn_connection_route(
-        self,
+        self: HasCallMethod,
         request: CreateVpnConnectionRouteRequest | None = None,
     ) -> CreateVpnConnectionRouteResponse:
         request = _validate_request(CreateVpnConnectionRouteRequest, request)
@@ -1789,7 +1797,7 @@ class AsyncOscTypedMixin:
         return _validate_response(CreateVpnConnectionRouteResponse, response)
 
     async def delete_access_key(
-        self,
+        self: HasCallMethod,
         request: DeleteAccessKeyRequest | None = None,
     ) -> DeleteAccessKeyResponse:
         request = _validate_request(DeleteAccessKeyRequest, request)
@@ -1815,7 +1823,7 @@ class AsyncOscTypedMixin:
         return _validate_response(DeleteAccessKeyResponse, response)
 
     async def delete_api_access_rule(
-        self,
+        self: HasCallMethod,
         request: DeleteApiAccessRuleRequest | None = None,
     ) -> DeleteApiAccessRuleResponse:
         request = _validate_request(DeleteApiAccessRuleRequest, request)
@@ -1841,7 +1849,7 @@ class AsyncOscTypedMixin:
         return _validate_response(DeleteApiAccessRuleResponse, response)
 
     async def delete_ca(
-        self,
+        self: HasCallMethod,
         request: DeleteCaRequest | None = None,
     ) -> DeleteCaResponse:
         request = _validate_request(DeleteCaRequest, request)
@@ -1867,7 +1875,7 @@ class AsyncOscTypedMixin:
         return _validate_response(DeleteCaResponse, response)
 
     async def delete_client_gateway(
-        self,
+        self: HasCallMethod,
         request: DeleteClientGatewayRequest | None = None,
     ) -> DeleteClientGatewayResponse:
         request = _validate_request(DeleteClientGatewayRequest, request)
@@ -1893,7 +1901,7 @@ class AsyncOscTypedMixin:
         return _validate_response(DeleteClientGatewayResponse, response)
 
     async def delete_dedicated_group(
-        self,
+        self: HasCallMethod,
         request: DeleteDedicatedGroupRequest | None = None,
     ) -> DeleteDedicatedGroupResponse:
         request = _validate_request(DeleteDedicatedGroupRequest, request)
@@ -1919,7 +1927,7 @@ class AsyncOscTypedMixin:
         return _validate_response(DeleteDedicatedGroupResponse, response)
 
     async def delete_dhcp_options(
-        self,
+        self: HasCallMethod,
         request: DeleteDhcpOptionsRequest | None = None,
     ) -> DeleteDhcpOptionsResponse:
         request = _validate_request(DeleteDhcpOptionsRequest, request)
@@ -1945,7 +1953,7 @@ class AsyncOscTypedMixin:
         return _validate_response(DeleteDhcpOptionsResponse, response)
 
     async def delete_direct_link(
-        self,
+        self: HasCallMethod,
         request: DeleteDirectLinkRequest | None = None,
     ) -> DeleteDirectLinkResponse:
         request = _validate_request(DeleteDirectLinkRequest, request)
@@ -1971,7 +1979,7 @@ class AsyncOscTypedMixin:
         return _validate_response(DeleteDirectLinkResponse, response)
 
     async def delete_direct_link_interface(
-        self,
+        self: HasCallMethod,
         request: DeleteDirectLinkInterfaceRequest | None = None,
     ) -> DeleteDirectLinkInterfaceResponse:
         request = _validate_request(DeleteDirectLinkInterfaceRequest, request)
@@ -1997,7 +2005,7 @@ class AsyncOscTypedMixin:
         return _validate_response(DeleteDirectLinkInterfaceResponse, response)
 
     async def delete_export_task(
-        self,
+        self: HasCallMethod,
         request: DeleteExportTaskRequest | None = None,
     ) -> DeleteExportTaskResponse:
         request = _validate_request(DeleteExportTaskRequest, request)
@@ -2023,7 +2031,7 @@ class AsyncOscTypedMixin:
         return _validate_response(DeleteExportTaskResponse, response)
 
     async def delete_flexible_gpu(
-        self,
+        self: HasCallMethod,
         request: DeleteFlexibleGpuRequest | None = None,
     ) -> DeleteFlexibleGpuResponse:
         request = _validate_request(DeleteFlexibleGpuRequest, request)
@@ -2049,7 +2057,7 @@ class AsyncOscTypedMixin:
         return _validate_response(DeleteFlexibleGpuResponse, response)
 
     async def delete_image(
-        self,
+        self: HasCallMethod,
         request: DeleteImageRequest | None = None,
     ) -> DeleteImageResponse:
         request = _validate_request(DeleteImageRequest, request)
@@ -2075,7 +2083,7 @@ class AsyncOscTypedMixin:
         return _validate_response(DeleteImageResponse, response)
 
     async def delete_internet_service(
-        self,
+        self: HasCallMethod,
         request: DeleteInternetServiceRequest | None = None,
     ) -> DeleteInternetServiceResponse:
         request = _validate_request(DeleteInternetServiceRequest, request)
@@ -2101,7 +2109,7 @@ class AsyncOscTypedMixin:
         return _validate_response(DeleteInternetServiceResponse, response)
 
     async def delete_keypair(
-        self,
+        self: HasCallMethod,
         request: DeleteKeypairRequest | None = None,
     ) -> DeleteKeypairResponse:
         request = _validate_request(DeleteKeypairRequest, request)
@@ -2127,7 +2135,7 @@ class AsyncOscTypedMixin:
         return _validate_response(DeleteKeypairResponse, response)
 
     async def delete_listener_rule(
-        self,
+        self: HasCallMethod,
         request: DeleteListenerRuleRequest | None = None,
     ) -> DeleteListenerRuleResponse:
         request = _validate_request(DeleteListenerRuleRequest, request)
@@ -2153,7 +2161,7 @@ class AsyncOscTypedMixin:
         return _validate_response(DeleteListenerRuleResponse, response)
 
     async def delete_load_balancer(
-        self,
+        self: HasCallMethod,
         request: DeleteLoadBalancerRequest | None = None,
     ) -> DeleteLoadBalancerResponse:
         request = _validate_request(DeleteLoadBalancerRequest, request)
@@ -2179,7 +2187,7 @@ class AsyncOscTypedMixin:
         return _validate_response(DeleteLoadBalancerResponse, response)
 
     async def delete_load_balancer_listeners(
-        self,
+        self: HasCallMethod,
         request: DeleteLoadBalancerListenersRequest | None = None,
     ) -> DeleteLoadBalancerListenersResponse:
         request = _validate_request(DeleteLoadBalancerListenersRequest, request)
@@ -2205,7 +2213,7 @@ class AsyncOscTypedMixin:
         return _validate_response(DeleteLoadBalancerListenersResponse, response)
 
     async def delete_load_balancer_policy(
-        self,
+        self: HasCallMethod,
         request: DeleteLoadBalancerPolicyRequest | None = None,
     ) -> DeleteLoadBalancerPolicyResponse:
         request = _validate_request(DeleteLoadBalancerPolicyRequest, request)
@@ -2231,7 +2239,7 @@ class AsyncOscTypedMixin:
         return _validate_response(DeleteLoadBalancerPolicyResponse, response)
 
     async def delete_load_balancer_tags(
-        self,
+        self: HasCallMethod,
         request: DeleteLoadBalancerTagsRequest | None = None,
     ) -> DeleteLoadBalancerTagsResponse:
         request = _validate_request(DeleteLoadBalancerTagsRequest, request)
@@ -2257,7 +2265,7 @@ class AsyncOscTypedMixin:
         return _validate_response(DeleteLoadBalancerTagsResponse, response)
 
     async def delete_nat_service(
-        self,
+        self: HasCallMethod,
         request: DeleteNatServiceRequest | None = None,
     ) -> DeleteNatServiceResponse:
         request = _validate_request(DeleteNatServiceRequest, request)
@@ -2283,7 +2291,7 @@ class AsyncOscTypedMixin:
         return _validate_response(DeleteNatServiceResponse, response)
 
     async def delete_net(
-        self,
+        self: HasCallMethod,
         request: DeleteNetRequest | None = None,
     ) -> DeleteNetResponse:
         request = _validate_request(DeleteNetRequest, request)
@@ -2309,7 +2317,7 @@ class AsyncOscTypedMixin:
         return _validate_response(DeleteNetResponse, response)
 
     async def delete_net_access_point(
-        self,
+        self: HasCallMethod,
         request: DeleteNetAccessPointRequest | None = None,
     ) -> DeleteNetAccessPointResponse:
         request = _validate_request(DeleteNetAccessPointRequest, request)
@@ -2335,7 +2343,7 @@ class AsyncOscTypedMixin:
         return _validate_response(DeleteNetAccessPointResponse, response)
 
     async def delete_net_peering(
-        self,
+        self: HasCallMethod,
         request: DeleteNetPeeringRequest | None = None,
     ) -> DeleteNetPeeringResponse:
         request = _validate_request(DeleteNetPeeringRequest, request)
@@ -2361,7 +2369,7 @@ class AsyncOscTypedMixin:
         return _validate_response(DeleteNetPeeringResponse, response)
 
     async def delete_nic(
-        self,
+        self: HasCallMethod,
         request: DeleteNicRequest | None = None,
     ) -> DeleteNicResponse:
         request = _validate_request(DeleteNicRequest, request)
@@ -2387,7 +2395,7 @@ class AsyncOscTypedMixin:
         return _validate_response(DeleteNicResponse, response)
 
     async def delete_policy(
-        self,
+        self: HasCallMethod,
         request: DeletePolicyRequest | None = None,
     ) -> DeletePolicyResponse:
         request = _validate_request(DeletePolicyRequest, request)
@@ -2413,7 +2421,7 @@ class AsyncOscTypedMixin:
         return _validate_response(DeletePolicyResponse, response)
 
     async def delete_policy_version(
-        self,
+        self: HasCallMethod,
         request: DeletePolicyVersionRequest | None = None,
     ) -> DeletePolicyVersionResponse:
         request = _validate_request(DeletePolicyVersionRequest, request)
@@ -2439,7 +2447,7 @@ class AsyncOscTypedMixin:
         return _validate_response(DeletePolicyVersionResponse, response)
 
     async def delete_product_type(
-        self,
+        self: HasCallMethod,
         request: DeleteProductTypeRequest | None = None,
     ) -> DeleteProductTypeResponse:
         request = _validate_request(DeleteProductTypeRequest, request)
@@ -2465,7 +2473,7 @@ class AsyncOscTypedMixin:
         return _validate_response(DeleteProductTypeResponse, response)
 
     async def delete_public_ip(
-        self,
+        self: HasCallMethod,
         request: DeletePublicIpRequest | None = None,
     ) -> DeletePublicIpResponse:
         request = _validate_request(DeletePublicIpRequest, request)
@@ -2491,7 +2499,7 @@ class AsyncOscTypedMixin:
         return _validate_response(DeletePublicIpResponse, response)
 
     async def delete_route(
-        self,
+        self: HasCallMethod,
         request: DeleteRouteRequest | None = None,
     ) -> DeleteRouteResponse:
         request = _validate_request(DeleteRouteRequest, request)
@@ -2517,7 +2525,7 @@ class AsyncOscTypedMixin:
         return _validate_response(DeleteRouteResponse, response)
 
     async def delete_route_table(
-        self,
+        self: HasCallMethod,
         request: DeleteRouteTableRequest | None = None,
     ) -> DeleteRouteTableResponse:
         request = _validate_request(DeleteRouteTableRequest, request)
@@ -2543,7 +2551,7 @@ class AsyncOscTypedMixin:
         return _validate_response(DeleteRouteTableResponse, response)
 
     async def delete_security_group(
-        self,
+        self: HasCallMethod,
         request: DeleteSecurityGroupRequest | None = None,
     ) -> DeleteSecurityGroupResponse:
         request = _validate_request(DeleteSecurityGroupRequest, request)
@@ -2569,7 +2577,7 @@ class AsyncOscTypedMixin:
         return _validate_response(DeleteSecurityGroupResponse, response)
 
     async def delete_security_group_rule(
-        self,
+        self: HasCallMethod,
         request: DeleteSecurityGroupRuleRequest | None = None,
     ) -> DeleteSecurityGroupRuleResponse:
         request = _validate_request(DeleteSecurityGroupRuleRequest, request)
@@ -2595,7 +2603,7 @@ class AsyncOscTypedMixin:
         return _validate_response(DeleteSecurityGroupRuleResponse, response)
 
     async def delete_server_certificate(
-        self,
+        self: HasCallMethod,
         request: DeleteServerCertificateRequest | None = None,
     ) -> DeleteServerCertificateResponse:
         request = _validate_request(DeleteServerCertificateRequest, request)
@@ -2621,7 +2629,7 @@ class AsyncOscTypedMixin:
         return _validate_response(DeleteServerCertificateResponse, response)
 
     async def delete_snapshot(
-        self,
+        self: HasCallMethod,
         request: DeleteSnapshotRequest | None = None,
     ) -> DeleteSnapshotResponse:
         request = _validate_request(DeleteSnapshotRequest, request)
@@ -2647,7 +2655,7 @@ class AsyncOscTypedMixin:
         return _validate_response(DeleteSnapshotResponse, response)
 
     async def delete_subnet(
-        self,
+        self: HasCallMethod,
         request: DeleteSubnetRequest | None = None,
     ) -> DeleteSubnetResponse:
         request = _validate_request(DeleteSubnetRequest, request)
@@ -2673,7 +2681,7 @@ class AsyncOscTypedMixin:
         return _validate_response(DeleteSubnetResponse, response)
 
     async def delete_tags(
-        self,
+        self: HasCallMethod,
         request: DeleteTagsRequest | None = None,
     ) -> DeleteTagsResponse:
         request = _validate_request(DeleteTagsRequest, request)
@@ -2699,7 +2707,7 @@ class AsyncOscTypedMixin:
         return _validate_response(DeleteTagsResponse, response)
 
     async def delete_user(
-        self,
+        self: HasCallMethod,
         request: DeleteUserRequest | None = None,
     ) -> DeleteUserResponse:
         request = _validate_request(DeleteUserRequest, request)
@@ -2725,7 +2733,7 @@ class AsyncOscTypedMixin:
         return _validate_response(DeleteUserResponse, response)
 
     async def delete_user_group(
-        self,
+        self: HasCallMethod,
         request: DeleteUserGroupRequest | None = None,
     ) -> DeleteUserGroupResponse:
         request = _validate_request(DeleteUserGroupRequest, request)
@@ -2751,7 +2759,7 @@ class AsyncOscTypedMixin:
         return _validate_response(DeleteUserGroupResponse, response)
 
     async def delete_user_group_policy(
-        self,
+        self: HasCallMethod,
         request: DeleteUserGroupPolicyRequest | None = None,
     ) -> DeleteUserGroupPolicyResponse:
         request = _validate_request(DeleteUserGroupPolicyRequest, request)
@@ -2777,7 +2785,7 @@ class AsyncOscTypedMixin:
         return _validate_response(DeleteUserGroupPolicyResponse, response)
 
     async def delete_user_policy(
-        self,
+        self: HasCallMethod,
         request: DeleteUserPolicyRequest | None = None,
     ) -> DeleteUserPolicyResponse:
         request = _validate_request(DeleteUserPolicyRequest, request)
@@ -2803,7 +2811,7 @@ class AsyncOscTypedMixin:
         return _validate_response(DeleteUserPolicyResponse, response)
 
     async def delete_virtual_gateway(
-        self,
+        self: HasCallMethod,
         request: DeleteVirtualGatewayRequest | None = None,
     ) -> DeleteVirtualGatewayResponse:
         request = _validate_request(DeleteVirtualGatewayRequest, request)
@@ -2829,7 +2837,7 @@ class AsyncOscTypedMixin:
         return _validate_response(DeleteVirtualGatewayResponse, response)
 
     async def delete_vm_group(
-        self,
+        self: HasCallMethod,
         request: DeleteVmGroupRequest | None = None,
     ) -> DeleteVmGroupResponse:
         request = _validate_request(DeleteVmGroupRequest, request)
@@ -2855,7 +2863,7 @@ class AsyncOscTypedMixin:
         return _validate_response(DeleteVmGroupResponse, response)
 
     async def delete_vm_template(
-        self,
+        self: HasCallMethod,
         request: DeleteVmTemplateRequest | None = None,
     ) -> DeleteVmTemplateResponse:
         request = _validate_request(DeleteVmTemplateRequest, request)
@@ -2881,7 +2889,7 @@ class AsyncOscTypedMixin:
         return _validate_response(DeleteVmTemplateResponse, response)
 
     async def delete_vms(
-        self,
+        self: HasCallMethod,
         request: DeleteVmsRequest | None = None,
     ) -> DeleteVmsResponse:
         request = _validate_request(DeleteVmsRequest, request)
@@ -2907,7 +2915,7 @@ class AsyncOscTypedMixin:
         return _validate_response(DeleteVmsResponse, response)
 
     async def delete_volume(
-        self,
+        self: HasCallMethod,
         request: DeleteVolumeRequest | None = None,
     ) -> DeleteVolumeResponse:
         request = _validate_request(DeleteVolumeRequest, request)
@@ -2933,7 +2941,7 @@ class AsyncOscTypedMixin:
         return _validate_response(DeleteVolumeResponse, response)
 
     async def delete_vpn_connection(
-        self,
+        self: HasCallMethod,
         request: DeleteVpnConnectionRequest | None = None,
     ) -> DeleteVpnConnectionResponse:
         request = _validate_request(DeleteVpnConnectionRequest, request)
@@ -2959,7 +2967,7 @@ class AsyncOscTypedMixin:
         return _validate_response(DeleteVpnConnectionResponse, response)
 
     async def delete_vpn_connection_route(
-        self,
+        self: HasCallMethod,
         request: DeleteVpnConnectionRouteRequest | None = None,
     ) -> DeleteVpnConnectionRouteResponse:
         request = _validate_request(DeleteVpnConnectionRouteRequest, request)
@@ -2985,7 +2993,7 @@ class AsyncOscTypedMixin:
         return _validate_response(DeleteVpnConnectionRouteResponse, response)
 
     async def deregister_vms_in_load_balancer(
-        self,
+        self: HasCallMethod,
         request: DeregisterVmsInLoadBalancerRequest | None = None,
     ) -> DeregisterVmsInLoadBalancerResponse:
         request = _validate_request(DeregisterVmsInLoadBalancerRequest, request)
@@ -3011,7 +3019,7 @@ class AsyncOscTypedMixin:
         return _validate_response(DeregisterVmsInLoadBalancerResponse, response)
 
     async def disable_outscale_login(
-        self,
+        self: HasCallMethod,
         request: DisableOutscaleLoginRequest | None = None,
     ) -> DisableOutscaleLoginResponse:
         request = _validate_request(DisableOutscaleLoginRequest, request)
@@ -3037,7 +3045,7 @@ class AsyncOscTypedMixin:
         return _validate_response(DisableOutscaleLoginResponse, response)
 
     async def disable_outscale_login_for_users(
-        self,
+        self: HasCallMethod,
         request: DisableOutscaleLoginRequest | None = None,
     ) -> DisableOutscaleLoginResponse:
         request = _validate_request(DisableOutscaleLoginRequest, request)
@@ -3063,7 +3071,7 @@ class AsyncOscTypedMixin:
         return _validate_response(DisableOutscaleLoginResponse, response)
 
     async def disable_outscale_login_per_users(
-        self,
+        self: HasCallMethod,
         request: DisableOutscaleLoginPerUsersRequest | None = None,
     ) -> DisableOutscaleLoginPerUsersResponse:
         request = _validate_request(DisableOutscaleLoginPerUsersRequest, request)
@@ -3089,7 +3097,7 @@ class AsyncOscTypedMixin:
         return _validate_response(DisableOutscaleLoginPerUsersResponse, response)
 
     async def enable_outscale_login(
-        self,
+        self: HasCallMethod,
         request: EnableOutscaleLoginRequest | None = None,
     ) -> EnableOutscaleLoginResponse:
         request = _validate_request(EnableOutscaleLoginRequest, request)
@@ -3115,7 +3123,7 @@ class AsyncOscTypedMixin:
         return _validate_response(EnableOutscaleLoginResponse, response)
 
     async def enable_outscale_login_for_users(
-        self,
+        self: HasCallMethod,
         request: EnableOutscaleLoginForUsersRequest | None = None,
     ) -> EnableOutscaleLoginForUsersResponse:
         request = _validate_request(EnableOutscaleLoginForUsersRequest, request)
@@ -3141,7 +3149,7 @@ class AsyncOscTypedMixin:
         return _validate_response(EnableOutscaleLoginForUsersResponse, response)
 
     async def enable_outscale_login_per_users(
-        self,
+        self: HasCallMethod,
         request: EnableOutscaleLoginPerUsersRequest | None = None,
     ) -> EnableOutscaleLoginPerUsersResponse:
         request = _validate_request(EnableOutscaleLoginPerUsersRequest, request)
@@ -3167,7 +3175,7 @@ class AsyncOscTypedMixin:
         return _validate_response(EnableOutscaleLoginPerUsersResponse, response)
 
     async def link_flexible_gpu(
-        self,
+        self: HasCallMethod,
         request: LinkFlexibleGpuRequest | None = None,
     ) -> LinkFlexibleGpuResponse:
         request = _validate_request(LinkFlexibleGpuRequest, request)
@@ -3193,7 +3201,7 @@ class AsyncOscTypedMixin:
         return _validate_response(LinkFlexibleGpuResponse, response)
 
     async def link_internet_service(
-        self,
+        self: HasCallMethod,
         request: LinkInternetServiceRequest | None = None,
     ) -> LinkInternetServiceResponse:
         request = _validate_request(LinkInternetServiceRequest, request)
@@ -3219,7 +3227,7 @@ class AsyncOscTypedMixin:
         return _validate_response(LinkInternetServiceResponse, response)
 
     async def link_load_balancer_backend_machines(
-        self,
+        self: HasCallMethod,
         request: LinkLoadBalancerBackendMachinesRequest | None = None,
     ) -> LinkLoadBalancerBackendMachinesResponse:
         request = _validate_request(LinkLoadBalancerBackendMachinesRequest, request)
@@ -3245,7 +3253,7 @@ class AsyncOscTypedMixin:
         return _validate_response(LinkLoadBalancerBackendMachinesResponse, response)
 
     async def link_managed_policy_to_user_group(
-        self,
+        self: HasCallMethod,
         request: LinkManagedPolicyToUserGroupRequest | None = None,
     ) -> LinkManagedPolicyToUserGroupResponse:
         request = _validate_request(LinkManagedPolicyToUserGroupRequest, request)
@@ -3271,7 +3279,7 @@ class AsyncOscTypedMixin:
         return _validate_response(LinkManagedPolicyToUserGroupResponse, response)
 
     async def link_nic(
-        self,
+        self: HasCallMethod,
         request: LinkNicRequest | None = None,
     ) -> LinkNicResponse:
         request = _validate_request(LinkNicRequest, request)
@@ -3297,7 +3305,7 @@ class AsyncOscTypedMixin:
         return _validate_response(LinkNicResponse, response)
 
     async def link_policy(
-        self,
+        self: HasCallMethod,
         request: LinkPolicyRequest | None = None,
     ) -> LinkPolicyResponse:
         request = _validate_request(LinkPolicyRequest, request)
@@ -3323,7 +3331,7 @@ class AsyncOscTypedMixin:
         return _validate_response(LinkPolicyResponse, response)
 
     async def link_private_ips(
-        self,
+        self: HasCallMethod,
         request: LinkPrivateIpsRequest | None = None,
     ) -> LinkPrivateIpsResponse:
         request = _validate_request(LinkPrivateIpsRequest, request)
@@ -3349,7 +3357,7 @@ class AsyncOscTypedMixin:
         return _validate_response(LinkPrivateIpsResponse, response)
 
     async def link_public_ip(
-        self,
+        self: HasCallMethod,
         request: LinkPublicIpRequest | None = None,
     ) -> LinkPublicIpResponse:
         request = _validate_request(LinkPublicIpRequest, request)
@@ -3375,7 +3383,7 @@ class AsyncOscTypedMixin:
         return _validate_response(LinkPublicIpResponse, response)
 
     async def link_route_table(
-        self,
+        self: HasCallMethod,
         request: LinkRouteTableRequest | None = None,
     ) -> LinkRouteTableResponse:
         request = _validate_request(LinkRouteTableRequest, request)
@@ -3401,7 +3409,7 @@ class AsyncOscTypedMixin:
         return _validate_response(LinkRouteTableResponse, response)
 
     async def link_virtual_gateway(
-        self,
+        self: HasCallMethod,
         request: LinkVirtualGatewayRequest | None = None,
     ) -> LinkVirtualGatewayResponse:
         request = _validate_request(LinkVirtualGatewayRequest, request)
@@ -3427,7 +3435,7 @@ class AsyncOscTypedMixin:
         return _validate_response(LinkVirtualGatewayResponse, response)
 
     async def link_volume(
-        self,
+        self: HasCallMethod,
         request: LinkVolumeRequest | None = None,
     ) -> LinkVolumeResponse:
         request = _validate_request(LinkVolumeRequest, request)
@@ -3453,7 +3461,7 @@ class AsyncOscTypedMixin:
         return _validate_response(LinkVolumeResponse, response)
 
     async def put_user_group_policy(
-        self,
+        self: HasCallMethod,
         request: PutUserGroupPolicyRequest | None = None,
     ) -> PutUserGroupPolicyResponse:
         request = _validate_request(PutUserGroupPolicyRequest, request)
@@ -3479,7 +3487,7 @@ class AsyncOscTypedMixin:
         return _validate_response(PutUserGroupPolicyResponse, response)
 
     async def put_user_policy(
-        self,
+        self: HasCallMethod,
         request: PutUserPolicyRequest | None = None,
     ) -> PutUserPolicyResponse:
         request = _validate_request(PutUserPolicyRequest, request)
@@ -3505,7 +3513,7 @@ class AsyncOscTypedMixin:
         return _validate_response(PutUserPolicyResponse, response)
 
     async def read_access_keys(
-        self,
+        self: HasCallMethod,
         request: ReadAccessKeysRequest | None = None,
     ) -> ReadAccessKeysResponse:
         request = _validate_request(ReadAccessKeysRequest, request)
@@ -3531,7 +3539,7 @@ class AsyncOscTypedMixin:
         return _validate_response(ReadAccessKeysResponse, response)
 
     async def read_accounts(
-        self,
+        self: HasCallMethod,
         request: ReadAccountsRequest | None = None,
     ) -> ReadAccountsResponse:
         request = _validate_request(ReadAccountsRequest, request)
@@ -3557,7 +3565,7 @@ class AsyncOscTypedMixin:
         return _validate_response(ReadAccountsResponse, response)
 
     async def read_admin_password(
-        self,
+        self: HasCallMethod,
         request: ReadAdminPasswordRequest | None = None,
     ) -> ReadAdminPasswordResponse:
         request = _validate_request(ReadAdminPasswordRequest, request)
@@ -3583,7 +3591,7 @@ class AsyncOscTypedMixin:
         return _validate_response(ReadAdminPasswordResponse, response)
 
     async def read_api_access_policy(
-        self,
+        self: HasCallMethod,
         request: ReadApiAccessPolicyRequest | None = None,
     ) -> ReadApiAccessPolicyResponse:
         request = _validate_request(ReadApiAccessPolicyRequest, request)
@@ -3609,7 +3617,7 @@ class AsyncOscTypedMixin:
         return _validate_response(ReadApiAccessPolicyResponse, response)
 
     async def read_api_access_rules(
-        self,
+        self: HasCallMethod,
         request: ReadApiAccessRulesRequest | None = None,
     ) -> ReadApiAccessRulesResponse:
         request = _validate_request(ReadApiAccessRulesRequest, request)
@@ -3635,7 +3643,7 @@ class AsyncOscTypedMixin:
         return _validate_response(ReadApiAccessRulesResponse, response)
 
     async def read_api_logs(
-        self,
+        self: HasCallMethod,
         request: ReadApiLogsRequest | None = None,
     ) -> ReadApiLogsResponse:
         request = _validate_request(ReadApiLogsRequest, request)
@@ -3661,7 +3669,7 @@ class AsyncOscTypedMixin:
         return _validate_response(ReadApiLogsResponse, response)
 
     async def read_co2_emission_account(
-        self,
+        self: HasCallMethod,
         request: ReadCO2EmissionAccountRequest | None = None,
     ) -> ReadCO2EmissionAccountResponse:
         request = _validate_request(ReadCO2EmissionAccountRequest, request)
@@ -3687,7 +3695,7 @@ class AsyncOscTypedMixin:
         return _validate_response(ReadCO2EmissionAccountResponse, response)
 
     async def read_cas(
-        self,
+        self: HasCallMethod,
         request: ReadCasRequest | None = None,
     ) -> ReadCasResponse:
         request = _validate_request(ReadCasRequest, request)
@@ -3713,7 +3721,7 @@ class AsyncOscTypedMixin:
         return _validate_response(ReadCasResponse, response)
 
     async def read_catalog(
-        self,
+        self: HasCallMethod,
         request: ReadCatalogRequest | None = None,
     ) -> ReadCatalogResponse:
         request = _validate_request(ReadCatalogRequest, request)
@@ -3739,7 +3747,7 @@ class AsyncOscTypedMixin:
         return _validate_response(ReadCatalogResponse, response)
 
     async def read_catalogs(
-        self,
+        self: HasCallMethod,
         request: ReadCatalogsRequest | None = None,
     ) -> ReadCatalogsResponse:
         request = _validate_request(ReadCatalogsRequest, request)
@@ -3765,7 +3773,7 @@ class AsyncOscTypedMixin:
         return _validate_response(ReadCatalogsResponse, response)
 
     async def read_client_gateways(
-        self,
+        self: HasCallMethod,
         request: ReadClientGatewaysRequest | None = None,
     ) -> ReadClientGatewaysResponse:
         request = _validate_request(ReadClientGatewaysRequest, request)
@@ -3791,7 +3799,7 @@ class AsyncOscTypedMixin:
         return _validate_response(ReadClientGatewaysResponse, response)
 
     async def read_console_output(
-        self,
+        self: HasCallMethod,
         request: ReadConsoleOutputRequest | None = None,
     ) -> ReadConsoleOutputResponse:
         request = _validate_request(ReadConsoleOutputRequest, request)
@@ -3817,7 +3825,7 @@ class AsyncOscTypedMixin:
         return _validate_response(ReadConsoleOutputResponse, response)
 
     async def read_consumption_account(
-        self,
+        self: HasCallMethod,
         request: ReadConsumptionAccountRequest | None = None,
     ) -> ReadConsumptionAccountResponse:
         request = _validate_request(ReadConsumptionAccountRequest, request)
@@ -3843,7 +3851,7 @@ class AsyncOscTypedMixin:
         return _validate_response(ReadConsumptionAccountResponse, response)
 
     async def read_dedicated_groups(
-        self,
+        self: HasCallMethod,
         request: ReadDedicatedGroupsRequest | None = None,
     ) -> ReadDedicatedGroupsResponse:
         request = _validate_request(ReadDedicatedGroupsRequest, request)
@@ -3869,7 +3877,7 @@ class AsyncOscTypedMixin:
         return _validate_response(ReadDedicatedGroupsResponse, response)
 
     async def read_dhcp_options(
-        self,
+        self: HasCallMethod,
         request: ReadDhcpOptionsRequest | None = None,
     ) -> ReadDhcpOptionsResponse:
         request = _validate_request(ReadDhcpOptionsRequest, request)
@@ -3895,7 +3903,7 @@ class AsyncOscTypedMixin:
         return _validate_response(ReadDhcpOptionsResponse, response)
 
     async def read_direct_link_interfaces(
-        self,
+        self: HasCallMethod,
         request: ReadDirectLinkInterfacesRequest | None = None,
     ) -> ReadDirectLinkInterfacesResponse:
         request = _validate_request(ReadDirectLinkInterfacesRequest, request)
@@ -3921,7 +3929,7 @@ class AsyncOscTypedMixin:
         return _validate_response(ReadDirectLinkInterfacesResponse, response)
 
     async def read_direct_links(
-        self,
+        self: HasCallMethod,
         request: ReadDirectLinksRequest | None = None,
     ) -> ReadDirectLinksResponse:
         request = _validate_request(ReadDirectLinksRequest, request)
@@ -3947,7 +3955,7 @@ class AsyncOscTypedMixin:
         return _validate_response(ReadDirectLinksResponse, response)
 
     async def read_entities_linked_to_policy(
-        self,
+        self: HasCallMethod,
         request: ReadEntitiesLinkedToPolicyRequest | None = None,
     ) -> ReadEntitiesLinkedToPolicyResponse:
         request = _validate_request(ReadEntitiesLinkedToPolicyRequest, request)
@@ -3973,7 +3981,7 @@ class AsyncOscTypedMixin:
         return _validate_response(ReadEntitiesLinkedToPolicyResponse, response)
 
     async def read_flexible_gpu_catalog(
-        self,
+        self: HasCallMethod,
         request: ReadFlexibleGpuCatalogRequest | None = None,
     ) -> ReadFlexibleGpuCatalogResponse:
         request = _validate_request(ReadFlexibleGpuCatalogRequest, request)
@@ -3999,7 +4007,7 @@ class AsyncOscTypedMixin:
         return _validate_response(ReadFlexibleGpuCatalogResponse, response)
 
     async def read_flexible_gpus(
-        self,
+        self: HasCallMethod,
         request: ReadFlexibleGpusRequest | None = None,
     ) -> ReadFlexibleGpusResponse:
         request = _validate_request(ReadFlexibleGpusRequest, request)
@@ -4025,7 +4033,7 @@ class AsyncOscTypedMixin:
         return _validate_response(ReadFlexibleGpusResponse, response)
 
     async def read_image_export_tasks(
-        self,
+        self: HasCallMethod,
         request: ReadImageExportTasksRequest | None = None,
     ) -> ReadImageExportTasksResponse:
         request = _validate_request(ReadImageExportTasksRequest, request)
@@ -4051,7 +4059,7 @@ class AsyncOscTypedMixin:
         return _validate_response(ReadImageExportTasksResponse, response)
 
     async def read_images(
-        self,
+        self: HasCallMethod,
         request: ReadImagesRequest | None = None,
     ) -> ReadImagesResponse:
         request = _validate_request(ReadImagesRequest, request)
@@ -4077,7 +4085,7 @@ class AsyncOscTypedMixin:
         return _validate_response(ReadImagesResponse, response)
 
     async def read_internet_services(
-        self,
+        self: HasCallMethod,
         request: ReadInternetServicesRequest | None = None,
     ) -> ReadInternetServicesResponse:
         request = _validate_request(ReadInternetServicesRequest, request)
@@ -4103,7 +4111,7 @@ class AsyncOscTypedMixin:
         return _validate_response(ReadInternetServicesResponse, response)
 
     async def read_keypairs(
-        self,
+        self: HasCallMethod,
         request: ReadKeypairsRequest | None = None,
     ) -> ReadKeypairsResponse:
         request = _validate_request(ReadKeypairsRequest, request)
@@ -4129,7 +4137,7 @@ class AsyncOscTypedMixin:
         return _validate_response(ReadKeypairsResponse, response)
 
     async def read_linked_policies(
-        self,
+        self: HasCallMethod,
         request: ReadLinkedPoliciesRequest | None = None,
     ) -> ReadLinkedPoliciesResponse:
         request = _validate_request(ReadLinkedPoliciesRequest, request)
@@ -4155,7 +4163,7 @@ class AsyncOscTypedMixin:
         return _validate_response(ReadLinkedPoliciesResponse, response)
 
     async def read_listener_rules(
-        self,
+        self: HasCallMethod,
         request: ReadListenerRulesRequest | None = None,
     ) -> ReadListenerRulesResponse:
         request = _validate_request(ReadListenerRulesRequest, request)
@@ -4181,7 +4189,7 @@ class AsyncOscTypedMixin:
         return _validate_response(ReadListenerRulesResponse, response)
 
     async def read_load_balancer_tags(
-        self,
+        self: HasCallMethod,
         request: ReadLoadBalancerTagsRequest | None = None,
     ) -> ReadLoadBalancerTagsResponse:
         request = _validate_request(ReadLoadBalancerTagsRequest, request)
@@ -4207,7 +4215,7 @@ class AsyncOscTypedMixin:
         return _validate_response(ReadLoadBalancerTagsResponse, response)
 
     async def read_load_balancers(
-        self,
+        self: HasCallMethod,
         request: ReadLoadBalancersRequest | None = None,
     ) -> ReadLoadBalancersResponse:
         request = _validate_request(ReadLoadBalancersRequest, request)
@@ -4233,7 +4241,7 @@ class AsyncOscTypedMixin:
         return _validate_response(ReadLoadBalancersResponse, response)
 
     async def read_locations(
-        self,
+        self: HasCallMethod,
         request: ReadLocationsRequest | None = None,
     ) -> ReadLocationsResponse:
         request = _validate_request(ReadLocationsRequest, request)
@@ -4259,7 +4267,7 @@ class AsyncOscTypedMixin:
         return _validate_response(ReadLocationsResponse, response)
 
     async def read_managed_policies_linked_to_user_group(
-        self,
+        self: HasCallMethod,
         request: ReadManagedPoliciesLinkedToUserGroupRequest | None = None,
     ) -> ReadManagedPoliciesLinkedToUserGroupResponse:
         request = _validate_request(ReadManagedPoliciesLinkedToUserGroupRequest, request)
@@ -4285,7 +4293,7 @@ class AsyncOscTypedMixin:
         return _validate_response(ReadManagedPoliciesLinkedToUserGroupResponse, response)
 
     async def read_nat_services(
-        self,
+        self: HasCallMethod,
         request: ReadNatServicesRequest | None = None,
     ) -> ReadNatServicesResponse:
         request = _validate_request(ReadNatServicesRequest, request)
@@ -4311,7 +4319,7 @@ class AsyncOscTypedMixin:
         return _validate_response(ReadNatServicesResponse, response)
 
     async def read_net_access_point_services(
-        self,
+        self: HasCallMethod,
         request: ReadNetAccessPointServicesRequest | None = None,
     ) -> ReadNetAccessPointServicesResponse:
         request = _validate_request(ReadNetAccessPointServicesRequest, request)
@@ -4337,7 +4345,7 @@ class AsyncOscTypedMixin:
         return _validate_response(ReadNetAccessPointServicesResponse, response)
 
     async def read_net_access_points(
-        self,
+        self: HasCallMethod,
         request: ReadNetAccessPointsRequest | None = None,
     ) -> ReadNetAccessPointsResponse:
         request = _validate_request(ReadNetAccessPointsRequest, request)
@@ -4363,7 +4371,7 @@ class AsyncOscTypedMixin:
         return _validate_response(ReadNetAccessPointsResponse, response)
 
     async def read_net_peerings(
-        self,
+        self: HasCallMethod,
         request: ReadNetPeeringsRequest | None = None,
     ) -> ReadNetPeeringsResponse:
         request = _validate_request(ReadNetPeeringsRequest, request)
@@ -4389,7 +4397,7 @@ class AsyncOscTypedMixin:
         return _validate_response(ReadNetPeeringsResponse, response)
 
     async def read_nets(
-        self,
+        self: HasCallMethod,
         request: ReadNetsRequest | None = None,
     ) -> ReadNetsResponse:
         request = _validate_request(ReadNetsRequest, request)
@@ -4415,7 +4423,7 @@ class AsyncOscTypedMixin:
         return _validate_response(ReadNetsResponse, response)
 
     async def read_nics(
-        self,
+        self: HasCallMethod,
         request: ReadNicsRequest | None = None,
     ) -> ReadNicsResponse:
         request = _validate_request(ReadNicsRequest, request)
@@ -4441,7 +4449,7 @@ class AsyncOscTypedMixin:
         return _validate_response(ReadNicsResponse, response)
 
     async def read_policies(
-        self,
+        self: HasCallMethod,
         request: ReadPoliciesRequest | None = None,
     ) -> ReadPoliciesResponse:
         request = _validate_request(ReadPoliciesRequest, request)
@@ -4467,7 +4475,7 @@ class AsyncOscTypedMixin:
         return _validate_response(ReadPoliciesResponse, response)
 
     async def read_policy(
-        self,
+        self: HasCallMethod,
         request: ReadPolicyRequest | None = None,
     ) -> ReadPolicyResponse:
         request = _validate_request(ReadPolicyRequest, request)
@@ -4493,7 +4501,7 @@ class AsyncOscTypedMixin:
         return _validate_response(ReadPolicyResponse, response)
 
     async def read_policy_version(
-        self,
+        self: HasCallMethod,
         request: ReadPolicyVersionRequest | None = None,
     ) -> ReadPolicyVersionResponse:
         request = _validate_request(ReadPolicyVersionRequest, request)
@@ -4519,7 +4527,7 @@ class AsyncOscTypedMixin:
         return _validate_response(ReadPolicyVersionResponse, response)
 
     async def read_policy_versions(
-        self,
+        self: HasCallMethod,
         request: ReadPolicyVersionsRequest | None = None,
     ) -> ReadPolicyVersionsResponse:
         request = _validate_request(ReadPolicyVersionsRequest, request)
@@ -4545,7 +4553,7 @@ class AsyncOscTypedMixin:
         return _validate_response(ReadPolicyVersionsResponse, response)
 
     async def read_product_types(
-        self,
+        self: HasCallMethod,
         request: ReadProductTypesRequest | None = None,
     ) -> ReadProductTypesResponse:
         request = _validate_request(ReadProductTypesRequest, request)
@@ -4571,7 +4579,7 @@ class AsyncOscTypedMixin:
         return _validate_response(ReadProductTypesResponse, response)
 
     async def read_public_catalog(
-        self,
+        self: HasCallMethod,
         request: ReadPublicCatalogRequest | None = None,
     ) -> ReadPublicCatalogResponse:
         request = _validate_request(ReadPublicCatalogRequest, request)
@@ -4597,7 +4605,7 @@ class AsyncOscTypedMixin:
         return _validate_response(ReadPublicCatalogResponse, response)
 
     async def read_public_ip_ranges(
-        self,
+        self: HasCallMethod,
         request: ReadPublicIpRangesRequest | None = None,
     ) -> ReadPublicIpRangesResponse:
         request = _validate_request(ReadPublicIpRangesRequest, request)
@@ -4623,7 +4631,7 @@ class AsyncOscTypedMixin:
         return _validate_response(ReadPublicIpRangesResponse, response)
 
     async def read_public_ips(
-        self,
+        self: HasCallMethod,
         request: ReadPublicIpsRequest | None = None,
     ) -> ReadPublicIpsResponse:
         request = _validate_request(ReadPublicIpsRequest, request)
@@ -4649,7 +4657,7 @@ class AsyncOscTypedMixin:
         return _validate_response(ReadPublicIpsResponse, response)
 
     async def read_quotas(
-        self,
+        self: HasCallMethod,
         request: ReadQuotasRequest | None = None,
     ) -> ReadQuotasResponse:
         request = _validate_request(ReadQuotasRequest, request)
@@ -4675,7 +4683,7 @@ class AsyncOscTypedMixin:
         return _validate_response(ReadQuotasResponse, response)
 
     async def read_regions(
-        self,
+        self: HasCallMethod,
         request: ReadRegionsRequest | None = None,
     ) -> ReadRegionsResponse:
         request = _validate_request(ReadRegionsRequest, request)
@@ -4701,7 +4709,7 @@ class AsyncOscTypedMixin:
         return _validate_response(ReadRegionsResponse, response)
 
     async def read_route_tables(
-        self,
+        self: HasCallMethod,
         request: ReadRouteTablesRequest | None = None,
     ) -> ReadRouteTablesResponse:
         request = _validate_request(ReadRouteTablesRequest, request)
@@ -4727,7 +4735,7 @@ class AsyncOscTypedMixin:
         return _validate_response(ReadRouteTablesResponse, response)
 
     async def read_security_groups(
-        self,
+        self: HasCallMethod,
         request: ReadSecurityGroupsRequest | None = None,
     ) -> ReadSecurityGroupsResponse:
         request = _validate_request(ReadSecurityGroupsRequest, request)
@@ -4753,7 +4761,7 @@ class AsyncOscTypedMixin:
         return _validate_response(ReadSecurityGroupsResponse, response)
 
     async def read_server_certificates(
-        self,
+        self: HasCallMethod,
         request: ReadServerCertificatesRequest | None = None,
     ) -> ReadServerCertificatesResponse:
         request = _validate_request(ReadServerCertificatesRequest, request)
@@ -4779,7 +4787,7 @@ class AsyncOscTypedMixin:
         return _validate_response(ReadServerCertificatesResponse, response)
 
     async def read_snapshot_export_tasks(
-        self,
+        self: HasCallMethod,
         request: ReadSnapshotExportTasksRequest | None = None,
     ) -> ReadSnapshotExportTasksResponse:
         request = _validate_request(ReadSnapshotExportTasksRequest, request)
@@ -4805,7 +4813,7 @@ class AsyncOscTypedMixin:
         return _validate_response(ReadSnapshotExportTasksResponse, response)
 
     async def read_snapshots(
-        self,
+        self: HasCallMethod,
         request: ReadSnapshotsRequest | None = None,
     ) -> ReadSnapshotsResponse:
         request = _validate_request(ReadSnapshotsRequest, request)
@@ -4831,7 +4839,7 @@ class AsyncOscTypedMixin:
         return _validate_response(ReadSnapshotsResponse, response)
 
     async def read_subnets(
-        self,
+        self: HasCallMethod,
         request: ReadSubnetsRequest | None = None,
     ) -> ReadSubnetsResponse:
         request = _validate_request(ReadSubnetsRequest, request)
@@ -4857,7 +4865,7 @@ class AsyncOscTypedMixin:
         return _validate_response(ReadSubnetsResponse, response)
 
     async def read_subregions(
-        self,
+        self: HasCallMethod,
         request: ReadSubregionsRequest | None = None,
     ) -> ReadSubregionsResponse:
         request = _validate_request(ReadSubregionsRequest, request)
@@ -4883,7 +4891,7 @@ class AsyncOscTypedMixin:
         return _validate_response(ReadSubregionsResponse, response)
 
     async def read_tags(
-        self,
+        self: HasCallMethod,
         request: ReadTagsRequest | None = None,
     ) -> ReadTagsResponse:
         request = _validate_request(ReadTagsRequest, request)
@@ -4909,7 +4917,7 @@ class AsyncOscTypedMixin:
         return _validate_response(ReadTagsResponse, response)
 
     async def read_unit_price(
-        self,
+        self: HasCallMethod,
         request: ReadUnitPriceRequest | None = None,
     ) -> ReadUnitPriceResponse:
         request = _validate_request(ReadUnitPriceRequest, request)
@@ -4935,7 +4943,7 @@ class AsyncOscTypedMixin:
         return _validate_response(ReadUnitPriceResponse, response)
 
     async def read_user_group(
-        self,
+        self: HasCallMethod,
         request: ReadUserGroupRequest | None = None,
     ) -> ReadUserGroupResponse:
         request = _validate_request(ReadUserGroupRequest, request)
@@ -4961,7 +4969,7 @@ class AsyncOscTypedMixin:
         return _validate_response(ReadUserGroupResponse, response)
 
     async def read_user_group_policies(
-        self,
+        self: HasCallMethod,
         request: ReadUserGroupPoliciesRequest | None = None,
     ) -> ReadUserGroupPoliciesResponse:
         request = _validate_request(ReadUserGroupPoliciesRequest, request)
@@ -4987,7 +4995,7 @@ class AsyncOscTypedMixin:
         return _validate_response(ReadUserGroupPoliciesResponse, response)
 
     async def read_user_group_policy(
-        self,
+        self: HasCallMethod,
         request: ReadUserGroupPolicyRequest | None = None,
     ) -> ReadUserGroupPolicyResponse:
         request = _validate_request(ReadUserGroupPolicyRequest, request)
@@ -5013,7 +5021,7 @@ class AsyncOscTypedMixin:
         return _validate_response(ReadUserGroupPolicyResponse, response)
 
     async def read_user_groups(
-        self,
+        self: HasCallMethod,
         request: ReadUserGroupsRequest | None = None,
     ) -> ReadUserGroupsResponse:
         request = _validate_request(ReadUserGroupsRequest, request)
@@ -5039,7 +5047,7 @@ class AsyncOscTypedMixin:
         return _validate_response(ReadUserGroupsResponse, response)
 
     async def read_user_groups_per_user(
-        self,
+        self: HasCallMethod,
         request: ReadUserGroupsPerUserRequest | None = None,
     ) -> ReadUserGroupsPerUserResponse:
         request = _validate_request(ReadUserGroupsPerUserRequest, request)
@@ -5065,7 +5073,7 @@ class AsyncOscTypedMixin:
         return _validate_response(ReadUserGroupsPerUserResponse, response)
 
     async def read_user_policies(
-        self,
+        self: HasCallMethod,
         request: ReadUserPoliciesRequest | None = None,
     ) -> ReadUserPoliciesResponse:
         request = _validate_request(ReadUserPoliciesRequest, request)
@@ -5091,7 +5099,7 @@ class AsyncOscTypedMixin:
         return _validate_response(ReadUserPoliciesResponse, response)
 
     async def read_user_policy(
-        self,
+        self: HasCallMethod,
         request: ReadUserPolicyRequest | None = None,
     ) -> ReadUserPolicyResponse:
         request = _validate_request(ReadUserPolicyRequest, request)
@@ -5117,7 +5125,7 @@ class AsyncOscTypedMixin:
         return _validate_response(ReadUserPolicyResponse, response)
 
     async def read_users(
-        self,
+        self: HasCallMethod,
         request: ReadUsersRequest | None = None,
     ) -> ReadUsersResponse:
         request = _validate_request(ReadUsersRequest, request)
@@ -5143,7 +5151,7 @@ class AsyncOscTypedMixin:
         return _validate_response(ReadUsersResponse, response)
 
     async def read_virtual_gateways(
-        self,
+        self: HasCallMethod,
         request: ReadVirtualGatewaysRequest | None = None,
     ) -> ReadVirtualGatewaysResponse:
         request = _validate_request(ReadVirtualGatewaysRequest, request)
@@ -5169,7 +5177,7 @@ class AsyncOscTypedMixin:
         return _validate_response(ReadVirtualGatewaysResponse, response)
 
     async def read_vm_groups(
-        self,
+        self: HasCallMethod,
         request: ReadVmGroupsRequest | None = None,
     ) -> ReadVmGroupsResponse:
         request = _validate_request(ReadVmGroupsRequest, request)
@@ -5195,7 +5203,7 @@ class AsyncOscTypedMixin:
         return _validate_response(ReadVmGroupsResponse, response)
 
     async def read_vm_templates(
-        self,
+        self: HasCallMethod,
         request: ReadVmTemplatesRequest | None = None,
     ) -> ReadVmTemplatesResponse:
         request = _validate_request(ReadVmTemplatesRequest, request)
@@ -5221,7 +5229,7 @@ class AsyncOscTypedMixin:
         return _validate_response(ReadVmTemplatesResponse, response)
 
     async def read_vm_types(
-        self,
+        self: HasCallMethod,
         request: ReadVmTypesRequest | None = None,
     ) -> ReadVmTypesResponse:
         request = _validate_request(ReadVmTypesRequest, request)
@@ -5247,7 +5255,7 @@ class AsyncOscTypedMixin:
         return _validate_response(ReadVmTypesResponse, response)
 
     async def read_vms(
-        self,
+        self: HasCallMethod,
         request: ReadVmsRequest | None = None,
     ) -> ReadVmsResponse:
         request = _validate_request(ReadVmsRequest, request)
@@ -5273,7 +5281,7 @@ class AsyncOscTypedMixin:
         return _validate_response(ReadVmsResponse, response)
 
     async def read_vms_health(
-        self,
+        self: HasCallMethod,
         request: ReadVmsHealthRequest | None = None,
     ) -> ReadVmsHealthResponse:
         request = _validate_request(ReadVmsHealthRequest, request)
@@ -5299,7 +5307,7 @@ class AsyncOscTypedMixin:
         return _validate_response(ReadVmsHealthResponse, response)
 
     async def read_vms_state(
-        self,
+        self: HasCallMethod,
         request: ReadVmsStateRequest | None = None,
     ) -> ReadVmsStateResponse:
         request = _validate_request(ReadVmsStateRequest, request)
@@ -5325,7 +5333,7 @@ class AsyncOscTypedMixin:
         return _validate_response(ReadVmsStateResponse, response)
 
     async def read_vms_stop_history(
-        self,
+        self: HasCallMethod,
         request: ReadVmsStopHistoryRequest | None = None,
     ) -> ReadVmsStopHistoryResponse:
         request = _validate_request(ReadVmsStopHistoryRequest, request)
@@ -5351,7 +5359,7 @@ class AsyncOscTypedMixin:
         return _validate_response(ReadVmsStopHistoryResponse, response)
 
     async def read_volume_update_tasks(
-        self,
+        self: HasCallMethod,
         request: ReadVolumeUpdateTasksRequest | None = None,
     ) -> ReadVolumeUpdateTasksResponse:
         request = _validate_request(ReadVolumeUpdateTasksRequest, request)
@@ -5377,7 +5385,7 @@ class AsyncOscTypedMixin:
         return _validate_response(ReadVolumeUpdateTasksResponse, response)
 
     async def read_volumes(
-        self,
+        self: HasCallMethod,
         request: ReadVolumesRequest | None = None,
     ) -> ReadVolumesResponse:
         request = _validate_request(ReadVolumesRequest, request)
@@ -5403,7 +5411,7 @@ class AsyncOscTypedMixin:
         return _validate_response(ReadVolumesResponse, response)
 
     async def read_vpn_connections(
-        self,
+        self: HasCallMethod,
         request: ReadVpnConnectionsRequest | None = None,
     ) -> ReadVpnConnectionsResponse:
         request = _validate_request(ReadVpnConnectionsRequest, request)
@@ -5429,7 +5437,7 @@ class AsyncOscTypedMixin:
         return _validate_response(ReadVpnConnectionsResponse, response)
 
     async def reboot_vms(
-        self,
+        self: HasCallMethod,
         request: RebootVmsRequest | None = None,
     ) -> RebootVmsResponse:
         request = _validate_request(RebootVmsRequest, request)
@@ -5455,7 +5463,7 @@ class AsyncOscTypedMixin:
         return _validate_response(RebootVmsResponse, response)
 
     async def register_vms_in_load_balancer(
-        self,
+        self: HasCallMethod,
         request: RegisterVmsInLoadBalancerRequest | None = None,
     ) -> RegisterVmsInLoadBalancerResponse:
         request = _validate_request(RegisterVmsInLoadBalancerRequest, request)
@@ -5481,7 +5489,7 @@ class AsyncOscTypedMixin:
         return _validate_response(RegisterVmsInLoadBalancerResponse, response)
 
     async def reject_net_peering(
-        self,
+        self: HasCallMethod,
         request: RejectNetPeeringRequest | None = None,
     ) -> RejectNetPeeringResponse:
         request = _validate_request(RejectNetPeeringRequest, request)
@@ -5507,7 +5515,7 @@ class AsyncOscTypedMixin:
         return _validate_response(RejectNetPeeringResponse, response)
 
     async def remove_user_from_user_group(
-        self,
+        self: HasCallMethod,
         request: RemoveUserFromUserGroupRequest | None = None,
     ) -> RemoveUserFromUserGroupResponse:
         request = _validate_request(RemoveUserFromUserGroupRequest, request)
@@ -5533,7 +5541,7 @@ class AsyncOscTypedMixin:
         return _validate_response(RemoveUserFromUserGroupResponse, response)
 
     async def scale_down_vm_group(
-        self,
+        self: HasCallMethod,
         request: ScaleDownVmGroupRequest | None = None,
     ) -> ScaleDownVmGroupResponse:
         request = _validate_request(ScaleDownVmGroupRequest, request)
@@ -5559,7 +5567,7 @@ class AsyncOscTypedMixin:
         return _validate_response(ScaleDownVmGroupResponse, response)
 
     async def scale_up_vm_group(
-        self,
+        self: HasCallMethod,
         request: ScaleUpVmGroupRequest | None = None,
     ) -> ScaleUpVmGroupResponse:
         request = _validate_request(ScaleUpVmGroupRequest, request)
@@ -5585,7 +5593,7 @@ class AsyncOscTypedMixin:
         return _validate_response(ScaleUpVmGroupResponse, response)
 
     async def set_default_policy_version(
-        self,
+        self: HasCallMethod,
         request: SetDefaultPolicyVersionRequest | None = None,
     ) -> SetDefaultPolicyVersionResponse:
         request = _validate_request(SetDefaultPolicyVersionRequest, request)
@@ -5611,7 +5619,7 @@ class AsyncOscTypedMixin:
         return _validate_response(SetDefaultPolicyVersionResponse, response)
 
     async def start_vms(
-        self,
+        self: HasCallMethod,
         request: StartVmsRequest | None = None,
     ) -> StartVmsResponse:
         request = _validate_request(StartVmsRequest, request)
@@ -5637,7 +5645,7 @@ class AsyncOscTypedMixin:
         return _validate_response(StartVmsResponse, response)
 
     async def stop_vms(
-        self,
+        self: HasCallMethod,
         request: StopVmsRequest | None = None,
     ) -> StopVmsResponse:
         request = _validate_request(StopVmsRequest, request)
@@ -5663,7 +5671,7 @@ class AsyncOscTypedMixin:
         return _validate_response(StopVmsResponse, response)
 
     async def unlink_flexible_gpu(
-        self,
+        self: HasCallMethod,
         request: UnlinkFlexibleGpuRequest | None = None,
     ) -> UnlinkFlexibleGpuResponse:
         request = _validate_request(UnlinkFlexibleGpuRequest, request)
@@ -5689,7 +5697,7 @@ class AsyncOscTypedMixin:
         return _validate_response(UnlinkFlexibleGpuResponse, response)
 
     async def unlink_internet_service(
-        self,
+        self: HasCallMethod,
         request: UnlinkInternetServiceRequest | None = None,
     ) -> UnlinkInternetServiceResponse:
         request = _validate_request(UnlinkInternetServiceRequest, request)
@@ -5715,7 +5723,7 @@ class AsyncOscTypedMixin:
         return _validate_response(UnlinkInternetServiceResponse, response)
 
     async def unlink_load_balancer_backend_machines(
-        self,
+        self: HasCallMethod,
         request: UnlinkLoadBalancerBackendMachinesRequest | None = None,
     ) -> UnlinkLoadBalancerBackendMachinesResponse:
         request = _validate_request(UnlinkLoadBalancerBackendMachinesRequest, request)
@@ -5741,7 +5749,7 @@ class AsyncOscTypedMixin:
         return _validate_response(UnlinkLoadBalancerBackendMachinesResponse, response)
 
     async def unlink_managed_policy_from_user_group(
-        self,
+        self: HasCallMethod,
         request: UnlinkManagedPolicyFromUserGroupRequest | None = None,
     ) -> UnlinkManagedPolicyFromUserGroupResponse:
         request = _validate_request(UnlinkManagedPolicyFromUserGroupRequest, request)
@@ -5767,7 +5775,7 @@ class AsyncOscTypedMixin:
         return _validate_response(UnlinkManagedPolicyFromUserGroupResponse, response)
 
     async def unlink_nic(
-        self,
+        self: HasCallMethod,
         request: UnlinkNicRequest | None = None,
     ) -> UnlinkNicResponse:
         request = _validate_request(UnlinkNicRequest, request)
@@ -5793,7 +5801,7 @@ class AsyncOscTypedMixin:
         return _validate_response(UnlinkNicResponse, response)
 
     async def unlink_policy(
-        self,
+        self: HasCallMethod,
         request: UnlinkPolicyRequest | None = None,
     ) -> UnlinkPolicyResponse:
         request = _validate_request(UnlinkPolicyRequest, request)
@@ -5819,7 +5827,7 @@ class AsyncOscTypedMixin:
         return _validate_response(UnlinkPolicyResponse, response)
 
     async def unlink_private_ips(
-        self,
+        self: HasCallMethod,
         request: UnlinkPrivateIpsRequest | None = None,
     ) -> UnlinkPrivateIpsResponse:
         request = _validate_request(UnlinkPrivateIpsRequest, request)
@@ -5845,7 +5853,7 @@ class AsyncOscTypedMixin:
         return _validate_response(UnlinkPrivateIpsResponse, response)
 
     async def unlink_public_ip(
-        self,
+        self: HasCallMethod,
         request: UnlinkPublicIpRequest | None = None,
     ) -> UnlinkPublicIpResponse:
         request = _validate_request(UnlinkPublicIpRequest, request)
@@ -5871,7 +5879,7 @@ class AsyncOscTypedMixin:
         return _validate_response(UnlinkPublicIpResponse, response)
 
     async def unlink_route_table(
-        self,
+        self: HasCallMethod,
         request: UnlinkRouteTableRequest | None = None,
     ) -> UnlinkRouteTableResponse:
         request = _validate_request(UnlinkRouteTableRequest, request)
@@ -5897,7 +5905,7 @@ class AsyncOscTypedMixin:
         return _validate_response(UnlinkRouteTableResponse, response)
 
     async def unlink_virtual_gateway(
-        self,
+        self: HasCallMethod,
         request: UnlinkVirtualGatewayRequest | None = None,
     ) -> UnlinkVirtualGatewayResponse:
         request = _validate_request(UnlinkVirtualGatewayRequest, request)
@@ -5923,7 +5931,7 @@ class AsyncOscTypedMixin:
         return _validate_response(UnlinkVirtualGatewayResponse, response)
 
     async def unlink_volume(
-        self,
+        self: HasCallMethod,
         request: UnlinkVolumeRequest | None = None,
     ) -> UnlinkVolumeResponse:
         request = _validate_request(UnlinkVolumeRequest, request)
@@ -5949,7 +5957,7 @@ class AsyncOscTypedMixin:
         return _validate_response(UnlinkVolumeResponse, response)
 
     async def update_access_key(
-        self,
+        self: HasCallMethod,
         request: UpdateAccessKeyRequest | None = None,
     ) -> UpdateAccessKeyResponse:
         request = _validate_request(UpdateAccessKeyRequest, request)
@@ -5975,7 +5983,7 @@ class AsyncOscTypedMixin:
         return _validate_response(UpdateAccessKeyResponse, response)
 
     async def update_account(
-        self,
+        self: HasCallMethod,
         request: UpdateAccountRequest | None = None,
     ) -> UpdateAccountResponse:
         request = _validate_request(UpdateAccountRequest, request)
@@ -6001,7 +6009,7 @@ class AsyncOscTypedMixin:
         return _validate_response(UpdateAccountResponse, response)
 
     async def update_api_access_policy(
-        self,
+        self: HasCallMethod,
         request: UpdateApiAccessPolicyRequest | None = None,
     ) -> UpdateApiAccessPolicyResponse:
         request = _validate_request(UpdateApiAccessPolicyRequest, request)
@@ -6027,7 +6035,7 @@ class AsyncOscTypedMixin:
         return _validate_response(UpdateApiAccessPolicyResponse, response)
 
     async def update_api_access_rule(
-        self,
+        self: HasCallMethod,
         request: UpdateApiAccessRuleRequest | None = None,
     ) -> UpdateApiAccessRuleResponse:
         request = _validate_request(UpdateApiAccessRuleRequest, request)
@@ -6053,7 +6061,7 @@ class AsyncOscTypedMixin:
         return _validate_response(UpdateApiAccessRuleResponse, response)
 
     async def update_ca(
-        self,
+        self: HasCallMethod,
         request: UpdateCaRequest | None = None,
     ) -> UpdateCaResponse:
         request = _validate_request(UpdateCaRequest, request)
@@ -6079,7 +6087,7 @@ class AsyncOscTypedMixin:
         return _validate_response(UpdateCaResponse, response)
 
     async def update_dedicated_group(
-        self,
+        self: HasCallMethod,
         request: UpdateDedicatedGroupRequest | None = None,
     ) -> UpdateDedicatedGroupResponse:
         request = _validate_request(UpdateDedicatedGroupRequest, request)
@@ -6105,7 +6113,7 @@ class AsyncOscTypedMixin:
         return _validate_response(UpdateDedicatedGroupResponse, response)
 
     async def update_direct_link_interface(
-        self,
+        self: HasCallMethod,
         request: UpdateDirectLinkInterfaceRequest | None = None,
     ) -> UpdateDirectLinkInterfaceResponse:
         request = _validate_request(UpdateDirectLinkInterfaceRequest, request)
@@ -6131,7 +6139,7 @@ class AsyncOscTypedMixin:
         return _validate_response(UpdateDirectLinkInterfaceResponse, response)
 
     async def update_flexible_gpu(
-        self,
+        self: HasCallMethod,
         request: UpdateFlexibleGpuRequest | None = None,
     ) -> UpdateFlexibleGpuResponse:
         request = _validate_request(UpdateFlexibleGpuRequest, request)
@@ -6157,7 +6165,7 @@ class AsyncOscTypedMixin:
         return _validate_response(UpdateFlexibleGpuResponse, response)
 
     async def update_image(
-        self,
+        self: HasCallMethod,
         request: UpdateImageRequest | None = None,
     ) -> UpdateImageResponse:
         request = _validate_request(UpdateImageRequest, request)
@@ -6183,7 +6191,7 @@ class AsyncOscTypedMixin:
         return _validate_response(UpdateImageResponse, response)
 
     async def update_listener_rule(
-        self,
+        self: HasCallMethod,
         request: UpdateListenerRuleRequest | None = None,
     ) -> UpdateListenerRuleResponse:
         request = _validate_request(UpdateListenerRuleRequest, request)
@@ -6209,7 +6217,7 @@ class AsyncOscTypedMixin:
         return _validate_response(UpdateListenerRuleResponse, response)
 
     async def update_load_balancer(
-        self,
+        self: HasCallMethod,
         request: UpdateLoadBalancerRequest | None = None,
     ) -> UpdateLoadBalancerResponse:
         request = _validate_request(UpdateLoadBalancerRequest, request)
@@ -6235,7 +6243,7 @@ class AsyncOscTypedMixin:
         return _validate_response(UpdateLoadBalancerResponse, response)
 
     async def update_net(
-        self,
+        self: HasCallMethod,
         request: UpdateNetRequest | None = None,
     ) -> UpdateNetResponse:
         request = _validate_request(UpdateNetRequest, request)
@@ -6261,7 +6269,7 @@ class AsyncOscTypedMixin:
         return _validate_response(UpdateNetResponse, response)
 
     async def update_net_access_point(
-        self,
+        self: HasCallMethod,
         request: UpdateNetAccessPointRequest | None = None,
     ) -> UpdateNetAccessPointResponse:
         request = _validate_request(UpdateNetAccessPointRequest, request)
@@ -6287,7 +6295,7 @@ class AsyncOscTypedMixin:
         return _validate_response(UpdateNetAccessPointResponse, response)
 
     async def update_nic(
-        self,
+        self: HasCallMethod,
         request: UpdateNicRequest | None = None,
     ) -> UpdateNicResponse:
         request = _validate_request(UpdateNicRequest, request)
@@ -6313,7 +6321,7 @@ class AsyncOscTypedMixin:
         return _validate_response(UpdateNicResponse, response)
 
     async def update_route(
-        self,
+        self: HasCallMethod,
         request: UpdateRouteRequest | None = None,
     ) -> UpdateRouteResponse:
         request = _validate_request(UpdateRouteRequest, request)
@@ -6339,7 +6347,7 @@ class AsyncOscTypedMixin:
         return _validate_response(UpdateRouteResponse, response)
 
     async def update_route_propagation(
-        self,
+        self: HasCallMethod,
         request: UpdateRoutePropagationRequest | None = None,
     ) -> UpdateRoutePropagationResponse:
         request = _validate_request(UpdateRoutePropagationRequest, request)
@@ -6365,7 +6373,7 @@ class AsyncOscTypedMixin:
         return _validate_response(UpdateRoutePropagationResponse, response)
 
     async def update_route_table_link(
-        self,
+        self: HasCallMethod,
         request: UpdateRouteTableLinkRequest | None = None,
     ) -> UpdateRouteTableLinkResponse:
         request = _validate_request(UpdateRouteTableLinkRequest, request)
@@ -6391,7 +6399,7 @@ class AsyncOscTypedMixin:
         return _validate_response(UpdateRouteTableLinkResponse, response)
 
     async def update_server_certificate(
-        self,
+        self: HasCallMethod,
         request: UpdateServerCertificateRequest | None = None,
     ) -> UpdateServerCertificateResponse:
         request = _validate_request(UpdateServerCertificateRequest, request)
@@ -6417,7 +6425,7 @@ class AsyncOscTypedMixin:
         return _validate_response(UpdateServerCertificateResponse, response)
 
     async def update_snapshot(
-        self,
+        self: HasCallMethod,
         request: UpdateSnapshotRequest | None = None,
     ) -> UpdateSnapshotResponse:
         request = _validate_request(UpdateSnapshotRequest, request)
@@ -6443,7 +6451,7 @@ class AsyncOscTypedMixin:
         return _validate_response(UpdateSnapshotResponse, response)
 
     async def update_subnet(
-        self,
+        self: HasCallMethod,
         request: UpdateSubnetRequest | None = None,
     ) -> UpdateSubnetResponse:
         request = _validate_request(UpdateSubnetRequest, request)
@@ -6469,7 +6477,7 @@ class AsyncOscTypedMixin:
         return _validate_response(UpdateSubnetResponse, response)
 
     async def update_user(
-        self,
+        self: HasCallMethod,
         request: UpdateUserRequest | None = None,
     ) -> UpdateUserResponse:
         request = _validate_request(UpdateUserRequest, request)
@@ -6495,7 +6503,7 @@ class AsyncOscTypedMixin:
         return _validate_response(UpdateUserResponse, response)
 
     async def update_user_group(
-        self,
+        self: HasCallMethod,
         request: UpdateUserGroupRequest | None = None,
     ) -> UpdateUserGroupResponse:
         request = _validate_request(UpdateUserGroupRequest, request)
@@ -6521,7 +6529,7 @@ class AsyncOscTypedMixin:
         return _validate_response(UpdateUserGroupResponse, response)
 
     async def update_vm(
-        self,
+        self: HasCallMethod,
         request: UpdateVmRequest | None = None,
     ) -> UpdateVmResponse:
         request = _validate_request(UpdateVmRequest, request)
@@ -6547,7 +6555,7 @@ class AsyncOscTypedMixin:
         return _validate_response(UpdateVmResponse, response)
 
     async def update_vm_group(
-        self,
+        self: HasCallMethod,
         request: UpdateVmGroupRequest | None = None,
     ) -> UpdateVmGroupResponse:
         request = _validate_request(UpdateVmGroupRequest, request)
@@ -6573,7 +6581,7 @@ class AsyncOscTypedMixin:
         return _validate_response(UpdateVmGroupResponse, response)
 
     async def update_vm_template(
-        self,
+        self: HasCallMethod,
         request: UpdateVmTemplateRequest | None = None,
     ) -> UpdateVmTemplateResponse:
         request = _validate_request(UpdateVmTemplateRequest, request)
@@ -6599,7 +6607,7 @@ class AsyncOscTypedMixin:
         return _validate_response(UpdateVmTemplateResponse, response)
 
     async def update_volume(
-        self,
+        self: HasCallMethod,
         request: UpdateVolumeRequest | None = None,
     ) -> UpdateVolumeResponse:
         request = _validate_request(UpdateVolumeRequest, request)
@@ -6625,7 +6633,7 @@ class AsyncOscTypedMixin:
         return _validate_response(UpdateVolumeResponse, response)
 
     async def update_vpn_connection(
-        self,
+        self: HasCallMethod,
         request: UpdateVpnConnectionRequest | None = None,
     ) -> UpdateVpnConnectionResponse:
         request = _validate_request(UpdateVpnConnectionRequest, request)

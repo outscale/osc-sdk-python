@@ -1,11 +1,15 @@
 import json
+import re
 
 from .exceptions import SdkHttpError, SdkValidationError
 
+# https://github.com/python/cpython/blob/adf836ebddd89793afb6d43a79d0a0739ee5514b/Lib/json/decoder.py#L133
+WHITESPACE = re.compile(r"[ \t\n\r]*", re.VERBOSE | re.MULTILINE | re.DOTALL)
+
 
 class ProblemDecoder(json.JSONDecoder):
-    def decode(self, s):
-        data = super().decode(s)
+    def decode(self, s, _w=WHITESPACE.match):
+        data = super().decode(s, _w)
         if isinstance(data, dict):
             return self._make_problem(data)
         return data
@@ -60,8 +64,8 @@ class Problem(SdkHttpError):
 
 
 class LegacyProblemDecoder(json.JSONDecoder):
-    def decode(self, s):
-        data = super().decode(s)
+    def decode(self, s, _w=WHITESPACE.match):
+        data = super().decode(s, _w)
         if isinstance(data, dict):
             return self._make_legacy_problem(data)
         return data
