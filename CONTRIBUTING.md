@@ -37,6 +37,7 @@ By participating, you agree to uphold our [Code of Conduct](CODE_OF_CONDUCT.md).
 
 - Keep pull requests focused and atomic (one feature or fix per PR).
 - Follow any existing code style or formatting conventions.
+- Run `make test-lint` (Ruff) and `make typecheck` (Pyright on `osc_sdk_python`, including generated clients) before opening a PR.
 - Document your code where necessary.
 - Include tests when adding new logic (if applicable).
 - Use clear, meaningful commit messages (optionally following [Conventional Commits](https://www.conventionalcommits.org/) and using [Gitmoji](https://gitmoji.dev/) for added clarity and consistency).

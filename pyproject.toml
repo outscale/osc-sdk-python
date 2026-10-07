@@ -29,6 +29,7 @@ dev = [
     "tox-uv>=1.29.0",
     "ruff>=0.14.7",
     "ruamel.yaml==0.19.1",
+    "pyright>=1.1.389",
 ]
 
 [project.urls]
@@ -41,3 +42,15 @@ build-backend = "uv_build"
 [tool.uv.build-backend]
 source-exclude = ["tests", "codegen", "resources", "osc-api", ".ruff_cache"]
 module-root = ""
+
+[tool.pyright]
+include = ["osc_sdk_python"]
+exclude = [
+    ".venv",
+    "**/__pycache__",
+    ".pytest_cache",
+]
+pythonVersion = "3.10"
+typeCheckingMode = "basic"
+reportMissingImports = true
+reportMissingTypeStubs = false

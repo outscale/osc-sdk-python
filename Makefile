@@ -5,7 +5,8 @@ help:
 	@echo "Available targets:"
 	@echo "- package: build python package"
 	@echo "- test: run all tests"
-	@echo "- test-lint: check code with pylint"
+	@echo "- test-lint: check code with ruff"
+	@echo "- typecheck: run pyright"
 	@echo "- test-int: run integration tests"
 	@echo "- osc-api-update: update to last osc-api version"
 	@echo "- clean: clean temp files, venv, etc"
@@ -17,6 +18,10 @@ test: clean test-lint test-int package
 .PHONY: test-lint
 test-lint:
 	@uv tool run ruff check
+
+.PHONY: typecheck
+typecheck:
+	@uv run pyright osc_sdk_python
 
 .PHONY: test-int
 test-int:
