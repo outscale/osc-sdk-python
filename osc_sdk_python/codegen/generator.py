@@ -1,12 +1,11 @@
-from pathlib import Path
 import argparse
 import re
+from pathlib import Path
 from typing import Iterable
 
 from .adapters import PathOperationAdapter
 from .ir import Field, Model, Operation
 from .overlay import load_spec
-
 
 GENERATED_HEADER = '''"""Generated typed {service_label} client slice.
 

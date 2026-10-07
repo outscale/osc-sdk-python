@@ -346,7 +346,7 @@ def test_oneof_composition_renders_union_with_exclusivity_warning(caplog):
         rendered_models = render_models([], adapter.schema_models(), "osc")
 
     assert "value: str | int | None" in rendered_models
-    assert "OpenAPI oneOf with 2 schemas represented as a union" in caplog.text
+    assert "OpenAPI oneOf with 2 schemas at Thing.Value represented as a union" in caplog.text
     assert "exclusivity is not enforced" in caplog.text
 
 

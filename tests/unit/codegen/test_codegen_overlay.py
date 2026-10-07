@@ -58,9 +58,12 @@ def test_overlay_removes_targeted_key():
 
     patched = apply_overlay(spec, overlay)
 
-    assert "format" not in patched["components"]["schemas"]["ReadVmsRequest"][
-        "properties"
-    ]["NextPageToken"]
+    assert (
+        "format"
+        not in patched["components"]["schemas"]["ReadVmsRequest"]["properties"][
+            "NextPageToken"
+        ]
+    )
 
 
 def test_overlay_removes_list_matches_in_reverse_index_order():
@@ -142,9 +145,12 @@ def test_overlay_filters_matching_children():
     assert patched["components"]["schemas"]["CreateVmsRequest"]["properties"]["Nics"][
         "x-rs-type-skip-optional-pointer"
     ]
-    assert "x-rs-type-skip-optional-pointer" not in patched["components"]["schemas"][
-        "CreateVmsRequest"
-    ]["properties"]["ImageId"]
+    assert (
+        "x-rs-type-skip-optional-pointer"
+        not in patched["components"]["schemas"]["CreateVmsRequest"]["properties"][
+            "ImageId"
+        ]
+    )
 
 
 def test_cfg_loads_spec_and_applies_overlay():

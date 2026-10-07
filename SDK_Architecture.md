@@ -94,7 +94,7 @@ The package exports `AsyncGateway` as an alias for the async OSC service client.
 User code
   -> AsyncClient
   -> service namespace: osc, oks, ...
-  -> generated typed method or dynamic action method
+  -> generated typed method or raw("ActionName", ...)
   -> RequestSpec
   -> shared runtime call layer
   -> httpx transport
@@ -182,20 +182,18 @@ AsyncOksGateway
 
 This is why async operations can expose typed snake_case methods such as `read_vms` and `list_projects`.
 
-## 6. Dynamic Action Layer
+## 6. Raw escape hatch
 
-The async API also keeps dynamic operation dispatch. The service client reads the OpenAPI specification, builds a gateway structure, and resolves method calls dynamically.
+The gateway no longer loads OpenAPI YAML at runtime. For untyped calls, use `raw()` on the service client:
 
 ```text
-await client.osc.ReadVms(...)
-  -> __getattr__("ReadVms")
-  -> validate action and parameters from OpenAPI request schema
+await client.osc.raw("ReadVms", Filters={...})
   -> AsyncCall.api("ReadVms", service="api", ...)
-  -> POST /api/v1/ReadVms
+  -> POST /ReadVms
   -> return decoded JSON dict
 ```
 
-For REST/path-style services, the dynamic layer can map an operation name to method, path, path parameters, query parameters, and request body.
+`raw()` does not validate parameters client-side. Prefer generated typed methods for IDE support and Pydantic validation.
 
 ## 7. Async Typed Layer
 
@@ -287,15 +285,7 @@ client.osc.read_vms(ReadVmsRequest(...))
   -> typed ReadVmsResponse
 ```
 
-Dynamic action behavior:
-
-```text
-await client.osc.ReadVms(...)
-  -> POST /api/v1/ReadVms
-  -> decoded dict
-```
-
-The action-style support preserves dynamic dispatch while allowing the async SDK to provide typed Python methods.
+Untyped action calls can still use `await client.osc.raw("ReadVms", ...)` when needed.
 
 ### 9.2 REST/Path-Style OpenAPI
 
@@ -359,7 +349,7 @@ The rule remains: fix the spec input, overlay, or generator. Do not manually edi
 
 ## 12. Runtime Request Flow
 
-Both typed and dynamic async calls use `RequestSpec` to describe the HTTP request.
+Typed methods and `raw()` both use `RequestSpec` to describe the HTTP request.
 
 ```text
 RequestSpec
@@ -484,10 +474,9 @@ tests/
 
 Testing should cover:
 
-- Async typed OSC operations.
+- Async typed OSC operations (generated `snake_case` methods and Pydantic models).
 - Async typed OKS operations.
-- Dynamic async action methods.
-- Raw async calls.
+- Raw async OSC calls via `client.osc.raw("ActionName", ...)` when an untyped escape hatch is needed.
 - Client lifecycle and context managers.
 - Profile loading and endpoint resolution.
 - Authentication behavior.
@@ -547,7 +536,7 @@ Compatibility rules:
 
 The OUTSCALE Python SDK V2 is an async-first, generated, typed, multi-service SDK.
 
-`AsyncClient` is the primary interface and exposes typed snake_case operations generated from OpenAPI, such as `client.osc.read_vms(...)` and `client.oks.list_projects(...)`. Dynamic action methods such as `await client.osc.ReadVms(...)` remain available on service clients.
+`AsyncClient` is the primary interface and exposes typed snake_case operations generated from OpenAPI, such as `client.osc.read_vms(...)` and `client.oks.list_projects(...)`. Untyped `raw("ActionName", ...)` remains available on OSC service clients when needed.
 
 The generator supports both OSC action-style OpenAPI and REST/path-style OpenAPI by normalizing them into a shared intermediate representation. The runtime then applies common configuration, endpoint resolution, authentication, retries, rate limiting, logging, error handling, and httpx transport behavior across all services.
 

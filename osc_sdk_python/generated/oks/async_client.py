@@ -94,16 +94,13 @@ def _validate_request(model: type, value: Any) -> Any:
     except ValidationError as error:
         raise SdkValidationError(str(error)) from error
 
-
 T = TypeVar("T")
-
 
 def _validate_response(model: T, value: Any) -> Any:
     try:
         return TypeAdapter(model).validate_python(value)
     except ValidationError as error:
         raise SdkResponseError(str(error)) from error
-
 
 class HasCallMethod(Protocol):
     @property

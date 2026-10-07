@@ -30,14 +30,20 @@ def class_name(value: str) -> str:
     return name
 
 
-def schema_type(schema: dict[str, Any], ref_resolver=class_name) -> str:
+def schema_type(
+    schema: dict[str, Any],
+    ref_resolver=class_name,
+    context: str | None = None,
+) -> str:
     if schema.get("type") == "null":
         return "None"
 
     if schema.get("nullable"):
         return (
             schema_type(
-                {k: v for k, v in schema.items() if k != "nullable"}, ref_resolver
+                {k: v for k, v in schema.items() if k != "nullable"},
+                ref_resolver,
+                context,
             )
             + " | None"
         )
@@ -54,9 +60,11 @@ def schema_type(schema: dict[str, Any], ref_resolver=class_name) -> str:
         if not options:
             continue
         if len(options) == 1:
-            return schema_type(options[0], ref_resolver)
+            return schema_type(options[0], ref_resolver, context)
         if composed in {"oneOf", "anyOf"}:
-            option_types = [schema_type(option, ref_resolver) for option in options]
+            option_types = [
+                schema_type(option, ref_resolver, context) for option in options
+            ]
             if "Any" not in option_types:
                 option_types = [
                     option_type for option_type in option_types if option_type != "None"
@@ -65,9 +73,10 @@ def schema_type(schema: dict[str, Any], ref_resolver=class_name) -> str:
                 ]
                 if composed == "oneOf":
                     logger.warning(
-                        "OpenAPI oneOf with %d schemas represented as a union; "
+                        "OpenAPI oneOf with %d schemas at %s represented as a union; "
                         "exclusivity is not enforced",
                         len(options),
+                        context or "<unknown>",
                     )
                 return " | ".join(dict.fromkeys(option_types))
         if composed == "allOf":
@@ -77,11 +86,12 @@ def schema_type(schema: dict[str, Any], ref_resolver=class_name) -> str:
                 not option or set(option).issubset({"description", "title"})
                 for option in inline_options
             ):
-                return schema_type(refs[0], ref_resolver)
+                return schema_type(refs[0], ref_resolver, context)
         logger.warning(
-            "OpenAPI %s with %d schemas cannot be represented precisely; using Any",
+            "OpenAPI %s with %d schemas at %s cannot be represented precisely; using Any",
             composed,
             len(options),
+            context or "<unknown>",
         )
         return "Any"
 
@@ -98,14 +108,21 @@ def schema_type(schema: dict[str, Any], ref_resolver=class_name) -> str:
             return "datetime.datetime"
         return "str"
     if typ == "array":
-        item_type = schema_type(schema.get("items", {}), ref_resolver)
+        item_context = f"{context}[]" if context else None
+        item_type = schema_type(schema.get("items", {}), ref_resolver, item_context)
         return f"list[{item_type}]"
     if typ == "object":
         additional = schema.get("additionalProperties")
         if isinstance(additional, dict):
-            return f"dict[str, {schema_type(additional, ref_resolver)}]"
+            additional_context = (
+                f"{context}.additionalProperties" if context else None
+            )
+            return f"dict[str, {schema_type(additional, ref_resolver, additional_context)}]"
         return "dict[str, Any]"
-    logger.warning("OpenAPI schema without a supported type; using Any")
+    logger.warning(
+        "OpenAPI schema without a supported type at %s; using Any",
+        context or "<unknown>",
+    )
     return "Any"
 
 
@@ -144,7 +161,10 @@ class PathOperationAdapter:
                     field = Field(
                         name=snake_case(name),
                         alias=name,
-                        annotation=schema_type(parameter.get("schema", {})),
+                        annotation=schema_type(
+                            parameter.get("schema", {}),
+                            context=f"{operation_id}.{name}",
+                        ),
                         required=parameter.get("required", False),
                     )
                     if location == "path":
@@ -170,7 +190,10 @@ class PathOperationAdapter:
                     body_field = Field(
                         name="body",
                         alias="body",
-                        annotation=schema_type(body_schema),
+                        annotation=schema_type(
+                            body_schema,
+                            context=f"{operation_id}.requestBody",
+                        ),
                         required=body_required,
                     )
                     request_fields.append(body_field)
@@ -206,7 +229,7 @@ class PathOperationAdapter:
                 models.append(
                     Model(
                         class_name(schema_name),
-                        alias=schema_type(schema),
+                        alias=schema_type(schema, context=schema_name),
                     )
                 )
                 continue
@@ -216,7 +239,10 @@ class PathOperationAdapter:
                     Field(
                         name=snake_case(property_name),
                         alias=property_name,
-                        annotation=schema_type(property_schema),
+                        annotation=schema_type(
+                            property_schema,
+                            context=f"{schema_name}.{property_name}",
+                        ),
                         required=property_name in required_fields,
                     )
                 )
@@ -247,5 +273,6 @@ class PathOperationAdapter:
             if "$ref" in schema:
                 return class_name(ref_name(schema["$ref"]))
             if schema:
-                return schema_type(schema)
+                operation_id = operation.get("operationId", "<unknown>")
+                return schema_type(schema, context=f"{operation_id}.response")
         return "dict[str, Any]"
