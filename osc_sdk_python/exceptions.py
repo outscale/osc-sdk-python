@@ -1,6 +1,5 @@
 import json
 
-
 REQUEST_ID_KEYS = (
     "RequestId",
     "request_id",

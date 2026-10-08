@@ -16,7 +16,8 @@ class EnvironManager:
         self.env = copy.deepcopy(os.environ)
 
     def __exit__(self, *args):
-        os.environ = self.env
+        os.environ.clear()
+        os.environ.update(self.env)
 
 
 class Send500(BaseHTTPRequestHandler):

@@ -1,7 +1,6 @@
 import pytest
 
 from osc_sdk_python.exceptions import SdkValidationError
-
 from osc_sdk_python.runtime.request import RequestSpec
 
 

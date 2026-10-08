@@ -17,7 +17,6 @@ from osc_sdk_python.generated.oks import (
 )
 from tests.integration.helpers.integration_utils import get_tagged_name, log_test_step
 
-
 PROJECT_READY_STATUS = "ready"
 
 
@@ -28,13 +27,13 @@ async def wait_project_ready(client, project_id):
         )
         project = response.project
         log_test_step(
-            "OKS project {} status={} (async)".format(project_id, project.status)
+            f"OKS project {project_id} status={project.status} (async)"
         )
         if project.status == PROJECT_READY_STATUS:
             return project
         await asyncio.sleep(10)
 
-    raise AssertionError("OKS project {} did not become ready".format(project_id))
+    raise AssertionError(f"OKS project {project_id} did not become ready")
 
 
 async def delete_project_when_ready(client, project_id):
@@ -43,19 +42,17 @@ async def delete_project_when_ready(client, project_id):
             delete_response = await client.oks.delete_project(
                 DeleteProjectRequest(project_id=project_id)
             )
-            log_test_step("Deleted OKS project {} (async)".format(project_id))
+            log_test_step(f"Deleted OKS project {project_id} (async)")
             return delete_response
         except SdkHttpError as err:
             if err.response is None or err.response.status_code != 503:
                 raise
             log_test_step(
-                "OKS project {} is not ready for deletion yet (async)".format(
-                    project_id
-                )
+                f"OKS project {project_id} is not ready for deletion yet (async)"
             )
             await asyncio.sleep(10)
 
-    raise AssertionError("OKS project {} could not be deleted".format(project_id))
+    raise AssertionError(f"OKS project {project_id} could not be deleted")
 
 
 class TestAsyncOksProject(unittest.TestCase):
@@ -84,7 +81,7 @@ class TestAsyncOksProject(unittest.TestCase):
                     self.assertIsInstance(project_input, ProjectInput)
 
                     log_test_step(
-                        "Creating OKS project {} (async)".format(project_name)
+                        f"Creating OKS project {project_name} (async)"
                     )
                     create_response = await client.oks.create_project(
                         CreateProjectRequest(body=project_input)
@@ -95,9 +92,9 @@ class TestAsyncOksProject(unittest.TestCase):
                     project_id = project.id
                     self.assertTrue(project_id)
                     self.assertEqual(project.name, project_name)
-                    log_test_step("Created OKS project {} (async)".format(project_id))
+                    log_test_step(f"Created OKS project {project_id} (async)")
 
-                    log_test_step("Reading OKS project {} (async)".format(project_id))
+                    log_test_step(f"Reading OKS project {project_id} (async)")
                     get_response = await client.oks.get_project(
                         GetProjectRequest(project_id=project_id)
                     )
@@ -111,7 +108,7 @@ class TestAsyncOksProject(unittest.TestCase):
                     self.assertEqual(read_project.id, project_id)
                     self.assertEqual(read_project.name, project_name)
 
-                    log_test_step("Updating OKS project {} (async)".format(project_id))
+                    log_test_step(f"Updating OKS project {project_id} (async)")
                     update_response = await client.oks.update_project(
                         UpdateProjectRequest(
                             project_id=project_id,
@@ -130,7 +127,7 @@ class TestAsyncOksProject(unittest.TestCase):
                 finally:
                     if project_id:
                         log_test_step(
-                            "Deleting OKS project {} (async)".format(project_id)
+                            f"Deleting OKS project {project_id} (async)"
                         )
                         delete_response = await delete_project_when_ready(
                             client, project_id

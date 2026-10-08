@@ -248,9 +248,11 @@ def test_async_transport_retries_connection_error_without_response():
             ]
         )
 
-        with patch("asyncio.sleep", new_callable=AsyncMock) as sleep:
-            with pytest.raises(SdkTransportError) as exc_info:
-                await transport.handle_async_request(request)
+        with (
+            patch("asyncio.sleep", new_callable=AsyncMock) as sleep,
+            pytest.raises(SdkTransportError) as exc_info,
+        ):
+            await transport.handle_async_request(request)
 
         assert len(transport._transport.requests) == 3
         assert sleep.call_count == 2
@@ -287,9 +289,11 @@ def test_async_transport_does_not_retry_timeout_without_response():
             [httpx.TimeoutException("timed out", request=request)]
         )
 
-        with patch("asyncio.sleep", new_callable=AsyncMock) as sleep:
-            with pytest.raises(SdkTransportError) as exc_info:
-                await transport.handle_async_request(request)
+        with (
+            patch("asyncio.sleep", new_callable=AsyncMock) as sleep,
+            pytest.raises(SdkTransportError) as exc_info,
+        ):
+            await transport.handle_async_request(request)
 
         assert len(transport._transport.requests) == 1
         sleep.assert_not_called()
@@ -317,9 +321,11 @@ def test_async_transport_uses_backoff_when_retry_after_missing():
             ]
         )
 
-        with patch("random.uniform", return_value=1.5):
-            with patch("asyncio.sleep", new_callable=AsyncMock) as sleep:
-                result = await transport.handle_async_request(request)
+        with (
+            patch("random.uniform", return_value=1.5),
+            patch("asyncio.sleep", new_callable=AsyncMock) as sleep,
+        ):
+            result = await transport.handle_async_request(request)
 
         assert result.status_code == 200
         sleep.assert_called_once_with(3.5)

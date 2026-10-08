@@ -11,7 +11,6 @@ from urllib.parse import urlencode
 
 import httpx
 
-from ..problem import LegacyProblem, LegacyProblemDecoder, Problem, ProblemDecoder
 from ..exceptions import (
     SdkClientError,
     SdkConfigurationError,
@@ -20,6 +19,7 @@ from ..exceptions import (
     SdkTransportError,
     SdkUsageError,
 )
+from ..problem import LegacyProblem, LegacyProblemDecoder, Problem, ProblemDecoder
 from ..version import get_version
 
 MAX_RETRIES = 3

@@ -1,5 +1,6 @@
-from osc_sdk_python import Problem, ProblemDecoder
 import json
+
+from osc_sdk_python import Problem, ProblemDecoder
 
 
 def test_deserialize_problem1():

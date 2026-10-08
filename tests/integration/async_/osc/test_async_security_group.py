@@ -13,7 +13,10 @@ from osc_sdk_python.generated.osc import (
     ReadSecurityGroupsResponse,
     SecurityGroup,
 )
-from tests.integration.async_.helpers.async_integration_utils import get_tagged_name, log_test_step
+from tests.integration.async_.helpers.async_integration_utils import (
+    get_tagged_name,
+    log_test_step,
+)
 
 
 class TestAsyncSecurityGroup(unittest.TestCase):
@@ -39,13 +42,11 @@ class TestAsyncSecurityGroup(unittest.TestCase):
                     security_group_id = security_group.security_group_id
                     self.assertTrue(security_group_id)
                     log_test_step(
-                        "Created security group {} (async)".format(security_group_id)
+                        f"Created security group {security_group_id} (async)"
                     )
 
                     log_test_step(
-                        "Creating inbound SSH rule on {} (async)".format(
-                            security_group_id
-                        )
+                        f"Creating inbound SSH rule on {security_group_id} (async)"
                     )
                     rule_response = await client.osc.create_security_group_rule(
                         CreateSecurityGroupRuleRequest(
@@ -61,7 +62,7 @@ class TestAsyncSecurityGroup(unittest.TestCase):
                     self.assertIsInstance(rule_response.security_group, SecurityGroup)
 
                     log_test_step(
-                        "Reading security group {} (async)".format(security_group_id)
+                        f"Reading security group {security_group_id} (async)"
                     )
                     read_response = await client.osc.read_security_groups(
                         ReadSecurityGroupsRequest(
@@ -87,9 +88,7 @@ class TestAsyncSecurityGroup(unittest.TestCase):
                     )
 
                     log_test_step(
-                        "Deleting inbound SSH rule on {} (async)".format(
-                            security_group_id
-                        )
+                        f"Deleting inbound SSH rule on {security_group_id} (async)"
                     )
                     await client.osc.delete_security_group_rule(
                         DeleteSecurityGroupRuleRequest(
@@ -104,9 +103,7 @@ class TestAsyncSecurityGroup(unittest.TestCase):
                 finally:
                     if security_group_id:
                         log_test_step(
-                            "Deleting security group {} (async)".format(
-                                security_group_id
-                            )
+                            f"Deleting security group {security_group_id} (async)"
                         )
                         await client.osc.delete_security_group(
                             DeleteSecurityGroupRequest(

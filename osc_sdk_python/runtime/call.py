@@ -15,8 +15,8 @@ from ..exceptions import (
 )
 from .request import RequestSpec
 from .transport import (
-    AsyncSdkTransport,
     DEFAULT_USER_AGENT,
+    AsyncSdkTransport,
     RateLimiter,
     RetryPolicy,
     SdkAuth,

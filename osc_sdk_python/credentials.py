@@ -20,9 +20,9 @@ class Endpoint:
         self.direct_link: str = kwargs.pop("direct_link", None)
 
         if kwargs:
-            unexpected = ", ".join(f"'{k}'" for k in kwargs.keys())
+            unexpected = ", ".join(f"'{k}'" for k in kwargs)
             raise SdkConfigurationError(
-                "Endpoint() got unexpected keyword arguments: {}".format(unexpected)
+                f"Endpoint() got unexpected keyword arguments: {unexpected}"
             )
 
 
@@ -38,14 +38,14 @@ class Profile:
         self.password: str = kwargs.pop("password", None)
         self.protocol: str = kwargs.pop("protocol", None)
         self.region: str = kwargs.pop("region", None)
-        self.endpoints: "Endpoint" = kwargs.pop(
+        self.endpoints: Endpoint = kwargs.pop(
             "endpoints", Endpoint()
         )  # Forward reference
 
         if kwargs:
-            unexpected = ", ".join(f"'{k}'" for k in kwargs.keys())
+            unexpected = ", ".join(f"'{k}'" for k in kwargs)
             raise SdkConfigurationError(
-                "Profile() got unexpected keyword arguments: {}".format(unexpected)
+                f"Profile() got unexpected keyword arguments: {unexpected}"
             )
 
     @property
@@ -122,12 +122,12 @@ class Profile:
                 config = json.load(f)
         except Exception as error:
             raise SdkConfigurationError(
-                "Could not load configuration file: {}".format(path)
+                f"Could not load configuration file: {path}"
             ) from error
 
         kwargs_profile = config.get(profile)
         if kwargs_profile is None:
-            raise SdkConfigurationError("Profile '{}' not found".format(profile))
+            raise SdkConfigurationError(f"Profile '{profile}' not found")
 
         try:
             kwargs_endpoints = kwargs_profile.get("endpoints", {})
@@ -137,7 +137,7 @@ class Profile:
             raise
         except Exception as error:
             raise SdkConfigurationError(
-                "Invalid profile '{}' in configuration file: {}".format(profile, path)
+                f"Invalid profile '{profile}' in configuration file: {path}"
             ) from error
 
     def merge(self, other: "Profile"):
@@ -174,9 +174,9 @@ class Profile:
         try:
             file_profile = Profile.__from_file(path, profile)
             merged_profile.merge(file_profile)
-        except Exception as e:
+        except Exception:
             if path != STD_PATH or profile != "default":
-                raise e
+                raise
 
         # 3. Environment variables override config file values.
         merged_profile.merge(Profile.from_env())

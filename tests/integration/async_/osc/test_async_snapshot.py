@@ -28,7 +28,7 @@ class TestAsyncSnapshot(unittest.TestCase):
         async def run():
             async with AsyncClient() as client:
                 subregion_name = await get_first_subregion_name(client)
-                log_test_step("Using subregion {} (async)".format(subregion_name))
+                log_test_step(f"Using subregion {subregion_name} (async)")
                 volume_id = None
                 snapshot_id = None
                 description = get_tagged_name("osc-sdk-python-snapshot-async")
@@ -42,10 +42,10 @@ class TestAsyncSnapshot(unittest.TestCase):
                     self.assertIsInstance(volume, Volume)
                     volume_id = volume.volume_id
                     self.assertTrue(volume_id)
-                    log_test_step("Created volume {} (async)".format(volume_id))
+                    log_test_step(f"Created volume {volume_id} (async)")
 
                     await client.osc.create_tags(build_name_tag_typed_request(volume_id))
-                    log_test_step("Tagged volume {} (async)".format(volume_id))
+                    log_test_step(f"Tagged volume {volume_id} (async)")
 
                     for _ in range(30):
                         volume = await read_single_resource(
@@ -58,22 +58,18 @@ class TestAsyncSnapshot(unittest.TestCase):
                         )
                         self.assertIsInstance(volume, Volume)
                         log_test_step(
-                            "Volume {} state={} (async)".format(
-                                volume_id, volume.state
-                            )
+                            f"Volume {volume_id} state={volume.state} (async)"
                         )
                         if volume.state == "available":
                             break
                         if volume.state == "error":
                             self.fail(
-                                "Volume {} entered unexpected state {}".format(
-                                    volume_id, volume.state
-                                )
+                                f"Volume {volume_id} entered unexpected state {volume.state}"
                             )
                         await asyncio.sleep(10)
 
                     log_test_step(
-                        "Creating snapshot from volume {} (async)".format(volume_id)
+                        f"Creating snapshot from volume {volume_id} (async)"
                     )
                     snapshot_response = await client.osc.create_snapshot(
                         CreateSnapshotRequest(
@@ -86,10 +82,10 @@ class TestAsyncSnapshot(unittest.TestCase):
                     self.assertIsInstance(snapshot, Snapshot)
                     snapshot_id = snapshot.snapshot_id
                     self.assertTrue(snapshot_id)
-                    log_test_step("Created snapshot {} (async)".format(snapshot_id))
+                    log_test_step(f"Created snapshot {snapshot_id} (async)")
 
                     await client.osc.create_tags(build_name_tag_typed_request(snapshot_id))
-                    log_test_step("Tagged snapshot {} (async)".format(snapshot_id))
+                    log_test_step(f"Tagged snapshot {snapshot_id} (async)")
 
                     snapshot = None
                     for _ in range(60):
@@ -103,17 +99,13 @@ class TestAsyncSnapshot(unittest.TestCase):
                         )
                         self.assertIsInstance(snapshot, Snapshot)
                         log_test_step(
-                            "Snapshot {} state={} (async)".format(
-                                snapshot_id, snapshot.state
-                            )
+                            f"Snapshot {snapshot_id} state={snapshot.state} (async)"
                         )
                         if snapshot.state == "completed":
                             break
                         if snapshot.state == "error":
                             self.fail(
-                                "Snapshot {} entered unexpected state {}".format(
-                                    snapshot_id, snapshot.state
-                                )
+                                f"Snapshot {snapshot_id} entered unexpected state {snapshot.state}"
                             )
                         await asyncio.sleep(10)
 
@@ -127,17 +119,17 @@ class TestAsyncSnapshot(unittest.TestCase):
                         "expected a Name tag on the snapshot",
                     )
                     log_test_step(
-                        "Snapshot {} is completed (async)".format(snapshot_id)
+                        f"Snapshot {snapshot_id} is completed (async)"
                     )
                 finally:
                     if snapshot_id:
-                        log_test_step("Deleting snapshot {} (async)".format(snapshot_id))
+                        log_test_step(f"Deleting snapshot {snapshot_id} (async)")
                         await client.osc.delete_snapshot(
                             DeleteSnapshotRequest(snapshot_id=snapshot_id)
                         )
                     if volume_id:
                         await asyncio.sleep(1)
-                        log_test_step("Deleting volume {} (async)".format(volume_id))
+                        log_test_step(f"Deleting volume {volume_id} (async)")
                         await client.osc.delete_volume(
                             DeleteVolumeRequest(volume_id=volume_id)
                         )

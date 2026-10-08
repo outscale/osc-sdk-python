@@ -8,7 +8,10 @@ from osc_sdk_python.generated.osc import (
     DeleteKeypairRequest,
     KeypairCreated,
 )
-from tests.integration.async_.helpers.async_integration_utils import get_tagged_name, log_test_step
+from tests.integration.async_.helpers.async_integration_utils import (
+    get_tagged_name,
+    log_test_step,
+)
 
 
 class TestAsyncKeypair(unittest.TestCase):
@@ -18,7 +21,7 @@ class TestAsyncKeypair(unittest.TestCase):
                 keypair_name = get_tagged_name("osc-sdk-python-keypair-async")
                 keypair_id = None
                 try:
-                    log_test_step("Creating keypair {} (async)".format(keypair_name))
+                    log_test_step(f"Creating keypair {keypair_name} (async)")
                     response = await client.osc.create_keypair(
                         CreateKeypairRequest(keypair_name=keypair_name)
                     )
@@ -27,10 +30,10 @@ class TestAsyncKeypair(unittest.TestCase):
                     self.assertIsInstance(keypair, KeypairCreated)
                     keypair_id = keypair.keypair_id
                     self.assertTrue(keypair_id)
-                    log_test_step("Created keypair {} (async)".format(keypair_id))
+                    log_test_step(f"Created keypair {keypair_id} (async)")
                 finally:
                     if keypair_id:
-                        log_test_step("Deleting keypair {} (async)".format(keypair_id))
+                        log_test_step(f"Deleting keypair {keypair_id} (async)")
                         await client.osc.delete_keypair(
                             DeleteKeypairRequest(keypair_id=keypair_id)
                         )

@@ -1,5 +1,5 @@
-from pathlib import Path
 import shutil
+from pathlib import Path
 from uuid import uuid4
 
 from osc_sdk_python.codegen.overlay import apply_overlay, load_spec

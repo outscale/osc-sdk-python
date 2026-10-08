@@ -2,17 +2,19 @@ import base64
 import random
 import string
 
+
 def get_random_string(length=10):
     alphabet = string.ascii_lowercase + string.digits
     return "".join(random.choice(alphabet) for _ in range(length))
 
 
 def get_tagged_name(prefix="osc-sdk-python-test", length=10):
-    return "{}-{}".format(prefix, get_random_string(length))
+    return f"{prefix}-{get_random_string(length)}"
 
 
 def log_test_step(message):
-    print("[tests] {}".format(message), flush=True)
+    print(f"[tests] {message}", flush=True)
+
 
 def get_first_item(items, message):
     if not items:
@@ -58,7 +60,7 @@ def read_single_resource(gw, action, key, resource_id_key, resource_id):
     items = response.get(key)
     if not items or len(items) != 1:
         raise AssertionError(
-            "{} did not return exactly one resource for {}".format(action, resource_id)
+            f"{action} did not return exactly one resource for {resource_id}"
         )
     return items[0]
 

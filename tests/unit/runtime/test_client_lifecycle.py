@@ -1,5 +1,4 @@
 import asyncio
-from unittest.mock import Mock
 
 import pytest
 
@@ -37,9 +36,8 @@ def test_async_client_context_manager_closes_service_clients():
 
 def test_async_client_rejects_sync_context_manager():
     """Test AsyncClient cannot be used with a sync context manager"""
-    with pytest.raises(SdkUsageError):
-        with AsyncClient():
-            pass
+    with pytest.raises(SdkUsageError), AsyncClient():
+        pass
 
 
 class FakeAsyncClient:
@@ -72,11 +70,11 @@ def test_typed_service_methods_are_available():
     async def run():
         async with AsyncClient() as client:
             assert hasattr(client.osc, "read_vms")
-            assert callable(getattr(client.osc, "read_vms"))
+            assert callable(client.osc.read_vms)
             assert "read_vms" in dir(client.osc)
 
             assert hasattr(client.oks, "list_projects")
-            assert callable(getattr(client.oks, "list_projects"))
+            assert callable(client.oks.list_projects)
             assert "list_projects" in dir(client.oks)
 
     asyncio.run(run())

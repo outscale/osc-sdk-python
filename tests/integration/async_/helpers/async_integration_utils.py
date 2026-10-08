@@ -48,9 +48,7 @@ async def read_single_resource(client, method_name, request_cls, key, resource_i
     items = getattr(response, key)
     if not items or len(items) != 1:
         raise AssertionError(
-            "{} did not return exactly one resource for {}".format(
-                method_name, resource_id
-            )
+            f"{method_name} did not return exactly one resource for {resource_id}"
         )
     return items[0]
 

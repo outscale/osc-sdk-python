@@ -37,9 +37,7 @@ class TestAsyncLoadBalancerBackend(unittest.TestCase):
                 subregion_name = await get_first_subregion_name(client)
                 image_id = await get_latest_public_ubuntu_image_id(client)
                 log_test_step(
-                    "Using subregion {} and image {} (async)".format(
-                        subregion_name, image_id
-                    )
+                    f"Using subregion {subregion_name} and image {image_id} (async)"
                 )
                 vm_id = None
                 load_balancer_name = get_tagged_name("osc-sdk-python-lb")
@@ -66,10 +64,10 @@ class TestAsyncLoadBalancerBackend(unittest.TestCase):
                     self.assertIsInstance(vms[0], Vm)
                     vm_id = vms[0].vm_id
                     self.assertTrue(vm_id)
-                    log_test_step("Created backend VM {} (async)".format(vm_id))
+                    log_test_step(f"Created backend VM {vm_id} (async)")
 
                     await client.osc.create_tags(build_name_tag_typed_request(vm_id))
-                    log_test_step("Tagged backend VM {} (async)".format(vm_id))
+                    log_test_step(f"Tagged backend VM {vm_id} (async)")
 
                     for _ in range(36):
                         vm = await read_single_resource(
@@ -82,19 +80,17 @@ class TestAsyncLoadBalancerBackend(unittest.TestCase):
                         )
                         self.assertIsInstance(vm, Vm)
                         log_test_step(
-                            "VM {} state={} (async)".format(vm_id, vm.state)
+                            f"VM {vm_id} state={vm.state} (async)"
                         )
                         if vm.state == "running":
                             break
                         if vm.state in ("stopped", "terminated", "shutting-down"):
                             self.fail(
-                                "VM {} entered unexpected state {}".format(
-                                    vm_id, vm.state
-                                )
+                                f"VM {vm_id} entered unexpected state {vm.state}"
                             )
                         await asyncio.sleep(10)
 
-                    log_test_step("Creating load balancer {} (async)".format(load_balancer_name))
+                    log_test_step(f"Creating load balancer {load_balancer_name} (async)")
                     load_balancer_response = await client.osc.create_load_balancer(
                         CreateLoadBalancerRequest(
                             load_balancer_name=load_balancer_name,
@@ -126,9 +122,7 @@ class TestAsyncLoadBalancerBackend(unittest.TestCase):
                     load_balancer_created = True
 
                     log_test_step(
-                        "Linking backend VM {} to {} (async)".format(
-                            vm_id, load_balancer_name
-                        )
+                        f"Linking backend VM {vm_id} to {load_balancer_name} (async)"
                     )
                     await client.osc.link_load_balancer_backend_machines(
                         LinkLoadBalancerBackendMachinesRequest(
@@ -138,7 +132,7 @@ class TestAsyncLoadBalancerBackend(unittest.TestCase):
                     )
 
                     log_test_step(
-                        "Reading load balancer {} (async)".format(load_balancer_name)
+                        f"Reading load balancer {load_balancer_name} (async)"
                     )
                     read_balancers = await client.osc.read_load_balancers(
                         ReadLoadBalancersRequest(
@@ -167,9 +161,7 @@ class TestAsyncLoadBalancerBackend(unittest.TestCase):
                                 health.backend_vm_health[0], BackendVmHealth
                             )
                         log_test_step(
-                            "Backend health entries for {}: {} (async)".format(
-                                load_balancer_name, entry_count
-                            )
+                            f"Backend health entries for {load_balancer_name}: {entry_count} (async)"
                         )
                         if any(
                             entry.vm_id == vm_id
@@ -186,16 +178,12 @@ class TestAsyncLoadBalancerBackend(unittest.TestCase):
                         )
                     )
                     log_test_step(
-                        "Backend VM {} is registered in {} (async)".format(
-                            vm_id, load_balancer_name
-                        )
+                        f"Backend VM {vm_id} is registered in {load_balancer_name} (async)"
                     )
                 finally:
                     if load_balancer_created:
                         log_test_step(
-                            "Deleting load balancer {} (async)".format(
-                                load_balancer_name
-                            )
+                            f"Deleting load balancer {load_balancer_name} (async)"
                         )
                         await client.osc.delete_load_balancer(
                             DeleteLoadBalancerRequest(
@@ -204,7 +192,7 @@ class TestAsyncLoadBalancerBackend(unittest.TestCase):
                         )
                     if vm_id:
                         await asyncio.sleep(1)
-                        log_test_step("Deleting backend VM {} (async)".format(vm_id))
+                        log_test_step(f"Deleting backend VM {vm_id} (async)")
                         await client.osc.delete_vms(DeleteVmsRequest(vm_ids=[vm_id]))
 
         asyncio.run(run())
