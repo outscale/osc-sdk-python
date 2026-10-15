@@ -256,6 +256,8 @@ A subset of services can be generated explicitly:
 python -m osc_sdk_python.codegen.generator oks osc
 ```
 
+After all requested service slices are written, the generator runs **`uv run ruff check --fix`** once on `osc_sdk_python/generated/` (not `ruff format`). Use `--skip-ruff` to disable. Prefer `uv run python -m osc_sdk_python.codegen.generator` so Ruff is available from dev dependencies.
+
 Generated files include a header stating that typed request and response models are async-first and that generated typed methods are exposed on `AsyncClient`.
 
 ## 9. Supported OpenAPI Styles

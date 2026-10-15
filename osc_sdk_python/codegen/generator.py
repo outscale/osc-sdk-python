@@ -1,5 +1,6 @@
 import argparse
 import re
+import subprocess
 from collections.abc import Iterable
 from pathlib import Path
 
@@ -291,6 +292,15 @@ def render_init(
     return "\n".join(lines)
 
 
+def _ruff_check_fix(generated_root: Path) -> None:
+    repo_root = Path(__file__).resolve().parents[2]
+    subprocess.run(
+        ["uv", "run", "ruff", "check", "--fix", str(generated_root)],
+        cwd=repo_root,
+        check=True,
+    )
+
+
 def generate(
     spec_path: Path,
     output_dir: Path,
@@ -320,6 +330,7 @@ def generate_all(
     root: Path,
     services: list[str] | None = None,
     skip_overlay: bool = False,
+    run_ruff: bool = True,
 ) -> None:
     resources_root = root / "resources"
     service_dirs = [
@@ -341,6 +352,8 @@ def generate_all(
             package_name,
             skip_overlay=skip_overlay,
         )
+    if run_ruff:
+        _ruff_check_fix(root / "generated")
 
 
 def main() -> None:
@@ -355,9 +368,19 @@ def main() -> None:
         action="store_true",
         help="When generating from cfg.yaml, ignore the overlay and use the base spec only.",
     )
+    parser.add_argument(
+        "--skip-ruff",
+        action="store_true",
+        help="Skip ruff check --fix on generated files.",
+    )
     args = parser.parse_args()
     root = Path(__file__).resolve().parents[1]
-    generate_all(root, args.services or None, skip_overlay=args.skip_overlay)
+    generate_all(
+        root,
+        args.services or None,
+        skip_overlay=args.skip_overlay,
+        run_ruff=not args.skip_ruff,
+    )
 
 
 if __name__ == "__main__":

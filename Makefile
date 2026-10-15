@@ -8,6 +8,7 @@ help:
 	@echo "- test-lint: check code with ruff"
 	@echo "- typecheck: run pyright"
 	@echo "- test-int: run integration tests"
+	@echo "- codegen: regenerate OSC/OKS clients (ruff check --fix on generated/)"
 	@echo "- osc-api-update: update to last osc-api version"
 	@echo "- clean: clean temp files, venv, etc"
 
@@ -15,9 +16,13 @@ help:
 test: clean test-lint test-int package
 	@echo "All tests: OK"
 
+.PHONY: codegen
+codegen:
+	@uv run python -m osc_sdk_python.codegen.generator oks osc --skip-overlay
+
 .PHONY: test-lint
 test-lint:
-	@uv tool run ruff check
+	@uv run ruff check
 
 .PHONY: typecheck
 typecheck:

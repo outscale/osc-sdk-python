@@ -11,7 +11,6 @@ Do not edit by hand. Regenerate with:
 from __future__ import annotations
 
 import datetime
-
 from typing import Literal
 
 from pydantic import BaseModel, ConfigDict, Field
