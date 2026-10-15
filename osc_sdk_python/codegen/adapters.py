@@ -114,9 +114,7 @@ def schema_type(
     if typ == "object":
         additional = schema.get("additionalProperties")
         if isinstance(additional, dict):
-            additional_context = (
-                f"{context}.additionalProperties" if context else None
-            )
+            additional_context = f"{context}.additionalProperties" if context else None
             return f"dict[str, {schema_type(additional, ref_resolver, additional_context)}]"
         return "dict[str, Any]"
     logger.warning(

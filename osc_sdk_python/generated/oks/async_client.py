@@ -95,13 +95,16 @@ def _validate_request(model: type, value: Any) -> Any:
     except ValidationError as error:
         raise SdkValidationError(str(error)) from error
 
+
 T = TypeVar("T")
+
 
 def _validate_response(model: T, value: Any) -> Any:
     try:
         return TypeAdapter(model).validate_python(value)
     except ValidationError as error:
         raise SdkResponseError(str(error)) from error
+
 
 class HasCallMethod(Protocol):
     @property
@@ -115,16 +118,15 @@ class AsyncOksTypedMixin:
     ) -> ProjectResponseList:
         request = _validate_request(ListProjectsRequest, request)
 
-        path_params = {
-        }
+        path_params = {}
         query_params = {
-            'name': request.name,
-            'status': request.status,
-            'cidr': request.cidr,
-            'deleted': request.deleted,
-            'cursor': request.cursor,
-            'page': request.page,
-            'limit': request.limit,
+            "name": request.name,
+            "status": request.status,
+            "cidr": request.cidr,
+            "deleted": request.deleted,
+            "cursor": request.cursor,
+            "page": request.page,
+            "limit": request.limit,
         }
         response = await self.call.request(
             RequestSpec(
@@ -148,10 +150,8 @@ class AsyncOksTypedMixin:
     ) -> ProjectResponse:
         request = _validate_request(CreateProjectRequest, request)
 
-        path_params = {
-        }
-        query_params = {
-        }
+        path_params = {}
+        query_params = {}
         response = await self.call.request(
             RequestSpec(
                 service="oks",
@@ -175,10 +175,9 @@ class AsyncOksTypedMixin:
         request = _validate_request(GetProjectRequest, request)
 
         path_params = {
-            'project_id': request.project_id,
+            "project_id": request.project_id,
         }
-        query_params = {
-        }
+        query_params = {}
         response = await self.call.request(
             RequestSpec(
                 service="oks",
@@ -202,10 +201,9 @@ class AsyncOksTypedMixin:
         request = _validate_request(UpdateProjectRequest, request)
 
         path_params = {
-            'project_id': request.project_id,
+            "project_id": request.project_id,
         }
-        query_params = {
-        }
+        query_params = {}
         response = await self.call.request(
             RequestSpec(
                 service="oks",
@@ -229,10 +227,9 @@ class AsyncOksTypedMixin:
         request = _validate_request(DeleteProjectRequest, request)
 
         path_params = {
-            'project_id': request.project_id,
+            "project_id": request.project_id,
         }
-        query_params = {
-        }
+        query_params = {}
         response = await self.call.request(
             RequestSpec(
                 service="oks",
@@ -256,10 +253,9 @@ class AsyncOksTypedMixin:
         request = _validate_request(GetProjectQuotasRequest, request)
 
         path_params = {
-            'project_id': request.project_id,
+            "project_id": request.project_id,
         }
-        query_params = {
-        }
+        query_params = {}
         response = await self.call.request(
             RequestSpec(
                 service="oks",
@@ -283,10 +279,9 @@ class AsyncOksTypedMixin:
         request = _validate_request(GetProjectSnapshotsRequest, request)
 
         path_params = {
-            'project_id': request.project_id,
+            "project_id": request.project_id,
         }
-        query_params = {
-        }
+        query_params = {}
         response = await self.call.request(
             RequestSpec(
                 service="oks",
@@ -310,10 +305,9 @@ class AsyncOksTypedMixin:
         request = _validate_request(GetProjectPublicIpsRequest, request)
 
         path_params = {
-            'project_id': request.project_id,
+            "project_id": request.project_id,
         }
-        query_params = {
-        }
+        query_params = {}
         response = await self.call.request(
             RequestSpec(
                 service="oks",
@@ -337,10 +331,9 @@ class AsyncOksTypedMixin:
         request = _validate_request(GetProjectNetsRequest, request)
 
         path_params = {
-            'project_id': request.project_id,
+            "project_id": request.project_id,
         }
-        query_params = {
-        }
+        query_params = {}
         response = await self.call.request(
             RequestSpec(
                 service="oks",
@@ -364,10 +357,9 @@ class AsyncOksTypedMixin:
         request = _validate_request(GetEimUsersRequest, request)
 
         path_params = {
-            'project_id': request.project_id,
+            "project_id": request.project_id,
         }
-        query_params = {
-        }
+        query_params = {}
         response = await self.call.request(
             RequestSpec(
                 service="oks",
@@ -391,11 +383,11 @@ class AsyncOksTypedMixin:
         request = _validate_request(CreateEimUserRequest, request)
 
         path_params = {
-            'project_id': request.project_id,
+            "project_id": request.project_id,
         }
         query_params = {
-            'user': request.user,
-            'ttl': request.ttl,
+            "user": request.user,
+            "ttl": request.ttl,
         }
         response = await self.call.request(
             RequestSpec(
@@ -420,10 +412,9 @@ class AsyncOksTypedMixin:
         request = _validate_request(GetEimUserTypesRequest, request)
 
         path_params = {
-            'project_id': request.project_id,
+            "project_id": request.project_id,
         }
-        query_params = {
-        }
+        query_params = {}
         response = await self.call.request(
             RequestSpec(
                 service="oks",
@@ -447,11 +438,10 @@ class AsyncOksTypedMixin:
         request = _validate_request(DeleteEimUserRequest, request)
 
         path_params = {
-            'project_id': request.project_id,
-            'user': request.user,
+            "project_id": request.project_id,
+            "user": request.user,
         }
-        query_params = {
-        }
+        query_params = {}
         response = await self.call.request(
             RequestSpec(
                 service="oks",
@@ -474,17 +464,16 @@ class AsyncOksTypedMixin:
     ) -> ClusterResponseList:
         request = _validate_request(ListClustersByProjectIDRequest, request)
 
-        path_params = {
-        }
+        path_params = {}
         query_params = {
-            'project_id': request.project_id,
-            'name': request.name,
-            'status': request.status,
-            'version': request.version,
-            'deleted': request.deleted,
-            'cursor': request.cursor,
-            'page': request.page,
-            'limit': request.limit,
+            "project_id": request.project_id,
+            "name": request.name,
+            "status": request.status,
+            "version": request.version,
+            "deleted": request.deleted,
+            "cursor": request.cursor,
+            "page": request.page,
+            "limit": request.limit,
         }
         response = await self.call.request(
             RequestSpec(
@@ -508,10 +497,8 @@ class AsyncOksTypedMixin:
     ) -> ClusterResponse:
         request = _validate_request(CreateClusterRequest, request)
 
-        path_params = {
-        }
-        query_params = {
-        }
+        path_params = {}
+        query_params = {}
         response = await self.call.request(
             RequestSpec(
                 service="oks",
@@ -534,16 +521,15 @@ class AsyncOksTypedMixin:
     ) -> ClusterResponseList:
         request = _validate_request(ListAllClustersRequest, request)
 
-        path_params = {
-        }
+        path_params = {}
         query_params = {
-            'name': request.name,
-            'status': request.status,
-            'version': request.version,
-            'deleted': request.deleted,
-            'cursor': request.cursor,
-            'page': request.page,
-            'limit': request.limit,
+            "name": request.name,
+            "status": request.status,
+            "version": request.version,
+            "deleted": request.deleted,
+            "cursor": request.cursor,
+            "page": request.page,
+            "limit": request.limit,
         }
         response = await self.call.request(
             RequestSpec(
@@ -568,10 +554,9 @@ class AsyncOksTypedMixin:
         request = _validate_request(GetClusterRequest, request)
 
         path_params = {
-            'cluster_id': request.cluster_id,
+            "cluster_id": request.cluster_id,
         }
-        query_params = {
-        }
+        query_params = {}
         response = await self.call.request(
             RequestSpec(
                 service="oks",
@@ -595,10 +580,9 @@ class AsyncOksTypedMixin:
         request = _validate_request(UpdateClusterRequest, request)
 
         path_params = {
-            'cluster_id': request.cluster_id,
+            "cluster_id": request.cluster_id,
         }
-        query_params = {
-        }
+        query_params = {}
         response = await self.call.request(
             RequestSpec(
                 service="oks",
@@ -622,10 +606,9 @@ class AsyncOksTypedMixin:
         request = _validate_request(DeleteClusterRequest, request)
 
         path_params = {
-            'cluster_id': request.cluster_id,
+            "cluster_id": request.cluster_id,
         }
-        query_params = {
-        }
+        query_params = {}
         response = await self.call.request(
             RequestSpec(
                 service="oks",
@@ -649,12 +632,12 @@ class AsyncOksTypedMixin:
         request = _validate_request(GetKubeconfigRequest, request)
 
         path_params = {
-            'cluster_id': request.cluster_id,
+            "cluster_id": request.cluster_id,
         }
         query_params = {
-            'user': request.user,
-            'group': request.group,
-            'ttl': request.ttl,
+            "user": request.user,
+            "group": request.group,
+            "ttl": request.ttl,
         }
         response = await self.call.request(
             RequestSpec(
@@ -679,12 +662,12 @@ class AsyncOksTypedMixin:
         request = _validate_request(GetKubeconfigWithPubkeyNACLRequest, request)
 
         path_params = {
-            'cluster_id': request.cluster_id,
+            "cluster_id": request.cluster_id,
         }
         query_params = {
-            'user': request.user,
-            'group': request.group,
-            'ttl': request.ttl,
+            "user": request.user,
+            "group": request.group,
+            "ttl": request.ttl,
         }
         response = await self.call.request(
             RequestSpec(
@@ -709,10 +692,9 @@ class AsyncOksTypedMixin:
         request = _validate_request(UpgradeClusterRequest, request)
 
         path_params = {
-            'cluster_id': request.cluster_id,
+            "cluster_id": request.cluster_id,
         }
-        query_params = {
-        }
+        query_params = {}
         response = await self.call.request(
             RequestSpec(
                 service="oks",
@@ -735,10 +717,8 @@ class AsyncOksTypedMixin:
     ) -> KubernetesVersionsResponse:
         _ = request
 
-        path_params = {
-        }
-        query_params = {
-        }
+        path_params = {}
+        query_params = {}
         response = await self.call.request(
             RequestSpec(
                 service="oks",
@@ -761,10 +741,8 @@ class AsyncOksTypedMixin:
     ) -> CPSubregionsResponse:
         _ = request
 
-        path_params = {
-        }
-        query_params = {
-        }
+        path_params = {}
+        query_params = {}
         response = await self.call.request(
             RequestSpec(
                 service="oks",
@@ -787,10 +765,8 @@ class AsyncOksTypedMixin:
     ) -> ControlPlanesResponse:
         _ = request
 
-        path_params = {
-        }
-        query_params = {
-        }
+        path_params = {}
+        query_params = {}
         response = await self.call.request(
             RequestSpec(
                 service="oks",
@@ -813,10 +789,9 @@ class AsyncOksTypedMixin:
     ) -> AdmissionPluginsResponse:
         request = _validate_request(GetAdmissionPluginsRequest, request)
 
-        path_params = {
-        }
+        path_params = {}
         query_params = {
-            'version': request.version,
+            "version": request.version,
         }
         response = await self.call.request(
             RequestSpec(
@@ -840,10 +815,8 @@ class AsyncOksTypedMixin:
     ) -> TemplateResponse_ProjectInput:
         _ = request
 
-        path_params = {
-        }
-        query_params = {
-        }
+        path_params = {}
+        query_params = {}
         response = await self.call.request(
             RequestSpec(
                 service="oks",
@@ -866,10 +839,8 @@ class AsyncOksTypedMixin:
     ) -> TemplateResponse_ClusterInputTemplate:
         _ = request
 
-        path_params = {
-        }
-        query_params = {
-        }
+        path_params = {}
+        query_params = {}
         response = await self.call.request(
             RequestSpec(
                 service="oks",
@@ -892,10 +863,8 @@ class AsyncOksTypedMixin:
     ) -> TemplateResponse_Nodepool:
         _ = request
 
-        path_params = {
-        }
-        query_params = {
-        }
+        path_params = {}
+        query_params = {}
         response = await self.call.request(
             RequestSpec(
                 service="oks",
@@ -918,10 +887,8 @@ class AsyncOksTypedMixin:
     ) -> TemplateResponse_NetPeeringRequest:
         _ = request
 
-        path_params = {
-        }
-        query_params = {
-        }
+        path_params = {}
+        query_params = {}
         response = await self.call.request(
             RequestSpec(
                 service="oks",
@@ -944,10 +911,8 @@ class AsyncOksTypedMixin:
     ) -> TemplateResponse_NetPeeringAcceptance:
         _ = request
 
-        path_params = {
-        }
-        query_params = {
-        }
+        path_params = {}
+        query_params = {}
         response = await self.call.request(
             RequestSpec(
                 service="oks",
@@ -970,10 +935,8 @@ class AsyncOksTypedMixin:
     ) -> quotas__quota_schema__QuotasResponse:
         _ = request
 
-        path_params = {
-        }
-        query_params = {
-        }
+        path_params = {}
+        query_params = {}
         response = await self.call.request(
             RequestSpec(
                 service="oks",
@@ -996,10 +959,8 @@ class AsyncOksTypedMixin:
     ) -> IPResponse:
         _ = request
 
-        path_params = {
-        }
-        query_params = {
-        }
+        path_params = {}
+        query_params = {}
         response = await self.call.request(
             RequestSpec(
                 service="oks",

@@ -54,7 +54,9 @@ class TestAsyncNetAndSubnet(unittest.TestCase):
                     self.assertTrue(subnet_id)
                     log_test_step(f"Created subnet {subnet_id} (async)")
 
-                    await client.osc.create_tags(build_name_tag_typed_request(subnet_id))
+                    await client.osc.create_tags(
+                        build_name_tag_typed_request(subnet_id)
+                    )
                     await asyncio.sleep(2)
 
                     log_test_step(f"Reading subnet {subnet_id} (async)")

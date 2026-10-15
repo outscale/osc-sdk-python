@@ -26,9 +26,7 @@ async def wait_project_ready(client, project_id):
             GetProjectRequest(project_id=project_id)
         )
         project = response.project
-        log_test_step(
-            f"OKS project {project_id} status={project.status} (async)"
-        )
+        log_test_step(f"OKS project {project_id} status={project.status} (async)")
         if project.status == PROJECT_READY_STATUS:
             return project
         await asyncio.sleep(10)
@@ -80,9 +78,7 @@ class TestAsyncOksProject(unittest.TestCase):
                     )
                     self.assertIsInstance(project_input, ProjectInput)
 
-                    log_test_step(
-                        f"Creating OKS project {project_name} (async)"
-                    )
+                    log_test_step(f"Creating OKS project {project_name} (async)")
                     create_response = await client.oks.create_project(
                         CreateProjectRequest(body=project_input)
                     )
@@ -126,9 +122,7 @@ class TestAsyncOksProject(unittest.TestCase):
                     self.assertEqual(updated_project.description, updated_description)
                 finally:
                     if project_id:
-                        log_test_step(
-                            f"Deleting OKS project {project_id} (async)"
-                        )
+                        log_test_step(f"Deleting OKS project {project_id} (async)")
                         delete_response = await delete_project_when_ready(
                             client, project_id
                         )

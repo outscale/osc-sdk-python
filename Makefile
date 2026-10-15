@@ -5,10 +5,11 @@ help:
 	@echo "Available targets:"
 	@echo "- package: build python package"
 	@echo "- test: run all tests"
-	@echo "- test-lint: check code with ruff"
+	@echo "- test-lint: ruff format --check and ruff check"
+	@echo "- format: ruff format and ruff check --fix"
 	@echo "- typecheck: run pyright"
 	@echo "- test-int: run integration tests"
-	@echo "- codegen: regenerate OSC/OKS clients (ruff check --fix on generated/)"
+	@echo "- codegen: regenerate OSC/OKS clients (ruff format + check --fix on generated/)"
 	@echo "- osc-api-update: update to last osc-api version"
 	@echo "- clean: clean temp files, venv, etc"
 
@@ -22,7 +23,13 @@ codegen:
 
 .PHONY: test-lint
 test-lint:
+	@uv run ruff format --check
 	@uv run ruff check
+
+.PHONY: format
+format:
+	@uv run ruff format
+	@uv run ruff check --fix
 
 .PHONY: typecheck
 typecheck:

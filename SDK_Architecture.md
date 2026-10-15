@@ -256,7 +256,12 @@ A subset of services can be generated explicitly:
 python -m osc_sdk_python.codegen.generator oks osc
 ```
 
-After all requested service slices are written, the generator runs **`uv run ruff check --fix`** once on `osc_sdk_python/generated/` (not `ruff format`). Use `--skip-ruff` to disable. Prefer `uv run python -m osc_sdk_python.codegen.generator` so Ruff is available from dev dependencies.
+After all requested service slices are written, the generator runs **`uv run ruff format`** then **`uv run ruff check --fix`** once on `osc_sdk_python/generated/`. Use `--skip-ruff` to disable. Prefer `uv run python -m osc_sdk_python.codegen.generator` so Ruff is available from dev dependencies.
+
+For the full repository:
+
+- **`make format`** — `uv run ruff format`, then `uv run ruff check --fix`
+- **`make test-lint`** — `uv run ruff format --check`, then `uv run ruff check`
 
 Generated files include a header stating that typed request and response models are async-first and that generated typed methods are exposed on `AsyncClient`.
 
@@ -533,6 +538,7 @@ Compatibility rules:
 - Release generation currently uses `--skip-overlay` for OSC and OKS until overlays are redesigned and validated.
 - Async profile or credential updates could be improved: `AsyncCall.update_profile()` recreates the underlying httpx.AsyncClient without explicitly closing the previous instance. Since AsyncClient requires await client.aclose(), consider introducing an async update_profile() method or another lifecycle mechanism to ensure the previous client is cleaned up safely. Also add test for it.
 - Retry environment variables such as `OSC_MAX_RETRIES`, `OSC_RETRY_BACKOFF_FACTOR`, `OSC_RETRY_BACKOFF_JITTER`, and `OSC_RETRY_BACKOFF_MAX` are documented in the README but are not currently wired into the SDK runtime. Retry configuration currently works through constructor arguments only, so environment variable support should be fixed or the documentation should be corrected.
+- The generator could be improved to emit already well-formatted code so post-generation Ruff formatting is a small safety.
 
 ## 22. Summary
 

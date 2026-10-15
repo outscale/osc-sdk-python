@@ -33,7 +33,9 @@ async def get_latest_public_ubuntu_image_id(client):
         )
     )
     image = get_first_item(
-        sorted(images.images or [], key=lambda item: item.creation_date or "", reverse=True),
+        sorted(
+            images.images or [], key=lambda item: item.creation_date or "", reverse=True
+        ),
         "No public Ubuntu image returned",
     )
     if not image.image_id:
@@ -41,7 +43,9 @@ async def get_latest_public_ubuntu_image_id(client):
     return image.image_id
 
 
-async def read_single_resource(client, method_name, request_cls, key, resource_id_key, resource_id):
+async def read_single_resource(
+    client, method_name, request_cls, key, resource_id_key, resource_id
+):
     response = await getattr(client.osc, method_name)(
         request_cls(filters={resource_id_key: [resource_id]})
     )

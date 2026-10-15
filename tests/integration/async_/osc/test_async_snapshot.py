@@ -44,7 +44,9 @@ class TestAsyncSnapshot(unittest.TestCase):
                     self.assertTrue(volume_id)
                     log_test_step(f"Created volume {volume_id} (async)")
 
-                    await client.osc.create_tags(build_name_tag_typed_request(volume_id))
+                    await client.osc.create_tags(
+                        build_name_tag_typed_request(volume_id)
+                    )
                     log_test_step(f"Tagged volume {volume_id} (async)")
 
                     for _ in range(30):
@@ -68,9 +70,7 @@ class TestAsyncSnapshot(unittest.TestCase):
                             )
                         await asyncio.sleep(10)
 
-                    log_test_step(
-                        f"Creating snapshot from volume {volume_id} (async)"
-                    )
+                    log_test_step(f"Creating snapshot from volume {volume_id} (async)")
                     snapshot_response = await client.osc.create_snapshot(
                         CreateSnapshotRequest(
                             description=description,
@@ -84,7 +84,9 @@ class TestAsyncSnapshot(unittest.TestCase):
                     self.assertTrue(snapshot_id)
                     log_test_step(f"Created snapshot {snapshot_id} (async)")
 
-                    await client.osc.create_tags(build_name_tag_typed_request(snapshot_id))
+                    await client.osc.create_tags(
+                        build_name_tag_typed_request(snapshot_id)
+                    )
                     log_test_step(f"Tagged snapshot {snapshot_id} (async)")
 
                     snapshot = None
@@ -118,9 +120,7 @@ class TestAsyncSnapshot(unittest.TestCase):
                         any(tag.key == "Name" for tag in snapshot.tags or []),
                         "expected a Name tag on the snapshot",
                     )
-                    log_test_step(
-                        f"Snapshot {snapshot_id} is completed (async)"
-                    )
+                    log_test_step(f"Snapshot {snapshot_id} is completed (async)")
                 finally:
                     if snapshot_id:
                         log_test_step(f"Deleting snapshot {snapshot_id} (async)")

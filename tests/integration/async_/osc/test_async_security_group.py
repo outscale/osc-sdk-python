@@ -41,9 +41,7 @@ class TestAsyncSecurityGroup(unittest.TestCase):
                     self.assertIsInstance(security_group, SecurityGroup)
                     security_group_id = security_group.security_group_id
                     self.assertTrue(security_group_id)
-                    log_test_step(
-                        f"Created security group {security_group_id} (async)"
-                    )
+                    log_test_step(f"Created security group {security_group_id} (async)")
 
                     log_test_step(
                         f"Creating inbound SSH rule on {security_group_id} (async)"
@@ -58,12 +56,12 @@ class TestAsyncSecurityGroup(unittest.TestCase):
                             ip_range=ip_range,
                         )
                     )
-                    self.assertIsInstance(rule_response, CreateSecurityGroupRuleResponse)
+                    self.assertIsInstance(
+                        rule_response, CreateSecurityGroupRuleResponse
+                    )
                     self.assertIsInstance(rule_response.security_group, SecurityGroup)
 
-                    log_test_step(
-                        f"Reading security group {security_group_id} (async)"
-                    )
+                    log_test_step(f"Reading security group {security_group_id} (async)")
                     read_response = await client.osc.read_security_groups(
                         ReadSecurityGroupsRequest(
                             filters={"SecurityGroupIds": [security_group_id]}

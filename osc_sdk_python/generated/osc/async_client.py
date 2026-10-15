@@ -506,13 +506,16 @@ def _validate_request(model: type, value: Any) -> Any:
     except ValidationError as error:
         raise SdkValidationError(str(error)) from error
 
+
 T = TypeVar("T")
+
 
 def _validate_response(model: T, value: Any) -> Any:
     try:
         return TypeAdapter(model).validate_python(value)
     except ValidationError as error:
         raise SdkResponseError(str(error)) from error
+
 
 class HasCallMethod(Protocol):
     @property
@@ -526,10 +529,8 @@ class AsyncOscTypedMixin:
     ) -> AcceptNetPeeringResponse:
         request = _validate_request(AcceptNetPeeringRequest, request)
 
-        path_params = {
-        }
-        query_params = {
-        }
+        path_params = {}
+        query_params = {}
         response = await self.call.request(
             RequestSpec(
                 service="api",
@@ -552,10 +553,8 @@ class AsyncOscTypedMixin:
     ) -> AddUserToUserGroupResponse:
         request = _validate_request(AddUserToUserGroupRequest, request)
 
-        path_params = {
-        }
-        query_params = {
-        }
+        path_params = {}
+        query_params = {}
         response = await self.call.request(
             RequestSpec(
                 service="api",
@@ -578,10 +577,8 @@ class AsyncOscTypedMixin:
     ) -> CheckAuthenticationResponse:
         request = _validate_request(CheckAuthenticationRequest, request)
 
-        path_params = {
-        }
-        query_params = {
-        }
+        path_params = {}
+        query_params = {}
         response = await self.call.request(
             RequestSpec(
                 service="api",
@@ -604,10 +601,8 @@ class AsyncOscTypedMixin:
     ) -> CreateAccessKeyResponse:
         request = _validate_request(CreateAccessKeyRequest, request)
 
-        path_params = {
-        }
-        query_params = {
-        }
+        path_params = {}
+        query_params = {}
         response = await self.call.request(
             RequestSpec(
                 service="api",
@@ -630,10 +625,8 @@ class AsyncOscTypedMixin:
     ) -> CreateAccountResponse:
         request = _validate_request(CreateAccountRequest, request)
 
-        path_params = {
-        }
-        query_params = {
-        }
+        path_params = {}
+        query_params = {}
         response = await self.call.request(
             RequestSpec(
                 service="api",
@@ -656,10 +649,8 @@ class AsyncOscTypedMixin:
     ) -> CreateApiAccessRuleResponse:
         request = _validate_request(CreateApiAccessRuleRequest, request)
 
-        path_params = {
-        }
-        query_params = {
-        }
+        path_params = {}
+        query_params = {}
         response = await self.call.request(
             RequestSpec(
                 service="api",
@@ -682,10 +673,8 @@ class AsyncOscTypedMixin:
     ) -> CreateCaResponse:
         request = _validate_request(CreateCaRequest, request)
 
-        path_params = {
-        }
-        query_params = {
-        }
+        path_params = {}
+        query_params = {}
         response = await self.call.request(
             RequestSpec(
                 service="api",
@@ -708,10 +697,8 @@ class AsyncOscTypedMixin:
     ) -> CreateClientGatewayResponse:
         request = _validate_request(CreateClientGatewayRequest, request)
 
-        path_params = {
-        }
-        query_params = {
-        }
+        path_params = {}
+        query_params = {}
         response = await self.call.request(
             RequestSpec(
                 service="api",
@@ -734,10 +721,8 @@ class AsyncOscTypedMixin:
     ) -> CreateDedicatedGroupResponse:
         request = _validate_request(CreateDedicatedGroupRequest, request)
 
-        path_params = {
-        }
-        query_params = {
-        }
+        path_params = {}
+        query_params = {}
         response = await self.call.request(
             RequestSpec(
                 service="api",
@@ -760,10 +745,8 @@ class AsyncOscTypedMixin:
     ) -> CreateDhcpOptionsResponse:
         request = _validate_request(CreateDhcpOptionsRequest, request)
 
-        path_params = {
-        }
-        query_params = {
-        }
+        path_params = {}
+        query_params = {}
         response = await self.call.request(
             RequestSpec(
                 service="api",
@@ -786,10 +769,8 @@ class AsyncOscTypedMixin:
     ) -> CreateDirectLinkResponse:
         request = _validate_request(CreateDirectLinkRequest, request)
 
-        path_params = {
-        }
-        query_params = {
-        }
+        path_params = {}
+        query_params = {}
         response = await self.call.request(
             RequestSpec(
                 service="api",
@@ -812,10 +793,8 @@ class AsyncOscTypedMixin:
     ) -> CreateDirectLinkInterfaceResponse:
         request = _validate_request(CreateDirectLinkInterfaceRequest, request)
 
-        path_params = {
-        }
-        query_params = {
-        }
+        path_params = {}
+        query_params = {}
         response = await self.call.request(
             RequestSpec(
                 service="api",
@@ -838,10 +817,8 @@ class AsyncOscTypedMixin:
     ) -> CreateFlexibleGpuResponse:
         request = _validate_request(CreateFlexibleGpuRequest, request)
 
-        path_params = {
-        }
-        query_params = {
-        }
+        path_params = {}
+        query_params = {}
         response = await self.call.request(
             RequestSpec(
                 service="api",
@@ -864,10 +841,8 @@ class AsyncOscTypedMixin:
     ) -> CreateImageResponse:
         request = _validate_request(CreateImageRequest, request)
 
-        path_params = {
-        }
-        query_params = {
-        }
+        path_params = {}
+        query_params = {}
         response = await self.call.request(
             RequestSpec(
                 service="api",
@@ -890,10 +865,8 @@ class AsyncOscTypedMixin:
     ) -> CreateImageExportTaskResponse:
         request = _validate_request(CreateImageExportTaskRequest, request)
 
-        path_params = {
-        }
-        query_params = {
-        }
+        path_params = {}
+        query_params = {}
         response = await self.call.request(
             RequestSpec(
                 service="api",
@@ -916,10 +889,8 @@ class AsyncOscTypedMixin:
     ) -> CreateInternetServiceResponse:
         request = _validate_request(CreateInternetServiceRequest, request)
 
-        path_params = {
-        }
-        query_params = {
-        }
+        path_params = {}
+        query_params = {}
         response = await self.call.request(
             RequestSpec(
                 service="api",
@@ -942,10 +913,8 @@ class AsyncOscTypedMixin:
     ) -> CreateKeypairResponse:
         request = _validate_request(CreateKeypairRequest, request)
 
-        path_params = {
-        }
-        query_params = {
-        }
+        path_params = {}
+        query_params = {}
         response = await self.call.request(
             RequestSpec(
                 service="api",
@@ -968,10 +937,8 @@ class AsyncOscTypedMixin:
     ) -> CreateListenerRuleResponse:
         request = _validate_request(CreateListenerRuleRequest, request)
 
-        path_params = {
-        }
-        query_params = {
-        }
+        path_params = {}
+        query_params = {}
         response = await self.call.request(
             RequestSpec(
                 service="api",
@@ -994,10 +961,8 @@ class AsyncOscTypedMixin:
     ) -> CreateLoadBalancerResponse:
         request = _validate_request(CreateLoadBalancerRequest, request)
 
-        path_params = {
-        }
-        query_params = {
-        }
+        path_params = {}
+        query_params = {}
         response = await self.call.request(
             RequestSpec(
                 service="api",
@@ -1020,10 +985,8 @@ class AsyncOscTypedMixin:
     ) -> CreateLoadBalancerListenersResponse:
         request = _validate_request(CreateLoadBalancerListenersRequest, request)
 
-        path_params = {
-        }
-        query_params = {
-        }
+        path_params = {}
+        query_params = {}
         response = await self.call.request(
             RequestSpec(
                 service="api",
@@ -1046,10 +1009,8 @@ class AsyncOscTypedMixin:
     ) -> CreateLoadBalancerPolicyResponse:
         request = _validate_request(CreateLoadBalancerPolicyRequest, request)
 
-        path_params = {
-        }
-        query_params = {
-        }
+        path_params = {}
+        query_params = {}
         response = await self.call.request(
             RequestSpec(
                 service="api",
@@ -1072,10 +1033,8 @@ class AsyncOscTypedMixin:
     ) -> CreateLoadBalancerTagsResponse:
         request = _validate_request(CreateLoadBalancerTagsRequest, request)
 
-        path_params = {
-        }
-        query_params = {
-        }
+        path_params = {}
+        query_params = {}
         response = await self.call.request(
             RequestSpec(
                 service="api",
@@ -1098,10 +1057,8 @@ class AsyncOscTypedMixin:
     ) -> CreateNatServiceResponse:
         request = _validate_request(CreateNatServiceRequest, request)
 
-        path_params = {
-        }
-        query_params = {
-        }
+        path_params = {}
+        query_params = {}
         response = await self.call.request(
             RequestSpec(
                 service="api",
@@ -1124,10 +1081,8 @@ class AsyncOscTypedMixin:
     ) -> CreateNetResponse:
         request = _validate_request(CreateNetRequest, request)
 
-        path_params = {
-        }
-        query_params = {
-        }
+        path_params = {}
+        query_params = {}
         response = await self.call.request(
             RequestSpec(
                 service="api",
@@ -1150,10 +1105,8 @@ class AsyncOscTypedMixin:
     ) -> CreateNetAccessPointResponse:
         request = _validate_request(CreateNetAccessPointRequest, request)
 
-        path_params = {
-        }
-        query_params = {
-        }
+        path_params = {}
+        query_params = {}
         response = await self.call.request(
             RequestSpec(
                 service="api",
@@ -1176,10 +1129,8 @@ class AsyncOscTypedMixin:
     ) -> CreateNetPeeringResponse:
         request = _validate_request(CreateNetPeeringRequest, request)
 
-        path_params = {
-        }
-        query_params = {
-        }
+        path_params = {}
+        query_params = {}
         response = await self.call.request(
             RequestSpec(
                 service="api",
@@ -1202,10 +1153,8 @@ class AsyncOscTypedMixin:
     ) -> CreateNicResponse:
         request = _validate_request(CreateNicRequest, request)
 
-        path_params = {
-        }
-        query_params = {
-        }
+        path_params = {}
+        query_params = {}
         response = await self.call.request(
             RequestSpec(
                 service="api",
@@ -1228,10 +1177,8 @@ class AsyncOscTypedMixin:
     ) -> CreatePolicyResponse:
         request = _validate_request(CreatePolicyRequest, request)
 
-        path_params = {
-        }
-        query_params = {
-        }
+        path_params = {}
+        query_params = {}
         response = await self.call.request(
             RequestSpec(
                 service="api",
@@ -1254,10 +1201,8 @@ class AsyncOscTypedMixin:
     ) -> CreatePolicyVersionResponse:
         request = _validate_request(CreatePolicyVersionRequest, request)
 
-        path_params = {
-        }
-        query_params = {
-        }
+        path_params = {}
+        query_params = {}
         response = await self.call.request(
             RequestSpec(
                 service="api",
@@ -1280,10 +1225,8 @@ class AsyncOscTypedMixin:
     ) -> CreateProductTypeResponse:
         request = _validate_request(CreateProductTypeRequest, request)
 
-        path_params = {
-        }
-        query_params = {
-        }
+        path_params = {}
+        query_params = {}
         response = await self.call.request(
             RequestSpec(
                 service="api",
@@ -1306,10 +1249,8 @@ class AsyncOscTypedMixin:
     ) -> CreatePublicIpResponse:
         request = _validate_request(CreatePublicIpRequest, request)
 
-        path_params = {
-        }
-        query_params = {
-        }
+        path_params = {}
+        query_params = {}
         response = await self.call.request(
             RequestSpec(
                 service="api",
@@ -1332,10 +1273,8 @@ class AsyncOscTypedMixin:
     ) -> CreateRouteResponse:
         request = _validate_request(CreateRouteRequest, request)
 
-        path_params = {
-        }
-        query_params = {
-        }
+        path_params = {}
+        query_params = {}
         response = await self.call.request(
             RequestSpec(
                 service="api",
@@ -1358,10 +1297,8 @@ class AsyncOscTypedMixin:
     ) -> CreateRouteTableResponse:
         request = _validate_request(CreateRouteTableRequest, request)
 
-        path_params = {
-        }
-        query_params = {
-        }
+        path_params = {}
+        query_params = {}
         response = await self.call.request(
             RequestSpec(
                 service="api",
@@ -1384,10 +1321,8 @@ class AsyncOscTypedMixin:
     ) -> CreateSecurityGroupResponse:
         request = _validate_request(CreateSecurityGroupRequest, request)
 
-        path_params = {
-        }
-        query_params = {
-        }
+        path_params = {}
+        query_params = {}
         response = await self.call.request(
             RequestSpec(
                 service="api",
@@ -1410,10 +1345,8 @@ class AsyncOscTypedMixin:
     ) -> CreateSecurityGroupRuleResponse:
         request = _validate_request(CreateSecurityGroupRuleRequest, request)
 
-        path_params = {
-        }
-        query_params = {
-        }
+        path_params = {}
+        query_params = {}
         response = await self.call.request(
             RequestSpec(
                 service="api",
@@ -1436,10 +1369,8 @@ class AsyncOscTypedMixin:
     ) -> CreateServerCertificateResponse:
         request = _validate_request(CreateServerCertificateRequest, request)
 
-        path_params = {
-        }
-        query_params = {
-        }
+        path_params = {}
+        query_params = {}
         response = await self.call.request(
             RequestSpec(
                 service="api",
@@ -1462,10 +1393,8 @@ class AsyncOscTypedMixin:
     ) -> CreateSnapshotResponse:
         request = _validate_request(CreateSnapshotRequest, request)
 
-        path_params = {
-        }
-        query_params = {
-        }
+        path_params = {}
+        query_params = {}
         response = await self.call.request(
             RequestSpec(
                 service="api",
@@ -1488,10 +1417,8 @@ class AsyncOscTypedMixin:
     ) -> CreateSnapshotExportTaskResponse:
         request = _validate_request(CreateSnapshotExportTaskRequest, request)
 
-        path_params = {
-        }
-        query_params = {
-        }
+        path_params = {}
+        query_params = {}
         response = await self.call.request(
             RequestSpec(
                 service="api",
@@ -1514,10 +1441,8 @@ class AsyncOscTypedMixin:
     ) -> CreateSubnetResponse:
         request = _validate_request(CreateSubnetRequest, request)
 
-        path_params = {
-        }
-        query_params = {
-        }
+        path_params = {}
+        query_params = {}
         response = await self.call.request(
             RequestSpec(
                 service="api",
@@ -1540,10 +1465,8 @@ class AsyncOscTypedMixin:
     ) -> CreateTagsResponse:
         request = _validate_request(CreateTagsRequest, request)
 
-        path_params = {
-        }
-        query_params = {
-        }
+        path_params = {}
+        query_params = {}
         response = await self.call.request(
             RequestSpec(
                 service="api",
@@ -1566,10 +1489,8 @@ class AsyncOscTypedMixin:
     ) -> CreateUserResponse:
         request = _validate_request(CreateUserRequest, request)
 
-        path_params = {
-        }
-        query_params = {
-        }
+        path_params = {}
+        query_params = {}
         response = await self.call.request(
             RequestSpec(
                 service="api",
@@ -1592,10 +1513,8 @@ class AsyncOscTypedMixin:
     ) -> CreateUserGroupResponse:
         request = _validate_request(CreateUserGroupRequest, request)
 
-        path_params = {
-        }
-        query_params = {
-        }
+        path_params = {}
+        query_params = {}
         response = await self.call.request(
             RequestSpec(
                 service="api",
@@ -1618,10 +1537,8 @@ class AsyncOscTypedMixin:
     ) -> CreateVirtualGatewayResponse:
         request = _validate_request(CreateVirtualGatewayRequest, request)
 
-        path_params = {
-        }
-        query_params = {
-        }
+        path_params = {}
+        query_params = {}
         response = await self.call.request(
             RequestSpec(
                 service="api",
@@ -1644,10 +1561,8 @@ class AsyncOscTypedMixin:
     ) -> CreateVmGroupResponse:
         request = _validate_request(CreateVmGroupRequest, request)
 
-        path_params = {
-        }
-        query_params = {
-        }
+        path_params = {}
+        query_params = {}
         response = await self.call.request(
             RequestSpec(
                 service="api",
@@ -1670,10 +1585,8 @@ class AsyncOscTypedMixin:
     ) -> CreateVmTemplateResponse:
         request = _validate_request(CreateVmTemplateRequest, request)
 
-        path_params = {
-        }
-        query_params = {
-        }
+        path_params = {}
+        query_params = {}
         response = await self.call.request(
             RequestSpec(
                 service="api",
@@ -1696,10 +1609,8 @@ class AsyncOscTypedMixin:
     ) -> CreateVmsResponse:
         request = _validate_request(CreateVmsRequest, request)
 
-        path_params = {
-        }
-        query_params = {
-        }
+        path_params = {}
+        query_params = {}
         response = await self.call.request(
             RequestSpec(
                 service="api",
@@ -1722,10 +1633,8 @@ class AsyncOscTypedMixin:
     ) -> CreateVolumeResponse:
         request = _validate_request(CreateVolumeRequest, request)
 
-        path_params = {
-        }
-        query_params = {
-        }
+        path_params = {}
+        query_params = {}
         response = await self.call.request(
             RequestSpec(
                 service="api",
@@ -1748,10 +1657,8 @@ class AsyncOscTypedMixin:
     ) -> CreateVpnConnectionResponse:
         request = _validate_request(CreateVpnConnectionRequest, request)
 
-        path_params = {
-        }
-        query_params = {
-        }
+        path_params = {}
+        query_params = {}
         response = await self.call.request(
             RequestSpec(
                 service="api",
@@ -1774,10 +1681,8 @@ class AsyncOscTypedMixin:
     ) -> CreateVpnConnectionRouteResponse:
         request = _validate_request(CreateVpnConnectionRouteRequest, request)
 
-        path_params = {
-        }
-        query_params = {
-        }
+        path_params = {}
+        query_params = {}
         response = await self.call.request(
             RequestSpec(
                 service="api",
@@ -1800,10 +1705,8 @@ class AsyncOscTypedMixin:
     ) -> DeleteAccessKeyResponse:
         request = _validate_request(DeleteAccessKeyRequest, request)
 
-        path_params = {
-        }
-        query_params = {
-        }
+        path_params = {}
+        query_params = {}
         response = await self.call.request(
             RequestSpec(
                 service="api",
@@ -1826,10 +1729,8 @@ class AsyncOscTypedMixin:
     ) -> DeleteApiAccessRuleResponse:
         request = _validate_request(DeleteApiAccessRuleRequest, request)
 
-        path_params = {
-        }
-        query_params = {
-        }
+        path_params = {}
+        query_params = {}
         response = await self.call.request(
             RequestSpec(
                 service="api",
@@ -1852,10 +1753,8 @@ class AsyncOscTypedMixin:
     ) -> DeleteCaResponse:
         request = _validate_request(DeleteCaRequest, request)
 
-        path_params = {
-        }
-        query_params = {
-        }
+        path_params = {}
+        query_params = {}
         response = await self.call.request(
             RequestSpec(
                 service="api",
@@ -1878,10 +1777,8 @@ class AsyncOscTypedMixin:
     ) -> DeleteClientGatewayResponse:
         request = _validate_request(DeleteClientGatewayRequest, request)
 
-        path_params = {
-        }
-        query_params = {
-        }
+        path_params = {}
+        query_params = {}
         response = await self.call.request(
             RequestSpec(
                 service="api",
@@ -1904,10 +1801,8 @@ class AsyncOscTypedMixin:
     ) -> DeleteDedicatedGroupResponse:
         request = _validate_request(DeleteDedicatedGroupRequest, request)
 
-        path_params = {
-        }
-        query_params = {
-        }
+        path_params = {}
+        query_params = {}
         response = await self.call.request(
             RequestSpec(
                 service="api",
@@ -1930,10 +1825,8 @@ class AsyncOscTypedMixin:
     ) -> DeleteDhcpOptionsResponse:
         request = _validate_request(DeleteDhcpOptionsRequest, request)
 
-        path_params = {
-        }
-        query_params = {
-        }
+        path_params = {}
+        query_params = {}
         response = await self.call.request(
             RequestSpec(
                 service="api",
@@ -1956,10 +1849,8 @@ class AsyncOscTypedMixin:
     ) -> DeleteDirectLinkResponse:
         request = _validate_request(DeleteDirectLinkRequest, request)
 
-        path_params = {
-        }
-        query_params = {
-        }
+        path_params = {}
+        query_params = {}
         response = await self.call.request(
             RequestSpec(
                 service="api",
@@ -1982,10 +1873,8 @@ class AsyncOscTypedMixin:
     ) -> DeleteDirectLinkInterfaceResponse:
         request = _validate_request(DeleteDirectLinkInterfaceRequest, request)
 
-        path_params = {
-        }
-        query_params = {
-        }
+        path_params = {}
+        query_params = {}
         response = await self.call.request(
             RequestSpec(
                 service="api",
@@ -2008,10 +1897,8 @@ class AsyncOscTypedMixin:
     ) -> DeleteExportTaskResponse:
         request = _validate_request(DeleteExportTaskRequest, request)
 
-        path_params = {
-        }
-        query_params = {
-        }
+        path_params = {}
+        query_params = {}
         response = await self.call.request(
             RequestSpec(
                 service="api",
@@ -2034,10 +1921,8 @@ class AsyncOscTypedMixin:
     ) -> DeleteFlexibleGpuResponse:
         request = _validate_request(DeleteFlexibleGpuRequest, request)
 
-        path_params = {
-        }
-        query_params = {
-        }
+        path_params = {}
+        query_params = {}
         response = await self.call.request(
             RequestSpec(
                 service="api",
@@ -2060,10 +1945,8 @@ class AsyncOscTypedMixin:
     ) -> DeleteImageResponse:
         request = _validate_request(DeleteImageRequest, request)
 
-        path_params = {
-        }
-        query_params = {
-        }
+        path_params = {}
+        query_params = {}
         response = await self.call.request(
             RequestSpec(
                 service="api",
@@ -2086,10 +1969,8 @@ class AsyncOscTypedMixin:
     ) -> DeleteInternetServiceResponse:
         request = _validate_request(DeleteInternetServiceRequest, request)
 
-        path_params = {
-        }
-        query_params = {
-        }
+        path_params = {}
+        query_params = {}
         response = await self.call.request(
             RequestSpec(
                 service="api",
@@ -2112,10 +1993,8 @@ class AsyncOscTypedMixin:
     ) -> DeleteKeypairResponse:
         request = _validate_request(DeleteKeypairRequest, request)
 
-        path_params = {
-        }
-        query_params = {
-        }
+        path_params = {}
+        query_params = {}
         response = await self.call.request(
             RequestSpec(
                 service="api",
@@ -2138,10 +2017,8 @@ class AsyncOscTypedMixin:
     ) -> DeleteListenerRuleResponse:
         request = _validate_request(DeleteListenerRuleRequest, request)
 
-        path_params = {
-        }
-        query_params = {
-        }
+        path_params = {}
+        query_params = {}
         response = await self.call.request(
             RequestSpec(
                 service="api",
@@ -2164,10 +2041,8 @@ class AsyncOscTypedMixin:
     ) -> DeleteLoadBalancerResponse:
         request = _validate_request(DeleteLoadBalancerRequest, request)
 
-        path_params = {
-        }
-        query_params = {
-        }
+        path_params = {}
+        query_params = {}
         response = await self.call.request(
             RequestSpec(
                 service="api",
@@ -2190,10 +2065,8 @@ class AsyncOscTypedMixin:
     ) -> DeleteLoadBalancerListenersResponse:
         request = _validate_request(DeleteLoadBalancerListenersRequest, request)
 
-        path_params = {
-        }
-        query_params = {
-        }
+        path_params = {}
+        query_params = {}
         response = await self.call.request(
             RequestSpec(
                 service="api",
@@ -2216,10 +2089,8 @@ class AsyncOscTypedMixin:
     ) -> DeleteLoadBalancerPolicyResponse:
         request = _validate_request(DeleteLoadBalancerPolicyRequest, request)
 
-        path_params = {
-        }
-        query_params = {
-        }
+        path_params = {}
+        query_params = {}
         response = await self.call.request(
             RequestSpec(
                 service="api",
@@ -2242,10 +2113,8 @@ class AsyncOscTypedMixin:
     ) -> DeleteLoadBalancerTagsResponse:
         request = _validate_request(DeleteLoadBalancerTagsRequest, request)
 
-        path_params = {
-        }
-        query_params = {
-        }
+        path_params = {}
+        query_params = {}
         response = await self.call.request(
             RequestSpec(
                 service="api",
@@ -2268,10 +2137,8 @@ class AsyncOscTypedMixin:
     ) -> DeleteNatServiceResponse:
         request = _validate_request(DeleteNatServiceRequest, request)
 
-        path_params = {
-        }
-        query_params = {
-        }
+        path_params = {}
+        query_params = {}
         response = await self.call.request(
             RequestSpec(
                 service="api",
@@ -2294,10 +2161,8 @@ class AsyncOscTypedMixin:
     ) -> DeleteNetResponse:
         request = _validate_request(DeleteNetRequest, request)
 
-        path_params = {
-        }
-        query_params = {
-        }
+        path_params = {}
+        query_params = {}
         response = await self.call.request(
             RequestSpec(
                 service="api",
@@ -2320,10 +2185,8 @@ class AsyncOscTypedMixin:
     ) -> DeleteNetAccessPointResponse:
         request = _validate_request(DeleteNetAccessPointRequest, request)
 
-        path_params = {
-        }
-        query_params = {
-        }
+        path_params = {}
+        query_params = {}
         response = await self.call.request(
             RequestSpec(
                 service="api",
@@ -2346,10 +2209,8 @@ class AsyncOscTypedMixin:
     ) -> DeleteNetPeeringResponse:
         request = _validate_request(DeleteNetPeeringRequest, request)
 
-        path_params = {
-        }
-        query_params = {
-        }
+        path_params = {}
+        query_params = {}
         response = await self.call.request(
             RequestSpec(
                 service="api",
@@ -2372,10 +2233,8 @@ class AsyncOscTypedMixin:
     ) -> DeleteNicResponse:
         request = _validate_request(DeleteNicRequest, request)
 
-        path_params = {
-        }
-        query_params = {
-        }
+        path_params = {}
+        query_params = {}
         response = await self.call.request(
             RequestSpec(
                 service="api",
@@ -2398,10 +2257,8 @@ class AsyncOscTypedMixin:
     ) -> DeletePolicyResponse:
         request = _validate_request(DeletePolicyRequest, request)
 
-        path_params = {
-        }
-        query_params = {
-        }
+        path_params = {}
+        query_params = {}
         response = await self.call.request(
             RequestSpec(
                 service="api",
@@ -2424,10 +2281,8 @@ class AsyncOscTypedMixin:
     ) -> DeletePolicyVersionResponse:
         request = _validate_request(DeletePolicyVersionRequest, request)
 
-        path_params = {
-        }
-        query_params = {
-        }
+        path_params = {}
+        query_params = {}
         response = await self.call.request(
             RequestSpec(
                 service="api",
@@ -2450,10 +2305,8 @@ class AsyncOscTypedMixin:
     ) -> DeleteProductTypeResponse:
         request = _validate_request(DeleteProductTypeRequest, request)
 
-        path_params = {
-        }
-        query_params = {
-        }
+        path_params = {}
+        query_params = {}
         response = await self.call.request(
             RequestSpec(
                 service="api",
@@ -2476,10 +2329,8 @@ class AsyncOscTypedMixin:
     ) -> DeletePublicIpResponse:
         request = _validate_request(DeletePublicIpRequest, request)
 
-        path_params = {
-        }
-        query_params = {
-        }
+        path_params = {}
+        query_params = {}
         response = await self.call.request(
             RequestSpec(
                 service="api",
@@ -2502,10 +2353,8 @@ class AsyncOscTypedMixin:
     ) -> DeleteRouteResponse:
         request = _validate_request(DeleteRouteRequest, request)
 
-        path_params = {
-        }
-        query_params = {
-        }
+        path_params = {}
+        query_params = {}
         response = await self.call.request(
             RequestSpec(
                 service="api",
@@ -2528,10 +2377,8 @@ class AsyncOscTypedMixin:
     ) -> DeleteRouteTableResponse:
         request = _validate_request(DeleteRouteTableRequest, request)
 
-        path_params = {
-        }
-        query_params = {
-        }
+        path_params = {}
+        query_params = {}
         response = await self.call.request(
             RequestSpec(
                 service="api",
@@ -2554,10 +2401,8 @@ class AsyncOscTypedMixin:
     ) -> DeleteSecurityGroupResponse:
         request = _validate_request(DeleteSecurityGroupRequest, request)
 
-        path_params = {
-        }
-        query_params = {
-        }
+        path_params = {}
+        query_params = {}
         response = await self.call.request(
             RequestSpec(
                 service="api",
@@ -2580,10 +2425,8 @@ class AsyncOscTypedMixin:
     ) -> DeleteSecurityGroupRuleResponse:
         request = _validate_request(DeleteSecurityGroupRuleRequest, request)
 
-        path_params = {
-        }
-        query_params = {
-        }
+        path_params = {}
+        query_params = {}
         response = await self.call.request(
             RequestSpec(
                 service="api",
@@ -2606,10 +2449,8 @@ class AsyncOscTypedMixin:
     ) -> DeleteServerCertificateResponse:
         request = _validate_request(DeleteServerCertificateRequest, request)
 
-        path_params = {
-        }
-        query_params = {
-        }
+        path_params = {}
+        query_params = {}
         response = await self.call.request(
             RequestSpec(
                 service="api",
@@ -2632,10 +2473,8 @@ class AsyncOscTypedMixin:
     ) -> DeleteSnapshotResponse:
         request = _validate_request(DeleteSnapshotRequest, request)
 
-        path_params = {
-        }
-        query_params = {
-        }
+        path_params = {}
+        query_params = {}
         response = await self.call.request(
             RequestSpec(
                 service="api",
@@ -2658,10 +2497,8 @@ class AsyncOscTypedMixin:
     ) -> DeleteSubnetResponse:
         request = _validate_request(DeleteSubnetRequest, request)
 
-        path_params = {
-        }
-        query_params = {
-        }
+        path_params = {}
+        query_params = {}
         response = await self.call.request(
             RequestSpec(
                 service="api",
@@ -2684,10 +2521,8 @@ class AsyncOscTypedMixin:
     ) -> DeleteTagsResponse:
         request = _validate_request(DeleteTagsRequest, request)
 
-        path_params = {
-        }
-        query_params = {
-        }
+        path_params = {}
+        query_params = {}
         response = await self.call.request(
             RequestSpec(
                 service="api",
@@ -2710,10 +2545,8 @@ class AsyncOscTypedMixin:
     ) -> DeleteUserResponse:
         request = _validate_request(DeleteUserRequest, request)
 
-        path_params = {
-        }
-        query_params = {
-        }
+        path_params = {}
+        query_params = {}
         response = await self.call.request(
             RequestSpec(
                 service="api",
@@ -2736,10 +2569,8 @@ class AsyncOscTypedMixin:
     ) -> DeleteUserGroupResponse:
         request = _validate_request(DeleteUserGroupRequest, request)
 
-        path_params = {
-        }
-        query_params = {
-        }
+        path_params = {}
+        query_params = {}
         response = await self.call.request(
             RequestSpec(
                 service="api",
@@ -2762,10 +2593,8 @@ class AsyncOscTypedMixin:
     ) -> DeleteUserGroupPolicyResponse:
         request = _validate_request(DeleteUserGroupPolicyRequest, request)
 
-        path_params = {
-        }
-        query_params = {
-        }
+        path_params = {}
+        query_params = {}
         response = await self.call.request(
             RequestSpec(
                 service="api",
@@ -2788,10 +2617,8 @@ class AsyncOscTypedMixin:
     ) -> DeleteUserPolicyResponse:
         request = _validate_request(DeleteUserPolicyRequest, request)
 
-        path_params = {
-        }
-        query_params = {
-        }
+        path_params = {}
+        query_params = {}
         response = await self.call.request(
             RequestSpec(
                 service="api",
@@ -2814,10 +2641,8 @@ class AsyncOscTypedMixin:
     ) -> DeleteVirtualGatewayResponse:
         request = _validate_request(DeleteVirtualGatewayRequest, request)
 
-        path_params = {
-        }
-        query_params = {
-        }
+        path_params = {}
+        query_params = {}
         response = await self.call.request(
             RequestSpec(
                 service="api",
@@ -2840,10 +2665,8 @@ class AsyncOscTypedMixin:
     ) -> DeleteVmGroupResponse:
         request = _validate_request(DeleteVmGroupRequest, request)
 
-        path_params = {
-        }
-        query_params = {
-        }
+        path_params = {}
+        query_params = {}
         response = await self.call.request(
             RequestSpec(
                 service="api",
@@ -2866,10 +2689,8 @@ class AsyncOscTypedMixin:
     ) -> DeleteVmTemplateResponse:
         request = _validate_request(DeleteVmTemplateRequest, request)
 
-        path_params = {
-        }
-        query_params = {
-        }
+        path_params = {}
+        query_params = {}
         response = await self.call.request(
             RequestSpec(
                 service="api",
@@ -2892,10 +2713,8 @@ class AsyncOscTypedMixin:
     ) -> DeleteVmsResponse:
         request = _validate_request(DeleteVmsRequest, request)
 
-        path_params = {
-        }
-        query_params = {
-        }
+        path_params = {}
+        query_params = {}
         response = await self.call.request(
             RequestSpec(
                 service="api",
@@ -2918,10 +2737,8 @@ class AsyncOscTypedMixin:
     ) -> DeleteVolumeResponse:
         request = _validate_request(DeleteVolumeRequest, request)
 
-        path_params = {
-        }
-        query_params = {
-        }
+        path_params = {}
+        query_params = {}
         response = await self.call.request(
             RequestSpec(
                 service="api",
@@ -2944,10 +2761,8 @@ class AsyncOscTypedMixin:
     ) -> DeleteVpnConnectionResponse:
         request = _validate_request(DeleteVpnConnectionRequest, request)
 
-        path_params = {
-        }
-        query_params = {
-        }
+        path_params = {}
+        query_params = {}
         response = await self.call.request(
             RequestSpec(
                 service="api",
@@ -2970,10 +2785,8 @@ class AsyncOscTypedMixin:
     ) -> DeleteVpnConnectionRouteResponse:
         request = _validate_request(DeleteVpnConnectionRouteRequest, request)
 
-        path_params = {
-        }
-        query_params = {
-        }
+        path_params = {}
+        query_params = {}
         response = await self.call.request(
             RequestSpec(
                 service="api",
@@ -2996,10 +2809,8 @@ class AsyncOscTypedMixin:
     ) -> DeregisterVmsInLoadBalancerResponse:
         request = _validate_request(DeregisterVmsInLoadBalancerRequest, request)
 
-        path_params = {
-        }
-        query_params = {
-        }
+        path_params = {}
+        query_params = {}
         response = await self.call.request(
             RequestSpec(
                 service="api",
@@ -3022,10 +2833,8 @@ class AsyncOscTypedMixin:
     ) -> DisableOutscaleLoginResponse:
         request = _validate_request(DisableOutscaleLoginRequest, request)
 
-        path_params = {
-        }
-        query_params = {
-        }
+        path_params = {}
+        query_params = {}
         response = await self.call.request(
             RequestSpec(
                 service="api",
@@ -3048,10 +2857,8 @@ class AsyncOscTypedMixin:
     ) -> DisableOutscaleLoginResponse:
         request = _validate_request(DisableOutscaleLoginRequest, request)
 
-        path_params = {
-        }
-        query_params = {
-        }
+        path_params = {}
+        query_params = {}
         response = await self.call.request(
             RequestSpec(
                 service="api",
@@ -3074,10 +2881,8 @@ class AsyncOscTypedMixin:
     ) -> DisableOutscaleLoginPerUsersResponse:
         request = _validate_request(DisableOutscaleLoginPerUsersRequest, request)
 
-        path_params = {
-        }
-        query_params = {
-        }
+        path_params = {}
+        query_params = {}
         response = await self.call.request(
             RequestSpec(
                 service="api",
@@ -3100,10 +2905,8 @@ class AsyncOscTypedMixin:
     ) -> EnableOutscaleLoginResponse:
         request = _validate_request(EnableOutscaleLoginRequest, request)
 
-        path_params = {
-        }
-        query_params = {
-        }
+        path_params = {}
+        query_params = {}
         response = await self.call.request(
             RequestSpec(
                 service="api",
@@ -3126,10 +2929,8 @@ class AsyncOscTypedMixin:
     ) -> EnableOutscaleLoginForUsersResponse:
         request = _validate_request(EnableOutscaleLoginForUsersRequest, request)
 
-        path_params = {
-        }
-        query_params = {
-        }
+        path_params = {}
+        query_params = {}
         response = await self.call.request(
             RequestSpec(
                 service="api",
@@ -3152,10 +2953,8 @@ class AsyncOscTypedMixin:
     ) -> EnableOutscaleLoginPerUsersResponse:
         request = _validate_request(EnableOutscaleLoginPerUsersRequest, request)
 
-        path_params = {
-        }
-        query_params = {
-        }
+        path_params = {}
+        query_params = {}
         response = await self.call.request(
             RequestSpec(
                 service="api",
@@ -3178,10 +2977,8 @@ class AsyncOscTypedMixin:
     ) -> LinkFlexibleGpuResponse:
         request = _validate_request(LinkFlexibleGpuRequest, request)
 
-        path_params = {
-        }
-        query_params = {
-        }
+        path_params = {}
+        query_params = {}
         response = await self.call.request(
             RequestSpec(
                 service="api",
@@ -3204,10 +3001,8 @@ class AsyncOscTypedMixin:
     ) -> LinkInternetServiceResponse:
         request = _validate_request(LinkInternetServiceRequest, request)
 
-        path_params = {
-        }
-        query_params = {
-        }
+        path_params = {}
+        query_params = {}
         response = await self.call.request(
             RequestSpec(
                 service="api",
@@ -3230,10 +3025,8 @@ class AsyncOscTypedMixin:
     ) -> LinkLoadBalancerBackendMachinesResponse:
         request = _validate_request(LinkLoadBalancerBackendMachinesRequest, request)
 
-        path_params = {
-        }
-        query_params = {
-        }
+        path_params = {}
+        query_params = {}
         response = await self.call.request(
             RequestSpec(
                 service="api",
@@ -3256,10 +3049,8 @@ class AsyncOscTypedMixin:
     ) -> LinkManagedPolicyToUserGroupResponse:
         request = _validate_request(LinkManagedPolicyToUserGroupRequest, request)
 
-        path_params = {
-        }
-        query_params = {
-        }
+        path_params = {}
+        query_params = {}
         response = await self.call.request(
             RequestSpec(
                 service="api",
@@ -3282,10 +3073,8 @@ class AsyncOscTypedMixin:
     ) -> LinkNicResponse:
         request = _validate_request(LinkNicRequest, request)
 
-        path_params = {
-        }
-        query_params = {
-        }
+        path_params = {}
+        query_params = {}
         response = await self.call.request(
             RequestSpec(
                 service="api",
@@ -3308,10 +3097,8 @@ class AsyncOscTypedMixin:
     ) -> LinkPolicyResponse:
         request = _validate_request(LinkPolicyRequest, request)
 
-        path_params = {
-        }
-        query_params = {
-        }
+        path_params = {}
+        query_params = {}
         response = await self.call.request(
             RequestSpec(
                 service="api",
@@ -3334,10 +3121,8 @@ class AsyncOscTypedMixin:
     ) -> LinkPrivateIpsResponse:
         request = _validate_request(LinkPrivateIpsRequest, request)
 
-        path_params = {
-        }
-        query_params = {
-        }
+        path_params = {}
+        query_params = {}
         response = await self.call.request(
             RequestSpec(
                 service="api",
@@ -3360,10 +3145,8 @@ class AsyncOscTypedMixin:
     ) -> LinkPublicIpResponse:
         request = _validate_request(LinkPublicIpRequest, request)
 
-        path_params = {
-        }
-        query_params = {
-        }
+        path_params = {}
+        query_params = {}
         response = await self.call.request(
             RequestSpec(
                 service="api",
@@ -3386,10 +3169,8 @@ class AsyncOscTypedMixin:
     ) -> LinkRouteTableResponse:
         request = _validate_request(LinkRouteTableRequest, request)
 
-        path_params = {
-        }
-        query_params = {
-        }
+        path_params = {}
+        query_params = {}
         response = await self.call.request(
             RequestSpec(
                 service="api",
@@ -3412,10 +3193,8 @@ class AsyncOscTypedMixin:
     ) -> LinkVirtualGatewayResponse:
         request = _validate_request(LinkVirtualGatewayRequest, request)
 
-        path_params = {
-        }
-        query_params = {
-        }
+        path_params = {}
+        query_params = {}
         response = await self.call.request(
             RequestSpec(
                 service="api",
@@ -3438,10 +3217,8 @@ class AsyncOscTypedMixin:
     ) -> LinkVolumeResponse:
         request = _validate_request(LinkVolumeRequest, request)
 
-        path_params = {
-        }
-        query_params = {
-        }
+        path_params = {}
+        query_params = {}
         response = await self.call.request(
             RequestSpec(
                 service="api",
@@ -3464,10 +3241,8 @@ class AsyncOscTypedMixin:
     ) -> PutUserGroupPolicyResponse:
         request = _validate_request(PutUserGroupPolicyRequest, request)
 
-        path_params = {
-        }
-        query_params = {
-        }
+        path_params = {}
+        query_params = {}
         response = await self.call.request(
             RequestSpec(
                 service="api",
@@ -3490,10 +3265,8 @@ class AsyncOscTypedMixin:
     ) -> PutUserPolicyResponse:
         request = _validate_request(PutUserPolicyRequest, request)
 
-        path_params = {
-        }
-        query_params = {
-        }
+        path_params = {}
+        query_params = {}
         response = await self.call.request(
             RequestSpec(
                 service="api",
@@ -3516,10 +3289,8 @@ class AsyncOscTypedMixin:
     ) -> ReadAccessKeysResponse:
         request = _validate_request(ReadAccessKeysRequest, request)
 
-        path_params = {
-        }
-        query_params = {
-        }
+        path_params = {}
+        query_params = {}
         response = await self.call.request(
             RequestSpec(
                 service="api",
@@ -3542,10 +3313,8 @@ class AsyncOscTypedMixin:
     ) -> ReadAccountsResponse:
         request = _validate_request(ReadAccountsRequest, request)
 
-        path_params = {
-        }
-        query_params = {
-        }
+        path_params = {}
+        query_params = {}
         response = await self.call.request(
             RequestSpec(
                 service="api",
@@ -3568,10 +3337,8 @@ class AsyncOscTypedMixin:
     ) -> ReadAdminPasswordResponse:
         request = _validate_request(ReadAdminPasswordRequest, request)
 
-        path_params = {
-        }
-        query_params = {
-        }
+        path_params = {}
+        query_params = {}
         response = await self.call.request(
             RequestSpec(
                 service="api",
@@ -3594,10 +3361,8 @@ class AsyncOscTypedMixin:
     ) -> ReadApiAccessPolicyResponse:
         request = _validate_request(ReadApiAccessPolicyRequest, request)
 
-        path_params = {
-        }
-        query_params = {
-        }
+        path_params = {}
+        query_params = {}
         response = await self.call.request(
             RequestSpec(
                 service="api",
@@ -3620,10 +3385,8 @@ class AsyncOscTypedMixin:
     ) -> ReadApiAccessRulesResponse:
         request = _validate_request(ReadApiAccessRulesRequest, request)
 
-        path_params = {
-        }
-        query_params = {
-        }
+        path_params = {}
+        query_params = {}
         response = await self.call.request(
             RequestSpec(
                 service="api",
@@ -3646,10 +3409,8 @@ class AsyncOscTypedMixin:
     ) -> ReadApiLogsResponse:
         request = _validate_request(ReadApiLogsRequest, request)
 
-        path_params = {
-        }
-        query_params = {
-        }
+        path_params = {}
+        query_params = {}
         response = await self.call.request(
             RequestSpec(
                 service="api",
@@ -3672,10 +3433,8 @@ class AsyncOscTypedMixin:
     ) -> ReadCO2EmissionAccountResponse:
         request = _validate_request(ReadCO2EmissionAccountRequest, request)
 
-        path_params = {
-        }
-        query_params = {
-        }
+        path_params = {}
+        query_params = {}
         response = await self.call.request(
             RequestSpec(
                 service="api",
@@ -3698,10 +3457,8 @@ class AsyncOscTypedMixin:
     ) -> ReadCasResponse:
         request = _validate_request(ReadCasRequest, request)
 
-        path_params = {
-        }
-        query_params = {
-        }
+        path_params = {}
+        query_params = {}
         response = await self.call.request(
             RequestSpec(
                 service="api",
@@ -3724,10 +3481,8 @@ class AsyncOscTypedMixin:
     ) -> ReadCatalogResponse:
         request = _validate_request(ReadCatalogRequest, request)
 
-        path_params = {
-        }
-        query_params = {
-        }
+        path_params = {}
+        query_params = {}
         response = await self.call.request(
             RequestSpec(
                 service="api",
@@ -3750,10 +3505,8 @@ class AsyncOscTypedMixin:
     ) -> ReadCatalogsResponse:
         request = _validate_request(ReadCatalogsRequest, request)
 
-        path_params = {
-        }
-        query_params = {
-        }
+        path_params = {}
+        query_params = {}
         response = await self.call.request(
             RequestSpec(
                 service="api",
@@ -3776,10 +3529,8 @@ class AsyncOscTypedMixin:
     ) -> ReadClientGatewaysResponse:
         request = _validate_request(ReadClientGatewaysRequest, request)
 
-        path_params = {
-        }
-        query_params = {
-        }
+        path_params = {}
+        query_params = {}
         response = await self.call.request(
             RequestSpec(
                 service="api",
@@ -3802,10 +3553,8 @@ class AsyncOscTypedMixin:
     ) -> ReadConsoleOutputResponse:
         request = _validate_request(ReadConsoleOutputRequest, request)
 
-        path_params = {
-        }
-        query_params = {
-        }
+        path_params = {}
+        query_params = {}
         response = await self.call.request(
             RequestSpec(
                 service="api",
@@ -3828,10 +3577,8 @@ class AsyncOscTypedMixin:
     ) -> ReadConsumptionAccountResponse:
         request = _validate_request(ReadConsumptionAccountRequest, request)
 
-        path_params = {
-        }
-        query_params = {
-        }
+        path_params = {}
+        query_params = {}
         response = await self.call.request(
             RequestSpec(
                 service="api",
@@ -3854,10 +3601,8 @@ class AsyncOscTypedMixin:
     ) -> ReadDedicatedGroupsResponse:
         request = _validate_request(ReadDedicatedGroupsRequest, request)
 
-        path_params = {
-        }
-        query_params = {
-        }
+        path_params = {}
+        query_params = {}
         response = await self.call.request(
             RequestSpec(
                 service="api",
@@ -3880,10 +3625,8 @@ class AsyncOscTypedMixin:
     ) -> ReadDhcpOptionsResponse:
         request = _validate_request(ReadDhcpOptionsRequest, request)
 
-        path_params = {
-        }
-        query_params = {
-        }
+        path_params = {}
+        query_params = {}
         response = await self.call.request(
             RequestSpec(
                 service="api",
@@ -3906,10 +3649,8 @@ class AsyncOscTypedMixin:
     ) -> ReadDirectLinkInterfacesResponse:
         request = _validate_request(ReadDirectLinkInterfacesRequest, request)
 
-        path_params = {
-        }
-        query_params = {
-        }
+        path_params = {}
+        query_params = {}
         response = await self.call.request(
             RequestSpec(
                 service="api",
@@ -3932,10 +3673,8 @@ class AsyncOscTypedMixin:
     ) -> ReadDirectLinksResponse:
         request = _validate_request(ReadDirectLinksRequest, request)
 
-        path_params = {
-        }
-        query_params = {
-        }
+        path_params = {}
+        query_params = {}
         response = await self.call.request(
             RequestSpec(
                 service="api",
@@ -3958,10 +3697,8 @@ class AsyncOscTypedMixin:
     ) -> ReadEntitiesLinkedToPolicyResponse:
         request = _validate_request(ReadEntitiesLinkedToPolicyRequest, request)
 
-        path_params = {
-        }
-        query_params = {
-        }
+        path_params = {}
+        query_params = {}
         response = await self.call.request(
             RequestSpec(
                 service="api",
@@ -3984,10 +3721,8 @@ class AsyncOscTypedMixin:
     ) -> ReadFlexibleGpuCatalogResponse:
         request = _validate_request(ReadFlexibleGpuCatalogRequest, request)
 
-        path_params = {
-        }
-        query_params = {
-        }
+        path_params = {}
+        query_params = {}
         response = await self.call.request(
             RequestSpec(
                 service="api",
@@ -4010,10 +3745,8 @@ class AsyncOscTypedMixin:
     ) -> ReadFlexibleGpusResponse:
         request = _validate_request(ReadFlexibleGpusRequest, request)
 
-        path_params = {
-        }
-        query_params = {
-        }
+        path_params = {}
+        query_params = {}
         response = await self.call.request(
             RequestSpec(
                 service="api",
@@ -4036,10 +3769,8 @@ class AsyncOscTypedMixin:
     ) -> ReadImageExportTasksResponse:
         request = _validate_request(ReadImageExportTasksRequest, request)
 
-        path_params = {
-        }
-        query_params = {
-        }
+        path_params = {}
+        query_params = {}
         response = await self.call.request(
             RequestSpec(
                 service="api",
@@ -4062,10 +3793,8 @@ class AsyncOscTypedMixin:
     ) -> ReadImagesResponse:
         request = _validate_request(ReadImagesRequest, request)
 
-        path_params = {
-        }
-        query_params = {
-        }
+        path_params = {}
+        query_params = {}
         response = await self.call.request(
             RequestSpec(
                 service="api",
@@ -4088,10 +3817,8 @@ class AsyncOscTypedMixin:
     ) -> ReadInternetServicesResponse:
         request = _validate_request(ReadInternetServicesRequest, request)
 
-        path_params = {
-        }
-        query_params = {
-        }
+        path_params = {}
+        query_params = {}
         response = await self.call.request(
             RequestSpec(
                 service="api",
@@ -4114,10 +3841,8 @@ class AsyncOscTypedMixin:
     ) -> ReadKeypairsResponse:
         request = _validate_request(ReadKeypairsRequest, request)
 
-        path_params = {
-        }
-        query_params = {
-        }
+        path_params = {}
+        query_params = {}
         response = await self.call.request(
             RequestSpec(
                 service="api",
@@ -4140,10 +3865,8 @@ class AsyncOscTypedMixin:
     ) -> ReadLinkedPoliciesResponse:
         request = _validate_request(ReadLinkedPoliciesRequest, request)
 
-        path_params = {
-        }
-        query_params = {
-        }
+        path_params = {}
+        query_params = {}
         response = await self.call.request(
             RequestSpec(
                 service="api",
@@ -4166,10 +3889,8 @@ class AsyncOscTypedMixin:
     ) -> ReadListenerRulesResponse:
         request = _validate_request(ReadListenerRulesRequest, request)
 
-        path_params = {
-        }
-        query_params = {
-        }
+        path_params = {}
+        query_params = {}
         response = await self.call.request(
             RequestSpec(
                 service="api",
@@ -4192,10 +3913,8 @@ class AsyncOscTypedMixin:
     ) -> ReadLoadBalancerTagsResponse:
         request = _validate_request(ReadLoadBalancerTagsRequest, request)
 
-        path_params = {
-        }
-        query_params = {
-        }
+        path_params = {}
+        query_params = {}
         response = await self.call.request(
             RequestSpec(
                 service="api",
@@ -4218,10 +3937,8 @@ class AsyncOscTypedMixin:
     ) -> ReadLoadBalancersResponse:
         request = _validate_request(ReadLoadBalancersRequest, request)
 
-        path_params = {
-        }
-        query_params = {
-        }
+        path_params = {}
+        query_params = {}
         response = await self.call.request(
             RequestSpec(
                 service="api",
@@ -4244,10 +3961,8 @@ class AsyncOscTypedMixin:
     ) -> ReadLocationsResponse:
         request = _validate_request(ReadLocationsRequest, request)
 
-        path_params = {
-        }
-        query_params = {
-        }
+        path_params = {}
+        query_params = {}
         response = await self.call.request(
             RequestSpec(
                 service="api",
@@ -4268,12 +3983,12 @@ class AsyncOscTypedMixin:
         self: HasCallMethod,
         request: ReadManagedPoliciesLinkedToUserGroupRequest | None = None,
     ) -> ReadManagedPoliciesLinkedToUserGroupResponse:
-        request = _validate_request(ReadManagedPoliciesLinkedToUserGroupRequest, request)
+        request = _validate_request(
+            ReadManagedPoliciesLinkedToUserGroupRequest, request
+        )
 
-        path_params = {
-        }
-        query_params = {
-        }
+        path_params = {}
+        query_params = {}
         response = await self.call.request(
             RequestSpec(
                 service="api",
@@ -4288,7 +4003,9 @@ class AsyncOscTypedMixin:
             ),
             path_params=path_params,
         )
-        return _validate_response(ReadManagedPoliciesLinkedToUserGroupResponse, response)
+        return _validate_response(
+            ReadManagedPoliciesLinkedToUserGroupResponse, response
+        )
 
     async def read_nat_services(
         self: HasCallMethod,
@@ -4296,10 +4013,8 @@ class AsyncOscTypedMixin:
     ) -> ReadNatServicesResponse:
         request = _validate_request(ReadNatServicesRequest, request)
 
-        path_params = {
-        }
-        query_params = {
-        }
+        path_params = {}
+        query_params = {}
         response = await self.call.request(
             RequestSpec(
                 service="api",
@@ -4322,10 +4037,8 @@ class AsyncOscTypedMixin:
     ) -> ReadNetAccessPointServicesResponse:
         request = _validate_request(ReadNetAccessPointServicesRequest, request)
 
-        path_params = {
-        }
-        query_params = {
-        }
+        path_params = {}
+        query_params = {}
         response = await self.call.request(
             RequestSpec(
                 service="api",
@@ -4348,10 +4061,8 @@ class AsyncOscTypedMixin:
     ) -> ReadNetAccessPointsResponse:
         request = _validate_request(ReadNetAccessPointsRequest, request)
 
-        path_params = {
-        }
-        query_params = {
-        }
+        path_params = {}
+        query_params = {}
         response = await self.call.request(
             RequestSpec(
                 service="api",
@@ -4374,10 +4085,8 @@ class AsyncOscTypedMixin:
     ) -> ReadNetPeeringsResponse:
         request = _validate_request(ReadNetPeeringsRequest, request)
 
-        path_params = {
-        }
-        query_params = {
-        }
+        path_params = {}
+        query_params = {}
         response = await self.call.request(
             RequestSpec(
                 service="api",
@@ -4400,10 +4109,8 @@ class AsyncOscTypedMixin:
     ) -> ReadNetsResponse:
         request = _validate_request(ReadNetsRequest, request)
 
-        path_params = {
-        }
-        query_params = {
-        }
+        path_params = {}
+        query_params = {}
         response = await self.call.request(
             RequestSpec(
                 service="api",
@@ -4426,10 +4133,8 @@ class AsyncOscTypedMixin:
     ) -> ReadNicsResponse:
         request = _validate_request(ReadNicsRequest, request)
 
-        path_params = {
-        }
-        query_params = {
-        }
+        path_params = {}
+        query_params = {}
         response = await self.call.request(
             RequestSpec(
                 service="api",
@@ -4452,10 +4157,8 @@ class AsyncOscTypedMixin:
     ) -> ReadPoliciesResponse:
         request = _validate_request(ReadPoliciesRequest, request)
 
-        path_params = {
-        }
-        query_params = {
-        }
+        path_params = {}
+        query_params = {}
         response = await self.call.request(
             RequestSpec(
                 service="api",
@@ -4478,10 +4181,8 @@ class AsyncOscTypedMixin:
     ) -> ReadPolicyResponse:
         request = _validate_request(ReadPolicyRequest, request)
 
-        path_params = {
-        }
-        query_params = {
-        }
+        path_params = {}
+        query_params = {}
         response = await self.call.request(
             RequestSpec(
                 service="api",
@@ -4504,10 +4205,8 @@ class AsyncOscTypedMixin:
     ) -> ReadPolicyVersionResponse:
         request = _validate_request(ReadPolicyVersionRequest, request)
 
-        path_params = {
-        }
-        query_params = {
-        }
+        path_params = {}
+        query_params = {}
         response = await self.call.request(
             RequestSpec(
                 service="api",
@@ -4530,10 +4229,8 @@ class AsyncOscTypedMixin:
     ) -> ReadPolicyVersionsResponse:
         request = _validate_request(ReadPolicyVersionsRequest, request)
 
-        path_params = {
-        }
-        query_params = {
-        }
+        path_params = {}
+        query_params = {}
         response = await self.call.request(
             RequestSpec(
                 service="api",
@@ -4556,10 +4253,8 @@ class AsyncOscTypedMixin:
     ) -> ReadProductTypesResponse:
         request = _validate_request(ReadProductTypesRequest, request)
 
-        path_params = {
-        }
-        query_params = {
-        }
+        path_params = {}
+        query_params = {}
         response = await self.call.request(
             RequestSpec(
                 service="api",
@@ -4582,10 +4277,8 @@ class AsyncOscTypedMixin:
     ) -> ReadPublicCatalogResponse:
         request = _validate_request(ReadPublicCatalogRequest, request)
 
-        path_params = {
-        }
-        query_params = {
-        }
+        path_params = {}
+        query_params = {}
         response = await self.call.request(
             RequestSpec(
                 service="api",
@@ -4608,10 +4301,8 @@ class AsyncOscTypedMixin:
     ) -> ReadPublicIpRangesResponse:
         request = _validate_request(ReadPublicIpRangesRequest, request)
 
-        path_params = {
-        }
-        query_params = {
-        }
+        path_params = {}
+        query_params = {}
         response = await self.call.request(
             RequestSpec(
                 service="api",
@@ -4634,10 +4325,8 @@ class AsyncOscTypedMixin:
     ) -> ReadPublicIpsResponse:
         request = _validate_request(ReadPublicIpsRequest, request)
 
-        path_params = {
-        }
-        query_params = {
-        }
+        path_params = {}
+        query_params = {}
         response = await self.call.request(
             RequestSpec(
                 service="api",
@@ -4660,10 +4349,8 @@ class AsyncOscTypedMixin:
     ) -> ReadQuotasResponse:
         request = _validate_request(ReadQuotasRequest, request)
 
-        path_params = {
-        }
-        query_params = {
-        }
+        path_params = {}
+        query_params = {}
         response = await self.call.request(
             RequestSpec(
                 service="api",
@@ -4686,10 +4373,8 @@ class AsyncOscTypedMixin:
     ) -> ReadRegionsResponse:
         request = _validate_request(ReadRegionsRequest, request)
 
-        path_params = {
-        }
-        query_params = {
-        }
+        path_params = {}
+        query_params = {}
         response = await self.call.request(
             RequestSpec(
                 service="api",
@@ -4712,10 +4397,8 @@ class AsyncOscTypedMixin:
     ) -> ReadRouteTablesResponse:
         request = _validate_request(ReadRouteTablesRequest, request)
 
-        path_params = {
-        }
-        query_params = {
-        }
+        path_params = {}
+        query_params = {}
         response = await self.call.request(
             RequestSpec(
                 service="api",
@@ -4738,10 +4421,8 @@ class AsyncOscTypedMixin:
     ) -> ReadSecurityGroupsResponse:
         request = _validate_request(ReadSecurityGroupsRequest, request)
 
-        path_params = {
-        }
-        query_params = {
-        }
+        path_params = {}
+        query_params = {}
         response = await self.call.request(
             RequestSpec(
                 service="api",
@@ -4764,10 +4445,8 @@ class AsyncOscTypedMixin:
     ) -> ReadServerCertificatesResponse:
         request = _validate_request(ReadServerCertificatesRequest, request)
 
-        path_params = {
-        }
-        query_params = {
-        }
+        path_params = {}
+        query_params = {}
         response = await self.call.request(
             RequestSpec(
                 service="api",
@@ -4790,10 +4469,8 @@ class AsyncOscTypedMixin:
     ) -> ReadSnapshotExportTasksResponse:
         request = _validate_request(ReadSnapshotExportTasksRequest, request)
 
-        path_params = {
-        }
-        query_params = {
-        }
+        path_params = {}
+        query_params = {}
         response = await self.call.request(
             RequestSpec(
                 service="api",
@@ -4816,10 +4493,8 @@ class AsyncOscTypedMixin:
     ) -> ReadSnapshotsResponse:
         request = _validate_request(ReadSnapshotsRequest, request)
 
-        path_params = {
-        }
-        query_params = {
-        }
+        path_params = {}
+        query_params = {}
         response = await self.call.request(
             RequestSpec(
                 service="api",
@@ -4842,10 +4517,8 @@ class AsyncOscTypedMixin:
     ) -> ReadSubnetsResponse:
         request = _validate_request(ReadSubnetsRequest, request)
 
-        path_params = {
-        }
-        query_params = {
-        }
+        path_params = {}
+        query_params = {}
         response = await self.call.request(
             RequestSpec(
                 service="api",
@@ -4868,10 +4541,8 @@ class AsyncOscTypedMixin:
     ) -> ReadSubregionsResponse:
         request = _validate_request(ReadSubregionsRequest, request)
 
-        path_params = {
-        }
-        query_params = {
-        }
+        path_params = {}
+        query_params = {}
         response = await self.call.request(
             RequestSpec(
                 service="api",
@@ -4894,10 +4565,8 @@ class AsyncOscTypedMixin:
     ) -> ReadTagsResponse:
         request = _validate_request(ReadTagsRequest, request)
 
-        path_params = {
-        }
-        query_params = {
-        }
+        path_params = {}
+        query_params = {}
         response = await self.call.request(
             RequestSpec(
                 service="api",
@@ -4920,10 +4589,8 @@ class AsyncOscTypedMixin:
     ) -> ReadUnitPriceResponse:
         request = _validate_request(ReadUnitPriceRequest, request)
 
-        path_params = {
-        }
-        query_params = {
-        }
+        path_params = {}
+        query_params = {}
         response = await self.call.request(
             RequestSpec(
                 service="api",
@@ -4946,10 +4613,8 @@ class AsyncOscTypedMixin:
     ) -> ReadUserGroupResponse:
         request = _validate_request(ReadUserGroupRequest, request)
 
-        path_params = {
-        }
-        query_params = {
-        }
+        path_params = {}
+        query_params = {}
         response = await self.call.request(
             RequestSpec(
                 service="api",
@@ -4972,10 +4637,8 @@ class AsyncOscTypedMixin:
     ) -> ReadUserGroupPoliciesResponse:
         request = _validate_request(ReadUserGroupPoliciesRequest, request)
 
-        path_params = {
-        }
-        query_params = {
-        }
+        path_params = {}
+        query_params = {}
         response = await self.call.request(
             RequestSpec(
                 service="api",
@@ -4998,10 +4661,8 @@ class AsyncOscTypedMixin:
     ) -> ReadUserGroupPolicyResponse:
         request = _validate_request(ReadUserGroupPolicyRequest, request)
 
-        path_params = {
-        }
-        query_params = {
-        }
+        path_params = {}
+        query_params = {}
         response = await self.call.request(
             RequestSpec(
                 service="api",
@@ -5024,10 +4685,8 @@ class AsyncOscTypedMixin:
     ) -> ReadUserGroupsResponse:
         request = _validate_request(ReadUserGroupsRequest, request)
 
-        path_params = {
-        }
-        query_params = {
-        }
+        path_params = {}
+        query_params = {}
         response = await self.call.request(
             RequestSpec(
                 service="api",
@@ -5050,10 +4709,8 @@ class AsyncOscTypedMixin:
     ) -> ReadUserGroupsPerUserResponse:
         request = _validate_request(ReadUserGroupsPerUserRequest, request)
 
-        path_params = {
-        }
-        query_params = {
-        }
+        path_params = {}
+        query_params = {}
         response = await self.call.request(
             RequestSpec(
                 service="api",
@@ -5076,10 +4733,8 @@ class AsyncOscTypedMixin:
     ) -> ReadUserPoliciesResponse:
         request = _validate_request(ReadUserPoliciesRequest, request)
 
-        path_params = {
-        }
-        query_params = {
-        }
+        path_params = {}
+        query_params = {}
         response = await self.call.request(
             RequestSpec(
                 service="api",
@@ -5102,10 +4757,8 @@ class AsyncOscTypedMixin:
     ) -> ReadUserPolicyResponse:
         request = _validate_request(ReadUserPolicyRequest, request)
 
-        path_params = {
-        }
-        query_params = {
-        }
+        path_params = {}
+        query_params = {}
         response = await self.call.request(
             RequestSpec(
                 service="api",
@@ -5128,10 +4781,8 @@ class AsyncOscTypedMixin:
     ) -> ReadUsersResponse:
         request = _validate_request(ReadUsersRequest, request)
 
-        path_params = {
-        }
-        query_params = {
-        }
+        path_params = {}
+        query_params = {}
         response = await self.call.request(
             RequestSpec(
                 service="api",
@@ -5154,10 +4805,8 @@ class AsyncOscTypedMixin:
     ) -> ReadVirtualGatewaysResponse:
         request = _validate_request(ReadVirtualGatewaysRequest, request)
 
-        path_params = {
-        }
-        query_params = {
-        }
+        path_params = {}
+        query_params = {}
         response = await self.call.request(
             RequestSpec(
                 service="api",
@@ -5180,10 +4829,8 @@ class AsyncOscTypedMixin:
     ) -> ReadVmGroupsResponse:
         request = _validate_request(ReadVmGroupsRequest, request)
 
-        path_params = {
-        }
-        query_params = {
-        }
+        path_params = {}
+        query_params = {}
         response = await self.call.request(
             RequestSpec(
                 service="api",
@@ -5206,10 +4853,8 @@ class AsyncOscTypedMixin:
     ) -> ReadVmTemplatesResponse:
         request = _validate_request(ReadVmTemplatesRequest, request)
 
-        path_params = {
-        }
-        query_params = {
-        }
+        path_params = {}
+        query_params = {}
         response = await self.call.request(
             RequestSpec(
                 service="api",
@@ -5232,10 +4877,8 @@ class AsyncOscTypedMixin:
     ) -> ReadVmTypesResponse:
         request = _validate_request(ReadVmTypesRequest, request)
 
-        path_params = {
-        }
-        query_params = {
-        }
+        path_params = {}
+        query_params = {}
         response = await self.call.request(
             RequestSpec(
                 service="api",
@@ -5258,10 +4901,8 @@ class AsyncOscTypedMixin:
     ) -> ReadVmsResponse:
         request = _validate_request(ReadVmsRequest, request)
 
-        path_params = {
-        }
-        query_params = {
-        }
+        path_params = {}
+        query_params = {}
         response = await self.call.request(
             RequestSpec(
                 service="api",
@@ -5284,10 +4925,8 @@ class AsyncOscTypedMixin:
     ) -> ReadVmsHealthResponse:
         request = _validate_request(ReadVmsHealthRequest, request)
 
-        path_params = {
-        }
-        query_params = {
-        }
+        path_params = {}
+        query_params = {}
         response = await self.call.request(
             RequestSpec(
                 service="api",
@@ -5310,10 +4949,8 @@ class AsyncOscTypedMixin:
     ) -> ReadVmsStateResponse:
         request = _validate_request(ReadVmsStateRequest, request)
 
-        path_params = {
-        }
-        query_params = {
-        }
+        path_params = {}
+        query_params = {}
         response = await self.call.request(
             RequestSpec(
                 service="api",
@@ -5336,10 +4973,8 @@ class AsyncOscTypedMixin:
     ) -> ReadVmsStopHistoryResponse:
         request = _validate_request(ReadVmsStopHistoryRequest, request)
 
-        path_params = {
-        }
-        query_params = {
-        }
+        path_params = {}
+        query_params = {}
         response = await self.call.request(
             RequestSpec(
                 service="api",
@@ -5362,10 +4997,8 @@ class AsyncOscTypedMixin:
     ) -> ReadVolumeUpdateTasksResponse:
         request = _validate_request(ReadVolumeUpdateTasksRequest, request)
 
-        path_params = {
-        }
-        query_params = {
-        }
+        path_params = {}
+        query_params = {}
         response = await self.call.request(
             RequestSpec(
                 service="api",
@@ -5388,10 +5021,8 @@ class AsyncOscTypedMixin:
     ) -> ReadVolumesResponse:
         request = _validate_request(ReadVolumesRequest, request)
 
-        path_params = {
-        }
-        query_params = {
-        }
+        path_params = {}
+        query_params = {}
         response = await self.call.request(
             RequestSpec(
                 service="api",
@@ -5414,10 +5045,8 @@ class AsyncOscTypedMixin:
     ) -> ReadVpnConnectionsResponse:
         request = _validate_request(ReadVpnConnectionsRequest, request)
 
-        path_params = {
-        }
-        query_params = {
-        }
+        path_params = {}
+        query_params = {}
         response = await self.call.request(
             RequestSpec(
                 service="api",
@@ -5440,10 +5069,8 @@ class AsyncOscTypedMixin:
     ) -> RebootVmsResponse:
         request = _validate_request(RebootVmsRequest, request)
 
-        path_params = {
-        }
-        query_params = {
-        }
+        path_params = {}
+        query_params = {}
         response = await self.call.request(
             RequestSpec(
                 service="api",
@@ -5466,10 +5093,8 @@ class AsyncOscTypedMixin:
     ) -> RegisterVmsInLoadBalancerResponse:
         request = _validate_request(RegisterVmsInLoadBalancerRequest, request)
 
-        path_params = {
-        }
-        query_params = {
-        }
+        path_params = {}
+        query_params = {}
         response = await self.call.request(
             RequestSpec(
                 service="api",
@@ -5492,10 +5117,8 @@ class AsyncOscTypedMixin:
     ) -> RejectNetPeeringResponse:
         request = _validate_request(RejectNetPeeringRequest, request)
 
-        path_params = {
-        }
-        query_params = {
-        }
+        path_params = {}
+        query_params = {}
         response = await self.call.request(
             RequestSpec(
                 service="api",
@@ -5518,10 +5141,8 @@ class AsyncOscTypedMixin:
     ) -> RemoveUserFromUserGroupResponse:
         request = _validate_request(RemoveUserFromUserGroupRequest, request)
 
-        path_params = {
-        }
-        query_params = {
-        }
+        path_params = {}
+        query_params = {}
         response = await self.call.request(
             RequestSpec(
                 service="api",
@@ -5544,10 +5165,8 @@ class AsyncOscTypedMixin:
     ) -> ScaleDownVmGroupResponse:
         request = _validate_request(ScaleDownVmGroupRequest, request)
 
-        path_params = {
-        }
-        query_params = {
-        }
+        path_params = {}
+        query_params = {}
         response = await self.call.request(
             RequestSpec(
                 service="api",
@@ -5570,10 +5189,8 @@ class AsyncOscTypedMixin:
     ) -> ScaleUpVmGroupResponse:
         request = _validate_request(ScaleUpVmGroupRequest, request)
 
-        path_params = {
-        }
-        query_params = {
-        }
+        path_params = {}
+        query_params = {}
         response = await self.call.request(
             RequestSpec(
                 service="api",
@@ -5596,10 +5213,8 @@ class AsyncOscTypedMixin:
     ) -> SetDefaultPolicyVersionResponse:
         request = _validate_request(SetDefaultPolicyVersionRequest, request)
 
-        path_params = {
-        }
-        query_params = {
-        }
+        path_params = {}
+        query_params = {}
         response = await self.call.request(
             RequestSpec(
                 service="api",
@@ -5622,10 +5237,8 @@ class AsyncOscTypedMixin:
     ) -> StartVmsResponse:
         request = _validate_request(StartVmsRequest, request)
 
-        path_params = {
-        }
-        query_params = {
-        }
+        path_params = {}
+        query_params = {}
         response = await self.call.request(
             RequestSpec(
                 service="api",
@@ -5648,10 +5261,8 @@ class AsyncOscTypedMixin:
     ) -> StopVmsResponse:
         request = _validate_request(StopVmsRequest, request)
 
-        path_params = {
-        }
-        query_params = {
-        }
+        path_params = {}
+        query_params = {}
         response = await self.call.request(
             RequestSpec(
                 service="api",
@@ -5674,10 +5285,8 @@ class AsyncOscTypedMixin:
     ) -> UnlinkFlexibleGpuResponse:
         request = _validate_request(UnlinkFlexibleGpuRequest, request)
 
-        path_params = {
-        }
-        query_params = {
-        }
+        path_params = {}
+        query_params = {}
         response = await self.call.request(
             RequestSpec(
                 service="api",
@@ -5700,10 +5309,8 @@ class AsyncOscTypedMixin:
     ) -> UnlinkInternetServiceResponse:
         request = _validate_request(UnlinkInternetServiceRequest, request)
 
-        path_params = {
-        }
-        query_params = {
-        }
+        path_params = {}
+        query_params = {}
         response = await self.call.request(
             RequestSpec(
                 service="api",
@@ -5726,10 +5333,8 @@ class AsyncOscTypedMixin:
     ) -> UnlinkLoadBalancerBackendMachinesResponse:
         request = _validate_request(UnlinkLoadBalancerBackendMachinesRequest, request)
 
-        path_params = {
-        }
-        query_params = {
-        }
+        path_params = {}
+        query_params = {}
         response = await self.call.request(
             RequestSpec(
                 service="api",
@@ -5752,10 +5357,8 @@ class AsyncOscTypedMixin:
     ) -> UnlinkManagedPolicyFromUserGroupResponse:
         request = _validate_request(UnlinkManagedPolicyFromUserGroupRequest, request)
 
-        path_params = {
-        }
-        query_params = {
-        }
+        path_params = {}
+        query_params = {}
         response = await self.call.request(
             RequestSpec(
                 service="api",
@@ -5778,10 +5381,8 @@ class AsyncOscTypedMixin:
     ) -> UnlinkNicResponse:
         request = _validate_request(UnlinkNicRequest, request)
 
-        path_params = {
-        }
-        query_params = {
-        }
+        path_params = {}
+        query_params = {}
         response = await self.call.request(
             RequestSpec(
                 service="api",
@@ -5804,10 +5405,8 @@ class AsyncOscTypedMixin:
     ) -> UnlinkPolicyResponse:
         request = _validate_request(UnlinkPolicyRequest, request)
 
-        path_params = {
-        }
-        query_params = {
-        }
+        path_params = {}
+        query_params = {}
         response = await self.call.request(
             RequestSpec(
                 service="api",
@@ -5830,10 +5429,8 @@ class AsyncOscTypedMixin:
     ) -> UnlinkPrivateIpsResponse:
         request = _validate_request(UnlinkPrivateIpsRequest, request)
 
-        path_params = {
-        }
-        query_params = {
-        }
+        path_params = {}
+        query_params = {}
         response = await self.call.request(
             RequestSpec(
                 service="api",
@@ -5856,10 +5453,8 @@ class AsyncOscTypedMixin:
     ) -> UnlinkPublicIpResponse:
         request = _validate_request(UnlinkPublicIpRequest, request)
 
-        path_params = {
-        }
-        query_params = {
-        }
+        path_params = {}
+        query_params = {}
         response = await self.call.request(
             RequestSpec(
                 service="api",
@@ -5882,10 +5477,8 @@ class AsyncOscTypedMixin:
     ) -> UnlinkRouteTableResponse:
         request = _validate_request(UnlinkRouteTableRequest, request)
 
-        path_params = {
-        }
-        query_params = {
-        }
+        path_params = {}
+        query_params = {}
         response = await self.call.request(
             RequestSpec(
                 service="api",
@@ -5908,10 +5501,8 @@ class AsyncOscTypedMixin:
     ) -> UnlinkVirtualGatewayResponse:
         request = _validate_request(UnlinkVirtualGatewayRequest, request)
 
-        path_params = {
-        }
-        query_params = {
-        }
+        path_params = {}
+        query_params = {}
         response = await self.call.request(
             RequestSpec(
                 service="api",
@@ -5934,10 +5525,8 @@ class AsyncOscTypedMixin:
     ) -> UnlinkVolumeResponse:
         request = _validate_request(UnlinkVolumeRequest, request)
 
-        path_params = {
-        }
-        query_params = {
-        }
+        path_params = {}
+        query_params = {}
         response = await self.call.request(
             RequestSpec(
                 service="api",
@@ -5960,10 +5549,8 @@ class AsyncOscTypedMixin:
     ) -> UpdateAccessKeyResponse:
         request = _validate_request(UpdateAccessKeyRequest, request)
 
-        path_params = {
-        }
-        query_params = {
-        }
+        path_params = {}
+        query_params = {}
         response = await self.call.request(
             RequestSpec(
                 service="api",
@@ -5986,10 +5573,8 @@ class AsyncOscTypedMixin:
     ) -> UpdateAccountResponse:
         request = _validate_request(UpdateAccountRequest, request)
 
-        path_params = {
-        }
-        query_params = {
-        }
+        path_params = {}
+        query_params = {}
         response = await self.call.request(
             RequestSpec(
                 service="api",
@@ -6012,10 +5597,8 @@ class AsyncOscTypedMixin:
     ) -> UpdateApiAccessPolicyResponse:
         request = _validate_request(UpdateApiAccessPolicyRequest, request)
 
-        path_params = {
-        }
-        query_params = {
-        }
+        path_params = {}
+        query_params = {}
         response = await self.call.request(
             RequestSpec(
                 service="api",
@@ -6038,10 +5621,8 @@ class AsyncOscTypedMixin:
     ) -> UpdateApiAccessRuleResponse:
         request = _validate_request(UpdateApiAccessRuleRequest, request)
 
-        path_params = {
-        }
-        query_params = {
-        }
+        path_params = {}
+        query_params = {}
         response = await self.call.request(
             RequestSpec(
                 service="api",
@@ -6064,10 +5645,8 @@ class AsyncOscTypedMixin:
     ) -> UpdateCaResponse:
         request = _validate_request(UpdateCaRequest, request)
 
-        path_params = {
-        }
-        query_params = {
-        }
+        path_params = {}
+        query_params = {}
         response = await self.call.request(
             RequestSpec(
                 service="api",
@@ -6090,10 +5669,8 @@ class AsyncOscTypedMixin:
     ) -> UpdateDedicatedGroupResponse:
         request = _validate_request(UpdateDedicatedGroupRequest, request)
 
-        path_params = {
-        }
-        query_params = {
-        }
+        path_params = {}
+        query_params = {}
         response = await self.call.request(
             RequestSpec(
                 service="api",
@@ -6116,10 +5693,8 @@ class AsyncOscTypedMixin:
     ) -> UpdateDirectLinkInterfaceResponse:
         request = _validate_request(UpdateDirectLinkInterfaceRequest, request)
 
-        path_params = {
-        }
-        query_params = {
-        }
+        path_params = {}
+        query_params = {}
         response = await self.call.request(
             RequestSpec(
                 service="api",
@@ -6142,10 +5717,8 @@ class AsyncOscTypedMixin:
     ) -> UpdateFlexibleGpuResponse:
         request = _validate_request(UpdateFlexibleGpuRequest, request)
 
-        path_params = {
-        }
-        query_params = {
-        }
+        path_params = {}
+        query_params = {}
         response = await self.call.request(
             RequestSpec(
                 service="api",
@@ -6168,10 +5741,8 @@ class AsyncOscTypedMixin:
     ) -> UpdateImageResponse:
         request = _validate_request(UpdateImageRequest, request)
 
-        path_params = {
-        }
-        query_params = {
-        }
+        path_params = {}
+        query_params = {}
         response = await self.call.request(
             RequestSpec(
                 service="api",
@@ -6194,10 +5765,8 @@ class AsyncOscTypedMixin:
     ) -> UpdateListenerRuleResponse:
         request = _validate_request(UpdateListenerRuleRequest, request)
 
-        path_params = {
-        }
-        query_params = {
-        }
+        path_params = {}
+        query_params = {}
         response = await self.call.request(
             RequestSpec(
                 service="api",
@@ -6220,10 +5789,8 @@ class AsyncOscTypedMixin:
     ) -> UpdateLoadBalancerResponse:
         request = _validate_request(UpdateLoadBalancerRequest, request)
 
-        path_params = {
-        }
-        query_params = {
-        }
+        path_params = {}
+        query_params = {}
         response = await self.call.request(
             RequestSpec(
                 service="api",
@@ -6246,10 +5813,8 @@ class AsyncOscTypedMixin:
     ) -> UpdateNetResponse:
         request = _validate_request(UpdateNetRequest, request)
 
-        path_params = {
-        }
-        query_params = {
-        }
+        path_params = {}
+        query_params = {}
         response = await self.call.request(
             RequestSpec(
                 service="api",
@@ -6272,10 +5837,8 @@ class AsyncOscTypedMixin:
     ) -> UpdateNetAccessPointResponse:
         request = _validate_request(UpdateNetAccessPointRequest, request)
 
-        path_params = {
-        }
-        query_params = {
-        }
+        path_params = {}
+        query_params = {}
         response = await self.call.request(
             RequestSpec(
                 service="api",
@@ -6298,10 +5861,8 @@ class AsyncOscTypedMixin:
     ) -> UpdateNicResponse:
         request = _validate_request(UpdateNicRequest, request)
 
-        path_params = {
-        }
-        query_params = {
-        }
+        path_params = {}
+        query_params = {}
         response = await self.call.request(
             RequestSpec(
                 service="api",
@@ -6324,10 +5885,8 @@ class AsyncOscTypedMixin:
     ) -> UpdateRouteResponse:
         request = _validate_request(UpdateRouteRequest, request)
 
-        path_params = {
-        }
-        query_params = {
-        }
+        path_params = {}
+        query_params = {}
         response = await self.call.request(
             RequestSpec(
                 service="api",
@@ -6350,10 +5909,8 @@ class AsyncOscTypedMixin:
     ) -> UpdateRoutePropagationResponse:
         request = _validate_request(UpdateRoutePropagationRequest, request)
 
-        path_params = {
-        }
-        query_params = {
-        }
+        path_params = {}
+        query_params = {}
         response = await self.call.request(
             RequestSpec(
                 service="api",
@@ -6376,10 +5933,8 @@ class AsyncOscTypedMixin:
     ) -> UpdateRouteTableLinkResponse:
         request = _validate_request(UpdateRouteTableLinkRequest, request)
 
-        path_params = {
-        }
-        query_params = {
-        }
+        path_params = {}
+        query_params = {}
         response = await self.call.request(
             RequestSpec(
                 service="api",
@@ -6402,10 +5957,8 @@ class AsyncOscTypedMixin:
     ) -> UpdateServerCertificateResponse:
         request = _validate_request(UpdateServerCertificateRequest, request)
 
-        path_params = {
-        }
-        query_params = {
-        }
+        path_params = {}
+        query_params = {}
         response = await self.call.request(
             RequestSpec(
                 service="api",
@@ -6428,10 +5981,8 @@ class AsyncOscTypedMixin:
     ) -> UpdateSnapshotResponse:
         request = _validate_request(UpdateSnapshotRequest, request)
 
-        path_params = {
-        }
-        query_params = {
-        }
+        path_params = {}
+        query_params = {}
         response = await self.call.request(
             RequestSpec(
                 service="api",
@@ -6454,10 +6005,8 @@ class AsyncOscTypedMixin:
     ) -> UpdateSubnetResponse:
         request = _validate_request(UpdateSubnetRequest, request)
 
-        path_params = {
-        }
-        query_params = {
-        }
+        path_params = {}
+        query_params = {}
         response = await self.call.request(
             RequestSpec(
                 service="api",
@@ -6480,10 +6029,8 @@ class AsyncOscTypedMixin:
     ) -> UpdateUserResponse:
         request = _validate_request(UpdateUserRequest, request)
 
-        path_params = {
-        }
-        query_params = {
-        }
+        path_params = {}
+        query_params = {}
         response = await self.call.request(
             RequestSpec(
                 service="api",
@@ -6506,10 +6053,8 @@ class AsyncOscTypedMixin:
     ) -> UpdateUserGroupResponse:
         request = _validate_request(UpdateUserGroupRequest, request)
 
-        path_params = {
-        }
-        query_params = {
-        }
+        path_params = {}
+        query_params = {}
         response = await self.call.request(
             RequestSpec(
                 service="api",
@@ -6532,10 +6077,8 @@ class AsyncOscTypedMixin:
     ) -> UpdateVmResponse:
         request = _validate_request(UpdateVmRequest, request)
 
-        path_params = {
-        }
-        query_params = {
-        }
+        path_params = {}
+        query_params = {}
         response = await self.call.request(
             RequestSpec(
                 service="api",
@@ -6558,10 +6101,8 @@ class AsyncOscTypedMixin:
     ) -> UpdateVmGroupResponse:
         request = _validate_request(UpdateVmGroupRequest, request)
 
-        path_params = {
-        }
-        query_params = {
-        }
+        path_params = {}
+        query_params = {}
         response = await self.call.request(
             RequestSpec(
                 service="api",
@@ -6584,10 +6125,8 @@ class AsyncOscTypedMixin:
     ) -> UpdateVmTemplateResponse:
         request = _validate_request(UpdateVmTemplateRequest, request)
 
-        path_params = {
-        }
-        query_params = {
-        }
+        path_params = {}
+        query_params = {}
         response = await self.call.request(
             RequestSpec(
                 service="api",
@@ -6610,10 +6149,8 @@ class AsyncOscTypedMixin:
     ) -> UpdateVolumeResponse:
         request = _validate_request(UpdateVolumeRequest, request)
 
-        path_params = {
-        }
-        query_params = {
-        }
+        path_params = {}
+        query_params = {}
         response = await self.call.request(
             RequestSpec(
                 service="api",
@@ -6636,10 +6173,8 @@ class AsyncOscTypedMixin:
     ) -> UpdateVpnConnectionResponse:
         request = _validate_request(UpdateVpnConnectionRequest, request)
 
-        path_params = {
-        }
-        query_params = {
-        }
+        path_params = {}
+        query_params = {}
         response = await self.call.request(
             RequestSpec(
                 service="api",

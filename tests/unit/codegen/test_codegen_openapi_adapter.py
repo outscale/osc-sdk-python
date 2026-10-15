@@ -346,7 +346,10 @@ def test_oneof_composition_renders_union_with_exclusivity_warning(caplog):
         rendered_models = render_models([], adapter.schema_models(), "osc")
 
     assert "value: str | int | None" in rendered_models
-    assert "OpenAPI oneOf with 2 schemas at Thing.Value represented as a union" in caplog.text
+    assert (
+        "OpenAPI oneOf with 2 schemas at Thing.Value represented as a union"
+        in caplog.text
+    )
     assert "exclusivity is not enforced" in caplog.text
 
 
@@ -478,13 +481,16 @@ def test_anyof_null_composition_renders_optional_concrete_types():
     }
 
     adapter = PathOperationAdapter(spec, service="oks")
-    rendered_models = render_models(adapter.operations(), adapter.schema_models(), "oks")
+    rendered_models = render_models(
+        adapter.operations(), adapter.schema_models(), "oks"
+    )
 
     assert "maintenance_window: Maintenance | None" in rendered_models
     assert "tags: dict[str, str] | None" in rendered_models
     assert "quirks: list[str] | None" in rendered_models
     assert "name: str | None" in rendered_models
     assert "limit: int | None" in rendered_models
+
 
 def test_single_ref_allof_with_metadata_keeps_ref_type():
     spec = {

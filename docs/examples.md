@@ -96,6 +96,7 @@ import asyncio
 
 from osc_sdk_python import AsyncClient, SdkError, SdkClientError
 
+
 async def main():
     try:
         async with AsyncClient() as client:
@@ -108,6 +109,7 @@ async def main():
             print("status:", err.response.status_code)
     except SdkError as err:
         print("SDK error:", err)
+
 
 if __name__ == "__main__":
     asyncio.run(main())

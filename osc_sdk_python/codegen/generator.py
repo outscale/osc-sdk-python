@@ -292,10 +292,16 @@ def render_init(
     return "\n".join(lines)
 
 
-def _ruff_check_fix(generated_root: Path) -> None:
+def _ruff_format_and_check(generated_root: Path) -> None:
     repo_root = Path(__file__).resolve().parents[2]
+    generated = str(generated_root)
     subprocess.run(
-        ["uv", "run", "ruff", "check", "--fix", str(generated_root)],
+        ["uv", "run", "ruff", "format", generated],
+        cwd=repo_root,
+        check=True,
+    )
+    subprocess.run(
+        ["uv", "run", "ruff", "check", "--fix", generated],
         cwd=repo_root,
         check=True,
     )
@@ -353,7 +359,7 @@ def generate_all(
             skip_overlay=skip_overlay,
         )
     if run_ruff:
-        _ruff_check_fix(root / "generated")
+        _ruff_format_and_check(root / "generated")
 
 
 def main() -> None:
@@ -371,7 +377,7 @@ def main() -> None:
     parser.add_argument(
         "--skip-ruff",
         action="store_true",
-        help="Skip ruff check --fix on generated files.",
+        help="Skip ruff format and check --fix on generated files.",
     )
     args = parser.parse_args()
     root = Path(__file__).resolve().parents[1]
