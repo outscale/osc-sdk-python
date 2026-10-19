@@ -14,6 +14,7 @@ from typing import Any, Protocol, TypeVar
 from pydantic import BaseModel, TypeAdapter, ValidationError
 
 from osc_sdk_python.exceptions import SdkResponseError, SdkValidationError
+from osc_sdk_python.runtime.call import AsyncCall
 from osc_sdk_python.runtime.request import RequestSpec
 
 from .models import (
@@ -522,7 +523,7 @@ def _validate_response(model: T, value: Any) -> Any:
 
 class HasCallMethod(Protocol):
     @property
-    def call(self): ...
+    def call(self) -> AsyncCall: ...
 
 
 class AsyncOscTypedMixin:
