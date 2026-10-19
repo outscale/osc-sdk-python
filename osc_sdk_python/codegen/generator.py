@@ -144,6 +144,7 @@ def render_async_client(
     model_imports = "\n".join(f"    {name}," for name in imports)
     lines = [
         _header(package_name),
+        "from types import UnionType",
         "from typing import Any, Protocol, TypeVar",
         "",
         "from pydantic import BaseModel, TypeAdapter, ValidationError",
@@ -174,9 +175,12 @@ def render_async_client(
         "    except ValidationError as error:",
         "        raise SdkValidationError(str(error)) from error",
         "",
-        'T = TypeVar("T")',
+        'ResponseT = TypeVar("ResponseT")',
         "",
-        "def _validate_response(model: T, value: Any) -> Any:",
+        "def _validate_response(",
+        "    model: type[ResponseT] | UnionType,",
+        "    value: Any,",
+        ") -> ResponseT:",
         "    try:",
         "        return TypeAdapter(model).validate_python(value)",
         "    except ValidationError as error:",

@@ -9,6 +9,7 @@ Do not edit by hand. Regenerate with:
     python -m osc_sdk_python.codegen.generator oks osc
 """
 
+from types import UnionType
 from typing import Any, Protocol, TypeVar
 
 from pydantic import BaseModel, TypeAdapter, ValidationError
@@ -100,10 +101,13 @@ def _validate_request(model: type[ModelT], value: ModelT | Any | None) -> ModelT
         raise SdkValidationError(str(error)) from error
 
 
-T = TypeVar("T")
+ResponseT = TypeVar("ResponseT")
 
 
-def _validate_response(model: T, value: Any) -> Any:
+def _validate_response(
+    model: type[ResponseT] | UnionType,
+    value: Any,
+) -> ResponseT:
     try:
         return TypeAdapter(model).validate_python(value)
     except ValidationError as error:
