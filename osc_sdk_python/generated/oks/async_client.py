@@ -11,7 +11,7 @@ Do not edit by hand. Regenerate with:
 
 from typing import Any, Protocol, TypeVar
 
-from pydantic import TypeAdapter, ValidationError
+from pydantic import BaseModel, TypeAdapter, ValidationError
 
 from osc_sdk_python.exceptions import SdkResponseError, SdkValidationError
 from osc_sdk_python.runtime.request import RequestSpec
@@ -85,7 +85,10 @@ def _dump_json_body(value: Any) -> Any:
     return value
 
 
-def _validate_request(model: type, value: Any) -> Any:
+ModelT = TypeVar("ModelT", bound=BaseModel)
+
+
+def _validate_request(model: type[ModelT], value: ModelT | Any | None) -> ModelT:
     try:
         if value is None:
             return model()
