@@ -1,11 +1,13 @@
 import os
 import sys
-from .call import Call
-from .limiter import RateLimiter
-import ruamel.yaml
-from .version import get_version
 import warnings
 from datetime import timedelta
+
+import ruamel.yaml
+
+from .call import Call
+from .limiter import RateLimiter
+from .version import get_version
 
 type_mapping = {"boolean": "bool", "string": "str", "integer": "int", "array": "list"}
 
@@ -124,12 +126,13 @@ class BaseAPI:
 
     def _convert(self, input_file):
         structure = {}
+        deprecated_actions = set()
         try:
             with open(input_file, "r") as fi:
                 yaml = ruamel.yaml.YAML(typ="safe")
                 content = yaml.load(fi.read())
         except Exception as err:
-            print("Problem reading {}:{}".format(input_file, str(err)))
+            print(f"Problem reading {input_file}:{err!s}")
         self.api_version = content["info"]["version"]
         self.endpoint_api_version = content["servers"][0]["url"].split("/")[-1]
         for action, params in content["components"]["schemas"].items():
@@ -146,19 +149,32 @@ class BaseAPI:
                     structure[action_name][propertie_name] = {
                         "type": action_type,
                         "required": False,
+                        "deprecated": properties.get("deprecated") is True
+                        or "deprecat" in (properties.get("description") or "").lower(),
                     }
 
                 if "required" in params.keys():
                     for required in params["required"]:
                         structure[action_name][required]["required"] = True
-        return structure
+        for path_item in content.get("paths", {}).values():
+            for operation in path_item.values():
+                if (
+                    isinstance(operation, dict)
+                    and "operationId" in operation
+                    and (
+                        operation.get("deprecated") is True
+                        or "deprecat" in (operation.get("description") or "").lower()
+                    )
+                ):
+                    deprecated_actions.add(operation["operationId"])
+        return structure, deprecated_actions
 
     def _load_gateway_structure(self, spec):
-        self.gateway_structure = self._convert(spec)
+        self.gateway_structure, self.deprecated_actions = self._convert(spec)
 
     def _load_errors(self):
         dir_path = os.path.join(os.path.dirname(__file__))
-        yaml_file = os.path.abspath("{}/resources/gateway_errors.yaml".format(dir_path))
+        yaml_file = os.path.abspath(f"{dir_path}/resources/gateway_errors.yaml")
         with open(yaml_file, "r") as yam:
             yaml = ruamel.yaml.YAML(typ="safe")
             self.gateway_errors = yaml.load(yam.read())
@@ -211,13 +227,28 @@ class BaseAPI:
     def _check(self, action_name, **params):
         if action_name not in self.gateway_structure:
             raise ActionNotExists(
-                "Action {} does not exists for python sdk: {} with api: {}".format(
-                    action_name, get_version(), self.api_version
-                )
+                f"Action {action_name} does not exists for python sdk: {get_version()} with api: {self.api_version}"
             )
         self._check_parameters_valid(action_name, params)
         self._check_parameters_required(self.gateway_structure[action_name], params)
         self._check_parameters_type(self.gateway_structure[action_name], params)
+        self._warn_deprecation(action_name, params)
+
+    def _warn_deprecation(self, action_name, params):
+        if action_name in self.deprecated_actions:
+            warnings.warn(
+                f"{action_name} action is deprecated and will be removed.",
+                DeprecationWarning,
+                stacklevel=3,
+            )
+        action_structure = self.gateway_structure.get(action_name, {})
+        for name in params:
+            if action_structure.get(name, {}).get("deprecated"):
+                warnings.warn(
+                    f"{action_name}.{name} parameter is deprecated and will be removed.",
+                    DeprecationWarning,
+                    stacklevel=3,
+                )
 
     @staticmethod
     def _remove_none_parameters(**params):
