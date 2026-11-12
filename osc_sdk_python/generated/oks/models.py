@@ -215,6 +215,7 @@ class ClusterUpdate(GeneratedModel):
         default=None, alias="disable_api_termination"
     )
     version: str | None = Field(default=None, alias="version")
+    cni: str | None = Field(default=None, alias="cni")
     control_planes: str | None = Field(default=None, alias="control_planes")
     auth: AuthStrategy | None = Field(default=None, alias="auth")
 

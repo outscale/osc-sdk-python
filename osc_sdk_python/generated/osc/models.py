@@ -50,6 +50,7 @@ class AccessKey(GeneratedModel):
     )
     state: str | None = Field(default=None, alias="State")
     tag: str | None = Field(default=None, alias="Tag")
+    trusted: bool | None = Field(default=None, alias="Trusted")
 
 
 class AccessKeySecretKey(GeneratedModel):
@@ -117,6 +118,9 @@ class ApiAccessPolicy(GeneratedModel):
         default=None, alias="MaxAccessKeyExpirationSeconds"
     )
     require_trusted_env: bool | None = Field(default=None, alias="RequireTrustedEnv")
+    require_trusted_env_secure_mode: bool | None = Field(
+        default=None, alias="RequireTrustedEnvSecureMode"
+    )
 
 
 class ApiAccessRule(GeneratedModel):
@@ -2160,6 +2164,9 @@ class FiltersSnapshot(GeneratedModel):
     account_ids: list[str] | None = Field(default=None, alias="AccountIds")
     client_tokens: list[str] | None = Field(default=None, alias="ClientTokens")
     descriptions: list[str] | None = Field(default=None, alias="Descriptions")
+    effective_snapshot_modes: list[str] | None = Field(
+        default=None, alias="EffectiveSnapshotModes"
+    )
     from_creation_date: datetime.datetime | None = Field(
         default=None, alias="FromCreationDate"
     )
@@ -4391,6 +4398,11 @@ class RemoveUserFromUserGroupResponse(GeneratedModel):
     )
 
 
+class RequestedSnapshotMode(GeneratedModel):
+    mode: str | None = Field(default=None, alias="Mode")
+    on_failure: str | None = Field(default=None, alias="OnFailure")
+
+
 class ResourceLoadBalancerTag(GeneratedModel):
     key: str = Field(alias="Key")
 
@@ -4555,10 +4567,16 @@ class Snapshot(GeneratedModel):
     client_token: str | None = Field(default=None, alias="ClientToken")
     creation_date: datetime.datetime | None = Field(default=None, alias="CreationDate")
     description: str | None = Field(default=None, alias="Description")
+    effective_snapshot_mode: str | None = Field(
+        default=None, alias="EffectiveSnapshotMode"
+    )
     permissions_to_create_volume: PermissionsOnResource | None = Field(
         default=None, alias="PermissionsToCreateVolume"
     )
     progress: int | None = Field(default=None, alias="Progress")
+    requested_snapshot_mode: RequestedSnapshotMode | None = Field(
+        default=None, alias="RequestedSnapshotMode"
+    )
     snapshot_id: str | None = Field(default=None, alias="SnapshotId")
     state: str | None = Field(default=None, alias="State")
     tags: list[ResourceTag] | None = Field(default=None, alias="Tags")
@@ -4839,6 +4857,7 @@ class UpdateApiAccessPolicyRequest(GeneratedModel):
         alias="MaxAccessKeyExpirationSeconds"
     )
     require_trusted_env: bool = Field(alias="RequireTrustedEnv")
+    require_trusted_env_secure_mode: bool = Field(alias="RequireTrustedEnvSecureMode")
 
 
 class UpdateApiAccessPolicyResponse(GeneratedModel):
