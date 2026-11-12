@@ -1,6 +1,7 @@
 import json
 import os
 import warnings
+from logging import warning
 
 STD_PATH = os.path.join(os.path.expanduser("~"), ".osc/config.json")
 DEFAULT_REGION = "eu-west-2"
@@ -18,7 +19,7 @@ class Endpoint:
         self.direct_link: str = kwargs.pop("direct_link", None)
 
         if kwargs:
-            unexpected = ", ".join(f"'{k}'" for k in kwargs.keys())
+            unexpected = ", ".join(f"'{k}'" for k in kwargs)
             raise TypeError(
                 f"Endpoint() got unexpected keyword arguments: {unexpected}"
             )
@@ -40,12 +41,25 @@ class Profile:
         self.password: str = kwargs.pop("password", None)
         self.protocol: str = kwargs.pop("protocol", None)
         self.region: str = kwargs.pop("region", None)
-        self.endpoints: "Endpoint" = kwargs.pop(
+        self.endpoints: Endpoint = kwargs.pop(
             "endpoints", Endpoint()
         )  # Forward reference
 
+        if (
+            self.x509_client_key_b64
+            or self.x509_client_cert
+            or self.x509_client_cert_b64
+            or self.x509_client_key
+        ):
+            warnings.warn(
+                "Using X.509 client certificate authentication is deprecated. "
+                "Use access/secret key instead.",
+                DeprecationWarning,
+                stacklevel=3,
+            )
+
         if kwargs:
-            unexpected = ", ".join(f"'{k}'" for k in kwargs.keys())
+            unexpected = ", ".join(f"'{k}'" for k in kwargs)
             raise TypeError(f"Profile() got unexpected keyword arguments: {unexpected}")
 
     @property
