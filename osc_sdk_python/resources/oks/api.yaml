@@ -13,8 +13,6 @@ paths:
     post:
       tags:
       - Projects
-      summary: Create Project
-      description: Creates a new project.
       operationId: CreateProject
       parameters: []
       requestBody:
@@ -116,11 +114,10 @@ paths:
                   RequestId: 45a64090-2e5b-428f-bfea-83a5f783f9e6
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
+      description: Creates a new project.
     get:
       tags:
       - Projects
-      summary: Get Projects
-      description: Lists one or more of your projects. The response can be filtered using the parameters.
       operationId: ListProjects
       parameters:
       - name: name
@@ -226,12 +223,11 @@ paths:
                   RequestId: 45a64090-2e5b-428f-bfea-83a5f783f9e6
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
+      description: Lists one or more of your projects. The response can be filtered using the parameters.
   /projects/{project_id}:
     get:
       tags:
       - Projects
-      summary: Get Project
-      description: Gets information about a specific project.
       operationId: GetProject
       parameters:
       - name: project_id
@@ -305,11 +301,10 @@ paths:
                   RequestId: 45a64090-2e5b-428f-bfea-83a5f783f9e6
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
+      description: Gets information about a specific project.
     patch:
       tags:
       - Projects
-      summary: Update Project
-      description: Updates the details of an existing project.
       operationId: UpdateProject
       parameters:
       - name: project_id
@@ -418,11 +413,10 @@ paths:
                   RequestId: 45a64090-2e5b-428f-bfea-83a5f783f9e6
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
+      description: Updates the details of an existing project.
     delete:
       tags:
       - Projects
-      summary: Delete Project
-      description: Deletes a specific project.
       operationId: DeleteProject
       parameters:
       - name: project_id
@@ -528,12 +522,11 @@ paths:
                   RequestId: 45a64090-2e5b-428f-bfea-83a5f783f9e6
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
+      description: Deletes a specific project.
   /projects/{project_id}/quotas:
     get:
       tags:
       - Projects
-      summary: Get Project Quotas
-      description: Gets the quota details for a specific project.
       operationId: GetProjectQuotas
       parameters:
       - name: project_id
@@ -607,12 +600,11 @@ paths:
                   RequestId: 45a64090-2e5b-428f-bfea-83a5f783f9e6
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
+      description: Gets the quota details for a specific project.
   /projects/{project_id}/snapshots:
     get:
       tags:
       - Projects
-      summary: Get Project Snapshots
-      description: Retrieves the snapshot details for a specific project by its ID. Returns the snapshot information associated with the specified project.
       operationId: GetProjectSnapshots
       parameters:
       - name: project_id
@@ -686,12 +678,11 @@ paths:
                   RequestId: 45a64090-2e5b-428f-bfea-83a5f783f9e6
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
+      description: Retrieves the snapshot details for a specific project by its ID. Returns the snapshot information associated with the specified project.
   /projects/{project_id}/public_ips:
     get:
       tags:
       - Projects
-      summary: Get Project Public Ips
-      description: Retrieves the Public IP details for a specific project by its ID. Returns the public IP information associated with the specified project.
       operationId: GetProjectPublicIps
       parameters:
       - name: project_id
@@ -765,12 +756,11 @@ paths:
                   RequestId: 45a64090-2e5b-428f-bfea-83a5f783f9e6
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
+      description: Retrieves the Public IP details for a specific project by its ID. Returns the public IP information associated with the specified project.
   /projects/{project_id}/nets:
     get:
       tags:
       - Projects
-      summary: Get Project Nets
-      description: Retrieves the Net details for a specific project by its ID. Returns the Net information associated with the specified project.
       operationId: GetProjectNets
       parameters:
       - name: project_id
@@ -844,12 +834,11 @@ paths:
                   RequestId: 45a64090-2e5b-428f-bfea-83a5f783f9e6
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
+      description: Retrieves the Net details for a specific project by its ID. Returns the Net information associated with the specified project.
   /projects/{project_id}/eim_users:
     get:
       tags:
       - Projects
-      summary: Get Eim Users
-      description: Gets information about EIM users.
       operationId: GetEimUsers
       parameters:
       - name: project_id
@@ -936,11 +925,10 @@ paths:
                   RequestId: 45a64090-2e5b-428f-bfea-83a5f783f9e6
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
+      description: Gets information about EIM users.
     post:
       tags:
       - Projects
-      summary: Create Eim User
-      description: Creates an EIM user.
       operationId: CreateEimUser
       parameters:
       - name: project_id
@@ -1110,16 +1098,11 @@ paths:
                   RequestId: 45a64090-2e5b-428f-bfea-83a5f783f9e6
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
+      description: Creates an EIM user.
   /projects/{project_id}/eim_users/types:
     get:
       tags:
       - Projects
-      summary: Get Eim Users Types
-      description: |-
-        Gets information about EIM user types. <br /><br />
-
-        **[IMPORTANT]**<br />
-        In the API, the term `user type` corresponds to the `user role` described in the User Guide. For more information, see [Creating an EIM User Using OKS](Managing-EIM-Users-Using-OKS.html).
       operationId: GetEimUserTypes
       parameters:
       - name: project_id
@@ -1206,12 +1189,15 @@ paths:
                   RequestId: 45a64090-2e5b-428f-bfea-83a5f783f9e6
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
+      description: |-
+        Gets information about EIM user types. <br /><br />
+
+        **[IMPORTANT]**<br />
+        In the API, the term `user type` corresponds to the `user role` described in the User Guide. For more information, see [Creating an EIM User Using OKS](Managing-EIM-Users-Using-OKS.html).
   /projects/{project_id}/eim_users/{user}:
     delete:
       tags:
       - Projects
-      summary: Delete Eim User
-      description: Deletes a specific EIM user.
       operationId: DeleteEimUser
       parameters:
       - name: project_id
@@ -1350,12 +1336,11 @@ paths:
                   RequestId: 45a64090-2e5b-428f-bfea-83a5f783f9e6
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
+      description: Deletes a specific EIM user.
   /clusters:
     post:
       tags:
       - Clusters
-      summary: Create Cluster
-      description: Creates a cluster with the provided configuration.
       operationId: CreateCluster
       parameters: []
       requestBody:
@@ -1576,11 +1561,10 @@ paths:
                   RequestId: 45a64090-2e5b-428f-bfea-83a5f783f9e6
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
+      description: Creates a cluster with the provided configuration.
     get:
       tags:
       - Clusters
-      summary: Get Clusters
-      description: Lists one or more clusters associated with a project. The response can be filtered using the parameters.
       operationId: ListClustersByProjectID
       parameters:
       - name: project_id
@@ -1724,12 +1708,11 @@ paths:
                   RequestId: 45a64090-2e5b-428f-bfea-83a5f783f9e6
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
+      description: Lists one or more clusters associated with a project. The response can be filtered using the parameters.
   /clusters/all:
     get:
       tags:
       - Clusters
-      summary: Get All Clusters
-      description: Lists one or more of your clusters. The response can be filtered using the parameters.
       operationId: ListAllClusters
       parameters:
       - name: name
@@ -1864,12 +1847,11 @@ paths:
                   RequestId: 45a64090-2e5b-428f-bfea-83a5f783f9e6
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
+      description: Lists one or more of your clusters. The response can be filtered using the parameters.
   /clusters/{cluster_id}:
     get:
       tags:
       - Clusters
-      summary: Get Cluster
-      description: Gets information about a specific cluster.
       operationId: GetCluster
       parameters:
       - name: cluster_id
@@ -1946,11 +1928,10 @@ paths:
                   RequestId: 45a64090-2e5b-428f-bfea-83a5f783f9e6
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
+      description: Gets information about a specific cluster.
     patch:
       tags:
       - Clusters
-      summary: Update Cluster
-      description: Updates the configuration of an existing cluster.
       operationId: UpdateCluster
       parameters:
       - name: cluster_id
@@ -2111,11 +2092,10 @@ paths:
                   RequestId: 45a64090-2e5b-428f-bfea-83a5f783f9e6
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
+      description: Updates the configuration of an existing cluster.
     delete:
       tags:
       - Clusters
-      summary: Delete Cluster
-      description: Deletes a specific cluster.
       operationId: DeleteCluster
       parameters:
       - name: cluster_id
@@ -2240,12 +2220,11 @@ paths:
                   RequestId: 45a64090-2e5b-428f-bfea-83a5f783f9e6
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
+      description: Deletes a specific cluster.
   /clusters/{cluster_id}/kubeconfig:
     get:
       tags:
       - Clusters
-      summary: Get Cluster Kubeconfig
-      description: Gets the kubeconfig file for a specific cluster. You can specify query parameters for the kubeconfig file.
       operationId: GetKubeconfig
       parameters:
       - name: cluster_id
@@ -2400,11 +2379,10 @@ paths:
                   RequestId: 45a64090-2e5b-428f-bfea-83a5f783f9e6
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
+      description: Gets the kubeconfig file for a specific cluster. You can specify query parameters for the kubeconfig file.
     post:
       tags:
       - Clusters
-      summary: Post Cluster Kubeconfig
-      description: Gets the kubeconfig file for a specific cluster, optionally encrypted with a NaCl public key. For more information, see the [NaCl website](https://nacl.cr.yp.to/). You can specify query parameters for the kubeconfig file.
       operationId: GetKubeconfigWithPubkeyNACL
       parameters:
       - name: cluster_id
@@ -2568,12 +2546,11 @@ paths:
                   RequestId: 45a64090-2e5b-428f-bfea-83a5f783f9e6
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
+      description: Gets the kubeconfig file for a specific cluster, optionally encrypted with a NaCl public key. For more information, see the [NaCl website](https://nacl.cr.yp.to/). You can specify query parameters for the kubeconfig file.
   /clusters/{cluster_id}/upgrade:
     patch:
       tags:
       - Clusters
-      summary: Upgrade Cluster
-      description: Upgrades a specific cluster to the latest available version of Kubernetes. For more information, see [GetKubernetesVersions](#getkubernetesversions).
       operationId: UpgradeCluster
       parameters:
       - name: cluster_id
@@ -2685,12 +2662,11 @@ paths:
                   RequestId: 45a64090-2e5b-428f-bfea-83a5f783f9e6
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
+      description: Upgrades a specific cluster to the latest available version of Kubernetes. For more information, see [GetKubernetesVersions](#getkubernetesversions).
   /clusters/limits/kubernetes_versions:
     get:
       tags:
       - Clusters
-      summary: Get Kubernetes Versions
-      description: Gets the available Kubernetes versions for cluster creation or upgrades.
       operationId: GetKubernetesVersions
       parameters: []
       responses:
@@ -2718,12 +2694,11 @@ paths:
                   RequestId: 45a64090-2e5b-428f-bfea-83a5f783f9e6
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
+      description: Gets the available Kubernetes versions for cluster creation or upgrades.
   /clusters/limits/cp_subregions:
     get:
       tags:
       - Clusters
-      summary: Get Cp Subregions
-      description: Gets the Subregions where you can deploy control planes for your clusters.
       operationId: GetCPSubregions
       parameters: []
       responses:
@@ -2751,12 +2726,11 @@ paths:
                   RequestId: 45a64090-2e5b-428f-bfea-83a5f783f9e6
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
+      description: Gets the Subregions where you can deploy control planes for your clusters.
   /clusters/limits/control_plane_plans:
     get:
       tags:
       - Clusters
-      summary: Get Control Plane Plans
-      description: Gets the control plane types that you can use to create your clusters.
       operationId: GetControlPlanePlans
       parameters: []
       responses:
@@ -2784,12 +2758,11 @@ paths:
                   RequestId: 45a64090-2e5b-428f-bfea-83a5f783f9e6
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
+      description: Gets the control plane types that you can use to create your clusters.
   /clusters/limits/admission_plugins:
     get:
       tags:
       - Clusters
-      summary: Get Admission Plugins
-      description: Gets the list of admission plugins available for cluster configuration.
       operationId: GetAdmissionPlugins
       parameters:
       - name: version
@@ -2824,12 +2797,11 @@ paths:
                   RequestId: 45a64090-2e5b-428f-bfea-83a5f783f9e6
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
+      description: Gets the list of admission plugins available for cluster configuration.
   /templates/project:
     get:
       tags:
       - Templates
-      summary: Get Project Template
-      description: Gets the default project template, including the predefined network configurations, Region, and metadata.
       operationId: GetProjectTemplate
       parameters: []
       responses:
@@ -2857,12 +2829,11 @@ paths:
                   RequestId: 45a64090-2e5b-428f-bfea-83a5f783f9e6
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
+      description: Gets the default project template, including the predefined network configurations, Region, and metadata.
   /templates/cluster:
     get:
       tags:
       - Templates
-      summary: Get Cluster Template
-      description: Gets the default cluster template, including the predefined control plane configurations, networking settings, and maintenance schedules.
       operationId: GetClusterTemplate
       parameters:
       - name: X-Real-IP
@@ -2899,12 +2870,11 @@ paths:
                   RequestId: 45a64090-2e5b-428f-bfea-83a5f783f9e6
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
+      description: Gets the default cluster template, including the predefined control plane configurations, networking settings, and maintenance schedules.
   /templates/nodepool:
     get:
       tags:
       - Templates
-      summary: Get Nodepool Template
-      description: Gets the default node pool template, including the predefined configurations for node scaling, storage, and upgrade strategies.
       operationId: GetNodepoolTemplate
       parameters: []
       responses:
@@ -2932,12 +2902,11 @@ paths:
                   RequestId: 45a64090-2e5b-428f-bfea-83a5f783f9e6
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
+      description: Gets the default node pool template, including the predefined configurations for node scaling, storage, and upgrade strategies.
   /templates/netpeeringrequest:
     get:
       tags:
       - Templates
-      summary: Get Netpeering Request Template
-      description: Gets the default request template used to configure a Net peering, including the predefined fields and values required to create the request.
       operationId: GetNetPeeringRequestTemplate
       parameters: []
       responses:
@@ -2965,12 +2934,11 @@ paths:
                   RequestId: 45a64090-2e5b-428f-bfea-83a5f783f9e6
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
+      description: Gets the default request template used to configure a Net peering, including the predefined fields and values required to create the request.
   /templates/netpeeringacceptance:
     get:
       tags:
       - Templates
-      summary: Get Netpeering Acceptance Template
-      description: Gets the default request template used to accept a Net peering, including the predefined fields and values required to process the acceptance.
       operationId: GetNetPeeringAcceptanceTemplate
       parameters: []
       responses:
@@ -2998,12 +2966,11 @@ paths:
                   RequestId: 45a64090-2e5b-428f-bfea-83a5f783f9e6
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
+      description: Gets the default request template used to accept a Net peering, including the predefined fields and values required to process the acceptance.
   /quotas:
     get:
       tags:
       - Quotas
-      summary: Get Quotas
-      description: Get OKS Quotas.
       operationId: GetQuotas
       parameters: []
       responses:
@@ -3053,12 +3020,11 @@ paths:
                   RequestId: 45a64090-2e5b-428f-bfea-83a5f783f9e6
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
+      description: Gets OKS quotas.
   /myip:
     get:
       tags:
       - MyIp
-      summary: Get Client Ip
-      description: Gets the IP of the client making the request.
       operationId: GetClientIP
       parameters:
       - name: X-Real-IP
@@ -3095,6 +3061,7 @@ paths:
                   RequestId: 45a64090-2e5b-428f-bfea-83a5f783f9e6
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
+      description: Gets the IP of the client making the request.
 components:
   schemas:
     AccessKey:
@@ -3155,27 +3122,7 @@ components:
           type: array
           title: Applied Admission Plugins
           description: The list of admission plugins that are currently applied to the cluster.
-          default:
-          - CertificateApproval
-          - CertificateSigning
-          - CertificateSubjectRestriction
-          - ClusterTrustBundleAttest
-          - DefaultIngressClass
-          - DefaultStorageClass
-          - DefaultTolerationSeconds
-          - LimitRanger
-          - MutatingAdmissionWebhook
-          - NamespaceLifecycle
-          - PersistentVolumeClaimResize
-          - PodSecurity
-          - Priority
-          - ResourceQuota
-          - RuntimeClass
-          - ServiceAccount
-          - StorageObjectInUseProtection
-          - TaintNodesByCondition
-          - ValidatingAdmissionPolicy
-          - ValidatingAdmissionWebhook
+          default: []
       type: object
       title: AdmissionFlags
       description: Information about the Kubernetes admission plugins configuration.
@@ -3773,6 +3720,12 @@ components:
           - type: 'null'
           title: Kubernetes Version
           description: The updated version of Kubernetes for the cluster. For more information, see [GetKubernetesVersions](#getkubernetesversions).
+        cni:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: CNI
+          description: The updated Container Network Interface (CNI) version for the cluster. Note that a versioned CNI can only be upgraded by one minor version at a time, and cannot be downgraded. Use 'none' to remove the current CNI.
         control_planes:
           type: string
           title: Control Planes
@@ -4084,7 +4037,7 @@ components:
           type: boolean
           title: Enabled
           description: If true, a maintenance window is enabled.
-          default: true
+          default: false
         duration_hours:
           type: integer
           maximum: 23
