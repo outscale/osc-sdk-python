@@ -1,3 +1,4 @@
+import os
 import sys
 import time
 import unittest
@@ -13,6 +14,9 @@ from tests.integration_utils import (
 )
 
 
+@unittest.skipIf(
+    os.environ.get("OSC_IS_RICOCHET") == "true", "not supported by ricochet mock"
+)
 class TestSnapshot(unittest.TestCase):
     def test_snapshot_lifecycle(self):
         gw = Gateway()
@@ -34,8 +38,12 @@ class TestSnapshot(unittest.TestCase):
             log_test_step("Tagged volume {}".format(volume_id))
 
             for _ in range(30):
-                volume = read_single_resource(gw, "ReadVolumes", "Volumes", "VolumeIds", volume_id)
-                log_test_step("Volume {} state={}".format(volume_id, volume.get("State")))
+                volume = read_single_resource(
+                    gw, "ReadVolumes", "Volumes", "VolumeIds", volume_id
+                )
+                log_test_step(
+                    "Volume {} state={}".format(volume_id, volume.get("State"))
+                )
                 if volume.get("State") == "available":
                     break
                 if volume.get("State") == "error":
@@ -47,7 +55,9 @@ class TestSnapshot(unittest.TestCase):
                 time.sleep(10)
 
             log_test_step("Creating snapshot from volume {}".format(volume_id))
-            snapshot_response = gw.CreateSnapshot(Description=description, VolumeId=volume_id)
+            snapshot_response = gw.CreateSnapshot(
+                Description=description, VolumeId=volume_id
+            )
             snapshot = snapshot_response.get("Snapshot")
             self.assertIsInstance(snapshot, dict)
             snapshot_id = snapshot.get("SnapshotId")
@@ -62,7 +72,9 @@ class TestSnapshot(unittest.TestCase):
                 snapshot = read_single_resource(
                     gw, "ReadSnapshots", "Snapshots", "SnapshotIds", snapshot_id
                 )
-                log_test_step("Snapshot {} state={}".format(snapshot_id, snapshot.get("State")))
+                log_test_step(
+                    "Snapshot {} state={}".format(snapshot_id, snapshot.get("State"))
+                )
                 if snapshot.get("State") == "completed":
                     break
                 if snapshot.get("State") == "error":
