@@ -1,13 +1,20 @@
 name: Setup code checks
 description: "Setup toolchain and run smoke test"
+
+inputs:
+  python-version:
+    description: 'Python version to use'
+    required: false
+
 runs:
   using: composite
   steps:
     - name: ⬇️ Install uv
       uses: astral-sh/setup-uv@bec219d24cd3e171d82865faccec33120bb574f4 # v10.1.0
     - name: ⬇️  Setup Python
-      run: uv python install
-      shell: bash
+      uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0 # v7.1.0
+      with:
+        python-version: ${{ inputs.python-version || '3.14' }}
     - name: ⬇️ Build python package
       run: make package
       shell: bash

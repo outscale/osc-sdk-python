@@ -1,3 +1,4 @@
+import os
 import sys
 import time
 import unittest
@@ -15,12 +16,17 @@ from tests.integration_utils import (
 )
 
 
+@unittest.skipIf(
+    os.environ.get("OSC_IS_RICOCHET") == "true", "not supported by ricochet mock"
+)
 class TestLoadBalancerBackend(unittest.TestCase):
     def test_load_balancer_backend_lifecycle(self):
         gw = Gateway()
         subregion_name = get_first_subregion_name(gw)
         image_id = get_latest_public_ubuntu_image_id(gw)
-        log_test_step("Using subregion {} and image {}".format(subregion_name, image_id))
+        log_test_step(
+            "Using subregion {} and image {}".format(subregion_name, image_id)
+        )
         vm_id = None
         load_balancer_name = get_tagged_name("osc-sdk-python-lb")
         load_balancer_created = False
@@ -50,7 +56,11 @@ class TestLoadBalancerBackend(unittest.TestCase):
                 if vm.get("State") == "running":
                     break
                 if vm.get("State") in ("stopped", "terminated", "shutting-down"):
-                    self.fail("VM {} entered unexpected state {}".format(vm_id, vm.get("State")))
+                    self.fail(
+                        "VM {} entered unexpected state {}".format(
+                            vm_id, vm.get("State")
+                        )
+                    )
                 time.sleep(10)
 
             log_test_step("Creating load balancer {}".format(load_balancer_name))
@@ -65,12 +75,16 @@ class TestLoadBalancerBackend(unittest.TestCase):
                     }
                 ],
                 SubregionNames=[subregion_name],
-                Tags=[{"Key": "Name", "Value": get_tagged_name("osc-sdk-python-lb-tag")}],
+                Tags=[
+                    {"Key": "Name", "Value": get_tagged_name("osc-sdk-python-lb-tag")}
+                ],
             )
             self.assertIsInstance(load_balancer_response.get("LoadBalancer"), dict)
             load_balancer_created = True
 
-            log_test_step("Linking backend VM {} to {}".format(vm_id, load_balancer_name))
+            log_test_step(
+                "Linking backend VM {} to {}".format(vm_id, load_balancer_name)
+            )
             gw.LinkLoadBalancerBackendMachines(
                 LoadBalancerName=load_balancer_name, BackendVmIds=[vm_id]
             )
@@ -109,7 +123,9 @@ class TestLoadBalancerBackend(unittest.TestCase):
                     for entry in health.get("BackendVmHealth", []) or []
                 )
             )
-            log_test_step("Backend VM {} is registered in {}".format(vm_id, load_balancer_name))
+            log_test_step(
+                "Backend VM {} is registered in {}".format(vm_id, load_balancer_name)
+            )
         finally:
             if load_balancer_created:
                 log_test_step("Deleting load balancer {}".format(load_balancer_name))

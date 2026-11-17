@@ -15,10 +15,11 @@ permissions:
 jobs:
   auto-build:
     environment: auto-build
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-26.04
     steps:
     - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-    - uses: chainguard-dev/actions/setup-gitsign@805da2efdffdc42b8afd8880e575a48b471ef544 # main
+      with:
+          persist-credentials: false
     - name: Install uv
       uses: astral-sh/setup-uv@bec219d24cd3e171d82865faccec33120bb574f4 # v10.1.0
     - name: Set up Python
@@ -34,15 +35,11 @@ jobs:
     - name: Create Pull Request
       uses: peter-evans/create-pull-request@5f6978faf089d4d20b00c7766989d076bb2fc7f1 # v8.1.1
       with:
-        committer: "Outscale Bot <opensource+bot@outscale.com>"
-        author: "Outscale Bot <opensource+bot@outscale.com>"
         commit-message: "🔖 release: osc-sdk-python v${{ env.sdk_version }}"
         body: |
           Automatic build of SDK v${{ env.sdk_version }} version based on Outscale API ${{ env.api_version }}.
         title: "SDK v${{ env.sdk_version }}"
-        token: "${{ env.token }}"
         labels: "kind/feature"
       env:
         sdk_version: ${{ steps.get-sdk-version.outputs.sdk_version }}
         api_version: ${{ github.event.inputs.api_version }}
-        token: ${{ secrets.GH_TOKEN || secrets.GITHUB_TOKEN }}

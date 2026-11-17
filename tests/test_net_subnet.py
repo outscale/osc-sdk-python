@@ -1,3 +1,4 @@
+import os
 import sys
 import time
 import unittest
@@ -11,6 +12,9 @@ from tests.integration_utils import (
 )
 
 
+@unittest.skipIf(
+    os.environ.get("OSC_IS_RICOCHET") == "true", "not supported by ricochet mock"
+)
 class TestNetAndSubnet(unittest.TestCase):
     def test_net_and_subnet_lifecycle(self):
         gw = Gateway()
@@ -40,7 +44,9 @@ class TestNetAndSubnet(unittest.TestCase):
             time.sleep(2)
 
             log_test_step("Reading subnet {}".format(subnet_id))
-            subnet = read_single_resource(gw, "ReadSubnets", "Subnets", "SubnetIds", subnet_id)
+            subnet = read_single_resource(
+                gw, "ReadSubnets", "Subnets", "SubnetIds", subnet_id
+            )
             self.assertEqual(subnet.get("SubnetId"), subnet_id)
             self.assertTrue(
                 any(tag.get("Key") == "Name" for tag in subnet.get("Tags", [])),

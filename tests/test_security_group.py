@@ -1,3 +1,4 @@
+import os
 import sys
 import unittest
 
@@ -6,6 +7,9 @@ from osc_sdk_python import Gateway
 from tests.integration_utils import get_tagged_name, log_test_step
 
 
+@unittest.skipIf(
+    os.environ.get("OSC_IS_RICOCHET") == "true", "not supported by ricochet mock"
+)
 class TestSecurityGroup(unittest.TestCase):
     def test_security_group_lifecycle(self):
         gw = Gateway()
